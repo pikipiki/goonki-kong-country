@@ -31,6 +31,12 @@ export interface BarrelSpec {
   angle?: number;
   rotationSpeed?: number;
   autoFire?: boolean;
+  /** ROM $0FF5 launch multiplier; defaults to the verified base template (40). */
+  launchMultiplier?: number;
+  /** Inclusive flight frames before gravity applies (ROM $0FC1 high byte). */
+  cannonGravityDelay?: number;
+  /** Inclusive flight frames before steering applies (ROM $0FC1 low byte). */
+  cannonControlDelay?: number;
 }
 export interface Level {
   id: number;

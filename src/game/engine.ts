@@ -1,6 +1,6 @@
 import { BUDDY_PHYSICS, ANIMAL_DESIGNS, type Animal } from "./animals";
 import { ROM_JUNGLE, ORIGINAL_JUNGLE_ORIGIN } from "./originalJungle";
-import { query as originalTerrain } from "./originalTerrain";
+import { ceilingWorld, query as originalTerrain } from "./originalTerrain";
 import { ENEMY_DESIGNS } from "./enemies";
 import { LEVELS, type EnemySpec, type Platform } from "./levels";
 import evidence from "../../reference/rom-analysis.json";
@@ -444,16 +444,21 @@ export class Game {
       if (input.pressed.has("jump") || input.pressed.has("action") || (barrel.autoFire && p.cannonTime > 0.15)) {
         const angle = this.cannonAngle(p.cannon);
         const launch = cannonLaunchVelocity(angle);
+        const mult =
+          (barrel.launchMultiplier ?? CANNON_TEMPLATE.launchMultiplier) /
+          CANNON_TEMPLATE.launchMultiplier;
         p.cannonLock = p.cannon;
         p.launched = 0.65;
-        p.cannonGravityDelay = CANNON_TEMPLATE.gravityDelayCounter;
-        p.cannonControlDelay = CANNON_TEMPLATE.controlDelayCounter;
+        p.cannonGravityDelay =
+          barrel.cannonGravityDelay ?? CANNON_TEMPLATE.gravityDelayCounter;
+        p.cannonControlDelay =
+          barrel.cannonControlDelay ?? CANNON_TEMPLATE.controlDelayCounter;
         p.grounded = false;
         p.coyote = 0;
         p.roll = 0;
         p.rollJump = false;
-        p.vx = launch.vx;
-        p.vy = launch.vy;
+        p.vx = launch.vx * mult;
+        p.vy = launch.vy * mult;
         p.cannon = -1;
         p.invincible = 1;
         p.buffer = 0;
@@ -601,6 +606,14 @@ export class Game {
       if(hit && p.vy<=0 && p.y<=hit.floorY && hit.floorY<=oldY+(wasGrounded?0.45:0.12)) {
         p.y=hit.floorY; p.vy=0; p.grounded=true;
       } else if(hit && wasGrounded && hit.floorY>oldY+0.45) {p.x=oldX;p.vx=0;}
+      if (p.vy > 0) {
+        const head = 1.35;
+        const ceiling = ceilingWorld(p.x, p.y + head, ORIGINAL_JUNGLE_ORIGIN);
+        if (ceiling !== null && p.y + head >= ceiling - 0.05) {
+          p.y = ceiling - head;
+          p.vy = 0;
+        }
+      }
     } else for (const platform of this.level.platforms) {
       const top = this.surface(platform),
         left = platform.x - platform.w / 2,

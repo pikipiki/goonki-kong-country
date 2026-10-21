@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { probeSNES, query, nearestCandidateBelowSNES } from '../src/game/originalTerrain';
+import { probeSNES, query, nearestCandidateBelowSNES, ceilingWorld } from '../src/game/originalTerrain';
 describe('original USA Rev2 Jungle collision metadata', () => {
   it('retains distinct levels at the same X instead of flattening to a maximum', () => {
     expect(probeSNES(192, 176)?.floorY).toBe(175);
@@ -19,6 +19,10 @@ describe('original USA Rev2 Jungle collision metadata', () => {
     expect(hit?.floorY).toBe(0);
     expect(hit?.originalFloorY).toBe(175);
   });
+  it('finds the next surface above the head between stacked floors', () => {
+    const underside = ceilingWorld(192 / 32, 5, { x: 0, y: 175 });
+    expect(underside).toBeCloseTo((351 - 175) / 32, 5);
+  });
   it('rejects nonfinite and out-of-extracted-range coordinates', () => {
     expect(probeSNES(-1, 175)).toBeNull();
     expect(probeSNES(5408, 175)).toBeNull();
@@ -34,6 +38,8 @@ describe('original Jungle level and rendering subset', () => {
     expect(ROM_JUNGLE.animals).toEqual([{kind:'rambi',x:2952/32,y:(144-175)/32}]);
     expect(ROM_JUNGLE.start).toEqual({x:156/32,y:0});
     expect(ORIGINAL_JUNGLE_PROVENANCE.imported.length+ORIGINAL_JUNGLE_PROVENANCE.omitted.length).toBe(66);
+    expect(ROM_JUNGLE.barrels.filter(b=>b.kind==='cannon')).toHaveLength(2);
+    expect(ROM_JUNGLE.barrels.filter(b=>b.kind==='cannon').every(b=>typeof b.angle==='number')).toBe(true);
   });
   it('builds real finite 3D terrain retaining both stacked surfaces', () => {
     const geometry=createOriginalGroundGeometry(0,16), position=geometry.attributes.position;
