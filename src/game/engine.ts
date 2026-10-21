@@ -7,7 +7,7 @@ import { ROM_MINE_CART, ORIGINAL_MINE_CART_ORIGIN } from "./originalMineCart";
 import { query as originalTerrain } from "./originalTerrain";
 import {
   query as originalCaveTerrain,
-} from "./originalCaveTerrain";
+} from "./canyonTerrain";
 import {
   query as originalMineCartTerrain,
 } from "./originalMineCartTerrain";
@@ -74,6 +74,8 @@ export interface Input {
   released: Set<Key>;
   /** True when the mobile UI is in tap-to-toggle mode (see GameControls). */
   clickMode?: boolean;
+  /** Screen action presses pick up / throw on separate taps, independently of steering mode. */
+  tapAction?: boolean;
 }
 export interface Enemy extends EnemySpec {
   originY: number;
@@ -123,6 +125,7 @@ export interface Player {
   invincible: number;
   roll: number;
   rollJump: boolean;
+  rollJumpMomentum: number;
   rollSpeed: number;
   rollFacing: number;
   rollChain: number;
@@ -254,6 +257,7 @@ export class Game {
   collectedCaches = new Set<number>();
   brokenWalls = new Set<number>();
   collectedBonus = new Set<string>();
+  completedBonus = new Set<number>();
   usedBarrels = new Set<number>();
   cannonTimes: number[] = [];
   enemies: Enemy[] = [];
@@ -343,6 +347,7 @@ export class Game {
     this.collectedCaches = new Set();
     this.brokenWalls = new Set();
     this.collectedBonus = new Set();
+    this.completedBonus = new Set();
     this.usedBarrels = new Set();
     this.cannonTimes = [];
     this.particles = [];
@@ -363,7 +368,7 @@ export class Game {
       hp: 2,
       invincible: 0,
       roll: 0,
-      rollJump: false, rollSpeed: 0, rollFacing: 1, rollChain: 0, rollAngle: 0, recentRun: 1,
+      rollJump: false, rollJumpMomentum: 0, rollSpeed: 0, rollFacing: 1, rollChain: 0, rollAngle: 0, recentRun: 1,
       mount: -1, mountAttack: 0, mountCharge: 0, mountCharged: false, mountCooldown: 0,
       carry: -1,
       cannon: -1, cannonLock: -1, cannonTime: 0, launched: 0,
@@ -457,10 +462,16 @@ export class Game {
     const room = this.level.bonusRooms?.find((r) => r.wallIndex === wallIndex);
     if (room) this.message(tr("game.bonusOpened", { label: tx(room.label) }), 4);
   }
+  isBonusCompleted(index: number) {
+    // Existing hot-reloaded games can already have rewards from a prior visit.
+    return this.completedBonus?.has(index) || this.level.bonusRooms?.[index]?.pickups
+      .some((_, i) => this.collectedBonus.has(`${index}-${i}`)) || false;
+  }
   private tryEnterBonus(input: Input, oldX: number) {
     if (this.bonus || this.bonusDoorCooldown > 0) return false;
     const p = this.player;
-    const index = this.level.bonusRooms?.findIndex(room => {
+    const index = this.level.bonusRooms?.findIndex((room, roomIndex) => {
+      if (this.isBonusCompleted(roomIndex)) return false;
       const wall = this.level.breakableWalls?.[room.wallIndex];
       if (!wall || !this.brokenWalls.has(room.wallIndex)) return false;
       const toward = Math.sign(wall.x-oldX);
@@ -475,12 +486,14 @@ export class Game {
       letters:this.letters, usedBarrels:this.usedBarrels, thrown:this.thrown, enemyShots:this.enemyShots,
       checkpoint:this.checkpoint, companion:this.companion, trail:this.trail };
     const stage: Level = { id:source.id, name:room.label, subtitle:"game.bonusSubtitle", biome:"jungle",
-      length:17, platforms:[{x:8.5,y:0,w:19,h:4.4}], enemies:[], barrels:[],
+      length:17, platforms:[{x:8.5,y:0,w:19,h:4.4},
+        // A full-height solid entrance behind the player; exit remains at right.
+        {x:0,y:10,w:1.5,h:10,kind:"stone"}], enemies:[], barrels:[],
       pickups:sourceIndices.map((i)=>({...room.pickups[i],x:5+i*2.5,y:1.05})),
       decors:[{x:13,y:1.5,kind:"sign",text:"game.bonusSign"}], tip:"game.bonusTip" };
     this.bonus = {index,stage,sourceIndices,world};
     this.player = {...p,x:2,y:0,vx:0,vy:0,grounded:true,carry:-1,cannon:-1,mount:-1,
-      roll:0,rollJump:false,mountAttack:0,mountCharge:0,mountCharged:false,invincible:1};
+      roll:0,rollJump:false,rollJumpMomentum:0,mountAttack:0,mountCharge:0,mountCharged:false,invincible:1};
     this.enemies=[];this.animals=[];this.collected=new Set();this.letters=new Set();this.usedBarrels=new Set();
     this.thrown=[];this.enemyShots=[];this.checkpoint={x:2,y:0};this.companion={x:.75,y:0,facing:1};this.trail=[];this.swap=null;
     this.sceneRevision++;this.cameraBounds=null;this.message(tx(stage.tip),5);this.onEvent("enter-cannon");
@@ -493,7 +506,8 @@ export class Game {
     for (const pickup of this.collected) this.collectedBonus.add(`${visit.index}-${visit.sourceIndices[pickup]}`);
     const hp=this.player.hp, active=this.player.active;
     Object.assign(this,visit.world); this.bonus=null;
-    Object.assign(this.player,{hp,active,vx:0,vy:0,roll:0,rollJump:false,mountAttack:0,mountCharge:0,mountCharged:false,invincible:1.2});
+    (this.completedBonus ??= new Set()).add(visit.index);
+    Object.assign(this.player,{hp,active,vx:0,vy:0,roll:0,rollJump:false,rollJumpMomentum:0,mountAttack:0,mountCharge:0,mountCharged:false,invincible:1.2});
     this.bonusDoorCooldown=1;this.sceneRevision++;this.cameraBounds=null;this.swap=null;
     this.message(tr("game.returnToLevel"),3);
   }
@@ -627,6 +641,7 @@ export class Game {
       if (!fall) { this.onEvent("hurt"); return; }
     }
     this.onEvent("hurt");
+    p.rollJumpMomentum = 0;
     if (!fall && p.hp === 2) {
       p.hp = 1;
       p.active = 1 - p.active;
@@ -655,7 +670,7 @@ export class Game {
       carry: -1,
       cannon: -1, cannonLock: -1, cannonTime: 0, launched: 0,
       cannonGravityDelay: 0, cannonControlDelay: 0, jumpDelay: 0,
-      roll: 0, rollJump: false, rollChain: 0, mount: -1, mountAttack: 0, mountCharge: 0, mountCharged: false, mountCooldown: 0.55,
+      roll: 0, rollJump: false, rollJumpMomentum: 0, rollChain: 0, mount: -1, mountAttack: 0, mountCharge: 0, mountCharged: false, mountCooldown: 0.55,
     });
     this.trail = [];
     this.companion = { ...this.checkpoint, facing: 1 };
@@ -672,7 +687,11 @@ export class Game {
   cannonAngle(index: number, level = this.level) {
     const b = level.barrels[index];
     if (!b) return 0.75;
-    return (b.angle ?? 0.75) + (b.rotationSpeed ? Math.sin(this.time * b.rotationSpeed) * 0.65 : 0);
+    const aim = (b.angle ?? 0.75) + (b.rotationSpeed ? Math.sin(this.time * b.rotationSpeed) * 0.65 : 0);
+    // The ROM fires discrete velocity vectors. Point the mesh at that actual
+    // vector too, including while an oscillating cannon crosses an aim sector.
+    const velocity = cannonLaunchVelocity(aim);
+    return Math.atan2(velocity.vy, velocity.vx);
   }
   releaseAnimal(animal: Animal) {
     animal.state = "idle";
@@ -726,7 +745,7 @@ export class Game {
         p.mount = i;
         p.y = this.level.originalTerrain === "coral" ? nearestCoralOpenY(a.x,a.y,ENGUARDE_SWIM_BODY.height) : a.y;
         a.y=p.y; p.vy = 0; p.grounded = !water;
-        p.roll = 0; p.rollJump = false; p.carry = -1; p.coyote = 0;
+        p.roll = 0; p.rollJump = false; p.rollJumpMomentum = 0; p.carry = -1; p.coyote = 0;
         this.onEvent("mount");
         this.message(`${tr("game.mountGreeting", { name: tx(ANIMAL_DESIGNS[a.kind].name) })} ${a.kind === "winky" ? tr("game.mountWinky") : a.kind === "expresso" ? tr("game.mountExpresso") : a.kind === "enguarde" ? tr("game.mountEnguarde") : tr("game.mountRambi")}`, 5);
       }
@@ -831,6 +850,7 @@ export class Game {
         p.coyote = 0;
         p.roll = 0;
         p.rollJump = false;
+        p.rollJumpMomentum = 0;
         p.vx = launch.vx * mult;
         p.vy = launch.vy * mult;
         p.cannon = -1;
@@ -868,8 +888,8 @@ export class Game {
     }
     if (!actionUsed && !water && !cart && p.launched === 0 && !swapping) {
       const releaseThrow =
-        input.released.has("action") ||
-        (input.clickMode && input.pressed.has("action"));
+        (!input.tapAction && input.released.has("action")) ||
+        ((input.clickMode || input.tapAction) && input.pressed.has("action"));
       const barrelNear = this.throwableBarrelIndex(p);
       if (carryingAtStart && releaseThrow) {
         if (p.grounded && input.held.has("down")) {
@@ -889,7 +909,7 @@ export class Game {
         }
       } else if (!carryingAtStart) {
         const pickupBarrel =
-          input.clickMode
+          input.clickMode || input.tapAction
             ? input.pressed.has("action") && barrelNear >= 0
             : input.held.has("action") && barrelNear >= 0;
         if (pickupBarrel) {
@@ -937,6 +957,15 @@ export class Game {
       // Releasing the fire button must not brake a cannon shot in mid-flight.
       // Steering is available only after the imported control delay expires.
       if (direction) p.vx = approach(p.vx,direction*Math.max(Math.abs(p.vx),speed),12*dt);
+    }
+    else if (!buddy && !water && p.rollJumpMomentum !== 0 && !p.grounded) {
+      // A roll jump carries its launch momentum; releasing/reversing brakes it.
+      if (direction === Math.sign(p.rollJumpMomentum)) p.vx = p.rollJumpMomentum;
+      else {
+        p.rollJumpMomentum = approach(p.rollJumpMomentum, direction * speed, 18 * dt);
+        p.vx = p.rollJumpMomentum;
+        if (Math.abs(p.rollJumpMomentum) <= speed) p.rollJumpMomentum = 0;
+      }
     }
     else if (chargeable && p.mountCharge > .18) p.vx = approach(p.vx,0,60*dt);
     else if (p.roll > 0) p.vx = p.rollFacing * p.rollSpeed;
@@ -991,6 +1020,7 @@ export class Game {
         p.jumpDelay--;
         if (p.jumpDelay === 0 && (p.coyote > 0 || p.rollJump)) {
           p.vy = design ? design.jump : rawSpeed(ROM.jump[p.active]);
+          p.rollJumpMomentum = p.rollJump ? p.vx : 0;
           p.rollJump = false;
           p.roll = 0;
           p.grounded = false;
@@ -1005,6 +1035,7 @@ export class Game {
         p.buffer = 0;
         if (p.rollJump) {
           p.vy = design ? design.jump : rawSpeed(ROM.jump[p.active]);
+          p.rollJumpMomentum = p.rollJump ? p.vx : 0;
           p.rollJump = false;
           p.roll = 0;
           p.grounded = false;
@@ -1052,7 +1083,7 @@ export class Game {
     if (this.level.originalTerrain && this.level.originalTerrain !== "coral") {
       const contact = resolveLandMotion(this.level.originalTerrain, oldX, oldY, p.x, p.y, wasGrounded, p.vy);
       p.x = contact.x; p.y = contact.y; p.grounded = contact.grounded;
-      if(contact.blockedX) p.vx = 0;
+      if(contact.blockedX) { p.vx = 0; p.rollJumpMomentum = 0; }
       if(contact.blockedY) p.vy = 0;
     } else if (this.level.originalTerrain === "coral") {
       const swimBody = this.mount ? ENGUARDE_SWIM_BODY : undefined;
@@ -1096,7 +1127,7 @@ export class Game {
       this.damage(true);
       return;
     }
-    if (p.grounded) p.launched = 0;
+    if (p.grounded) { p.launched = 0; p.rollJumpMomentum = 0; }
     this.updateAnimals(input, oldY, dt);
     if (!swapping) {
       this.trail.push({ x: p.x, y: p.y, facing: p.facing });
@@ -1154,7 +1185,9 @@ export class Game {
       if (
         this.usedBarrels.has(i) ||
         Math.abs(position.x - p.x) > 0.8 ||
-        Math.abs(position.y - p.y) > 1.1
+        (b.kind === "cannon"
+          ? position.y < p.y - .75 || position.y > p.y + 2.1
+          : Math.abs(position.y - p.y) > 1.1)
       )
         return;
       if (b.kind === "rescue") {
@@ -1172,7 +1205,7 @@ export class Game {
       }
       if (b.kind === "cannon" && p.cannonLock !== i && !this.mount) {
         p.cannon = i; p.cannonTime = 0; p.launched = 0;
-        p.carry = -1; p.roll = 0; p.rollJump = false;
+        p.carry = -1; p.roll = 0; p.rollJump = false; p.rollJumpMomentum = 0;
         this.onEvent("enter-cannon");
         p.x = position.x;
         p.y = position.y;

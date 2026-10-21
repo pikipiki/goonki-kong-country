@@ -1,4 +1,4 @@
-"""Generate ROM Reverb Cave level subset from verified metadata."""
+"""Generate Barrel Cannon Canyon and its grouped actors from verified Rev2 metadata."""
 import collections, json, math, sys
 from pathlib import Path
 
@@ -9,7 +9,13 @@ bonus_meta = []
 vectors = json.loads((base / "reference/player-states.json").read_text())[
     "cannonBaseTemplateVectors"
 ]
-records = r["levels"]["ReverbCave"]["spawnList"]["records"]
+top_level_records = r["levels"]["ReverbCave"]["spawnList"]["records"]
+# Append child actors so existing direct-actor indices remain stable.
+records = [*top_level_records, *[
+    {**child, "parentGroupOffset": parent["offset"]}
+    for parent in top_level_records
+    for child in parent.get("groupedSpawnList", {}).get("records", [])
+]]
 CAVE_COLUMNS = len(r["caveMetatiles"]["columns"])
 from reverb_start_floor import main as reverb_start_meta
 
@@ -75,6 +81,7 @@ def import_row(row, typ, extra=None):
             "kind": typ,
             "originalX": row["x"],
             "originalY": row["y"],
+            **({"parentGroupOffset": row["parentGroupOffset"]} if "parentGroupOffset" in row else {}),
             **(extra or {}),
         }
     )
@@ -85,6 +92,9 @@ for row in records:
     script = row.get("script", {})
     sid = script.get("spriteId")
     point = scale(row["x"], row["y"])
+    if cmd == 5 and "groupedSpawnList" in row:
+        import_row(row, "spawn-group", {"childOffsets": [c["offset"] for c in row["groupedSpawnList"]["records"]]})
+        continue
     typ = None
 
     if sid == 20 and cmd in (1, 2):
@@ -134,6 +144,13 @@ for row in records:
                     kind={5: "croc", 6: "armored", 25: "bee", 77: "beetle"}[sid],
                 )
             )
+            if sid == 25 and "parentGroupOffset" in row:
+                # Keep grouped hazards in their local encounter. Native Zinger
+                # trajectories are not yet emulated; the source anchor is exact.
+                raw = script.get("ramAssignments", {}).get("$0F25", 0)
+                signed = raw if raw < 0x8000 else raw - 0x10000
+                enemies[-1].update(min=point["x"]-.6, max=point["x"]+.6,
+                                   patrolSpeed=abs(signed)/256*60/32)
             typ = "enemy"
         elif sid in (14, 75, 79):
             enemies.append(
@@ -249,9 +266,10 @@ for formation in r["levels"]["ReverbCave"]["bananaFormations"]["records"]:
 
 compact = lambda x: json.dumps(x, separators=(",", ":"), ensure_ascii=False)
 s = '''import type { Level, Pickup, Platform, ItemCacheSpec, BreakableWallSpec, BonusRoomSpec, LevelDecor } from "./levels";
-import { terrainCellSNES as caveTerrainCellSNES } from "./originalCaveTerrain";
+import { L } from "../i18n/keys";
+import { terrainCellSNES as caveTerrainCellSNES } from "./canyonTerrain";
 /** Coordinates proven against USA Rev2 metadata; see reference/reverb-cave-notes.md.
- * Terrain uses exact ROM cave profiles in physics; presentation platforms are debug-only.
+ * Terrain uses the selected Jungle environment; cave names are legacy aliases.
  */
 const ROM_WORLD_X = 25472;
 const CAVE_COLUMNS = CAVE_COLUMN_COUNT;
@@ -286,8 +304,8 @@ export const ROM_REVERB: Level & {
   originalTerrain: "cave"; start: {x:number;y:number}; letterWord: "KONG";
 } = {
   id: 1,
-  name: "Barrel Cannon Canyon",
-  subtitle: "KONGO JUNGLE · CANYON",
+  name: L.levels.romCanyon.name,
+  subtitle: L.levels.romCanyon.subtitle,
   biome: "jungle",
   originalTerrain: "cave",
   start: {x:0,y:@@START_Y@@},
@@ -303,7 +321,7 @@ export const ROM_REVERB: Level & {
   bonusRooms,
   decors,
   finishZone,
-  tip: "Saute dans les tonneaux-canons, puis appuie sur Sauter pour décoller.",
+  tip: L.levels.romCanyon.tip,
 };
 export const ORIGINAL_REVERB_PROVENANCE = __PROVENANCE__ as const;
 '''

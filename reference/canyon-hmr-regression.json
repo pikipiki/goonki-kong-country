@@ -1,0 +1,15 @@
+{
+  "retained": {
+    "identity": true,
+    "updated": true,
+    "x": 18.75,
+    "cannon": 2
+  },
+  "shot": {
+    "x": 29.06890869140625,
+    "y": 9.03125,
+    "hp": 2,
+    "lives": 5
+  },
+  "errors": []
+}

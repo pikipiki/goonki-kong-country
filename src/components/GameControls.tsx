@@ -29,9 +29,15 @@ function ActionButton({
   chargeProgress?: number;
   sustained?: boolean;
 }) {
+  const { t } = useTranslation();
   const [down, setDown] = useState(false),
     timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const source = `screen-${action}`, toggleable=chargeable || sustained;
+  // Sustained screen actions latch in BOTH steering modes: no extra finger
+  // is required while jumping, steering or swimming.
+  const latched = toggleable;
+  const active = controls.sources.get(source) === action;
+  useEffect(() => { if (down !== active) setDown(active); }, [active, down]);
   useEffect(()=>{clearTimeout(timer.current);controls.set(source,action,false);setDown(false);},[clickMode,toggleable,controls,source,action]);
   useEffect(
     () => () => {
@@ -41,25 +47,25 @@ function ActionButton({
     [controls, source, action],
   );
   const release = () => {
-    if (clickMode && toggleable) return;
+    if (latched) return;
     setDown(false);
     if (!clickMode) controls.set(source, action, false);
   };
   return (
     <button
-      className={`game-button ${className} ${down ? "is-down" : ""}`}
+      className={`game-button ${className} ${active ? "is-down" : ""}`}
       aria-label={title}
       title={title}
-      aria-pressed={toggleable && clickMode ? down : undefined}
+      aria-pressed={latched ? active : undefined}
       onContextMenu={(e) => e.preventDefault()}
       onPointerDown={(e) => {
         e.preventDefault();
         e.currentTarget.setPointerCapture(e.pointerId);
-        const next = clickMode && toggleable ? !controls.input.held.has(action) : true;
+        const next = latched ? !active : true;
         setDown(next);
         controls.set(source, action, next);
         feedback();
-        if (clickMode && !toggleable) {
+        if (clickMode && !latched) {
           clearTimeout(timer.current);
           timer.current = setTimeout(
             () => controls.set(source, action, false),
@@ -76,7 +82,7 @@ function ActionButton({
       onLostPointerCapture={release}
       onClick={(e) => {
         if (e.detail === 0) {
-          if (toggleable && clickMode) {
+          if (latched) {
             const next = !controls.input.held.has(action);
             controls.set(source,action,next);setDown(next);return;
           }
@@ -88,7 +94,7 @@ function ActionButton({
         }
       }}
     >
-      {chargeable && <span className="charge-progress" role="progressbar" aria-label={title} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(chargeProgress*100)} style={{height:`${chargeProgress*100}%`}}/>}
+      {chargeable && <span className="charge-progress" role="progressbar" aria-label={t("chargePower")} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(chargeProgress*100)} style={{height:`${chargeProgress*100}%`}}/>}
       <span className="button-glyph" aria-hidden="true">
         {glyph}
       </span>
@@ -196,7 +202,7 @@ export function GameControls({
       <div className="controller-toolbar">
         <span className="controller-label">
           <i />{" "}
-          {clickMode ? t("clickModeHint") : t("touchModeHint")}
+          {game.mount?.kind === "rambi" || game.mount?.kind === "enguarde" ? t("tapChargeHint") : game.mount?.kind === "expresso" ? t("tapFlutterHint") : game.player.carry >= 0 ? t("tapCarryHint") : clickMode ? t("clickModeHint") : t("touchModeHint")}
         </span>
         <button
           className="input-mode"
@@ -299,8 +305,9 @@ export function GameControls({
           />
           <ActionButton
             controls={controls}
+            key={`action-${game.levelId}-${game.sceneRevision}-${game.player.mount}-${game.player.cannon >= 0}`}
             action="action"
-            title={game.player.cannon >= 0 ? t("fire") : game.mount?.kind === "enguarde" || game.mount?.kind === "rambi" ? game.player.mountCharge >= .65 ? t("release") : t("charge") : game.player.carry >= 0 ? t("throw") : t("action")}
+            title={game.player.cannon >= 0 ? t("fire") : game.mount?.kind === "enguarde" || game.mount?.kind === "rambi" ? game.player.mountCharge >= .65 ? t("launchCharge") : t("charge") : game.player.carry >= 0 ? t("throw") : t("action")}
             glyph="✦"
             className="action-button"
             chargeable={game.mount?.kind === "rambi" || game.mount?.kind === "enguarde"}
@@ -309,8 +316,9 @@ export function GameControls({
           />
           <ActionButton
             controls={controls}
+            key={`jump-${game.levelId}-${game.sceneRevision}-${game.player.mount}-${game.player.cannon >= 0}`}
             action="jump"
-            title={game.player.cannon >= 0 ? t("blastOff") : game.mount?.kind === "enguarde" ? t("dart") : game.mount?.kind === "expresso" ? t("flutter") : game.mount?.kind === "winky" ? t("leap") : game.level.biome === "lagoon" ? t("swim") : t("jump")}
+            title={game.player.cannon >= 0 ? t("blastOff") : game.mount?.kind === "enguarde" ? t("dart") : game.mount?.kind === "expresso" ? controls.input.held.has("jump") ? t("stopFlutter") : t("flutter") : game.mount?.kind === "winky" ? t("leap") : game.level.biome === "lagoon" ? t("swim") : t("jump")}
             glyph="↑"
             className="jump-button"
             sustained={game.mount?.kind === "expresso"}

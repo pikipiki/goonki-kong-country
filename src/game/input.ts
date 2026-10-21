@@ -23,16 +23,20 @@ export class Controls {
   input = emptyInput();
   sources = new Map<string, Key>();
   set(source: string, key: Key, down: boolean) {
+    const wasHeld = this.input.held.has(key);
     if (down) {
-      if (!this.input.held.has(key)) this.input.pressed.add(key);
       this.sources.set(source, key);
-    } else {
-      if (this.sources.get(source) === key) this.input.released.add(key);
-      this.sources.delete(source);
-    }
+      if (!wasHeld) {
+        this.input.pressed.add(key);
+        if (key === "action") this.input.tapAction = source === "screen-action";
+      }
+    } else this.sources.delete(source);
     this.input.held = new Set(this.sources.values());
+    // Releasing one finger must not release a key still held by another source.
+    if (wasHeld && !this.input.held.has(key)) this.input.released.add(key);
   }
   reset() {
+    this.input.tapAction = false;
     this.sources.clear();
     this.input.held.clear();
     this.input.pressed.clear();

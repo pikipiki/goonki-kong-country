@@ -10,6 +10,8 @@ const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console'
 const result=[];
 try {
   await page.goto(process.env.GAME_URL||'http://127.0.0.1:5174/');
+  await page.locator('.lang-select-input').selectOption('fr');
+  await page.waitForFunction(()=>document.documentElement.lang==='fr');
   await page.waitForFunction(()=>!!window.goonk);
   assert.equal(await page.evaluate(()=>window.goonk.save.unlocked),0);
   for(const [orientation,width,height] of [['portrait',390,844],['landscape',844,390]]) {

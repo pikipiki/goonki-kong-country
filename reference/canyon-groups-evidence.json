@@ -1,0 +1,223 @@
+{
+  "romSha256": "628147468c3539283197f58f03b94df49758a332831857481ea9cc31645f0527",
+  "route": "Barrel Cannon Canyon (entry0x17, level6)",
+  "directCannons": 36,
+  "groupedCannons": 14,
+  "totalCannons": 50,
+  "groups": [
+    {
+      "parentOffset": "0x3D997C",
+      "pointer": "$9BE4",
+      "header": {
+        "fileOffset": "0x3D9BE4",
+        "hiromAddress": "$FD9BE4",
+        "signature": "00 00 00 00 00 00 00 00"
+      },
+      "childRecords": [
+        {
+          "offset": "0x3D9BEC",
+          "spriteId": 56,
+          "originalX": 29071,
+          "originalY": 143,
+          "scriptPointer": "$C7B1",
+          "partial": false
+        },
+        {
+          "offset": "0x3D9BF4",
+          "spriteId": 56,
+          "originalX": 29248,
+          "originalY": 399,
+          "scriptPointer": "$C7CB",
+          "partial": false
+        },
+        {
+          "offset": "0x3D9BFC",
+          "spriteId": 56,
+          "originalX": 29248,
+          "originalY": 239,
+          "scriptPointer": "$C7E5",
+          "partial": false
+        }
+      ]
+    },
+    {
+      "parentOffset": "0x3D9984",
+      "pointer": "$9C0C",
+      "header": {
+        "fileOffset": "0x3D9C0C",
+        "hiromAddress": "$FD9C0C",
+        "signature": "00 00 00 00 00 00 00 00"
+      },
+      "childRecords": [
+        {
+          "offset": "0x3D9C14",
+          "spriteId": 56,
+          "originalX": 29464,
+          "originalY": 239,
+          "scriptPointer": "$C819",
+          "partial": false
+        },
+        {
+          "offset": "0x3D9C1C",
+          "spriteId": 56,
+          "originalX": 29464,
+          "originalY": 399,
+          "scriptPointer": "$C7FF",
+          "partial": false
+        }
+      ]
+    },
+    {
+      "parentOffset": "0x3D9AE4",
+      "pointer": "$9C2C",
+      "header": {
+        "fileOffset": "0x3D9C2C",
+        "hiromAddress": "$FD9C2C",
+        "signature": "00 00 00 00 00 00 00 00"
+      },
+      "childRecords": [
+        {
+          "offset": "0x3D9C34",
+          "spriteId": 56,
+          "originalX": 33168,
+          "originalY": 144,
+          "scriptPointer": "$C903",
+          "partial": false
+        },
+        {
+          "offset": "0x3D9C3C",
+          "spriteId": 25,
+          "originalX": 33240,
+          "originalY": 200,
+          "scriptPointer": "$9D71",
+          "partial": false
+        },
+        {
+          "offset": "0x3D9C44",
+          "spriteId": 56,
+          "originalX": 33312,
+          "originalY": 256,
+          "scriptPointer": "$C91D",
+          "partial": false
+        },
+        {
+          "offset": "0x3D9C4C",
+          "spriteId": 25,
+          "originalX": 33384,
+          "originalY": 200,
+          "scriptPointer": "$9D7F",
+          "partial": false
+        },
+        {
+          "offset": "0x3D9C54",
+          "spriteId": 56,
+          "originalX": 33456,
+          "originalY": 144,
+          "scriptPointer": "$C937",
+          "partial": false
+        }
+      ]
+    },
+    {
+      "parentOffset": "0x3D9B04",
+      "pointer": "$9C64",
+      "header": {
+        "fileOffset": "0x3D9C64",
+        "hiromAddress": "$FD9C64",
+        "signature": "00 00 00 00 00 00 00 00"
+      },
+      "childRecords": [
+        {
+          "offset": "0x3D9C6C",
+          "spriteId": 56,
+          "originalX": 33792,
+          "originalY": 116,
+          "scriptPointer": "$C985",
+          "partial": false
+        },
+        {
+          "offset": "0x3D9C74",
+          "spriteId": 25,
+          "originalX": 33836,
+          "originalY": 208,
+          "scriptPointer": "$9EBD",
+          "partial": false
+        },
+        {
+          "offset": "0x3D9C7C",
+          "spriteId": 56,
+          "originalX": 33836,
+          "originalY": 280,
+          "scriptPointer": "$C99F",
+          "partial": false
+        }
+      ]
+    },
+    {
+      "parentOffset": "0x3D9B0C",
+      "pointer": "$9C8C",
+      "header": {
+        "fileOffset": "0x3D9C8C",
+        "hiromAddress": "$FD9C8C",
+        "signature": "00 00 00 00 00 00 00 00"
+      },
+      "childRecords": [
+        {
+          "offset": "0x3D9C94",
+          "spriteId": 56,
+          "originalX": 33984,
+          "originalY": 280,
+          "scriptPointer": "$C9B9",
+          "partial": false
+        },
+        {
+          "offset": "0x3D9C9C",
+          "spriteId": 56,
+          "originalX": 34144,
+          "originalY": 232,
+          "scriptPointer": "$C9D3",
+          "partial": false
+        },
+        {
+          "offset": "0x3D9CA4",
+          "spriteId": 56,
+          "originalX": 34304,
+          "originalY": 264,
+          "scriptPointer": "$C9ED",
+          "partial": false
+        }
+      ]
+    },
+    {
+      "parentOffset": "0x3D9B44",
+      "pointer": "$9CB4",
+      "header": {
+        "fileOffset": "0x3D9CB4",
+        "hiromAddress": "$FD9CB4",
+        "signature": "00 00 00 00 00 00 00 00"
+      },
+      "childRecords": [
+        {
+          "offset": "0x3D9CBC",
+          "spriteId": 25,
+          "originalX": 34788,
+          "originalY": 328,
+          "scriptPointer": "$9ED3",
+          "partial": false
+        },
+        {
+          "offset": "0x3D9CC4",
+          "spriteId": 56,
+          "originalX": 34844,
+          "originalY": 232,
+          "scriptPointer": "$CA6F",
+          "partial": false
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Structural decoding of six observed command5 lists; not an emulator of native group activation timing.",
+    "Grouped Zinger trajectories remain an explicitly bounded browser adaptation."
+  ]
+}

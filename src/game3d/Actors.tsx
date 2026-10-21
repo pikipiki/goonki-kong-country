@@ -20,6 +20,9 @@ import type { Game, Enemy } from "../game/engine";
 const sphere = new SphereGeometry(1, 16, 12),
   box = new BoxGeometry(1, 1, 1),
   cylinder = new CylinderGeometry(0.45, 0.45, 0.95, 16),
+  cannonTube = new CylinderGeometry(0.45, 0.45, 0.95, 16, 1, true),
+  cannonBore = new CylinderGeometry(.385,.385,.025,16),
+  cone = new ConeGeometry(1,1,12),
   ring = new TorusGeometry(0.455, 0.035, 6, 24);
 function textTexture(text: string, color: string, bg?: string) {
   const c = document.createElement("canvas");
@@ -74,8 +77,8 @@ export function Barrel({
         ? "#568c72"
         : "#a47b46";
   return (
-    <group position={[0, 0.5, 0]}>
-      <mesh geometry={cylinder} castShadow>
+    <group position={[0, kind === "cannon" ? 0 : 0.5, 0]}>
+      <mesh geometry={kind === "cannon" ? cannonTube : cylinder} castShadow>
         <meshStandardMaterial color={color} roughness={0.85} />
       </mesh>
       {[-0.32, 0.32].map((y) => (
@@ -107,20 +110,17 @@ export function Barrel({
           <meshStandardMaterial color="#685336" />
         </mesh>
       ))}
-      <Label
-        text={
-          kind === "rescue"
-            ? "♥"
-            : kind === "checkpoint"
-              ? "✓"
-              : kind === "cannon"
-                ? "↗"
-                : "✦"
-        }
-        scale={0.55}
-        position={[0, 0, 0.48]}
-        color="#fff0c6"
-      />
+      {kind === "cannon" ? <>
+        <mesh geometry={cannonBore} position={[0,.36,0]}><meshStandardMaterial color="#10160f" roughness={1}/></mesh>
+        <mesh geometry={ring} position={[0,.48,0]} rotation={[Math.PI/2,0,0]}><meshStandardMaterial color="#d5b461" metalness={.4}/></mesh>
+        {/* Geometry follows local +Y, exactly like the barrel mouth. Sprites
+            billboard toward the camera and cannot indicate a rotated shot. */}
+        <group name="cannon-direction" position={[0,0,.5]}>
+          <mesh geometry={box} position={[0,-.03,0]} scale={[.065,.4,.035]}><meshBasicMaterial color="#fff0b0"/></mesh>
+          <mesh geometry={cone} position={[0,.22,0]} scale={[.18,.22,.04]}><meshBasicMaterial color="#fff0b0"/></mesh>
+        </group>
+      </> : <Label text={kind === "rescue" ? "♥" : kind === "checkpoint" ? "✓" : "✦"}
+        scale={.55} position={[0,0,.48]} color="#fff0c6"/>}
     </group>
   );
 }
@@ -188,16 +188,23 @@ function Pickups({ game }: { game: Game }) {
 }
 
 function BonusRoom({game,index}:{game:Game;index:number}) {
-  const root=useRef<Group>(null),room=game.level.bonusRooms![index];
-  const wall=game.level.breakableWalls![room.wallIndex];
+  const root=useRef<Group>(null),open=useRef<Group>(null),plug=useRef<Group>(null);
+  const room=game.level.bonusRooms![index],wall=game.level.breakableWalls![room.wallIndex];
   useFrame(()=>{
+    const completed=game.isBonusCompleted(index);
     if(root.current)root.current.visible=game.brokenWalls.has(room.wallIndex) && Math.abs(wall.x-game.player.x)<24;
+    if(open.current)open.current.visible=!completed;
+    if(plug.current)plug.current.visible=completed;
   });
-  return <group ref={root} name="bonus-door" position={[wall.x,wall.y,1.7]}>
+  return <group ref={root} name="bonus-door" userData={{roomIndex:index}} position={[wall.x,wall.y,1.7]}>
     <mesh geometry={box} position={[0,1.05,0]} scale={[1.45,2.1,.10]}><meshStandardMaterial color="#10170d" roughness={1}/></mesh>
     {[-.77,.77].map(x=><mesh key={x} geometry={box} position={[x,1.1,.1]} scale={[.16,2.3,.22]}><meshStandardMaterial color="#9b723d"/></mesh>)}
     <mesh geometry={box} position={[0,2.25,.1]} scale={[1.7,.2,.22]}><meshStandardMaterial color="#b79552"/></mesh>
-    <Label text="BONUS →" position={[0,2.65,.15]} scale={.32}/>
+    <group ref={open} name="open-bonus-entrance"><Label text="BONUS →" position={[0,2.65,.15]} scale={.32}/></group>
+    <group ref={plug} name="completed-bonus-plug" visible={false}>
+      {[0,1,2,3,4].map(i=><mesh key={i} geometry={box} position={[0,.22+i*.43,.16]} scale={[1.45,.41,.2]}><meshStandardMaterial color={i%2 ? "#70502f" : "#88613a"} roughness={1}/></mesh>)}
+      {[-1,1].map(side=><mesh key={side} geometry={box} position={[0,1.07,.3]} scale={[2.25,.16,.12]} rotation={[0,0,side*.85]}><meshStandardMaterial color="#b58b4d" roughness={1}/></mesh>)}
+    </group>
   </group>;
 }
 function BonusPickups({game}:{game:Game}) {
@@ -367,10 +374,14 @@ export const Actors = memo(function Actors({ game }: { game: Game }) {
       <ContactShadows game={game} />
       <Pickups game={game} />
       <BonusPickups game={game} />
+      {game.bonus && <group name="sealed-bonus-entrance" position={[0,0,1.72]}>
+        {[0,1,2,3,4,5,6].map(i=><mesh key={i} geometry={box} position={[0,.3+i*.48,0]} scale={[1.5,.43,.18]}><meshStandardMaterial color={i%2 ? "#70502f" : "#88613a"} roughness={1}/></mesh>)}
+        <mesh geometry={box} position={[0,1.7,.12]} scale={[1.55,.15,.16]} rotation={[0,0,.7]}><meshStandardMaterial color="#b58b4d"/></mesh>
+      </group>}
       <OriginalLevelProps game={game} />
       <group ref={barrels}>
         {level.barrels.map((b, i) => (
-          <group key={i} position={[b.x, b.y, 0]}>
+          <group key={i} name={b.kind === "cannon" ? "cannon" : "barrel"} userData={{barrelIndex:i}} position={[b.x, b.y, 0]}>
             <Barrel kind={b.kind} />
           </group>
         ))}

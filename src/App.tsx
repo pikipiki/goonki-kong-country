@@ -109,6 +109,12 @@ export function App() {
     } catch {}
     return new Game(readSave(saved));
   });
+  useEffect(() => {
+    // Fast Refresh retains this stateful instance. Refresh its methods as well,
+    // otherwise new terrain meshes can coexist with old collision closures.
+    if (Object.getPrototypeOf(game) !== Game.prototype)
+      Object.setPrototypeOf(game, Game.prototype);
+  }, [game, Game]);
   const [mapLevel, setMapLevel] = useState(0);
   const [controls] = useState(() => new Controls()),
     [audio] = useState(() => new AudioSystem());

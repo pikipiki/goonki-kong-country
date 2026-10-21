@@ -1,0 +1,3314 @@
+{
+  "inputOnly": true,
+  "enemyDamageEnabled": true,
+  "deaths": 0,
+  "final": {
+    "phase": "clear",
+    "time": 183.51666666670485,
+    "lives": 5,
+    "bananas": 38,
+    "player": {
+      "x": 92.48180555555552,
+      "y": 73.13061111111233,
+      "vx": 3.75,
+      "vy": 1.6370000000000005,
+      "facing": 1,
+      "grounded": false,
+      "active": 0,
+      "hp": 1,
+      "invincible": 0,
+      "roll": 0,
+      "rollJump": false,
+      "rollSpeed": 0,
+      "rollFacing": 1,
+      "rollChain": 0,
+      "rollAngle": 0,
+      "recentRun": 184.51666666670565,
+      "mount": -1,
+      "mountAttack": 0,
+      "mountCharge": 0,
+      "mountCharged": false,
+      "mountCooldown": 0,
+      "carry": -1,
+      "cannon": -1,
+      "cannonLock": -1,
+      "cannonTime": 0,
+      "launched": 0,
+      "cannonGravityDelay": 0,
+      "cannonControlDelay": 0,
+      "jumpDelay": 0,
+      "coyote": 0,
+      "buffer": 0
+    },
+    "animals": [
+      {
+        "x": 93.44194444444415,
+        "y": 21.669625225818386,
+        "kind": "enguarde",
+        "state": "idle",
+        "vx": 0,
+        "vy": 4,
+        "facing": 1,
+        "timer": 138.466666666669
+      },
+      {
+        "x": 39.75,
+        "y": 22.453125,
+        "kind": "enguarde",
+        "state": "crate",
+        "vx": 0,
+        "vy": 0,
+        "facing": 1,
+        "timer": 183.51666666670485
+      }
+    ],
+    "enemies": [
+      {
+        "x": 9.4125000000004,
+        "y": 0.8957571496896182,
+        "min": 4.5,
+        "max": 34.5,
+        "kind": "croc",
+        "romSpriteId": 85,
+        "patrolSpeed": 1.75,
+        "originY": 1.125,
+        "vx": -1.75,
+        "alive": true,
+        "hp": 1,
+        "vy": 0,
+        "timer": 8.04999999999998,
+        "hurt": 0,
+        "vulnerable": false,
+        "shootCooldown": 0
+      },
+      {
+        "x": 33.38333333333253,
+        "y": 1.603878311188873,
+        "min": 15.75,
+        "max": 45.75,
+        "kind": "croc",
+        "romSpriteId": 85,
+        "patrolSpeed": 1.75,
+        "originY": 1.125,
+        "vx": -1.75,
+        "alive": true,
+        "hp": 1,
+        "vy": 0,
+        "timer": 16.816666666666993,
+        "hurt": 0,
+        "vulnerable": false,
+        "shootCooldown": 0
+      },
+      {
+        "x": 36.85416666666694,
+        "y": 3.7446892144256063,
+        "min": 32.625,
+        "max": 62.625,
+        "kind": "croc",
+        "romSpriteId": 85,
+        "patrolSpeed": 1.75,
+        "originY": 3.75,
+        "vx": 1.75,
+        "alive": true,
+        "hp": 1,
+        "vy": 0,
+        "timer": 11.000000000000126,
+        "hurt": 0,
+        "vulnerable": false,
+        "shootCooldown": 0
+      },
+      {
+        "x": 33.75833333333236,
+        "y": 3.0759440492113437,
+        "min": 33.75,
+        "max": 63.75,
+        "kind": "croc",
+        "romSpriteId": 85,
+        "patrolSpeed": 1.75,
+        "originY": 2.625,
+        "vx": -1.75,
+        "alive": true,
+        "hp": 1,
+        "vy": 0,
+        "timer": 9.850000000000069,
+        "hurt": 0,
+        "vulnerable": false,
+        "shootCooldown": 0
+      },
+      {
+        "x": 61.31333333333336,
+        "y": 15.892055077506006,
+        "min": 47.0625,
+        "max": 77.0625,
+        "kind": "croc",
+        "romSpriteId": 87,
+        "patrolSpeed": 1.45,
+        "originY": 15.9375,
+        "vx": -1.45,
+        "alive": true,
+        "hp": 1,
+        "vy": 0,
+        "timer": 17.316666666666965,
+        "hurt": 0,
+        "vulnerable": false,
+        "shootCooldown": 0
+      },
+      {
+        "x": 92.24166666666696,
+        "y": 23.05721128701978,
+        "min": 72.75,
+        "max": 97.875,
+        "kind": "croc",
+        "romSpriteId": 85,
+        "patrolSpeed": 1.75,
+        "originY": 22.5,
+        "vx": -1.75,
+        "alive": true,
+        "hp": 1,
+        "vy": 0,
+        "timer": 16.683333333333668,
+        "hurt": 0,
+        "vulnerable": false,
+        "shootCooldown": 0
+      },
+      {
+        "x": 3.4358333333333313,
+        "y": 37.676513098462706,
+        "min": 0,
+        "max": 21.75,
+        "kind": "croc",
+        "romSpriteId": 83,
+        "patrolSpeed": 2.05,
+        "originY": 38.0625,
+        "vx": -2.05,
+        "alive": true,
+        "hp": 1,
+        "vy": 0,
+        "timer": 24.783333333333207,
+        "hurt": 0,
+        "vulnerable": false,
+        "shootCooldown": 0
+      },
+      {
+        "x": 8.150833333333331,
+        "y": 46.54430555478406,
+        "min": 0,
+        "max": 21.75,
+        "kind": "croc",
+        "romSpriteId": 83,
+        "patrolSpeed": 2.05,
+        "originY": 47.0625,
+        "vx": -2.05,
+        "alive": true,
+        "hp": 1,
+        "vy": 0,
+        "timer": 17.80000000000027,
+        "hurt": 0,
+        "vulnerable": false,
+        "shootCooldown": 0
+      },
+      {
+        "x": 16.851666666666546,
+        "y": 24.507902429184984,
+        "min": 4.125,
+        "max": 34.125,
+        "kind": "croc",
+        "romSpriteId": 84,
+        "patrolSpeed": 1.55,
+        "originY": 24.75,
+        "vx": -1.55,
+        "alive": true,
+        "hp": 1,
+        "vy": 0,
+        "timer": 28.066666666666354,
+        "hurt": 0,
+        "vulnerable": false,
+        "shootCooldown": 0
+      },
+      {
+        "x": 33.36500000000005,
+        "y": 31.841732125829722,
+        "min": 20.25,
+        "max": 50.25,
+        "kind": "croc",
+        "romSpriteId": 87,
+        "patrolSpeed": 1.45,
+        "originY": 32.25,
+        "vx": -1.45,
+        "alive": true,
+        "hp": 1,
+        "vy": 0,
+        "timer": 34.183333333332676,
+        "hurt": 0,
+        "vulnerable": false,
+        "shootCooldown": 0
+      },
+      {
+        "x": 38.60916666666645,
+        "y": 45.90013534135619,
+        "min": 21,
+        "max": 51,
+        "kind": "croc",
+        "romSpriteId": 84,
+        "patrolSpeed": 1.55,
+        "originY": 46.5,
+        "vx": -1.55,
+        "alive": true,
+        "hp": 1,
+        "vy": 0,
+        "timer": 8.65000000000001,
+        "hurt": 0,
+        "vulnerable": false,
+        "shootCooldown": 0
+      },
+      {
+        "x": 57.57500000000033,
+        "y": 43.238643193265084,
+        "min": 37.5,
+        "max": 67.5,
+        "kind": "croc",
+        "romSpriteId": 85,
+        "patrolSpeed": 1.75,
+        "originY": 43.125,
+        "vx": 1.75,
+        "alive": true,
+        "hp": 1,
+        "vy": 0,
+        "timer": 23.466666666666615,
+        "hurt": 0,
+        "vulnerable": false,
+        "shootCooldown": 0
+      },
+      {
+        "x": 50.83749999999955,
+        "y": 39.26169885314833,
+        "min": 42.75,
+        "max": 72.75,
+        "kind": "croc",
+        "romSpriteId": 85,
+        "patrolSpeed": 1.75,
+        "originY": 39,
+        "vx": 1.75,
+        "alive": true,
+        "hp": 1,
+        "vy": 0,
+        "timer": 28.499999999999662,
+        "hurt": 0,
+        "vulnerable": false,
+        "shootCooldown": 0
+      },
+      {
+        "x": 83.27916666666547,
+        "y": 37.82538467341548,
+        "min": 72.75,
+        "max": 97.875,
+        "kind": "croc",
+        "romSpriteId": 87,
+        "patrolSpeed": 1.45,
+        "originY": 37.775,
+        "vx": 1.45,
+        "alive": true,
+        "hp": 1,
+        "vy": 0,
+        "timer": 15.750000000000362,
+        "hurt": 0,
+        "vulnerable": false,
+        "shootCooldown": 0
+      },
+      {
+        "x": 26.362499999999866,
+        "y": 70.92700565800757,
+        "min": 9,
+        "max": 39,
+        "kind": "croc",
+        "romSpriteId": 85,
+        "patrolSpeed": 1.75,
+        "originY": 70.525,
+        "vx": -1.75,
+        "alive": true,
+        "hp": 1,
+        "vy": 0,
+        "timer": 19.216666666666857,
+        "hurt": 0,
+        "vulnerable": false,
+        "shootCooldown": 0
+      },
+      {
+        "x": 32.8041666666667,
+        "y": 66.30081787254404,
+        "min": 17.25,
+        "max": 47.25,
+        "kind": "croc",
+        "romSpriteId": 85,
+        "patrolSpeed": 1.75,
+        "originY": 65.978125,
+        "vx": 1.75,
+        "alive": true,
+        "hp": 1,
+        "vy": 0,
+        "timer": 25.98333333333314,
+        "hurt": 0,
+        "vulnerable": false,
+        "shootCooldown": 0
+      },
+      {
+        "x": 49.80416666666642,
+        "y": 73.56333356648089,
+        "min": 23.625,
+        "max": 53.625,
+        "kind": "croc",
+        "romSpriteId": 85,
+        "patrolSpeed": 1.75,
+        "originY": 73.11874999999999,
+        "vx": -1.75,
+        "alive": true,
+        "hp": 1,
+        "vy": 0,
+        "timer": 25.54999999999983,
+        "hurt": 0,
+        "vulnerable": false,
+        "shootCooldown": 0
+      },
+      {
+        "x": 36.17916666666551,
+        "y": 72.27598786953651,
+        "min": 24,
+        "max": 54,
+        "kind": "croc",
+        "romSpriteId": 85,
+        "patrolSpeed": 1.75,
+        "originY": 72.375,
+        "vx": -1.75,
+        "alive": true,
+        "hp": 1,
+        "vy": 0,
+        "timer": 18.766666666666882,
+        "hurt": 0,
+        "vulnerable": false,
+        "shootCooldown": 0
+      },
+      {
+        "x": 40.87499999999966,
+        "y": 68.9964405301783,
+        "min": 31.125,
+        "max": 61.125,
+        "kind": "croc",
+        "romSpriteId": 85,
+        "patrolSpeed": 1.75,
+        "originY": 68.625,
+        "vx": 1.75,
+        "alive": true,
+        "hp": 1,
+        "vy": 0,
+        "timer": 19.183333333333525,
+        "hurt": 0,
+        "vulnerable": false,
+        "shootCooldown": 0
+      },
+      {
+        "x": 56.09125000000006,
+        "y": 65.94968304122739,
+        "min": 44.53125,
+        "max": 68.53125,
+        "kind": "bee",
+        "romSpriteId": 97,
+        "patrolSpeed": 1.1,
+        "originY": 66.09375,
+        "vx": -1.1,
+        "alive": true,
+        "hp": 1,
+        "vy": 0,
+        "timer": 17.583333333333616,
+        "hurt": 0,
+        "vulnerable": false,
+        "shootCooldown": 0
+      },
+      {
+        "x": 60.954166666665024,
+        "y": 70.08893207469605,
+        "min": 55.5,
+        "max": 85.5,
+        "kind": "croc",
+        "romSpriteId": 87,
+        "patrolSpeed": 1.45,
+        "originY": 69.75,
+        "vx": -1.45,
+        "alive": true,
+        "hp": 1,
+        "vy": 0,
+        "timer": 6.583333333333315,
+        "hurt": 0,
+        "vulnerable": false,
+        "shootCooldown": 0
+      }
+    ],
+    "finish": {
+      "x": 94.875,
+      "y": 72,
+      "w": 4.800000000000001,
+      "h": 6.75
+    },
+    "toast": "Enguarde peut briser les blocs.",
+    "collected": [
+      38,
+      39,
+      43,
+      44,
+      45,
+      76,
+      77,
+      78,
+      75,
+      74,
+      73,
+      32,
+      33,
+      34,
+      28,
+      31,
+      29,
+      30,
+      35,
+      27,
+      26,
+      25,
+      24,
+      15,
+      14,
+      21,
+      22,
+      23,
+      18,
+      19,
+      20,
+      10,
+      16,
+      17,
+      41,
+      42,
+      46,
+      47
+    ],
+    "usedBarrels": [
+      3,
+      2
+    ],
+    "checkpoint": {
+      "x": 38.8125,
+      "y": 40.59375
+    }
+  },
+  "log": [
+    {
+      "type": "start",
+      "phase": "playing",
+      "time": 0.11666666666666665,
+      "lives": 5,
+      "bananas": 0,
+      "player": {
+        "x": 19.5,
+        "y": 1.0416666666666665,
+        "vx": 0,
+        "vy": -0.85,
+        "facing": 1,
+        "grounded": false,
+        "active": 0,
+        "hp": 2,
+        "invincible": 0,
+        "roll": 0,
+        "rollJump": false,
+        "rollSpeed": 0,
+        "rollFacing": 1,
+        "rollChain": 0,
+        "rollAngle": 0,
+        "recentRun": 1.1166666666666663,
+        "mount": -1,
+        "mountAttack": 0,
+        "mountCharge": 0,
+        "mountCharged": false,
+        "mountCooldown": 0,
+        "carry": -1,
+        "cannon": -1,
+        "cannonLock": -1,
+        "cannonTime": 0,
+        "launched": 0,
+        "cannonGravityDelay": 0,
+        "cannonControlDelay": 0,
+        "jumpDelay": 0,
+        "coyote": 0,
+        "buffer": 0
+      },
+      "animals": [
+        {
+          "x": 90,
+          "y": 7.453125,
+          "kind": "enguarde",
+          "state": "crate",
+          "vx": 0,
+          "vy": 0,
+          "facing": 1,
+          "timer": 0.11666666666666665
+        },
+        {
+          "x": 39.75,
+          "y": 22.453125,
+          "kind": "enguarde",
+          "state": "crate",
+          "vx": 0,
+          "vy": 0,
+          "facing": 1,
+          "timer": 0.11666666666666665
+        }
+      ],
+      "enemies": [
+        {
+          "x": 23.295833333333345,
+          "y": 1.263733083380579,
+          "min": 4.5,
+          "max": 34.5,
+          "kind": "croc",
+          "romSpriteId": 85,
+          "patrolSpeed": 1.75,
+          "originY": 1.125,
+          "vx": -1.75,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 0.11666666666666665,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 30.954166666666655,
+          "y": 1.263733083380579,
+          "min": 15.75,
+          "max": 45.75,
+          "kind": "croc",
+          "romSpriteId": 85,
+          "patrolSpeed": 1.75,
+          "originY": 1.125,
+          "vx": 1.75,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 0.11666666666666665,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 47.44999999999999,
+          "y": 3.8692015984770367,
+          "min": 32.625,
+          "max": 62.625,
+          "kind": "croc",
+          "romSpriteId": 85,
+          "patrolSpeed": 1.75,
+          "originY": 3.75,
+          "vx": -1.75,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 0.09999999999999999,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 48.92500000000001,
+          "y": 2.7442015984770367,
+          "min": 33.75,
+          "max": 63.75,
+          "kind": "croc",
+          "romSpriteId": 85,
+          "patrolSpeed": 1.75,
+          "originY": 2.625,
+          "vx": 1.75,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 0.09999999999999999,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 61.917500000000004,
+          "y": 16.056701598477037,
+          "min": 47.0625,
+          "max": 77.0625,
+          "kind": "croc",
+          "romSpriteId": 87,
+          "patrolSpeed": 1.45,
+          "originY": 15.9375,
+          "vx": -1.45,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 0.09999999999999999,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 87.75,
+          "y": 22.5,
+          "min": 72.75,
+          "max": 97.875,
+          "kind": "croc",
+          "romSpriteId": 85,
+          "patrolSpeed": 1.75,
+          "originY": 22.5,
+          "vx": 1.75,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 0,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 6.545,
+          "y": 38.181701598477034,
+          "min": 0,
+          "max": 21.75,
+          "kind": "croc",
+          "romSpriteId": 83,
+          "patrolSpeed": 2.05,
+          "originY": 38.0625,
+          "vx": -2.05,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 0.09999999999999999,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 6.75,
+          "y": 47.0625,
+          "min": 0,
+          "max": 21.75,
+          "kind": "croc",
+          "romSpriteId": 83,
+          "patrolSpeed": 2.05,
+          "originY": 47.0625,
+          "vx": 2.05,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 0,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 18.96999999999999,
+          "y": 24.869201598477037,
+          "min": 4.125,
+          "max": 34.125,
+          "kind": "croc",
+          "romSpriteId": 84,
+          "patrolSpeed": 1.55,
+          "originY": 24.75,
+          "vx": -1.55,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 0.09999999999999999,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 35.394999999999996,
+          "y": 32.369201598477034,
+          "min": 20.25,
+          "max": 50.25,
+          "kind": "croc",
+          "romSpriteId": 87,
+          "patrolSpeed": 1.45,
+          "originY": 32.25,
+          "vx": 1.45,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 0.09999999999999999,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 36,
+          "y": 46.5,
+          "min": 21,
+          "max": 51,
+          "kind": "croc",
+          "romSpriteId": 84,
+          "patrolSpeed": 1.55,
+          "originY": 46.5,
+          "vx": -1.55,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 0,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 52.5,
+          "y": 43.125,
+          "min": 37.5,
+          "max": 67.5,
+          "kind": "croc",
+          "romSpriteId": 85,
+          "patrolSpeed": 1.75,
+          "originY": 43.125,
+          "vx": 1.75,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 0,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 57.633333333333326,
+          "y": 39.07976317357339,
+          "min": 42.75,
+          "max": 72.75,
+          "kind": "croc",
+          "romSpriteId": 85,
+          "patrolSpeed": 1.75,
+          "originY": 39,
+          "vx": -1.75,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 0.06666666666666667,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 87.75,
+          "y": 37.775,
+          "min": 72.75,
+          "max": 97.875,
+          "kind": "croc",
+          "romSpriteId": 87,
+          "patrolSpeed": 1.45,
+          "originY": 37.775,
+          "vx": 1.45,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 0,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 24,
+          "y": 70.525,
+          "min": 9,
+          "max": 39,
+          "kind": "croc",
+          "romSpriteId": 85,
+          "patrolSpeed": 1.75,
+          "originY": 70.525,
+          "vx": -1.75,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 0,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 32.25,
+          "y": 65.978125,
+          "min": 17.25,
+          "max": 47.25,
+          "kind": "croc",
+          "romSpriteId": 85,
+          "patrolSpeed": 1.75,
+          "originY": 65.978125,
+          "vx": 1.75,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 0,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 38.625,
+          "y": 73.11874999999999,
+          "min": 23.625,
+          "max": 53.625,
+          "kind": "croc",
+          "romSpriteId": 85,
+          "patrolSpeed": 1.75,
+          "originY": 73.11874999999999,
+          "vx": -1.75,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 0,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 39,
+          "y": 72.375,
+          "min": 24,
+          "max": 54,
+          "kind": "croc",
+          "romSpriteId": 85,
+          "patrolSpeed": 1.75,
+          "originY": 72.375,
+          "vx": 1.75,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 0,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 46.125,
+          "y": 68.625,
+          "min": 31.125,
+          "max": 61.125,
+          "kind": "croc",
+          "romSpriteId": 85,
+          "patrolSpeed": 1.75,
+          "originY": 68.625,
+          "vx": -1.75,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 0,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 56.53125,
+          "y": 66.09375,
+          "min": 44.53125,
+          "max": 68.53125,
+          "kind": "bee",
+          "romSpriteId": 97,
+          "patrolSpeed": 1.1,
+          "originY": 66.09375,
+          "vx": 1.1,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 0,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 70.5,
+          "y": 69.75,
+          "min": 55.5,
+          "max": 85.5,
+          "kind": "croc",
+          "romSpriteId": 87,
+          "patrolSpeed": 1.45,
+          "originY": 69.75,
+          "vx": -1.45,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 0,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        }
+      ],
+      "finish": {
+        "x": 94.875,
+        "y": 72,
+        "w": 4.800000000000001,
+        "h": 6.75
+      },
+      "toast": "Nage dans toutes les directions. Libère Enguarde et utilise Action pour son rostre.",
+      "collected": [],
+      "usedBarrels": [],
+      "checkpoint": {
+        "x": 19.5,
+        "y": 1.125
+      }
+    },
+    {
+      "tick": 0,
+      "time": 0.11666666666666665,
+      "lives": 5,
+      "hp": 2,
+      "x": 19.5,
+      "y": 1.0416666666666665,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": []
+    },
+    {
+      "tick": 10,
+      "time": 4.166666666666657,
+      "lives": 5,
+      "hp": 2,
+      "x": 20.237499999999997,
+      "y": 2.150577777777776,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft"
+      ]
+    },
+    {
+      "tick": 20,
+      "time": 5.316666666666653,
+      "lives": 5,
+      "hp": 2,
+      "x": 20.867777777777803,
+      "y": 3.6107499999999977,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft"
+      ]
+    },
+    {
+      "tick": 30,
+      "time": 6.483333333333316,
+      "lives": 5,
+      "hp": 2,
+      "x": 22.91527777777783,
+      "y": 4.348169444444433,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowUp",
+        "ArrowLeft"
+      ]
+    },
+    {
+      "tick": 40,
+      "time": 7.666666666666645,
+      "lives": 5,
+      "hp": 2,
+      "x": 24.676805555555617,
+      "y": 4.6541222222221945,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 50,
+      "time": 8.833333333333352,
+      "lives": 5,
+      "hp": 2,
+      "x": 28.03208333333339,
+      "y": 3.874477777777741,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight",
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 60,
+      "time": 10.033333333333411,
+      "lives": 5,
+      "hp": 2,
+      "x": 32.53208333333339,
+      "y": 3.9747222222221748,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 70,
+      "time": 11.216666666666804,
+      "lives": 5,
+      "hp": 2,
+      "x": 36.96958333333339,
+      "y": 4.172294444444392,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 80,
+      "time": 12.56666666666687,
+      "lives": 5,
+      "hp": 2,
+      "x": 41.62041666666673,
+      "y": 4.280844444444383,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowUp",
+        "ArrowLeft"
+      ]
+    },
+    {
+      "tick": 90,
+      "time": 13.783333333333598,
+      "lives": 5,
+      "hp": 1,
+      "x": 43.825972222222234,
+      "y": 4.828227777777716,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": []
+    },
+    {
+      "tick": 100,
+      "time": 14.983333333333658,
+      "lives": 5,
+      "hp": 1,
+      "x": 44.09986111111117,
+      "y": 3.9051333333332647,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft"
+      ]
+    },
+    {
+      "tick": 110,
+      "time": 16.216666666667027,
+      "lives": 5,
+      "hp": 1,
+      "x": 44.44597222222227,
+      "y": 6.558922222222156,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 120,
+      "time": 17.45000000000029,
+      "lives": 5,
+      "hp": 1,
+      "x": 46.908194444444504,
+      "y": 6.858702777777704,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 130,
+      "time": 18.70000000000022,
+      "lives": 5,
+      "hp": 1,
+      "x": 48.78166666666674,
+      "y": 7.8152388888888025,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 140,
+      "time": 20.000000000000146,
+      "lives": 5,
+      "hp": 1,
+      "x": 49.51916666666672,
+      "y": 11.78453888888877,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 150,
+      "time": 21.26666666666674,
+      "lives": 5,
+      "hp": 1,
+      "x": 49.51916666666672,
+      "y": 17.832027777777622,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 160,
+      "time": 22.583333333333332,
+      "lives": 5,
+      "hp": 1,
+      "x": 50.421527777777825,
+      "y": 19.05538888888873,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight",
+        "ArrowDown"
+      ]
+    },
+    {
+      "tick": 170,
+      "time": 23.866666666666593,
+      "lives": 5,
+      "hp": 1,
+      "x": 52.59750000000004,
+      "y": 19.493505555555394,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight",
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 180,
+      "time": 25.249999999999847,
+      "lives": 5,
+      "hp": 1,
+      "x": 57.78500000000004,
+      "y": 19.46809999999984,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight",
+        "ArrowDown"
+      ]
+    },
+    {
+      "tick": 190,
+      "time": 26.466666666666445,
+      "lives": 5,
+      "hp": 1,
+      "x": 62.34750000000004,
+      "y": 19.60636666666648,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 200,
+      "time": 27.683333333333042,
+      "lives": 5,
+      "hp": 1,
+      "x": 63.592083333333406,
+      "y": 22.598927777777565,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft",
+        "ArrowDown"
+      ]
+    },
+    {
+      "tick": 210,
+      "time": 28.883333333332974,
+      "lives": 5,
+      "hp": 1,
+      "x": 64.87361111111117,
+      "y": 24.28339999999978,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 220,
+      "time": 30.083333333332906,
+      "lives": 5,
+      "hp": 1,
+      "x": 69.3444444444445,
+      "y": 23.972544444444225,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight",
+        "ArrowDown"
+      ]
+    },
+    {
+      "tick": 230,
+      "time": 31.283333333332838,
+      "lives": 5,
+      "hp": 1,
+      "x": 73.76527777777784,
+      "y": 23.825222222221953,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 240,
+      "time": 32.49999999999944,
+      "lives": 5,
+      "hp": 1,
+      "x": 74.00277777777787,
+      "y": 21.155233333333047,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowDown"
+      ]
+    },
+    {
+      "tick": 250,
+      "time": 33.716666666666036,
+      "lives": 5,
+      "hp": 1,
+      "x": 75.82902777777785,
+      "y": 19.773741666666332,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight",
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 260,
+      "time": 34.88333333333264,
+      "lives": 5,
+      "hp": 1,
+      "x": 80.20402777777785,
+      "y": 20.028019444444084,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight",
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 270,
+      "time": 35.93333333333258,
+      "lives": 5,
+      "hp": 1,
+      "x": 84.14152777777785,
+      "y": 20.08844722222182,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 280,
+      "time": 37.13333333333251,
+      "lives": 5,
+      "hp": 1,
+      "x": 86.7362500000001,
+      "y": 19.36841388888841,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight",
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 290,
+      "time": 38.18333333333245,
+      "lives": 5,
+      "hp": 1,
+      "x": 86.99958333333345,
+      "y": 15.777108333332833,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowDown"
+      ]
+    },
+    {
+      "tick": 300,
+      "time": 39.21666666666572,
+      "lives": 5,
+      "hp": 1,
+      "x": 86.99958333333345,
+      "y": 11.437108333332816,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowDown"
+      ]
+    },
+    {
+      "tick": 310,
+      "time": 40.249999999999,
+      "lives": 5,
+      "hp": 1,
+      "x": 88.32194444444454,
+      "y": 9.77916388888837,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight",
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 320,
+      "time": 41.316666666665604,
+      "lives": 5,
+      "hp": 1,
+      "x": 89.59777777777788,
+      "y": 8.973125000000007,
+      "mount": 0,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 330,
+      "time": 42.366666666665544,
+      "lives": 5,
+      "hp": 1,
+      "x": 87.6033333333334,
+      "y": 10.439791666666677,
+      "mount": 0,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight",
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 340,
+      "time": 43.39999999999882,
+      "lives": 5,
+      "hp": 1,
+      "x": 86.90861111111118,
+      "y": 13.486458333333362,
+      "mount": 0,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 350,
+      "time": 44.433333333332094,
+      "lives": 5,
+      "hp": 1,
+      "x": 86.90861111111118,
+      "y": 18.65312500000001,
+      "mount": 0,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 360,
+      "time": 45.483333333332034,
+      "lives": 5,
+      "hp": 1,
+      "x": 86.90861111111118,
+      "y": 22.42134722222219,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 370,
+      "time": 46.54999999999864,
+      "lives": 5,
+      "hp": 1,
+      "x": 86.90861111111118,
+      "y": 27.51396944444438,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 380,
+      "time": 47.63333333333191,
+      "lives": 5,
+      "hp": 1,
+      "x": 86.90861111111118,
+      "y": 32.68616388888882,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 390,
+      "time": 48.899999999998506,
+      "lives": 5,
+      "hp": 1,
+      "x": 86.49250000000008,
+      "y": 36.52806944444452,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": []
+    },
+    {
+      "tick": 400,
+      "time": 50.033333333331775,
+      "lives": 5,
+      "hp": 1,
+      "x": 85.2322222222223,
+      "y": 37.79639166666674,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft"
+      ]
+    },
+    {
+      "tick": 410,
+      "time": 51.18333333333171,
+      "lives": 5,
+      "hp": 1,
+      "x": 83.98083333333341,
+      "y": 40.85755277777796,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 420,
+      "time": 52.333333333331645,
+      "lives": 5,
+      "hp": 1,
+      "x": 83.98083333333341,
+      "y": 46.348036111111504,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 430,
+      "time": 53.499999999998245,
+      "lives": 5,
+      "hp": 1,
+      "x": 80.07000000000008,
+      "y": 46.44175277777815,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft",
+        "ArrowDown"
+      ]
+    },
+    {
+      "tick": 440,
+      "time": 54.76666666666484,
+      "lives": 5,
+      "hp": 2,
+      "x": 75.32000000000008,
+      "y": 46.42841944444481,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft"
+      ]
+    },
+    {
+      "tick": 450,
+      "time": 56.0499999999981,
+      "lives": 5,
+      "hp": 2,
+      "x": 72.01027777777784,
+      "y": 45.00835277777809,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowDown"
+      ]
+    },
+    {
+      "tick": 460,
+      "time": 57.36666666666469,
+      "lives": 5,
+      "hp": 2,
+      "x": 72.01027777777784,
+      "y": 39.47835277777807,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowDown"
+      ]
+    },
+    {
+      "tick": 470,
+      "time": 58.74999999999795,
+      "lives": 5,
+      "hp": 2,
+      "x": 70.97444444444452,
+      "y": 38.43642500000029,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft",
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 480,
+      "time": 60.1333333333312,
+      "lives": 5,
+      "hp": 2,
+      "x": 70.13111111111117,
+      "y": 37.67953055555583,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 490,
+      "time": 61.64999999999778,
+      "lives": 5,
+      "hp": 2,
+      "x": 67.52638888888895,
+      "y": 38.03226388888914,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": []
+    },
+    {
+      "tick": 500,
+      "time": 63.06666666666437,
+      "lives": 5,
+      "hp": 2,
+      "x": 66.00722222222228,
+      "y": 38.53626944444466,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowDown"
+      ]
+    },
+    {
+      "tick": 510,
+      "time": 64.66666666666428,
+      "lives": 5,
+      "hp": 2,
+      "x": 66.16555555555561,
+      "y": 38.659375000000225,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft",
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 520,
+      "time": 66.08333333333087,
+      "lives": 5,
+      "hp": 2,
+      "x": 65.32583333333338,
+      "y": 39.524919444444684,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight",
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 530,
+      "time": 67.46666666666412,
+      "lives": 5,
+      "hp": 2,
+      "x": 64.8680555555556,
+      "y": 40.41416944444467,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowUp",
+        "ArrowLeft"
+      ]
+    },
+    {
+      "tick": 540,
+      "time": 68.86666666666405,
+      "lives": 5,
+      "hp": 2,
+      "x": 64.1841666666667,
+      "y": 40.797913888889106,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 550,
+      "time": 70.21666666666397,
+      "lives": 5,
+      "hp": 2,
+      "x": 64.50000000000004,
+      "y": 42.17357500000024,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft",
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 560,
+      "time": 71.58333333333056,
+      "lives": 5,
+      "hp": 2,
+      "x": 59.51694444444449,
+      "y": 41.98135277777794,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft"
+      ]
+    },
+    {
+      "tick": 570,
+      "time": 73.04999999999714,
+      "lives": 5,
+      "hp": 2,
+      "x": 55.082222222222256,
+      "y": 41.64798611111125,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": []
+    },
+    {
+      "tick": 580,
+      "time": 74.41666666666373,
+      "lives": 5,
+      "hp": 2,
+      "x": 55.12777777777782,
+      "y": 41.72290833333344,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowDown"
+      ]
+    },
+    {
+      "tick": 590,
+      "time": 75.83333333333032,
+      "lives": 5,
+      "hp": 2,
+      "x": 55.331944444444474,
+      "y": 41.200475000000104,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 600,
+      "time": 77.21666666666357,
+      "lives": 5,
+      "hp": 2,
+      "x": 54.49722222222226,
+      "y": 41.0179083333334,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight",
+        "ArrowDown"
+      ]
+    },
+    {
+      "tick": 610,
+      "time": 78.61666666666349,
+      "lives": 5,
+      "hp": 2,
+      "x": 54.86833333333337,
+      "y": 41.22038055555561,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft"
+      ]
+    },
+    {
+      "tick": 620,
+      "time": 80.01666666666341,
+      "lives": 5,
+      "hp": 2,
+      "x": 53.49722222222226,
+      "y": 39.820947222222244,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight",
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 630,
+      "time": 81.43333333333,
+      "lives": 5,
+      "hp": 2,
+      "x": 50.908611111111156,
+      "y": 40.46930833333335,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 640,
+      "time": 82.86666666666325,
+      "lives": 5,
+      "hp": 2,
+      "x": 48.34277777777781,
+      "y": 41.18805833333339,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft"
+      ]
+    },
+    {
+      "tick": 650,
+      "time": 84.28333333332984,
+      "lives": 5,
+      "hp": 2,
+      "x": 43.03027777777781,
+      "y": 40.45391388888895,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft",
+        "ArrowDown"
+      ]
+    },
+    {
+      "tick": 660,
+      "time": 85.81666666666308,
+      "lives": 5,
+      "hp": 2,
+      "x": 37.28027777777781,
+      "y": 40.41249722222227,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft",
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 670,
+      "time": 87.23333333332967,
+      "lives": 5,
+      "hp": 2,
+      "x": 34.94416666666669,
+      "y": 37.69051388888889,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowDown",
+        "ArrowLeft"
+      ]
+    },
+    {
+      "tick": 680,
+      "time": 88.66666666666292,
+      "lives": 5,
+      "hp": 2,
+      "x": 34.428055555555574,
+      "y": 33.61759166666665,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 690,
+      "time": 90.0833333333295,
+      "lives": 5,
+      "hp": 2,
+      "x": 36.19500000000002,
+      "y": 33.39398611111109,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 700,
+      "time": 91.49999999999609,
+      "lives": 5,
+      "hp": 2,
+      "x": 33.55305555555559,
+      "y": 32.95572499999998,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowUp",
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 710,
+      "time": 92.89999999999601,
+      "lives": 5,
+      "hp": 2,
+      "x": 34.120277777777815,
+      "y": 32.5337944444444,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft",
+        "ArrowDown"
+      ]
+    },
+    {
+      "tick": 720,
+      "time": 94.29999999999593,
+      "lives": 5,
+      "hp": 2,
+      "x": 33.08055555555559,
+      "y": 32.19670277777769,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft",
+        "ArrowDown"
+      ]
+    },
+    {
+      "tick": 730,
+      "time": 95.64999999999586,
+      "lives": 5,
+      "hp": 2,
+      "x": 32.767222222222244,
+      "y": 30.943594444444336,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 740,
+      "time": 97.14999999999577,
+      "lives": 5,
+      "hp": 2,
+      "x": 33.534027777777794,
+      "y": 31.531441666666545,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowDown"
+      ]
+    },
+    {
+      "tick": 750,
+      "time": 98.48333333332903,
+      "lives": 5,
+      "hp": 2,
+      "x": 29.82347222222225,
+      "y": 31.31554166666649,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 760,
+      "time": 99.79999999999562,
+      "lives": 5,
+      "hp": 2,
+      "x": 30.36125,
+      "y": 27.532486111110916,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowDown",
+        "ArrowLeft"
+      ]
+    },
+    {
+      "tick": 770,
+      "time": 101.04999999999555,
+      "lives": 5,
+      "hp": 2,
+      "x": 29.21624999999996,
+      "y": 24.095902777777567,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 780,
+      "time": 102.31666666666214,
+      "lives": 5,
+      "hp": 2,
+      "x": 29.286249999999967,
+      "y": 22.82661944444421,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowUp",
+        "ArrowLeft"
+      ]
+    },
+    {
+      "tick": 790,
+      "time": 103.58333333332874,
+      "lives": 5,
+      "hp": 2,
+      "x": 28.13569444444437,
+      "y": 22.468236111110837,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowDown",
+        "ArrowLeft"
+      ]
+    },
+    {
+      "tick": 800,
+      "time": 104.84999999999533,
+      "lives": 5,
+      "hp": 2,
+      "x": 25.488055555555462,
+      "y": 23.29506111111084,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft"
+      ]
+    },
+    {
+      "tick": 810,
+      "time": 106.09999999999526,
+      "lives": 5,
+      "hp": 2,
+      "x": 24.46777777777764,
+      "y": 24.35899999999969,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 820,
+      "time": 107.36666666666186,
+      "lives": 5,
+      "hp": 2,
+      "x": 23.246944444444274,
+      "y": 24.456477777777454,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 830,
+      "time": 108.76666666666178,
+      "lives": 5,
+      "hp": 2,
+      "x": 23.08861111111093,
+      "y": 23.617124999999632,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 840,
+      "time": 110.0166666666617,
+      "lives": 5,
+      "hp": 2,
+      "x": 23.828611111110895,
+      "y": 24.936163888888483,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft",
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 850,
+      "time": 111.46666666666162,
+      "lives": 5,
+      "hp": 2,
+      "x": 22.338055555555307,
+      "y": 25.92955833333289,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight",
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 860,
+      "time": 112.76666666666155,
+      "lives": 5,
+      "hp": 2,
+      "x": 22.398333333333035,
+      "y": 28.109369444443985,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft"
+      ]
+    },
+    {
+      "tick": 870,
+      "time": 114.08333333332814,
+      "lives": 5,
+      "hp": 2,
+      "x": 17.466111111110813,
+      "y": 27.833230555555026,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft",
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 880,
+      "time": 115.38333333332807,
+      "lives": 5,
+      "hp": 2,
+      "x": 12.591111111110813,
+      "y": 28.174513888888313,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft"
+      ]
+    },
+    {
+      "tick": 890,
+      "time": 116.64999999999466,
+      "lives": 5,
+      "hp": 2,
+      "x": 9.57805555555526,
+      "y": 28.62815833333272,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft"
+      ]
+    },
+    {
+      "tick": 900,
+      "time": 117.94999999999459,
+      "lives": 5,
+      "hp": 2,
+      "x": 9.130555555555256,
+      "y": 29.19981388888822,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": []
+    },
+    {
+      "tick": 910,
+      "time": 119.24999999999451,
+      "lives": 5,
+      "hp": 2,
+      "x": 8.59666666666637,
+      "y": 29.836761111110402,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft"
+      ]
+    },
+    {
+      "tick": 920,
+      "time": 120.53333333332777,
+      "lives": 5,
+      "hp": 2,
+      "x": 7.633888888888598,
+      "y": 29.881488888888107,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft"
+      ]
+    },
+    {
+      "tick": 930,
+      "time": 121.99999999999436,
+      "lives": 5,
+      "hp": 2,
+      "x": 7.755833333333045,
+      "y": 36.129933333332694,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowUp",
+        "ArrowLeft"
+      ]
+    },
+    {
+      "tick": 940,
+      "time": 123.38333333332761,
+      "lives": 5,
+      "hp": 2,
+      "x": 7.929166666666379,
+      "y": 36.74623888888825,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 950,
+      "time": 124.78333333332753,
+      "lives": 5,
+      "hp": 2,
+      "x": 7.80166666666638,
+      "y": 37.16020555555489,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 960,
+      "time": 126.18333333332745,
+      "lives": 5,
+      "hp": 2,
+      "x": 9.046111111110822,
+      "y": 37.95408333333265,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 970,
+      "time": 127.59999999999404,
+      "lives": 5,
+      "hp": 2,
+      "x": 14.358611111110822,
+      "y": 37.444172222221525,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight",
+        "ArrowDown"
+      ]
+    },
+    {
+      "tick": 980,
+      "time": 129.01666666666148,
+      "lives": 5,
+      "hp": 2,
+      "x": 15.201944444444157,
+      "y": 42.837972222221715,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowUp",
+        "ArrowLeft"
+      ]
+    },
+    {
+      "tick": 990,
+      "time": 130.34999999999587,
+      "lives": 5,
+      "hp": 2,
+      "x": 14.876666666666388,
+      "y": 45.764894444444025,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft",
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 1000,
+      "time": 131.69999999999695,
+      "lives": 5,
+      "hp": 2,
+      "x": 14.950277777777494,
+      "y": 46.071194444444025,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight",
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 1010,
+      "time": 133.1499999999981,
+      "lives": 5,
+      "hp": 2,
+      "x": 12.30888888888861,
+      "y": 46.47303333333292,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft",
+        "ArrowDown"
+      ]
+    },
+    {
+      "tick": 1020,
+      "time": 134.41666666666578,
+      "lives": 5,
+      "hp": 2,
+      "x": 8.667222222221941,
+      "y": 47.36817222222181,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 1030,
+      "time": 135.70000000000013,
+      "lives": 5,
+      "hp": 2,
+      "x": 8.867499999999723,
+      "y": 47.47467777777733,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft"
+      ]
+    },
+    {
+      "tick": 1040,
+      "time": 136.98333333333449,
+      "lives": 5,
+      "hp": 2,
+      "x": 7.819166666666389,
+      "y": 49.000261111110675,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft",
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 1050,
+      "time": 138.26666666666884,
+      "lives": 5,
+      "hp": 2,
+      "x": 7.197222222221939,
+      "y": 55.12732222222202,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowUp",
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 1060,
+      "time": 139.5500000000032,
+      "lives": 5,
+      "hp": 2,
+      "x": 7.578888888888606,
+      "y": 61.254383333333365,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 1070,
+      "time": 140.8000000000042,
+      "lives": 5,
+      "hp": 2,
+      "x": 7.578888888888606,
+      "y": 67.22230000000026,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 1080,
+      "time": 142.0333333333385,
+      "lives": 5,
+      "hp": 2,
+      "x": 8.035694444444163,
+      "y": 68.65389444444483,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": []
+    },
+    {
+      "tick": 1090,
+      "time": 143.2833333333395,
+      "lives": 5,
+      "hp": 2,
+      "x": 9.746805555555277,
+      "y": 68.94542222222263,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight",
+        "ArrowDown"
+      ]
+    },
+    {
+      "tick": 1100,
+      "time": 144.5166666666738,
+      "lives": 5,
+      "hp": 2,
+      "x": 14.371805555555277,
+      "y": 68.94542222222263,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight",
+        "ArrowDown"
+      ]
+    },
+    {
+      "tick": 1110,
+      "time": 145.96666666667497,
+      "lives": 5,
+      "hp": 2,
+      "x": 19.809305555555277,
+      "y": 69.10536666666718,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 1120,
+      "time": 147.28333333334268,
+      "lives": 5,
+      "hp": 2,
+      "x": 21.8756944444442,
+      "y": 68.90762222222277,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft"
+      ]
+    },
+    {
+      "tick": 1130,
+      "time": 148.55000000001036,
+      "lives": 5,
+      "hp": 2,
+      "x": 21.191805555555355,
+      "y": 67.5977388888895,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight",
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 1140,
+      "time": 149.80000000001135,
+      "lives": 5,
+      "hp": 2,
+      "x": 22.455416666666487,
+      "y": 67.66232222222283,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": []
+    },
+    {
+      "tick": 1150,
+      "time": 151.11666666667907,
+      "lives": 5,
+      "hp": 2,
+      "x": 26.866249999999816,
+      "y": 67.32975555555609,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 1160,
+      "time": 152.45000000001346,
+      "lives": 5,
+      "hp": 2,
+      "x": 28.87874999999982,
+      "y": 67.8965388888894,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight",
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 1170,
+      "time": 153.78333333334785,
+      "lives": 5,
+      "hp": 2,
+      "x": 30.385972222222044,
+      "y": 68.59178333333391,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft"
+      ]
+    },
+    {
+      "tick": 1180,
+      "time": 155.11666666668225,
+      "lives": 5,
+      "hp": 2,
+      "x": 29.87874999999982,
+      "y": 68.70888333333389,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight",
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 1190,
+      "time": 156.46666666668332,
+      "lives": 5,
+      "hp": 2,
+      "x": 31.448472222222044,
+      "y": 69.98120000000063,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft"
+      ]
+    },
+    {
+      "tick": 1200,
+      "time": 157.95000000001784,
+      "lives": 5,
+      "hp": 2,
+      "x": 31.491249999999816,
+      "y": 69.208572222223,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight",
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 1210,
+      "time": 159.28333333335223,
+      "lives": 5,
+      "hp": 2,
+      "x": 36.491249999999816,
+      "y": 69.74085555555628,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 1220,
+      "time": 160.61666666668663,
+      "lives": 5,
+      "hp": 2,
+      "x": 41.491249999999816,
+      "y": 70.6782833333341,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 1230,
+      "time": 161.9666666666877,
+      "lives": 5,
+      "hp": 2,
+      "x": 43.38236111111093,
+      "y": 70.39010555555643,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowLeft"
+      ]
+    },
+    {
+      "tick": 1240,
+      "time": 163.33333333335545,
+      "lives": 5,
+      "hp": 2,
+      "x": 42.97013888888869,
+      "y": 69.62258888888992,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight",
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 1250,
+      "time": 164.66666666668985,
+      "lives": 5,
+      "hp": 2,
+      "x": 42.84263888888871,
+      "y": 70.69835000000106,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 1260,
+      "time": 166.00000000002424,
+      "lives": 5,
+      "hp": 2,
+      "x": 43.97013888888869,
+      "y": 72.07605555555658,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 1270,
+      "time": 167.33333333335864,
+      "lives": 5,
+      "hp": 2,
+      "x": 44.904861111110925,
+      "y": 70.87298888889006,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 1280,
+      "time": 168.66666666669303,
+      "lives": 5,
+      "hp": 1,
+      "x": 43.87430555555547,
+      "y": 71.86510000000128,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowUp",
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 1290,
+      "time": 170.13333333336087,
+      "lives": 5,
+      "hp": 1,
+      "x": 45.00597222222216,
+      "y": 72.32946111111258,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 1300,
+      "time": 171.4333333333619,
+      "lives": 5,
+      "hp": 1,
+      "x": 49.88097222222216,
+      "y": 70.8868277777793,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 1310,
+      "time": 172.71666666669626,
+      "lives": 5,
+      "hp": 1,
+      "x": 54.69347222222216,
+      "y": 72.3709722222238,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight",
+        "ArrowDown"
+      ]
+    },
+    {
+      "tick": 1320,
+      "time": 174.083333333364,
+      "lives": 5,
+      "hp": 1,
+      "x": 59.81847222222216,
+      "y": 71.8497666666682,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight",
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 1330,
+      "time": 175.30000000003164,
+      "lives": 5,
+      "hp": 1,
+      "x": 64.38097222222217,
+      "y": 71.89353888889038,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 1340,
+      "time": 176.53333333336596,
+      "lives": 5,
+      "hp": 1,
+      "x": 68.05597222222218,
+      "y": 72.90418888889033,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 1350,
+      "time": 177.73333333336691,
+      "lives": 5,
+      "hp": 1,
+      "x": 70.79430555555552,
+      "y": 72.92456111111257,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight",
+        "ArrowUp"
+      ]
+    },
+    {
+      "tick": 1360,
+      "time": 178.93333333336787,
+      "lives": 5,
+      "hp": 1,
+      "x": 75.29430555555552,
+      "y": 72.98250000000141,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 1370,
+      "time": 180.13333333336882,
+      "lives": 5,
+      "hp": 1,
+      "x": 79.79430555555552,
+      "y": 73.16590555555692,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 1380,
+      "time": 181.43333333336986,
+      "lives": 5,
+      "hp": 1,
+      "x": 84.66930555555552,
+      "y": 73.13116666666797,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "tick": 1390,
+      "time": 182.53333333337073,
+      "lives": 5,
+      "hp": 1,
+      "x": 88.79430555555552,
+      "y": 72.93463888889015,
+      "mount": -1,
+      "enemyCount": 21,
+      "keys": [
+        "ArrowRight"
+      ]
+    },
+    {
+      "type": "complete",
+      "deaths": 0,
+      "phase": "clear",
+      "time": 183.51666666670485,
+      "lives": 5,
+      "bananas": 38,
+      "player": {
+        "x": 92.48180555555552,
+        "y": 73.13061111111233,
+        "vx": 3.75,
+        "vy": 1.6370000000000005,
+        "facing": 1,
+        "grounded": false,
+        "active": 0,
+        "hp": 1,
+        "invincible": 0,
+        "roll": 0,
+        "rollJump": false,
+        "rollSpeed": 0,
+        "rollFacing": 1,
+        "rollChain": 0,
+        "rollAngle": 0,
+        "recentRun": 184.51666666670565,
+        "mount": -1,
+        "mountAttack": 0,
+        "mountCharge": 0,
+        "mountCharged": false,
+        "mountCooldown": 0,
+        "carry": -1,
+        "cannon": -1,
+        "cannonLock": -1,
+        "cannonTime": 0,
+        "launched": 0,
+        "cannonGravityDelay": 0,
+        "cannonControlDelay": 0,
+        "jumpDelay": 0,
+        "coyote": 0,
+        "buffer": 0
+      },
+      "animals": [
+        {
+          "x": 93.44194444444415,
+          "y": 21.669625225818386,
+          "kind": "enguarde",
+          "state": "idle",
+          "vx": 0,
+          "vy": 4,
+          "facing": 1,
+          "timer": 138.466666666669
+        },
+        {
+          "x": 39.75,
+          "y": 22.453125,
+          "kind": "enguarde",
+          "state": "crate",
+          "vx": 0,
+          "vy": 0,
+          "facing": 1,
+          "timer": 183.51666666670485
+        }
+      ],
+      "enemies": [
+        {
+          "x": 9.4125000000004,
+          "y": 0.8957571496896182,
+          "min": 4.5,
+          "max": 34.5,
+          "kind": "croc",
+          "romSpriteId": 85,
+          "patrolSpeed": 1.75,
+          "originY": 1.125,
+          "vx": -1.75,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 8.04999999999998,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 33.38333333333253,
+          "y": 1.603878311188873,
+          "min": 15.75,
+          "max": 45.75,
+          "kind": "croc",
+          "romSpriteId": 85,
+          "patrolSpeed": 1.75,
+          "originY": 1.125,
+          "vx": -1.75,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 16.816666666666993,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 36.85416666666694,
+          "y": 3.7446892144256063,
+          "min": 32.625,
+          "max": 62.625,
+          "kind": "croc",
+          "romSpriteId": 85,
+          "patrolSpeed": 1.75,
+          "originY": 3.75,
+          "vx": 1.75,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 11.000000000000126,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 33.75833333333236,
+          "y": 3.0759440492113437,
+          "min": 33.75,
+          "max": 63.75,
+          "kind": "croc",
+          "romSpriteId": 85,
+          "patrolSpeed": 1.75,
+          "originY": 2.625,
+          "vx": -1.75,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 9.850000000000069,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 61.31333333333336,
+          "y": 15.892055077506006,
+          "min": 47.0625,
+          "max": 77.0625,
+          "kind": "croc",
+          "romSpriteId": 87,
+          "patrolSpeed": 1.45,
+          "originY": 15.9375,
+          "vx": -1.45,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 17.316666666666965,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 92.24166666666696,
+          "y": 23.05721128701978,
+          "min": 72.75,
+          "max": 97.875,
+          "kind": "croc",
+          "romSpriteId": 85,
+          "patrolSpeed": 1.75,
+          "originY": 22.5,
+          "vx": -1.75,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 16.683333333333668,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 3.4358333333333313,
+          "y": 37.676513098462706,
+          "min": 0,
+          "max": 21.75,
+          "kind": "croc",
+          "romSpriteId": 83,
+          "patrolSpeed": 2.05,
+          "originY": 38.0625,
+          "vx": -2.05,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 24.783333333333207,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 8.150833333333331,
+          "y": 46.54430555478406,
+          "min": 0,
+          "max": 21.75,
+          "kind": "croc",
+          "romSpriteId": 83,
+          "patrolSpeed": 2.05,
+          "originY": 47.0625,
+          "vx": -2.05,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 17.80000000000027,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 16.851666666666546,
+          "y": 24.507902429184984,
+          "min": 4.125,
+          "max": 34.125,
+          "kind": "croc",
+          "romSpriteId": 84,
+          "patrolSpeed": 1.55,
+          "originY": 24.75,
+          "vx": -1.55,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 28.066666666666354,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 33.36500000000005,
+          "y": 31.841732125829722,
+          "min": 20.25,
+          "max": 50.25,
+          "kind": "croc",
+          "romSpriteId": 87,
+          "patrolSpeed": 1.45,
+          "originY": 32.25,
+          "vx": -1.45,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 34.183333333332676,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 38.60916666666645,
+          "y": 45.90013534135619,
+          "min": 21,
+          "max": 51,
+          "kind": "croc",
+          "romSpriteId": 84,
+          "patrolSpeed": 1.55,
+          "originY": 46.5,
+          "vx": -1.55,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 8.65000000000001,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 57.57500000000033,
+          "y": 43.238643193265084,
+          "min": 37.5,
+          "max": 67.5,
+          "kind": "croc",
+          "romSpriteId": 85,
+          "patrolSpeed": 1.75,
+          "originY": 43.125,
+          "vx": 1.75,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 23.466666666666615,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 50.83749999999955,
+          "y": 39.26169885314833,
+          "min": 42.75,
+          "max": 72.75,
+          "kind": "croc",
+          "romSpriteId": 85,
+          "patrolSpeed": 1.75,
+          "originY": 39,
+          "vx": 1.75,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 28.499999999999662,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 83.27916666666547,
+          "y": 37.82538467341548,
+          "min": 72.75,
+          "max": 97.875,
+          "kind": "croc",
+          "romSpriteId": 87,
+          "patrolSpeed": 1.45,
+          "originY": 37.775,
+          "vx": 1.45,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 15.750000000000362,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 26.362499999999866,
+          "y": 70.92700565800757,
+          "min": 9,
+          "max": 39,
+          "kind": "croc",
+          "romSpriteId": 85,
+          "patrolSpeed": 1.75,
+          "originY": 70.525,
+          "vx": -1.75,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 19.216666666666857,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 32.8041666666667,
+          "y": 66.30081787254404,
+          "min": 17.25,
+          "max": 47.25,
+          "kind": "croc",
+          "romSpriteId": 85,
+          "patrolSpeed": 1.75,
+          "originY": 65.978125,
+          "vx": 1.75,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 25.98333333333314,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 49.80416666666642,
+          "y": 73.56333356648089,
+          "min": 23.625,
+          "max": 53.625,
+          "kind": "croc",
+          "romSpriteId": 85,
+          "patrolSpeed": 1.75,
+          "originY": 73.11874999999999,
+          "vx": -1.75,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 25.54999999999983,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 36.17916666666551,
+          "y": 72.27598786953651,
+          "min": 24,
+          "max": 54,
+          "kind": "croc",
+          "romSpriteId": 85,
+          "patrolSpeed": 1.75,
+          "originY": 72.375,
+          "vx": -1.75,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 18.766666666666882,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 40.87499999999966,
+          "y": 68.9964405301783,
+          "min": 31.125,
+          "max": 61.125,
+          "kind": "croc",
+          "romSpriteId": 85,
+          "patrolSpeed": 1.75,
+          "originY": 68.625,
+          "vx": 1.75,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 19.183333333333525,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 56.09125000000006,
+          "y": 65.94968304122739,
+          "min": 44.53125,
+          "max": 68.53125,
+          "kind": "bee",
+          "romSpriteId": 97,
+          "patrolSpeed": 1.1,
+          "originY": 66.09375,
+          "vx": -1.1,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 17.583333333333616,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        },
+        {
+          "x": 60.954166666665024,
+          "y": 70.08893207469605,
+          "min": 55.5,
+          "max": 85.5,
+          "kind": "croc",
+          "romSpriteId": 87,
+          "patrolSpeed": 1.45,
+          "originY": 69.75,
+          "vx": -1.45,
+          "alive": true,
+          "hp": 1,
+          "vy": 0,
+          "timer": 6.583333333333315,
+          "hurt": 0,
+          "vulnerable": false,
+          "shootCooldown": 0
+        }
+      ],
+      "finish": {
+        "x": 94.875,
+        "y": 72,
+        "w": 4.800000000000001,
+        "h": 6.75
+      },
+      "toast": "Enguarde peut briser les blocs.",
+      "collected": [
+        38,
+        39,
+        43,
+        44,
+        45,
+        76,
+        77,
+        78,
+        75,
+        74,
+        73,
+        32,
+        33,
+        34,
+        28,
+        31,
+        29,
+        30,
+        35,
+        27,
+        26,
+        25,
+        24,
+        15,
+        14,
+        21,
+        22,
+        23,
+        18,
+        19,
+        20,
+        10,
+        16,
+        17,
+        41,
+        42,
+        46,
+        47
+      ],
+      "usedBarrels": [
+        3,
+        2
+      ],
+      "checkpoint": {
+        "x": 38.8125,
+        "y": 40.59375
+      }
+    }
+  ],
+  "events": [],
+  "errors": []
+}

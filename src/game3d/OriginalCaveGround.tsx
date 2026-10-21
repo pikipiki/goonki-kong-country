@@ -10,7 +10,8 @@ import {
   SRGBColorSpace,
 } from "three";
 import type { Game } from "../game/engine";
-import { ORIGINAL_CAVE_TERRAIN, terrainCellSNES } from "../game/originalCaveTerrain";
+import { ORIGINAL_CAVE_TERRAIN } from "../game/originalCaveTerrain";
+import { terrainCellSNES } from "../game/canyonTerrain";
 import { ORIGINAL_REVERB_ORIGIN } from "../game/originalReverb";
 
 const CHUNK_COLUMNS = 16;

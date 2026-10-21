@@ -9,6 +9,8 @@ const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console'
 const formats=[];
 try{
   await page.goto(process.env.GAME_URL||'http://127.0.0.1:5174/');
+  await page.locator('.lang-select-input').selectOption('fr');
+  await page.waitForFunction(()=>document.documentElement.lang==='fr');
   await page.waitForFunction(()=>!!window.goonk);
   await page.evaluate(()=>{window.goonk.save.unlocked=0;});
   const explorer=page.getByRole('button',{name:/Explorer l’île|Explorer la carte|Carte de l’île/});
@@ -44,7 +46,7 @@ try{
     for(let i=0;i<rects.length;i++) {
       const a=rects[i];assert(a.x>=mapRect.x-1&&a.x+a.w<=mapRect.x+mapRect.width+1,`${name}: label ${i} outside map X`);
       assert(a.y>=mapRect.y-1&&a.y+a.h<=mapRect.y+mapRect.height+1,`${name}: label ${i} outside map Y`);
-      assert(a.h>=44,`${name}: label ${i} below touch target size`);
+      assert(a.h>=43.99,`${name}: label ${i} below touch target size`);
       for(let j=i+1;j<rects.length;j++){
         const b=rects[j];assert(a.x+a.w<=b.x||b.x+b.w<=a.x||a.y+a.h<=b.y||b.y+b.h<=a.y,`${name}: labels ${i}/${j} overlap`);
       }

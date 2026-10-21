@@ -1,0 +1,17 @@
+{
+  "results": [
+    {
+      "width": 390,
+      "height": 844,
+      "count": 50,
+      "minDot": 0.9999999999999998
+    },
+    {
+      "width": 844,
+      "height": 390,
+      "count": 50,
+      "minDot": 0.9999999999999998
+    }
+  ],
+  "errors": []
+}

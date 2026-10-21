@@ -1,5 +1,5 @@
 import { terrainCellSNES as jungleCell } from './originalTerrain';
-import { terrainCellSNES as caveCell } from './originalCaveTerrain';
+import { terrainCellSNES as caveCell } from './canyonTerrain';
 import { terrainCellSNES as cartCell } from './originalMineCartTerrain';
 import { ORIGINAL_JUNGLE_ORIGIN } from './originalJungle';
 import { ORIGINAL_REVERB_ORIGIN } from './originalReverb';
