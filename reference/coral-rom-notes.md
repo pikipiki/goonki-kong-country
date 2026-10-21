@@ -10,7 +10,9 @@ Les spawns utilisent **Y ROM 17960–19632** mappés linéairement en web **5,5 
 
 ## Nage DK
 
-Constantes provisoires : `reference/underwater-motion.json` — vitesse horizontale **vxRaw 512** (même plafond que `dk-walk` jungle). Trace SNES dédiée (`probe:coral`, à ajouter) pour affiner montée/plongée.
+Constantes : `reference/underwater-motion.json` — vitesse horizontale **vxRaw 512**. Traces **`npm run probe:coral`** → `runtime-coral-player.json` (scénarios `dk-swim-right/up/down`). Tant que `work/runtime-rom/coral/coral-swim.state` est absent, la sonde utilise **`jungle.state`** (proxy) : les vyRaw ne reflètent pas la nage sous l’eau. **`npm run generate:coral-parity`** pousse les métriques probe dans `verticalSwim.snesProbe`.
+
+**Capture idéale :** sauver un état dans Coral Capers sous l’eau (DK, pas Enguarde) → `work/runtime-rom/coral/coral-swim.state`, puis relancer `probe:coral` + `generate:coral-parity`.
 
 ## Ennemis importés
 
@@ -27,6 +29,8 @@ Comportements fins (attaques, invulnérabilités) non encore rejoués depuis les
 ## Commandes
 
 ```bash
+npm run probe:coral
+npm run generate:coral-parity
 npm run generate:coral
 npm run generate:coral-terrain
 ```

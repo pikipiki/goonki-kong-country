@@ -147,6 +147,7 @@ export function blocksCoralHorizontal(
   footWorld: number,
   dir: -1 | 1,
   origin: TerrainOrigin,
+  options?: {{ swim?: boolean }},
 ) {{
   const scale = ORIGINAL_CORAL_TERRAIN.pixelsPerWorldUnit;
   const px = xWorld * scale + origin.x;
@@ -155,7 +156,11 @@ export function blocksCoralHorizontal(
   if (!here) return false;
   const edgePx = (xWorld + dir * 0.4) * scale + origin.x;
   const aheadFeet = probeCoralAtRom(edgePx, romFoot + 6);
-  if (aheadFeet && aheadFeet.absRomFloor > here.absRomFloor + 10) return true;
+  const stepRomPx = options?.swim ? 44 : 10;
+  if (aheadFeet && aheadFeet.absRomFloor > here.absRomFloor + stepRomPx) {{
+    return true;
+  }}
+  if (options?.swim) return false;
   const aheadTorso = probeCoralAtRom(edgePx, romFoot + 38);
   if (aheadTorso && aheadTorso.absRomFloor > romFoot + 12) return true;
   return false;

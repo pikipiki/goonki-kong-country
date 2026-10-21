@@ -19,7 +19,8 @@ Le joueur ne dépasse pas **x=454** avant la chute. La chute n’est **pas** exp
 ## Impact web
 
 - Parité **position** : testée jusqu’à la frame **155** (`jungle-parity-walk.json` → `dynamicParity`).
-- Au-delà : le moteur laisse DK marcher sur le sol statique ; Necky (x=2560) reste inaccessible sans save state (`jungle-necky-probe.md`).
+- Rebord moteur (`engine.ts`, `jungle-omitted-spawns.json` → `runtimePit`) : sur la passerelle haute (`y ≤ 0,55`), maintien **Right** près de **x=14,1875** bloque ~**44** frames puis désactive le snap au sol plat (chute). Les tables statiques gardent **y=175** sur les tuiles lip mais **pas** de second sol probe sous la fosse (`tests/pit-terrain.probe.test.ts`). Spawns **cmd 5/8** dans `jungle-omitted-spawns.json` — **pas** au rebord (x=3136 / 4992).
+- Necky (x=2560) : `npm run attempt:necky-bridge` (auto, meilleur x≈454) ; capture fiable = save state (`jungle-necky-probe.md`, `pit-best-attempt.state`).
 - Piste : rejouer les scripts des spawns **cmd 5/8** omis, ou affiner les classes **197** vs **133** depuis la désassemblage Rev 2 relocalisée.
 
 ## Commandes

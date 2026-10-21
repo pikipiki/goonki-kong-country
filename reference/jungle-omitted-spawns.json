@@ -1,0 +1,40 @@
+{
+  "romSha256": "628147468c3539283197f58f03b94df49758a332831857481ea9cc31645f0527",
+  "level": "JungleHijinxs",
+  "omittedFromWebEngine": [
+    {
+      "offset": "0x3D9724",
+      "spawnCommand": 5,
+      "x": 3136,
+      "y": 134,
+      "scriptPointer": "$97F4",
+      "note": "Grouped spawn / native callback — not at pit x≈454."
+    },
+    {
+      "offset": "0x3D97A4",
+      "spawnCommand": 8,
+      "x": 4992,
+      "y": 256,
+      "scriptPointer": "$FD72",
+      "note": "Grouped spawn / native callback — exit area, not pit."
+    },
+    {
+      "offset": "0x3D97D4",
+      "spawnCommand": 2,
+      "x": 5296,
+      "y": 63,
+      "spriteId": 106,
+      "spriteName": "ExitDoor",
+      "note": "finishZone metadata only."
+    }
+  ],
+  "runtimePit": {
+    "source": "dk-walk-terrain in runtime-player-analysis.json",
+    "maxGroundedSnesX": 454,
+    "fallBeginsFrame": 200,
+    "flatSnesY": 175,
+    "webLedgeEndX": 14.1875,
+    "webUpperBandY": 0.55,
+    "engineModel": "Disable static metatile floor snap past ledge on upper walkway; lower caves use normal probe."
+  }
+}

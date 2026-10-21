@@ -1,4 +1,6 @@
 import { OriginalGround } from "./OriginalGround";
+import { OriginalCaveGround } from "./OriginalCaveGround";
+import { OriginalMineCartGround } from "./OriginalMineCartGround";
 import { OriginalCoralGround } from "./OriginalCoralGround";
 import { memo, useLayoutEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
@@ -833,6 +835,10 @@ export const World = memo(function World({
       />
       {level.originalTerrain === "jungle" ? (
         <OriginalGround game={game} />
+      ) : level.originalTerrain === "cave" ? (
+        <OriginalCaveGround game={game} />
+      ) : level.originalTerrain === "mineCart" ? (
+        <OriginalMineCartGround game={game} />
       ) : level.originalTerrain === "coral" ? (
         <OriginalCoralGround game={game} />
       ) : (
@@ -857,14 +863,14 @@ export const World = memo(function World({
       {level.originalTerrain === "coral" && (
         <CoralScatter length={level.length} />
       )}
-      {level.originalTerrain === "jungle" &&
+      {(level.originalTerrain === "jungle" || level.originalTerrain === "cave") &&
         level.breakableWalls?.map((wall, i) =>
           game.brokenWalls.has(i) ? null : (
         <group key={`facade-${i}`} position={[wall.x, wall.y + wall.h * 0.55, -0.4]}>
           <mesh geometry={box} scale={[wall.w, wall.h, 0.12]}>
             <meshStandardMaterial
-              color="#3d5a44"
-              map={texture("bark")}
+              color={level.originalTerrain === "cave" ? "#4a4038" : "#3d5a44"}
+              map={texture(level.originalTerrain === "cave" ? "soil" : "bark")}
               transparent
               opacity={0.92}
             />

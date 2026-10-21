@@ -5,8 +5,45 @@
 type Music = {id:number; name:string; url:string; seconds:number; loop:{startSeconds:number;endSeconds:number;samplePerfect:boolean}|null};
 type Effect = {id:number;name:string;url:string;seconds:number};
 type Manifest = {music:Record<string,Music>;effects:Record<string,Effect>;provenance:unknown};
-type Context = {character?:number; animal?:string; letterIndex?:number};
-const MUSIC:Record<string,number> = {title:9,map:12,jungle:0,canopy:19,mine:4,lagoon:3,snow:5,temple:6,ship:24,clear:26,gameover:15,victory:14};
+export type AudioEffectContext = {
+  character?: number;
+  animal?: string;
+  letterIndex?: number;
+  inWater?: boolean;
+};
+/** Pure Rev 2 SFX id routing for tests and tooling. */
+export function resolveAudioEffectId(
+  name: string,
+  c: AudioEffectContext = {},
+): number | undefined {
+  const direct: Record<string, number> = {
+    banana: 0x21,
+    "banana-bunch": 0x22,
+    life: 0x2f,
+    stomp: 0x08,
+    bounce: 0x01,
+    cannon: 0x04,
+    "enter-cannon": 0x26,
+    rescue: 0x14,
+    mount: 0x58,
+    swap: 0x65,
+    "barrel-break": 0x14,
+    throw: 0x02,
+    pickup: 0x11,
+    place: 0x11,
+    checkpoint: 0x10,
+    reveal: 0x10,
+    "necky-shot": 0x5c,
+  };
+  if (name === "hurt") return c.character ? 0x43 : 0x46;
+  if (name === "letter") return 0x4f + Math.min(3, c.letterIndex ?? 0);
+  if (name === "jump" && c.inWater && !c.animal) return c.character ? 0x75 : 0x76;
+  if (name === "jump" && c.animal) return c.animal === "enguarde" ? 0x57 : 0x5f;
+  if (name === "roll" && c.animal === "rambi") return 0x56;
+  if (name === "roll" && c.animal === "enguarde") return 0x57;
+  return direct[name];
+}
+const MUSIC:Record<string,number> = {title:9,map:12,jungle:0,cave:1,canopy:19,mine:4,lagoon:3,snow:5,temple:6,ship:24,clear:26,gameover:15,victory:14};
 const ONCE = new Set([10,15,17,18,25,26]);
 export class AudioSystem {
   context?:AudioContext;
@@ -76,24 +113,9 @@ export class AudioSystem {
     }
   }
   stop(){this.active=false;this.generation++;this.music?.pause();clearInterval(this.loopTimer);}
-  private effectId(name:string,c:Context):number|undefined{
-    const direct:Record<string,number>={
-      'banana':0x21,'banana-bunch':0x22,'life':0x2F,'stomp':0x08,'bounce':0x01,
-      'cannon':0x04,'enter-cannon':0x26,'rescue':0x14,'mount':0x58,'swap':0x65,
-      'barrel-break':0x14,'throw':0x02,'pickup':0x11,'place':0x11,'checkpoint':0x10,'reveal':0x10,
-      'necky-shot':0x5C,
-    };
-    if(name==='hurt')return c.character?0x43:0x46;
-    if(name==='letter')return 0x4F+Math.min(3,c.letterIndex??0);
-    if(name==='jump'&&c.animal)return c.animal==='enguarde'?0x57:0x5F;
-    if(name==='roll'&&c.animal==='rambi')return 0x56;
-    if(name==='roll'&&c.animal==='enguarde')return 0x57;
-    // Unidentified sounds remain silent rather than being replaced by generic tones.
-    return direct[name];
-  }
-  effect(name:string,c:Context={}){
+  effect(name:string,c:AudioEffectContext={}){
     if(this.muted||!this.context||!this.master)return;
-    const id=this.effectId(name,c);if(id===undefined)return;
+    const id=resolveAudioEffectId(name,c);if(id===undefined)return;
     void this.loadManifest().then(async m=>{
       const entry=m.effects[String(id)];if(!entry||this.muted||!this.context)return;
       let buffer=this.buffers.get(id);

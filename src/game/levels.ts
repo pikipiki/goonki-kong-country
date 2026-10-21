@@ -98,7 +98,7 @@ export interface Level {
   breakableWalls?: BreakableWallSpec[];
   bonusRooms?: BonusRoomSpec[];
   decors?: LevelDecor[];
-  originalTerrain?: "jungle" | "coral";
+  originalTerrain?: "jungle" | "coral" | "cave" | "mineCart";
   start?: {x:number; y:number};
   letterWord?: string;
   /** ROM ExitDoor trigger volume (world units). */

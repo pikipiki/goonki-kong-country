@@ -1,0 +1,124 @@
+{
+  "manifestPath": "/Users/sevenone./Documents/git/goonk-country/public/audio/manifest.json",
+  "wiredDirectEvents": [
+    {
+      "event": "banana",
+      "id": 33,
+      "url": "/audio/sfx-21.wav",
+      "ok": true
+    },
+    {
+      "event": "banana-bunch",
+      "id": 34,
+      "url": "/audio/sfx-22.wav",
+      "ok": true
+    },
+    {
+      "event": "life",
+      "id": 47,
+      "url": "/audio/sfx-2f.wav",
+      "ok": true
+    },
+    {
+      "event": "stomp",
+      "id": 8,
+      "url": "/audio/sfx-08.wav",
+      "ok": true
+    },
+    {
+      "event": "bounce",
+      "id": 1,
+      "url": "/audio/sfx-01.wav",
+      "ok": true
+    },
+    {
+      "event": "cannon",
+      "id": 4,
+      "url": "/audio/sfx-04.wav",
+      "ok": true
+    },
+    {
+      "event": "enter-cannon",
+      "id": 38,
+      "url": "/audio/sfx-26.wav",
+      "ok": true
+    },
+    {
+      "event": "rescue",
+      "id": 20,
+      "url": "/audio/sfx-14.wav",
+      "ok": true
+    },
+    {
+      "event": "mount",
+      "id": 88,
+      "url": "/audio/sfx-58.wav",
+      "ok": true
+    },
+    {
+      "event": "swap",
+      "id": 101,
+      "url": "/audio/sfx-65.wav",
+      "ok": true
+    },
+    {
+      "event": "barrel-break",
+      "id": 20,
+      "url": "/audio/sfx-14.wav",
+      "ok": true
+    },
+    {
+      "event": "throw",
+      "id": 2,
+      "url": "/audio/sfx-02.wav",
+      "ok": true
+    },
+    {
+      "event": "pickup",
+      "id": 17,
+      "url": "/audio/sfx-11.wav",
+      "ok": true
+    },
+    {
+      "event": "place",
+      "id": 17,
+      "url": "/audio/sfx-11.wav",
+      "ok": true
+    },
+    {
+      "event": "checkpoint",
+      "id": 16,
+      "url": "/audio/sfx-10.wav",
+      "ok": true
+    },
+    {
+      "event": "reveal",
+      "id": 16,
+      "url": "/audio/sfx-10.wav",
+      "ok": true
+    },
+    {
+      "event": "necky-shot",
+      "id": 92,
+      "url": "/audio/sfx-5c.wav",
+      "ok": true
+    }
+  ],
+  "missingCaptures": [],
+  "underwaterSwimEffects": [
+    {
+      "id": 117,
+      "present": true,
+      "url": "/audio/sfx-75.wav"
+    },
+    {
+      "id": 118,
+      "present": true,
+      "url": "/audio/sfx-76.wav"
+    }
+  ],
+  "recommendations": [
+    "Map lagoon jump to $75 DKSwim / $76 DiddySwim (sfx-water captures).",
+    "Run listening compare: original SNES scene vs public/audio/sfx/*.wav."
+  ]
+}

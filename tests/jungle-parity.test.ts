@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { Game, emptyInput } from "../src/game/engine";
 import { ORIGINAL_JUNGLE_ORIGIN } from "../src/game/originalJungle";
 import parity from "../reference/jungle-parity-walk.json";
+import jungleOmitted from "../reference/jungle-omitted-spawns.json";
 
 const rawSpeed = (value: number) => value / 256 * 60 / 32;
 const rawVelocity = (value: number) => Math.round(value / rawSpeed(1));
@@ -41,6 +42,23 @@ describe("jungle ROM walk parity fixture", () => {
       expect(game.player.y).toBeCloseTo(snesYToWorld(row.y), 1);
       expect(game.player.grounded).toBe(true);
     }
+  });
+
+  it("blocks then drops at the upper walkway lip (SNES x≈454)", () => {
+    const game = isolatedJungleGame();
+    const lip = jungleOmitted.runtimePit.webLedgeEndX;
+    game.player.x = lip - 0.02;
+    game.player.y = 0;
+    game.player.grounded = true;
+    game.player.vy = 0;
+    const input = emptyInput();
+    input.held.add("right");
+    for (let i = 0; i < 50; i++) game.update(input);
+    expect(game.player.x).toBeLessThanOrEqual(lip + 0.02);
+    expect(game.junglePitLedgeHold).toBeGreaterThanOrEqual(44);
+    for (let i = 0; i < 90; i++) game.update(input);
+    expect(game.player.y).toBeLessThan(jungleOmitted.runtimePit.webUpperBandY - 0.08);
+    expect(game.player.x).toBeGreaterThan(4);
   });
 
   it("maps original jungle floor height to SNES ground samples along the walk", () => {

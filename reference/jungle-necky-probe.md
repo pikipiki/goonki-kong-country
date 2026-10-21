@@ -12,6 +12,15 @@ Depuis `ground.state` (DK idle, x=156), une marche droite atteint **x≈454** pu
 | `necky-runtime-capture.json` | `nutEvents: []` + limitations |
 | `level-tables.json` | Spawn sprite **14** @ (2560, 240), `$13E9=36578` |
 
+## États automatiques / manuels
+
+| Fichier | Rôle |
+|---------|------|
+| `work/runtime-rom/jungle-necky/pit-best-attempt.state` | Meilleur essai `npm run attempt:necky-bridge` (x≈454, pas Necky) |
+| `work/runtime-rom/jungle-necky/necky-approach.state` | Save manuel **après la fosse**, x∈[2520, 2620] |
+
+`probe_jungle_extensions.py` charge `pit-best-attempt.state` s’il existe, puis `necky-approach.state`.
+
 ## Prochaine capture (quand un état existe)
 
 1. Créer ou obtenir un `.state` Snes9x avec DK **après la fosse**, idéalement x∈[2520, 2620].
