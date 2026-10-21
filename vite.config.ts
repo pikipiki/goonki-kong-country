@@ -1,7 +1,11 @@
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import { fileURLToPath } from "node:url";
+
+const githubPagesBase = "/goonki-kong-country/";
+
 export default defineConfig({
+  base: process.env.GITHUB_PAGES === "true" ? githubPagesBase : "/",
   plugins: [react()],
   resolve: {
     alias: {
