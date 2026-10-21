@@ -19,6 +19,13 @@ const FRONT = 1.6;
 const BACK = -1.6;
 const COLUMN_COUNT = Math.ceil(ORIGINAL_MINE_CART_TERRAIN.widthPixels / 32);
 
+/** Convert absolute ROM columns to the coordinates shared by actors and camera. */
+export function mineCartGroundChunkVisible(firstColumn: number, playerX: number, columnCount = CHUNK_COLUMNS) {
+  const start = (firstColumn * 32 - ORIGINAL_MINE_CART_ORIGIN.x) / ORIGINAL_MINE_CART_TERRAIN.pixelsPerWorldUnit;
+  const end = start + columnCount * 32 / ORIGINAL_MINE_CART_TERRAIN.pixelsPerWorldUnit;
+  return end > playerX - 28 && start < playerX + 28;
+}
+
 function noise(seed: number) {
   const n = Math.sin(seed * 127.1 + 311.7) * 43758.5453;
   return n - Math.floor(n);
@@ -31,12 +38,12 @@ export function createMineCartGroundGeometry(firstColumn: number, columnCount = 
   const ox = ORIGINAL_MINE_CART_ORIGIN.x;
   const oy = ORIGINAL_MINE_CART_ORIGIN.y;
   const scale = ORIGINAL_MINE_CART_TERRAIN.pixelsPerWorldUnit;
-  function quad(points: number[][], tint: string, seed: number) {
+  function quad(points: number[][], tint: string, seed: number, top = false) {
     const shade = new Color(tint).multiplyScalar(0.85 + noise(seed) * 0.3);
     for (const i of [0, 1, 2, 0, 2, 3]) {
       const [x, y, z] = points[i];
       positions.push(x, y, z);
-      uvs.push(x * 0.7, y * 0.7);
+      uvs.push(x * 0.7, (top ? z : y) * 0.7);
       colors.push(shade.r, shade.g, shade.b);
     }
   }
@@ -63,11 +70,11 @@ export function createMineCartGroundGeometry(firstColumn: number, columnCount = 
       const yr = (span.right - oy) / scale;
       const x0 = wx-STRIP_PIXELS/scale/2, x1 = wx+STRIP_PIXELS/scale/2;
       for(const railZ of [-0.8,0.8]) {
-        quad([[x0,yl+.035,railZ+.045],[x1,yr+.035,railZ+.045],[x1,yr+.035,railZ-.045],[x0,yl+.035,railZ-.045]], "#9b9e93", 0);
+        quad([[x0,yl+.035,railZ+.045],[x1,yr+.035,railZ+.045],[x1,yr+.035,railZ-.045],[x0,yl+.035,railZ-.045]], "#9b9e93", 0, true);
       }
 
-      quad([[x0,yl,FRONT],[x1,yr,FRONT],[x1,yr,BACK],[x0,yl,BACK]], "#795a36", px);
-      quad([[x0,y0,BACK],[x1,y0,BACK],[x1,y0,FRONT],[x0,y0,FRONT]], "#302b27", px);
+      quad([[x0,yl,FRONT],[x1,yr,FRONT],[x1,yr,BACK],[x0,yl,BACK]], "#795a36", Math.floor(px / 96), true);
+      quad([[x0,y0,BACK],[x1,y0,BACK],[x1,y0,FRONT],[x0,y0,FRONT]], "#302b27", Math.floor(px / 96), true);
 
       quad(
         [
@@ -81,10 +88,10 @@ export function createMineCartGroundGeometry(firstColumn: number, columnCount = 
       );
       quad(
         [
-          [wx - STRIP_PIXELS / scale / 2, y0, BACK],
           [wx + STRIP_PIXELS / scale / 2, y0, BACK],
-          [wx + STRIP_PIXELS / scale / 2, yr, BACK],
+          [wx - STRIP_PIXELS / scale / 2, y0, BACK],
           [wx - STRIP_PIXELS / scale / 2, yl, BACK],
+          [wx + STRIP_PIXELS / scale / 2, yr, BACK],
         ],
         "#3a322c",
         px + span.bottom + 17,
@@ -140,10 +147,10 @@ function GroundChunk({
   useFrame(() => {
     if (root.current)
       root.current.visible =
-        Math.abs(index * CHUNK_COLUMNS + CHUNK_COLUMNS / 2 - game.player.x) < 28;
+        mineCartGroundChunkVisible(index * CHUNK_COLUMNS, game.player.x);
   });
   return (
-    <group ref={root}>
+    <group ref={root} name="mine-cart-ground-chunk">
       <mesh geometry={geometry}>
         <meshStandardMaterial
           map={map}

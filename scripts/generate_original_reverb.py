@@ -22,7 +22,20 @@ def cannon_angle(ra):
     q = (ra.get("$14C5", 0) + 0x0AAA) & 0xF000
     idx = (q // 0x1000) % 16
     v = vectors[idx]
-    return math.atan2(-v["velocityYRaw"], v["velocityXRaw"])
+    return math.atan2(v["velocityYRaw"], v["velocityXRaw"])
+
+
+def cannon_motion(ra):
+    """ROM property bits enable a bounded moving cannon; raw sprite data stays intact."""
+    props = ra.get("$145D", 0)
+    bounds = ra.get("$13E9", 0)
+    raw = ra.get("$0F25", 0)
+    if not (props & 3) or not bounds or not raw:
+        return None
+    signed = raw if raw < 0x8000 else raw - 0x10000
+    return dict(axis="y" if props & 8 else "x", minimum=-(bounds >> 8) / 32,
+                maximum=(bounds & 255) / 32, speed=signed / 256 * 60 / 32,
+                activation="always" if props & 1 else "occupied", diagonal=bool(props & 16))
 
 
 def cannon_delays(ra):
@@ -173,6 +186,7 @@ for row in records:
                     launchMultiplier=ra.get("$0FF5", 40),
                     cannonGravityDelay=g_delay,
                     cannonControlDelay=c_delay,
+                    **({"motion": cannon_motion(ra)} if cannon_motion(ra) else {}),
                 )
             )
             typ = "cannon"

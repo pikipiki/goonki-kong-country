@@ -31,6 +31,8 @@ export interface EnemySpec {
   romSpriteId?: number;
   /** Horizontal patrol speed in world units/s when spawned. */
   patrolSpeed?: number;
+  /** Runtime mobile encounter adaptation; omitted keeps the regular hover. */
+  hoverAmplitude?: number;
 }
 export interface FinishZone {
   x: number;
@@ -74,6 +76,9 @@ export interface BarrelSpec {
   kind: "rescue" | "checkpoint" | "throw" | "cannon";
   angle?: number;
   rotationSpeed?: number;
+  /** Source bounded motion: speed is world units/s, bounds relative to spawn. */
+  motion?: { axis:"x"|"y"; minimum:number; maximum:number; speed:number;
+    activation:"always"|"occupied"; diagonal?:boolean };
   autoFire?: boolean;
   /** ROM $0FF5 launch multiplier; defaults to the verified base template (40). */
   launchMultiplier?: number;

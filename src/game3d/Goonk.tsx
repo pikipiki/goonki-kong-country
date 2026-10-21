@@ -33,7 +33,7 @@ export function Goonk({
       t = clock.elapsedTime;
     const cart = (game?.level.originalTerrain === "mineCart" || (game?.level.biome === "mine" && game?.level.originalTerrain !== "cave"));
     const mount = !companion && game?.mount;
-    const swimming = !preview && game?.level.biome === "lagoon" && !mount;
+    const swimming = !preview && game?.level.biome === "lagoon" && (!mount || mount.kind === "enguarde");
     const riding = !!mount;
     const walking = preview || cart || riding ? 0 : Math.abs(p?.vx ?? 0);
     const grounded = p?.grounded ?? true;
@@ -69,7 +69,7 @@ export function Goonk({
     } else if (pose) {
       root.current.position.set(pose.x, pose.y, companion ? -0.28 : 0.3);
     }
-    root.current.scale.setScalar((pink ? 2.2 : 2.05) * (cart ? 0.83 : riding ? 0.78 : swimming ? 0.85 : 1));
+    root.current.scale.setScalar((pink ? 2.2 : 2.05) * (cart ? 0.83 : riding ? .78 : swimming ? 0.85 : 1));
     if (mount && p) root.current.position.set(p.x - p.facing * 0.12,
       p.y + ANIMAL_DESIGNS[mount.kind].seat - 0.03, 0.2);
     if (cart && p)

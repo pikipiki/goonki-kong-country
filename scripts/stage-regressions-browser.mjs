@@ -17,7 +17,8 @@ try {
     for(let id=0;id<7;id++) {
       await page.locator('.brand').click();
       await page.getByRole('button',{name:/Explorer l’île|Explorer la carte|Carte de l’île/}).click();
-      const cards=page.locator('.level-card');assert.equal(await cards.count(),7);
+      await page.waitForFunction(()=>document.querySelectorAll('.map-stage').length===7);
+      const cards=page.locator('.map-stage');assert.equal(await cards.count(),7);
       for(let n=0;n<7;n++) assert(await cards.nth(n).isEnabled());
       await cards.nth(id).click();
       if(id===6 && orientation==='portrait') await page.screenshot({path:out+'bugfix-map-portrait.png',fullPage:true});

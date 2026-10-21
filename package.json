@@ -40,7 +40,9 @@
     "analyze:jungle-bonus": "python3 scripts/analyze_jungle_bonus_walls.py",
     "test:stages": "node scripts/stage-regressions-browser.mjs",
     "test:decor": "node scripts/visual-layers-browser.mjs",
-    "analyze:coral-terrain": "python3 scripts/analyze_coral_terrain.py"
+    "analyze:coral-terrain": "python3 scripts/analyze_coral_terrain.py",
+    "test:mechanics": "node scripts/mechanics-browser.mjs",
+    "test:ground": "node scripts/ground-rendering-browser.mjs"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

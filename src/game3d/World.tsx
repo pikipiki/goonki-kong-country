@@ -1,3 +1,4 @@
+import { CORAL_WATER_FLOOR_Y } from "../game/marineScale";
 import { OriginalGround } from "./OriginalGround";
 import { OriginalCaveGround } from "./OriginalCaveGround";
 import { OriginalMineCartGround } from "./OriginalMineCartGround";
@@ -857,7 +858,7 @@ export const World = memo(function World({
       {level.originalTerrain === "coral" && (
         <>
           <CoralScatter length={level.length} />
-          <mesh geometry={box} position={[level.length/2, -0.9-0.4, 0]} scale={[level.length+4, 0.8, 3.2]}>
+          <mesh geometry={box} position={[level.length/2, CORAL_WATER_FLOOR_Y-0.4, 0]} scale={[level.length+4, 0.8, 3.2]}>
             <meshStandardMaterial color="#637b64" roughness={0.95} map={texture("soil")} />
           </mesh>
         </>

@@ -1,3 +1,4 @@
+import {CORAL_WATER_FLOOR_Y} from "../src/game/marineScale";
 import { describe, expect, it } from 'vitest';
 import { Game, emptyInput, enemyRenderVisible } from '../src/game/engine';
 import { ENEMY_DESIGNS } from '../src/game/enemies';
@@ -124,7 +125,7 @@ describe('reported stage regressions', () => {
     const game=new Game();game.start(3,true); game.enemies=[];game.animals=[];
     expect(coralBodyBlocked(game.player.x,game.player.y)).toBe(false);
     for(let i=0;i<90;i++) game.update(inputs('down'));
-    expect(game.player.y).toBeCloseTo(-.9);
+    expect(game.player.y).toBeCloseTo(CORAL_WATER_FLOOR_Y);
     expect(game.lives).toBe(5);
   });
   it('still damages side contact with the boss', () => {

@@ -105,6 +105,24 @@ function Eye({
     </group>
   );
 }
+/** Imported Neckys are birds that can be stomped, with no Zinger spikes. */
+function Necky({wings}:{wings:React.RefObject<Group|null>}) {
+ return <group name="enemy-necky-bird">
+  <Part color="#795948" at={[-.05,.37,0]} size={[.46,.27,.27]}/>
+  <Part color="#d5b29a" at={[.15,.32,.04]} size={[.28,.20,.22]}/>
+  <Part color="#ad7d65" at={[.30,.55,0]} size={[.17,.27,.17]} rotation={[0,0,.3]}/>
+  <Part color="#9065a2" at={[.43,.69,0]} size={[.24,.19,.19]}/>
+  <Part color="#e9b84e" at={[.72,.62,0]} size={[.09,.35,.10]} shape="tooth" rotation={[0,0,-Math.PI/2]}/>
+  <Eye at={[.49,.75,.155]} size={.065}/><Eye at={[.49,.75,-.155]} size={.065}/>
+  <Part color="#62445f" at={[-.48,.35,0]} size={[.30,.08,.17]} rotation={[0,0,-.25]}/>
+  <group ref={wings}>
+   {[-1,1].map(side=><group key={side} position={[-.04,.45,side*.20]}>
+    <Part color="#6d526c" at={[-.12,-.03,side*.23]} size={[.36,.08,.36]}/>
+    {[0,1,2].map(n=><Part key={n} color="#ad917e" at={[-.29+n*.11,-.04,side*.48]} size={[.22,.055,.25]} rotation={[0,side*.2,0]}/>)}
+   </group>)}
+  </group>
+ </group>;
+}
 function Crocodile({
   helmet = false,
   king = false,
@@ -448,7 +466,9 @@ export function EnemyModel({
   return (
     <group ref={root} dispose={null} name="enemy" userData={{ enemy }}>
       <group ref={body}>
-        {enemy.kind === "bee" ? (
+        {enemy.pattern === "necky" ? (
+          <Necky wings={wings}/>
+        ) : enemy.kind === "bee" ? (
           <Zinger wings={wings} />
         ) : enemy.kind === "beetle" ? (
           <Beaver gait={gait} />

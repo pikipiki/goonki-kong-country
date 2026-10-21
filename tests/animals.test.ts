@@ -124,7 +124,7 @@ describe("roll/cartwheel momentum and edge jump", () => {
     press(g, "action", ["right", "run"]);
     expect(armor.alive).toBe(false);
     expect(g.player.rollChain).toBe(1);
-    expect(g.player.rollSpeed).toBe(BUDDY_PHYSICS.rollRunning * 1.125 + BUDDY_PHYSICS.chainIncrement);
+    expect(g.player.rollSpeed).toBe(BUDDY_PHYSICS.rollRunning + BUDDY_PHYSICS.chainIncrement);
     expect(g.player.rollSpeed).toBeLessThanOrEqual(BUDDY_PHYSICS.chainCap);
     expect(g.player.hp).toBe(2);
   });

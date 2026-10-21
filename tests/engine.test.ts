@@ -1,3 +1,4 @@
+import {ENEMY_DESIGNS} from "../src/game/enemies";
 import { describe, it, expect } from "vitest";
 import { Game, emptyInput, STEP, ROM, readSave } from "../src/game/engine";
 import { LEVELS } from "../src/game/levels";
@@ -244,7 +245,7 @@ describe("team, barrels, collectibles, progression", () => {
       boss.hurt = 0;
       boss.y = 0;
       game.player.x = boss.x;
-      game.player.y = 2.26;
+      game.player.y = ENEMY_DESIGNS.boss.height - .09;
       game.player.vy = -1;
       game.update(emptyInput());
     }
@@ -257,7 +258,7 @@ describe("team, barrels, collectibles, progression", () => {
     game.start(6);
     const boss = game.enemies[0];
     game.player.x = boss.x;
-    game.player.y = 2.26;
+    game.player.y = ENEMY_DESIGNS.boss.height - .09;
     game.player.vy = -1;
     game.update(emptyInput());
     expect(boss.hp).toBe(5);
