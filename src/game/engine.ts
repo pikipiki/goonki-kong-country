@@ -22,6 +22,10 @@ export const ROM = {
   jump: [playerEvidence.findings.pinkNormalJump.values.verticalSpeedRaw,
     playerEvidence.findings.violetNormalJump.values.verticalSpeedRaw],
 };
+const THROW = playerEvidence.findings.thrownObjectVelocity.values;
+const CANNON_TEMPLATE = playerEvidence.findings.cannonBaseTemplate.values;
+const CANNON_VECTORS = playerEvidence.cannonBaseTemplateVectors;
+const JUMP_IMPULSE_DELAY_FRAMES = 2;
 const WORLD_PIXELS = 32;
 const rawSpeed = (raw: number) => ((raw / 256) * 60) / WORLD_PIXELS;
 const rawAcceleration = (raw: number) => rawSpeed(raw) * 60;
@@ -32,6 +36,7 @@ export type Phase =
 export interface Input {
   held: Set<Key>;
   pressed: Set<Key>;
+  released: Set<Key>;
 }
 export interface Enemy extends EnemySpec {
   originY: number;
@@ -86,9 +91,33 @@ export interface Player {
   cannonLock: number;
   cannonTime: number;
   launched: number;
+  cannonGravityDelay: number;
+  cannonControlDelay: number;
+  jumpDelay: number;
   coyote: number;
   buffer: number;
 }
+const cannonLaunchVelocity = (angleRad: number) => {
+  const aimX = Math.cos(angleRad);
+  const aimY = Math.sin(angleRad);
+  let best = 0;
+  let bestDot = -Infinity;
+  CANNON_VECTORS.forEach((v, i) => {
+    const vx = rawSpeed(v.velocityXRaw);
+    const vy = -rawSpeed(v.velocityYRaw);
+    const mag = Math.hypot(vx, vy) || 1;
+    const dot = (vx / mag) * aimX + (vy / mag) * aimY;
+    if (dot > bestDot) {
+      bestDot = dot;
+      best = i;
+    }
+  });
+  const v = CANNON_VECTORS[best];
+  return {
+    vx: rawSpeed(v.velocityXRaw),
+    vy: -rawSpeed(v.velocityYRaw),
+  };
+};
 const clamp = (x: number, a: number, b: number) => Math.max(a, Math.min(b, x));
 const approach = (x: number, target: number, max: number) =>
   x + clamp(target - x, -max, max);
@@ -104,6 +133,7 @@ const approachFootVelocity = (value: number, target: number) => {
 export const emptyInput = (): Input => ({
   held: new Set(),
   pressed: new Set(),
+  released: new Set(),
 });
 const defaultSave = (): Save => ({ unlocked: 0, best: {} });
 export function readSave(text: string | null): Save {
@@ -200,6 +230,7 @@ export class Game {
       mount: -1, mountAttack: 0, mountCooldown: 0,
       carry: -1,
       cannon: -1, cannonLock: -1, cannonTime: 0, launched: 0,
+      cannonGravityDelay: 0, cannonControlDelay: 0, jumpDelay: 0,
       coyote: 0.1,
       buffer: 0,
     };
@@ -292,6 +323,7 @@ export class Game {
       invincible: 2.5,
       carry: -1,
       cannon: -1, cannonLock: -1, cannonTime: 0, launched: 0,
+      cannonGravityDelay: 0, cannonControlDelay: 0, jumpDelay: 0,
       roll: 0, rollJump: false, rollChain: 0, mount: -1, mountAttack: 0, mountCooldown: 0.55,
     });
     this.trail = [];
@@ -411,16 +443,25 @@ export class Game {
       p.cannonTime += dt;
       if (input.pressed.has("jump") || input.pressed.has("action") || (barrel.autoFire && p.cannonTime > 0.15)) {
         const angle = this.cannonAngle(p.cannon);
+        const launch = cannonLaunchVelocity(angle);
         p.cannonLock = p.cannon;
-        p.launched = 0.65; p.grounded = false; p.coyote = 0; p.roll = 0; p.rollJump = false;
-        p.vx = Math.cos(angle) * 19;
-        p.vy = Math.sin(angle) * 19;
+        p.launched = 0.65;
+        p.cannonGravityDelay = CANNON_TEMPLATE.gravityDelayCounter;
+        p.cannonControlDelay = CANNON_TEMPLATE.controlDelayCounter;
+        p.grounded = false;
+        p.coyote = 0;
+        p.roll = 0;
+        p.rollJump = false;
+        p.vx = launch.vx;
+        p.vy = launch.vy;
         p.cannon = -1;
         p.invincible = 1;
         p.buffer = 0;
+        p.jumpDelay = 0;
         this.onEvent("cannon");
       } else return;
     }
+    const wasCarrying = p.carry >= 0;
     let actionUsed = false;
     if (input.pressed.has("action") && this.mount) {
       const kind = this.mount.kind;
@@ -435,18 +476,23 @@ export class Game {
         Math.abs(b.x - p.x) < 1.65 && Math.abs(b.y - p.y) < 1.8);
       if (crate) { this.releaseAnimal(crate); actionUsed = true; }
     }
-    if (input.pressed.has("action") && !actionUsed && !water && !cart && p.launched === 0) {
-      if (p.carry >= 0) {
-        this.thrown.push({
-          x: p.x + p.facing * 0.7,
-          y: p.y + 1,
-          vx: p.facing * 12,
-          vy: 3,
-          active: true,
-        });
-        p.carry = -1;
-        this.onEvent("throw");
-      } else {
+    if (!actionUsed && !water && !cart && p.launched === 0) {
+      if (wasCarrying && (input.released.has("action") || input.pressed.has("action"))) {
+        if (p.grounded && input.held.has("down")) {
+          this.usedBarrels.delete(p.carry);
+          p.carry = -1;
+        } else {
+          this.thrown.push({
+            x: p.x + p.facing * 0.7,
+            y: p.y + 1,
+            vx: p.facing * rawSpeed(THROW.horizontalInitialMagnitudeRaw),
+            vy: rawSpeed(THROW.verticalRaw),
+            active: true,
+          });
+          p.carry = -1;
+          this.onEvent("throw");
+        }
+      } else if (!wasCarrying && input.pressed.has("action")) {
         const barrel = this.level.barrels.findIndex(
           (b, i) =>
             b.kind === "throw" &&
@@ -470,6 +516,7 @@ export class Game {
         }
       }
     }
+    if (p.cannonControlDelay > 0) p.cannonControlDelay--;
     const direction =
       Number(input.held.has("right")) - Number(input.held.has("left"));
     if (direction && p.roll === 0 && p.mountAttack === 0) p.facing = direction;
@@ -478,7 +525,9 @@ export class Game {
       (input.held.has("run") || input.held.has("action") ? 5.625 : 3.75) *
       (p.active ? 1.125 : 1);
     if (cart) p.vx = 8.5;
-    else if (p.launched > 0) { /* Preserve the cannon impulse instead of braking it immediately. */ }
+    else if (p.cannonControlDelay > 0) {
+      /* ROM cannon flight: ignore steering until the control counter expires. */
+    } else if (p.launched > 0) { /* Preserve the cannon impulse instead of braking it immediately. */ }
     else if (p.roll > 0) p.vx = p.rollFacing * p.rollSpeed;
     else if (buddy?.kind === "enguarde" && p.mountAttack > 0) p.vx = p.facing * BUDDY_PHYSICS.stabSpeed;
     else if (buddy?.kind === "rambi" && p.mountAttack > 0) p.vx = p.facing * 9;
@@ -503,20 +552,36 @@ export class Game {
       p.vy = clamp(p.vy, -4, 4.3);
       }
     } else {
-      if (p.buffer > 0 && (p.coyote > 0 || p.rollJump)) {
-        p.vy = design ? design.jump : rawSpeed(ROM.jump[p.active]);
-        p.rollJump = false; p.roll = 0;
-        p.grounded = false;
-        p.coyote = 0;
+      if (p.jumpDelay > 0) {
+        p.jumpDelay--;
+        if (p.jumpDelay === 0 && (p.coyote > 0 || p.rollJump)) {
+          p.vy = design ? design.jump : rawSpeed(ROM.jump[p.active]);
+          p.rollJump = false;
+          p.roll = 0;
+          p.grounded = false;
+          p.coyote = 0;
+          this.onEvent("jump");
+        }
+      } else if (p.buffer > 0 && (p.coyote > 0 || p.rollJump)) {
         p.buffer = 0;
-        this.onEvent("jump");
+        if (p.rollJump) {
+          p.vy = design ? design.jump : rawSpeed(ROM.jump[p.active]);
+          p.rollJump = false;
+          p.roll = 0;
+          p.grounded = false;
+          p.coyote = 0;
+          this.onEvent("jump");
+        } else p.jumpDelay = JUMP_IMPULSE_DELAY_FRAMES;
       }
-      const gravity =
-        input.held.has("jump") ? buddy ? BUDDY_PHYSICS.heldGravity : ROM.held[p.active] : ROM.gravity;
-      p.vy = Math.max(
-        -rawSpeed(ROM.terminal),
-        p.vy - rawAcceleration(gravity) * dt,
-      );
+      if (p.cannonGravityDelay > 0) p.cannonGravityDelay--;
+      else {
+        const gravity =
+          input.held.has("jump") ? buddy ? BUDDY_PHYSICS.heldGravity : ROM.held[p.active] : ROM.gravity;
+        p.vy = Math.max(
+          -rawSpeed(ROM.terminal),
+          p.vy - rawAcceleration(gravity) * dt,
+        );
+      }
       // Expresso flutters while jump is tapped/held in the air, never climbs.
       if (buddy?.kind === "expresso" && !p.grounded && p.vy < 0 && input.held.has("jump"))
         p.vy = Math.max(p.vy, -1.8);
@@ -752,5 +817,6 @@ export class Game {
     if (this.levelId !== LEVELS.length - 1 && p.x >= this.level.length - 2)
       this.finish();
     input.pressed.clear();
+    input.released.clear();
   }
 }
