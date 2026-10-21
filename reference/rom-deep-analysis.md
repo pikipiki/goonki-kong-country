@@ -57,7 +57,7 @@ Livraison locale dans `public/audio/` : **27 fichiers M4A AAC et 119 fichiers WA
 ## Validation de cette passe
 
 - TypeScript : réussi.
-- **78 tests unitaires, onze fichiers : réussis**, dont `necky-ballistics.json`, bonus/canon/Necky, fixture `jungle-parity-walk.json` (**120** frames dk-walk recapturées).
+- **79 tests unitaires, onze fichiers : réussis**, dont parité vx **120** + terrain **241** sols SNES, `jungle-bonus-walls.json`, `necky-runtime-capture.json` (limite fosse).
 - Nouveau contrôle navigateur `test:original` : sol original actif, quatre lettres KONG, déplacement, lecture de DK Island Swing et d’un bruitage, passage à Aquatic Ambience, pause/reprise, portrait/paysage ; aucune erreur.
 - Tests navigateur et mobile historiques : réussis sur le build intégré, avec attente de l’arrêt après l’inertie mesurée. Six formats, sept transitions, multi-touch et clic ; aucune erreur.
 - Le premier rendu original a été inspecté en capture ; aucune partie complète de Jungle Hijinxs n’est attestée.

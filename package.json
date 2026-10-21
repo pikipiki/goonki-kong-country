@@ -26,7 +26,9 @@
     "generate:coral-terrain": "python3 scripts/generate_original_coral_terrain.py",
     "verify:rom": "python3 scripts/verify_rom_evidence.py",
     "relocate:pattern": "python3 scripts/relocate_rom_pattern.py",
-    "analyze:necky": "python3 scripts/analyze_necky_ballistics.py"
+    "analyze:necky": "python3 scripts/analyze_necky_ballistics.py",
+    "probe:jungle": "python3 scripts/probe_jungle_extensions.py",
+    "analyze:jungle-bonus": "python3 scripts/analyze_jungle_bonus_walls.py"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

@@ -6,7 +6,7 @@
 
 **Route ROM :** Jungle Hijinxs (`ROM_JUNGLE`, étape 0) et Coral Capers (`ROM_CORAL`, étape 3, `levelId` 3). `App` active la route originale pour 0 et 3. Cinq autres étapes restent le prototype.
 
-**Jungle (63/66 placements ROM) :** bonus rooms, **NutThrowingNecky** (noix `reference/necky-ballistics.json` : vx −300 / vy 768 raw, gravité −112, cadence **39** frames), **`finishZone`**. Parité dk-walk **120 frames** (`runtime-player-analysis.json` recapturé, `jungle-parity-walk.json`). **3 spawns** cmd 5/8/ExitDoor = métadonnées seulement.
+**Jungle (63/66 placements ROM) :** bonus rooms avec **`romRam1375`/`romRam13E9`** (`jungle-bonus-walls.json`), Necky (`necky-ballistics.json`), `finishZone`. Parité : **120** frames vx + **241** échantillons sol (`dk-walk-terrain` 300f, `jungle-parity-walk.json`). Capture noix live bloquée par fosse x≈454 → `necky-runtime-capture.json` + `npm run probe:jungle`.
 
 **Coral (37 placements) :** terrain bandes 512 px, `OriginalCoralGround`, `CoralScatter`, brouillard renforcé en route ROM. Pas de textures/façades extraites du chip graphique.
 
@@ -14,11 +14,11 @@
 
 **Joueur / canons :** portage maintien Action, lancer/poser, projectile vers **896 raw**, échange d’équipe animé ; canons avec compteurs **gravité/contrôle** par pas de simu (test `bonus-cannon.test.ts`), rotation visuelle en vol (`launched`).
 
-**78 tests, 11 fichiers** (`npm test`). `npm run analyze:necky`, `relocate:pattern`, `generate:jungle-parity` après probe ROM.
+**79 tests, 11 fichiers** (`npm test`). `probe:jungle`, `analyze:jungle-bonus`, `generate:jungle-parity`.
 
-**Limites honnêtes :** bonus **authored** ; trajectoire Necky multi-segments ROM pas rejouée (template spawn + gravité) ; pas de textures ROM.
+**Limites honnêtes :** loot bonus toujours **authored** (ROM `$1375` seulement annoté) ; Necky in-game SNES nécessite save state après la fosse ; pas de textures ROM.
 
-**Priorité suivante :** parité jungle avec **terrain** (pas dk-walk isolé), vrais niveaux bonus ROM, capture SNES Necky en jeu, écoute A/B audio, téléphones réels.
+**Priorité suivante :** save state / séquence saut vers x≈2560 pour noix SNES, décoder entrées bonus depuis `$1375`, parité simulation↔SNES sur pentes (pas seulement oracle X→floor), audio/mobile.
 
 **Désassemblage Yoshifanatic1 :** cible officielle **USA V1.0** (MD5 `30c5f292ff4cbbfcc00fd8fa96c2de3b`) — **pas** la Rev 2 (`revision` 2, SHA-256 dans `rom-analysis.json`). Utilisable pour **noms de routines / tables / logique**, avec relocalisation d’octets obligatoire (`analyze_level_tables.py`, `player-states.json`). Voir `reference/disassembly-rev2.md` après vérif MD5.
 

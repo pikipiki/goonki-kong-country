@@ -4,6 +4,9 @@ from pathlib import Path
 
 base = Path(__file__).resolve().parents[1]
 r = json.loads((base / "reference/level-tables.json").read_text())
+bonus_meta = json.loads((base / "reference/jungle-bonus-walls.json").read_text())[
+    "breakableWalls"
+]
 vectors = json.loads((base / "reference/player-states.json").read_text())[
     "cannonBaseTemplateVectors"
 ]
@@ -175,10 +178,13 @@ bonus_rooms = []
 for i, wall in enumerate(breakable_walls):
     wx, wy = wall["x"], wall["y"]
     bx = wx - 3.8 if i % 2 == 0 else wx + 1.2
+    meta = bonus_meta[i] if i < len(bonus_meta) else {}
     bonus_rooms.append(
         {
             "wallIndex": i,
             "label": "Salle bonus",
+            "romRam1375": meta.get("ram1375"),
+            "romRam13E9": meta.get("ram13E9"),
             "bounds": {"x": bx, "y": wy - 0.35, "w": 4.8, "h": 3.1},
             "pickups": [
                 {"x": bx + 1.4, "y": wy + 0.85, "kind": "banana", "amount": 10},
