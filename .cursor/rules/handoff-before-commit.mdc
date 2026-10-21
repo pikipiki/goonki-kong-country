@@ -1,0 +1,15 @@
+---
+description: Avant tout git commit dans ce dépôt, mettre à jour CLAUDE_HANDOFF.md (lire la skill handoff-before-commit).
+alwaysApply: true
+---
+
+# Handoff obligatoire avant commit
+
+Quand l'utilisateur demande un **commit** (ou un amend autorisé par ses règles git) :
+
+1. Lire et suivre **`.cursor/skills/handoff-before-commit/SKILL.md`** en entier.
+2. Mettre à jour la section **« État prioritaire de reprise »** en tête de **`CLAUDE_HANDOFF.md`** pour refléter le diff et l'état vérifiable (`npm test`, `reference/rom-deep-analysis.md` si touché).
+3. **Stager et committer `CLAUDE_HANDOFF.md` dans le même commit** que les changements de code liés.
+4. Puis exécuter le protocole git de l'utilisateur (message, hooks, pas de push sauf demande).
+
+Ne pas créer de commit sans cette étape. Ne pas committer sans demande explicite de l'utilisateur.

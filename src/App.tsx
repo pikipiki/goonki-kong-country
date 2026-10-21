@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import { Game, readSave, type Key, type Phase } from "./game/engine";
 import { ANIMAL_DESIGNS } from "./game/animals";
 import { ROM_JUNGLE } from "./game/originalJungle";
+import { ROM_CORAL } from "./game/originalCoral";
 import { LEVELS } from "./game/levels";
 import { Controls, KEYBOARD } from "./game/input";
 import { AudioSystem } from "./game/audio";
@@ -123,7 +124,7 @@ export function App() {
   const start = useCallback(
     (id = 0) => {
       audio.boot();
-      change(() => game.start(id, id === 0));
+      change(() => game.start(id, id === 0 || id === 3));
     },
     [audio, change, game],
   );
@@ -516,7 +517,7 @@ export function App() {
             </p>
             <IslandMap selected={mapLevel} initial={game.levelId} unlocked={game.save.unlocked} onSelect={setMapLevel}/>
             <button className="primary map-enter" onClick={() => start(mapLevel)}>
-              Entrer · {mapLevel === 0 ? ROM_JUNGLE.name : LEVELS[mapLevel].name}
+              Entrer · {mapLevel === 0 ? ROM_JUNGLE.name : mapLevel === 3 ? ROM_CORAL.name : LEVELS[mapLevel].name}
             </button>
             <p className="save-note">Choisis une étape ouverte : Rose et Violette la rejoignent sur la carte.</p>
             <div className="level-grid">
@@ -547,7 +548,7 @@ export function App() {
                       </span>
                     </div>
                     <span className="level-region">{level.subtitle}</span>
-                    <strong>{i===0?ROM_JUNGLE.name:level.name}</strong>
+                    <strong>{i===0?ROM_JUNGLE.name:i===3?ROM_CORAL.name:level.name}</strong>
                     <small>
                       {best
                         ? `${best.letters}/${i===0?4:5} lettres · ${Math.floor(best.time)} s`

@@ -1,0 +1,164 @@
+import { memo, useEffect, useMemo, useRef } from "react";
+import { useFrame } from "@react-three/fiber";
+import {
+  BufferGeometry,
+  CanvasTexture,
+  Color,
+  Float32BufferAttribute,
+  Group,
+  RepeatWrapping,
+  SRGBColorSpace,
+} from "three";
+import type { Game } from "../game/engine";
+import {
+  ORIGINAL_CORAL_TERRAIN,
+  coralTerrainCellSNES,
+  coralWebYFromRom,
+} from "../game/originalCoralTerrain";
+
+const CHUNK_COLUMNS = 16,
+  STRIP_PIXELS = 2,
+  FRONT = 1.6,
+  BACK = -1.6;
+
+function noise(seed: number) {
+  const n = Math.sin(seed * 127.1 + 311.7) * 43758.5453;
+  return n - Math.floor(n);
+}
+
+export function createCoralGroundGeometry(
+  firstColumn: number,
+  columnCount = CHUNK_COLUMNS,
+) {
+  const positions: number[] = [],
+    uvs: number[] = [],
+    colors: number[] = [];
+  const originY = ORIGINAL_CORAL_TERRAIN.marineOriginY;
+  function quad(points: number[][], tint: string, seed: number) {
+    const shade = new Color(tint).multiplyScalar(0.85 + noise(seed) * 0.3);
+    for (const i of [0, 1, 2, 0, 2, 3]) {
+      const [x, y, z] = points[i];
+      positions.push(x, y, z);
+      uvs.push(x * 0.7, y * 0.7);
+      colors.push(shade.r, shade.g, shade.b);
+    }
+  }
+  const max = Math.min(
+    ORIGINAL_CORAL_TERRAIN.widthPixels,
+    (firstColumn + columnCount) * 32,
+  );
+  for (let px = firstColumn * 32; px < max; px += STRIP_PIXELS) {
+    const intervals: { bottom: number; left: number; right: number }[] = [];
+    for (let row = 15; row >= 0; row--) {
+      const left = coralTerrainCellSNES(px, row),
+        right = coralTerrainCellSNES(px + STRIP_PIXELS - 1, row);
+      if (!left && !right) continue;
+      const bottom = (15 - row) * 32,
+        l = left?.floorY ?? bottom,
+        r = right?.floorY ?? bottom,
+        previous = intervals[intervals.length - 1];
+      if (previous && bottom <= Math.min(previous.left, previous.right) + 1) {
+        previous.left = Math.max(previous.left, l);
+        previous.right = Math.max(previous.right, r);
+      } else intervals.push({ bottom, left: l, right: r });
+    }
+    const x0 = px / 32,
+      x1 = (px + STRIP_PIXELS) / 32;
+    intervals.forEach((span, i) => {
+      const y0 = coralWebYFromRom(originY + span.bottom) - 3,
+        yl = coralWebYFromRom(originY + span.left) - 3,
+        yr = coralWebYFromRom(originY + span.right) - 3,
+        seed = Math.floor(px / 12) + i * 19;
+      quad(
+        [[x0, y0, FRONT], [x1, y0, FRONT], [x1, yr, FRONT], [x0, yl, FRONT]],
+        "#5a7a72",
+        seed,
+      );
+      quad(
+        [[x1, y0, BACK], [x0, y0, BACK], [x0, yl, BACK], [x1, yr, BACK]],
+        "#3d524c",
+        seed,
+      );
+    });
+  }
+  const geometry = new BufferGeometry();
+  geometry.setAttribute("position", new Float32BufferAttribute(positions, 3));
+  geometry.setAttribute("uv", new Float32BufferAttribute(uvs, 2));
+  geometry.setAttribute("color", new Float32BufferAttribute(colors, 3));
+  geometry.computeVertexNormals();
+  geometry.computeBoundingSphere();
+  return geometry;
+}
+
+function reefTexture() {
+  const canvas = document.createElement("canvas");
+  canvas.width = canvas.height = 128;
+  const ctx = canvas.getContext("2d")!,
+    data = ctx.createImageData(128, 128);
+  for (let y = 0; y < 128; y++)
+    for (let x = 0; x < 128; x++) {
+      const i = (y * 128 + x) * 4,
+        n = 0.42 + noise(x + y * 128) * 0.35;
+      data.data[i] = Math.round(n * 90);
+      data.data[i + 1] = Math.round(n * 130);
+      data.data[i + 2] = Math.round(n * 115);
+      data.data[i + 3] = 255;
+    }
+  ctx.putImageData(data, 0, 0);
+  const map = new CanvasTexture(canvas);
+  map.wrapS = map.wrapT = RepeatWrapping;
+  map.colorSpace = SRGBColorSpace;
+  return map;
+}
+
+function GroundChunk({
+  game,
+  index,
+  map,
+}: {
+  game: Game;
+  index: number;
+  map: CanvasTexture;
+}) {
+  const root = useRef<Group>(null),
+    geometry = useMemo(
+      () => createCoralGroundGeometry(index * CHUNK_COLUMNS),
+      [index],
+    );
+  useEffect(() => () => geometry.dispose(), [geometry]);
+  useFrame(() => {
+    if (root.current)
+      root.current.visible =
+        Math.abs(index * CHUNK_COLUMNS + CHUNK_COLUMNS / 2 - game.player.x) < 28;
+  });
+  return (
+    <group ref={root}>
+      <mesh geometry={geometry}>
+        <meshStandardMaterial
+          map={map}
+          bumpMap={map}
+          bumpScale={0.02}
+          vertexColors
+          roughness={0.95}
+        />
+      </mesh>
+    </group>
+  );
+}
+
+export const OriginalCoralGround = memo(function OriginalCoralGround({
+  game,
+}: {
+  game: Game;
+}) {
+  const map = useMemo(reefTexture, []);
+  useEffect(() => () => map.dispose(), [map]);
+  const chunks = Math.ceil(200 / CHUNK_COLUMNS);
+  return (
+    <>
+      {Array.from({ length: chunks }, (_, i) => (
+        <GroundChunk key={i} game={game} index={i} map={map} />
+      ))}
+    </>
+  );
+});

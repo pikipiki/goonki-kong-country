@@ -45,7 +45,13 @@ function Director({
     focus.current += (desired - focus.current) * (1 - Math.exp(-delta * 5));
     const cam = camera as OrthographicCamera;
     cam.zoom = layout.zoom;
-    const followY=game.level.originalTerrain ? Math.abs(game.player.y)>1.8 ? game.player.y-Math.sign(game.player.y)*1.8 : 0 : 0;
+    const depthFollow =
+      game.level.originalTerrain === "jungle" ||
+      game.level.originalTerrain === "coral";
+    const followY =
+      depthFollow && Math.abs(game.player.y) > 1.2
+        ? game.player.y - Math.sign(game.player.y) * 1.5
+        : 0;
     const lookY=layout.lookY+followY;
     const cameraY = lookY + 2.25;
     cam.position.set(focus.current, cameraY, 22);

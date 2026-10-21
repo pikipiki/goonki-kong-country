@@ -185,6 +185,92 @@ function Pickups({ game }: { game: Game }) {
     </group>
   );
 }
+
+function OriginalLevelProps({ game }: { game: Game }) {
+  const level = game.level;
+  const sparkle = useMemo(() => textTexture("✦", "#ffe6a5"), []);
+  useEffect(() => () => sparkle.dispose(), [sparkle]);
+  const caches = level.itemCaches;
+  const walls = level.breakableWalls;
+  const decors = level.decors;
+  if (!caches?.length && !walls?.length && !decors?.length) return null;
+  return (
+    <group>
+      {walls?.map((wall, i) =>
+        game.brokenWalls.has(i) ? null : (
+          <mesh
+            key={`wall-${i}`}
+            geometry={box}
+            position={[wall.x, wall.y + wall.h / 2, 0]}
+            scale={[wall.w, wall.h, 0.35]}
+          >
+            <meshStandardMaterial color="#4a4038" roughness={0.95} />
+          </mesh>
+        ),
+      )}
+      {caches?.map((cache, i) => {
+        if (game.collectedCaches.has(i)) return null;
+        const revealed = game.revealedCaches.has(i);
+        return (
+          <group key={`cache-${i}`} position={[cache.x, cache.y, 0.2]}>
+            <mesh geometry={box} scale={[0.55, 0.45, 0.25]}>
+              <meshStandardMaterial color={revealed ? "#c9a227" : "#3d2817"} />
+            </mesh>
+            {revealed ? (
+              <Label text="!" position={[0, 0.35, 0.15]} scale={0.28} />
+            ) : null}
+          </group>
+        );
+      })}
+      {decors?.map((decor, i) => (
+        <group key={`decor-${i}`} position={[decor.x, decor.y, 0.15]}>
+          {decor.kind === "butterfly" ? (
+            <mesh geometry={sphere} scale={[0.14, 0.09, 0.05]}>
+              <meshStandardMaterial color="#ffb6c8" emissive="#331122" />
+            </mesh>
+          ) : null}
+          {decor.kind === "token" ? (
+            <mesh
+              geometry={cylinder}
+              scale={[0.35, 0.12, 0.35]}
+              rotation={[Math.PI / 2, 0, 0]}
+            >
+              <meshStandardMaterial color="#e8c84a" metalness={0.7} />
+            </mesh>
+          ) : null}
+          {decor.kind === "sign" ? (
+            <>
+              <mesh geometry={box} position={[0, 0.5, 0]} scale={[0.08, 1, 0.08]}>
+                <meshStandardMaterial color="#6b4a2a" />
+              </mesh>
+              <mesh
+                geometry={box}
+                position={[0.15, 0.85, 0]}
+                scale={[0.5, 0.35, 0.06]}
+              >
+                <meshStandardMaterial color="#8d6840" />
+              </mesh>
+            </>
+          ) : null}
+          {decor.kind === "sparkle" ? (
+            <Sprite
+              position={[0, 0, 0]}
+              scale={[0.4, 0.4, 1]}
+              material={
+                new SpriteMaterial({
+                  map: sparkle,
+                  transparent: true,
+                  depthWrite: false,
+                })
+              }
+            />
+          ) : null}
+        </group>
+      ))}
+    </group>
+  );
+}
+
 export const Actors = memo(function Actors({ game }: { game: Game }) {
   const level = game.level;
   const barrels = useRef<Group>(null),
@@ -247,6 +333,7 @@ export const Actors = memo(function Actors({ game }: { game: Game }) {
     <>
       <ContactShadows game={game} />
       <Pickups game={game} />
+      <OriginalLevelProps game={game} />
       <group ref={barrels}>
         {level.barrels.map((b, i) => (
           <group key={i} position={[b.x, b.y, 0]}>

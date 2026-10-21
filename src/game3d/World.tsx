@@ -1,4 +1,5 @@
 import { OriginalGround } from "./OriginalGround";
+import { OriginalCoralGround } from "./OriginalCoralGround";
 import { memo, useLayoutEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import {
@@ -721,6 +722,49 @@ function Ground({ platform, game }: { platform: Platform; game: Game }) {
     </group>
   );
 }
+function CoralScatter({ length }: { length: number }) {
+  const items = useMemo(
+    () =>
+      Array.from({ length: Math.ceil(length / 6) + 2 }, (_, i) => ({
+        x: i * 6 + random(i) * 4,
+        z: -4 + random(i + 11) * 7,
+        scale: 0.35 + random(i + 23) * 0.9,
+        rot: random(i + 37) * Math.PI * 2,
+        tone: 0.42 + random(i + 51) * 0.35,
+      })),
+    [length],
+  );
+  return (
+    <group>
+      {items.map((item, i) => (
+        <group key={i} position={[item.x, -2.8 - item.scale * 0.6, item.z]}>
+          <mesh
+            geometry={cone}
+            rotation={[0.15, item.rot, 0]}
+            scale={[item.scale, item.scale * 1.55, item.scale]}
+          >
+            <meshStandardMaterial
+              color={`hsl(${158 + item.tone * 48}, ${48 + item.tone * 20}%, ${38 + item.tone * 18}%)`}
+              roughness={0.72}
+              metalness={0.05}
+            />
+          </mesh>
+          <mesh
+            geometry={sphere}
+            position={[item.scale * 0.35, item.scale * 0.2, item.scale * 0.2]}
+            scale={[item.scale * 0.35, item.scale * 0.35, item.scale * 0.35]}
+          >
+            <meshStandardMaterial
+              color={`hsl(${185 + item.tone * 30}, 70%, ${72 + item.tone * 12}%)`}
+              emissive="#4a9aaa"
+              emissiveIntensity={0.15}
+            />
+          </mesh>
+        </group>
+      ))}
+    </group>
+  );
+}
 function Motes({ game }: { game: Game }) {
   const ref = useRef<InstancedMesh>(null),
     n = game.level.biome === "snow" ? 55 : 22,
@@ -780,9 +824,15 @@ export const World = memo(function World({
         color={level.biome === "lagoon" ? "#5faccc" : "#7aa77a"}
         intensity={0.8}
       />
-      {level.originalTerrain === "jungle" ? <OriginalGround game={game}/> : level.platforms.map((platform, i) => (
-        <Ground key={i} platform={platform} game={game} />
-      ))}
+      {level.originalTerrain === "jungle" ? (
+        <OriginalGround game={game} />
+      ) : level.originalTerrain === "coral" ? (
+        <OriginalCoralGround game={game} />
+      ) : (
+        level.platforms.map((platform, i) => (
+          <Ground key={i} platform={platform} game={game} />
+        ))
+      )}
       {chunks.map((x) => (
         <ForestChunk key={x} x={x} biome={level.biome} game={game} />
       ))}
@@ -797,6 +847,9 @@ export const World = memo(function World({
           roughness={0.28}
         />
       </mesh>
+      {level.originalTerrain === "coral" && (
+        <CoralScatter length={level.length} />
+      )}
       {level.biome === "jungle" && (
         <group position={[21, 2, -23]}>
           <mesh geometry={rock} scale={[4, 8, 3]} position={[-3, -1, -2]}>

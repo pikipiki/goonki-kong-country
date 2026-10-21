@@ -1,24 +1,24 @@
-# État prioritaire de reprise — 0.4.0, analyse en exécution
+# État prioritaire de reprise — 0.4.0
 
 **Cette section prévaut sur tous les rapports historiques conservés plus bas.** Lire `reference/rom-deep-analysis.md`, puis `runtime-player-analysis.json`, `level-tables.md`, `audio-rom-analysis.md` et `audio-playback-notes.md`.
 
-L’utilisateur a demandé une analyse approfondie de la ROM et de continuer jusqu’à épuisement du quota. Une première limite a interrompu les agents, puis la fenêtre de cinq heures s’est renouvelée naturellement. Aucun reset n’a été consommé. Au dernier contrôle de cette seconde passe, 92 % étaient utilisés sur5h et48 % sur la semaine ; les valeurs historiques plus bas ne sont plus actuelles.
+**Dépôt :** `Documents/git/goonk-country` (remote GitHub `pikipiki/goonki-kong-country`). Avant chaque commit : mettre à jour cette section et suivre `.cursor/skills/handoff-before-commit/SKILL.md` (règle `.cursor/rules/handoff-before-commit.mdc`).
 
-**Nouveautés concrètes :** frontend Snes9x/libretro en Python, démarrage et parties réels de la ROM, observations DK/Diddy sans patchRAM, 18 signatures joueur/canon/portage supplémentaires, terrain et placements de Jungle Hijinxs et Coral Capers extraits, données du pilote audio et BRR vérifiées, 27 musiques et119effets réellement capturés, conditionnés et intégrés.
+**Route ROM :** Jungle Hijinxs (`ROM_JUNGLE`, étape 0) et Coral Capers (`ROM_CORAL`, étape 3, `levelId` 3). `App` active la route originale pour 0 et 3. Cinq autres étapes restent le prototype.
 
-Le navigateur lance désormais Jungle Hijinxs dérivé de la ROM pour l’étape0 (terrain original et sous-ensemble des objets, quatre lettres KONG). Les six autres étapes restent créées. `Game.start(id,original=false)` préserve l’ancien parcours pour les tests ; `App.start(0)` active le parcours ROM. `get level` choisit ROM_JUNGLE lorsque `originalRoute` est actif. Rendu original dans `OriginalGround.tsx`, sondage dans `originalTerrain.ts`, données dans `originalJungle.ts`, générateurs Python disponibles. **37 objets originaux ne sont pas importés**, l’IA et la résolution de collisions sont encore partiellement adaptées ; ce n’est pas un port terminé.
+**Jungle (63/66 placements ROM) :** générateur `generate_original_jungle.py` (spawns cmd 1/15) — 17 ItemCache, 4 BreakableWall, décors (papillon, panneau, jeton, étincelles). Moteur : révélation/collecte caches, murs au roll ou baril lancé, indices panneaux. Rendu `OriginalLevelProps` dans `Actors.tsx`. Parité marche : `reference/jungle-parity-walk.json` + `tests/jungle-parity.test.ts` (dk-walk isolé). **3 spawns** encore omis (métadonnées sortie / scripts partiels).
 
-La gravité maintenue agit désormais aussi à la descente ; l’impulsion de Violette utilise2138raw ; le lissage horizontal à pied suit les traces8.8. Le délai observé de2frames avant impulsion n’est pas encore intégré. Le portage natif et les17visites sansgravité/contrôle après un canon sont prouvés, mais le moteur conserve leurs versions simplifiées : continuer ici sans inventer de constantes.
+**Coral (37 placements) :** `generate_original_coral.py`, terrain `originalCoralTerrain.ts` avec bandes marine **512 px** (`marineBandLocal`, `probeCoralAtRom`), rendu `OriginalCoralGround.tsx`, décors sign/token. Collision et DA corail restent partielles vs ROM.
 
-`public/audio/manifest.json` contient27musiquesM4A+119WAV et provenance (~51,2Mio). `audio.ts` diffuse la musique par HTMLAudio et les effets courts par WebAudio ; **la vieille synthèse est supprimée**. Dix-neuf boucles sont des candidates non parfaites, huit pistes n’ont pas de boucle identifiée. Captures contrôlées et limites précises dans le rapport ; ne plus dire que l’audio est une boucle synthétique, ni prétendre à un mixage entièrement identique.
+**Audio :** manifest 27 M4A + 119 WAV ; `audio.ts` HTMLAudio/WebAudio (SFX reveal/barrel-break mappés). Pas de mixage SNES identique.
 
-**58 tests passent dans7fichiers**, TypeScript et tests navigateur/mobile passent ; nouveau `npm run test:original` valide terrain, mouvement et lecture audio/changement/pause. Le build passe avec un avertissement de taille du bundle. La validation finale de copie vers le dépôt réel est consignée dans `reference/validation.md`.
+**Joueur / canons :** oracles runtime dans les tests ; délai 2 frames avant impulsion et portage SNES complet encore ouverts.
 
-Commandes nouvelles : `npm run analyze:player`, `npm run analyze:audio`, `npm run analyze:levels`, `npm run verify:rom`, `npm run test:original`. Le vérificateur réexamine55observations bytes explicites /962octets distincts ; les grands tableaux ont leurs propres contrôles. Ne pas transformer ce comptage en pourcentage de rétro-ingénierie achevée.
+**70 tests unitaires, 9 fichiers** (`npm test`). Générateurs : `npm run generate:jungle`, `generate:jungle-parity`, `generate:coral`, `generate:coral-terrain`, `generate:terrain`. `npm run test:original` pour smoke navigateur terrain/audio.
 
-**Runtime de référence :** `/Users/sevenone./Documents/Codex/2026-10-21/cre/work/snes9x`, commitfae2fea08f74180759ef540ee94259213f503480 ; patch `scripts/snes_analysis_bridge.patch`, compilation `make -C libretro -j4 platform=osx`. États, captures et WAVsources dans `work/runtime-rom/`. Le cœur analysant est externe au jeu web ; les JSON conservent ROM/core/frontend/stateSHA et les changements mémoire contrôlés. Les traces de mouvement n’utilisent pas de patchRAM.
+**Runtime SNES de référence (hors repo) :** snes9x libretro + `work/runtime-rom/` ; traces sans patch RAM.
 
-**Priorité :** rejouer tout le premier niveau, implémenter portage/canons avec les états prouvés, importer les objets manquants et Coral Capers, affiner DA/sons et tester les vrais téléphones. Tout le travail reste non commité ; préserver les fichiers non suivis. Le dossier `work/goonk-country` est le staging, le dépôt sous `Documents/git` est la référence après synchronisation finale.
+**Priorité suivante :** salles bonus liées aux murs, rejouabilité jungle complète (pas seulement fixture dk-walk), portage/canon fidèle, façades/DA ROM, validation téléphones réels, écoute audio comparative.
 
 ---
 

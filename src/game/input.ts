@@ -38,6 +38,9 @@ export class Controls {
     this.input.pressed.clear();
     this.input.released.clear();
   }
+  setClickMode(mode: boolean) {
+    this.input.clickMode = mode;
+  }
   gamepad() {
     const pad = Array.from(navigator.getGamepads?.() ?? []).find(Boolean);
     const bindings: [string, Key, boolean][] = [

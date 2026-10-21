@@ -40,7 +40,7 @@ Sont aussi prouvés statiquement : porter avec Y maintenu, lancer au relâchemen
 
 **Le premier parcours lancé depuis l’interface utilise désormais ces données originales** : départ X156/Y175 avec origine verticale175, quatre lettres KONG, 34 bananes issues des bitmaps, quatre régimes valant10, onze ennemis compatibles, quatre tonneaux, cinq ballons et la caisse Rambi. Les coordonnées et les omissions sont détaillées dans `ORIGINAL_JUNGLE_PROVENANCE`. Les générateurs peuvent reproduire les fichiers TypeScript.
 
-Il reste **37 placements non importés** et des comportements non reproduits. Le sondage est authentique, mais la résolution des collisions du joueur, les parois/plafonds, le rendu des façades, les animations et l’IA demeurent partiellement adaptés. Les six autres étapes sont encore des créations du prototype. Coral Capers est analysé, mais son tracé original n’est pas encore branché. La carte 3D conserve les sept étapes actuelles.
+Il reste **3 placements jungle non importés** (métadonnées porte de sortie / scripts partiels) et des comportements non reproduits. Le sondage est authentique, mais la résolution des collisions du joueur, les parois/plafonds, le rendu des façades, les animations et l’IA demeurent partiellement adaptés. Les six autres étapes sont encore des créations du prototype. Coral Capers expose **37 placements ROM** via `ROM_CORAL` (niveau 3, route originale), dont panneaux et jeton buddy en décor ; collision sous-marine utilise des bandes **512 px** sur l’axe Y ROM. La carte 3D conserve les sept étapes actuelles.
 
 ## Audio réellement issu de la ROM
 
@@ -57,7 +57,7 @@ Livraison locale dans `public/audio/` : **27 fichiers M4A AAC et 119 fichiers WA
 ## Validation de cette passe
 
 - TypeScript : réussi.
-- **58 tests unitaires, sept fichiers : réussis**, dont oracles de mouvement et terrain original.
+- **70 tests unitaires, neuf fichiers : réussis**, dont oracles de mouvement, terrain original, fixture `jungle-parity-walk.json` (dk-walk frame par frame en jungle isolée).
 - Nouveau contrôle navigateur `test:original` : sol original actif, quatre lettres KONG, déplacement, lecture de DK Island Swing et d’un bruitage, passage à Aquatic Ambience, pause/reprise, portrait/paysage ; aucune erreur.
 - Tests navigateur et mobile historiques : réussis sur le build intégré, avec attente de l’arrêt après l’inertie mesurée. Six formats, sept transitions, multi-touch et clic ; aucune erreur.
 - Le premier rendu original a été inspecté en capture ; aucune partie complète de Jungle Hijinxs n’est attestée.
@@ -65,8 +65,8 @@ Livraison locale dans `public/audio/` : **27 fichiers M4A AAC et 119 fichiers WA
 
 ## Suite la plus utile
 
-1. Rejouer Jungle Hijinxs entièrement dans le web et la ROM avec les mêmes entrées ; corriger collisions parois/plafonds, caméra, ennemis et objets omis.
-2. Intégrer les états prouvés du portage/lancer et des canons, avec préparation d’animation et compteurs réels. Conserver une interaction au clic utilisable.
-3. Brancher le tracé de Coral Capers, puis étendre l’extraction aux autres niveaux et environnements.
-4. Vérifier les boucles à l’écoute, réduire les coupures, associer les effets restants et tester Safari/Android réels.
-5. Refaire les façades, textures et compositions en 3D d’après des cadrages de la ROM ; les géométries de collision ne sont pas les modèles artistiques originaux.
+1. **Jungle Hijinxs** — **63/66 placements** (17 ItemCache révélables, 4 BreakableWall, décor papillon/panneau/jeton) ; moteur + `Actors` pour caches/murs ; parité horizontale dk-walk sur fixture JSON. Bonus rooms liées aux murs et IA Necky complète restent ouverts.
+2. **Portage / canons** — délai de saut, lancer au relâchement, compteurs canon, lancer au **tap** en mode clic ; poses d’animation SNES encore absentes.
+3. **Coral Capers** — `ROM_CORAL`, métatuiles sous-marines avec `marineBandLocal` / `probeCoralAtRom` (`originalCoralTerrain.ts`, origine Y=17960), rendu `OriginalCoralGround`, décors sign/token ; autres niveaux à extraire.
+4. **Audio** — boucles HTMLAudio avec repositionnement à la frontière, SFX portage/checkpoint/lancer ; **écoute comparative** et **téléphones réels** non validés.
+5. **DA** — fonds corail procéduraux sur route Coral ; façades ROM fidèles et textures extraites restent à faire.
