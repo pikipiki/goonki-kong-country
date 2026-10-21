@@ -96,6 +96,9 @@ describe("team, barrels, collectibles, progression", () => {
     input.pressed.add("swap");
     game.update(input);
     expect(game.player.active).toBe(1);
+    expect(game.swap).not.toBeNull();
+    for (let i = 0; i < 30; i++) game.update(emptyInput());
+    expect(game.swap).toBeNull();
     game.player.hp = 1;
     input.pressed.add("swap");
     game.update(input);
@@ -179,6 +182,23 @@ describe("team, barrels, collectibles, progression", () => {
     expect(game.player.carry).toBe(-1);
     expect(game.thrown).toHaveLength(1);
     expect(game.thrown[0].vx).toBeGreaterThan(0);
+    const initial = game.thrown[0].vx;
+    let slowed = initial;
+    for (let i = 0; i < 8; i++) {
+      game.update(emptyInput());
+      if (game.thrown[0]?.active) slowed = game.thrown[0].vx;
+    }
+    expect(slowed).toBeLessThan(initial);
+    expect(slowed).toBeGreaterThan(0);
+  });
+  it("picks up a barrel while holding action in range (ROM hold path)", () => {
+    const game = new Game();
+    game.start();
+    game.player.x = 19;
+    const input = emptyInput();
+    input.held.add("action");
+    game.update(input);
+    expect(game.player.carry).toBe(1);
   });
   it("launches from cannon and permits a subsequent landing", () => {
     const game = new Game();

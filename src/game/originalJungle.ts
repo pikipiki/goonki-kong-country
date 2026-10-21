@@ -1,4 +1,4 @@
-import type { Level, Pickup, Platform, ItemCacheSpec, BreakableWallSpec, LevelDecor } from "./levels";
+import type { Level, Pickup, Platform, ItemCacheSpec, BreakableWallSpec, BonusRoomSpec, LevelDecor } from "./levels";
 import { terrainCellSNES } from "./originalTerrain";
 /** Coordinates proven against USA Rev2 metadata; see reference/level-tables.md.
  * Terrain uses exact ROM profiles in physics; these small rectangles support
@@ -28,6 +28,8 @@ const originalPickups: OriginalPickup[] = [{"x":24.71875,"y":8.53125,"kind":"ban
 const itemCaches: ItemCacheSpec[] = [{"x":6.0,"y":5.5,"reward":{"kind":"banana","amount":10}},{"x":10.5,"y":0.0,"reward":{"kind":"banana","amount":10}},{"x":12.5,"y":0.0,"reward":{"kind":"banana","amount":10}},{"x":15.4375,"y":-0.03125,"reward":{"kind":"banana","amount":1}},{"x":30.09375,"y":2.5,"reward":{"kind":"banana","amount":10}},{"x":32.0,"y":7.5,"reward":{"kind":"banana","amount":10}},{"x":42.0,"y":-0.5,"reward":{"kind":"banana","amount":10}},{"x":42.0,"y":2.0,"reward":{"kind":"banana","amount":10}},{"x":42.0,"y":7.5,"reward":{"kind":"banana","amount":10}},{"x":47.0,"y":-0.5,"reward":{"kind":"banana","amount":10}},{"x":47.0,"y":2.0,"reward":{"kind":"banana","amount":10}},{"x":52.0,"y":5.5,"reward":{"kind":"banana","amount":10}},{"x":80.0,"y":2.0,"reward":{"kind":"banana","amount":10}},{"x":132.0,"y":1.5,"reward":{"kind":"banana","amount":10}},{"x":136.53125,"y":-2.03125,"reward":{"kind":"banana","amount":1}},{"x":153.25,"y":-2.0,"reward":{"kind":"banana","amount":10}},{"x":156.75,"y":-2.0,"reward":{"kind":"banana","amount":10}}];
 const breakableWalls: BreakableWallSpec[] = [{"x":0.125,"y":5.5,"w":1.6,"h":6.7},{"x":2.625,"y":0.0,"w":1.6,"h":2.5},{"x":111.375,"y":-2.0625,"w":1.6,"h":2.5},{"x":134.375,"y":-4.0625,"w":1.6,"h":2.5}];
 const decors: LevelDecor[] = [{"x":0.75,"y":5.78125,"kind":"sparkle"},{"x":0.75,"y":5.78125,"kind":"sparkle"},{"x":6.625,"y":2.78125,"kind":"butterfly"},{"x":76.0,"y":0.03125,"kind":"sparkle"},{"x":80.0,"y":-0.375,"kind":"token"},{"x":94.65625,"y":2.25,"kind":"butterfly"},{"x":128.65625,"y":2.09375,"kind":"sparkle"},{"x":150.78125,"y":-2.09375,"kind":"sign","text":"Cherche les caches cachées."},{"x":163.25,"y":-4.21875,"kind":"sign","text":"La sortie est tout droit."}];
+const bonusRooms: BonusRoomSpec[] = [{"wallIndex":0,"label":"Salle bonus","bounds":{"x":-3.675,"y":5.15,"w":4.8,"h":3.1},"pickups":[{"x":-2.275,"y":6.35,"kind":"banana","amount":10},{"x":-1.0749999999999997,"y":5.95,"kind":"banana","amount":1},{"x":-0.17499999999999982,"y":6.55,"kind":"balloon","amount":1}]},{"wallIndex":1,"label":"Salle bonus","bounds":{"x":3.825,"y":-0.35,"w":4.8,"h":3.1},"pickups":[{"x":5.225,"y":0.85,"kind":"banana","amount":10},{"x":6.425000000000001,"y":0.45,"kind":"banana","amount":1},{"x":7.325,"y":1.05,"kind":"balloon","amount":1}]},{"wallIndex":2,"label":"Salle bonus","bounds":{"x":107.575,"y":-2.4125,"w":4.8,"h":3.1},"pickups":[{"x":108.97500000000001,"y":-1.2125,"kind":"banana","amount":10},{"x":110.175,"y":-1.6125,"kind":"banana","amount":1},{"x":111.075,"y":-1.0125,"kind":"balloon","amount":1}]},{"wallIndex":3,"label":"Salle bonus","bounds":{"x":135.575,"y":-4.4125,"w":4.8,"h":3.1},"pickups":[{"x":136.975,"y":-3.2125,"kind":"banana","amount":10},{"x":138.17499999999998,"y":-3.6125,"kind":"banana","amount":1},{"x":139.075,"y":-3.0125,"kind":"balloon","amount":1}]}];
+const movingPlatforms: Platform[] = [{"x":167.46875,"y":5.28125,"w":2.4,"h":0.55,"kind":"moving","travel":1.6}];
 export const ROM_JUNGLE: Level & {
   originalTerrain: "jungle"; start: {x:number;y:number}; letterWord: "KONG";
 } = {
@@ -39,13 +41,14 @@ export const ROM_JUNGLE: Level & {
   start: {x:156/32,y:0},
   letterWord: "KONG",
   length: ORIGINAL_JUNGLE_EXIT.x + 2,
-  platforms: [...presentationPlatforms(), ...[{"x":167.46875,"y":5.28125,"w":2.4,"h":0.55,"kind":"moving","travel":1.6}]],
+  platforms: [...presentationPlatforms(), ...movingPlatforms],
   pickups: originalPickups,
-  enemies: [{"x":16.65625,"y":0.0,"min":0,"max":167.5,"kind":"beetle"},{"x":26.15625,"y":2.0,"min":0,"max":167.5,"kind":"croc"},{"x":29.75,"y":0.0,"min":0,"max":167.5,"kind":"beetle"},{"x":43.53125,"y":1.90625,"min":0,"max":167.5,"kind":"croc"},{"x":48.09375,"y":2.0,"min":0,"max":167.5,"kind":"croc"},{"x":57.125,"y":1.0625,"min":0,"max":167.5,"kind":"armored"},{"x":60.65625,"y":1.4375,"min":0,"max":167.5,"kind":"armored"},{"x":80.0,"y":2.03125,"min":68.0,"max":92.0,"kind":"bee"},{"x":117.5,"y":1.5,"min":0,"max":167.5,"kind":"croc"},{"x":120.875,"y":2.5,"min":0,"max":167.5,"kind":"croc"},{"x":124.0,"y":3.5,"min":0,"max":167.5,"kind":"croc"},{"x":142.5,"y":-1.84375,"min":0,"max":167.5,"kind":"armored"}],
+  enemies: [{"x":16.65625,"y":0.0,"min":0,"max":167.5,"kind":"beetle"},{"x":26.15625,"y":2.0,"min":0,"max":167.5,"kind":"croc"},{"x":29.75,"y":0.0,"min":0,"max":167.5,"kind":"beetle"},{"x":43.53125,"y":1.90625,"min":0,"max":167.5,"kind":"croc"},{"x":48.09375,"y":2.0,"min":0,"max":167.5,"kind":"croc"},{"x":57.125,"y":1.0625,"min":0,"max":167.5,"kind":"armored"},{"x":60.65625,"y":1.4375,"min":0,"max":167.5,"kind":"armored"},{"x":80.0,"y":2.03125,"min":80.0,"max":80.0,"kind":"bee","pattern":"necky"},{"x":117.5,"y":1.5,"min":0,"max":167.5,"kind":"croc"},{"x":120.875,"y":2.5,"min":0,"max":167.5,"kind":"croc"},{"x":124.0,"y":3.5,"min":0,"max":167.5,"kind":"croc"},{"x":142.5,"y":-1.84375,"min":0,"max":167.5,"kind":"armored"}],
   barrels: [{"x":19.65625,"y":-0.5,"kind":"rescue"},{"x":64.375,"y":1.28125,"kind":"checkpoint"},{"x":67.5,"y":-1.0,"kind":"rescue"},{"x":76.1875,"y":-2.5,"kind":"throw"},{"x":135.125,"y":10.5,"kind":"cannon","angle":1.5707963267948966,"launchMultiplier":34,"cannonGravityDelay":0,"cannonControlDelay":0},{"x":167.46875,"y":10.28125,"kind":"cannon","angle":3.141592653589793,"launchMultiplier":34,"cannonGravityDelay":22,"cannonControlDelay":22}],
   animals: [{"x":92.25,"y":-0.96875,"kind":"rambi"}],
   itemCaches,
   breakableWalls,
+  bonusRooms,
   decors,
   tip: "Tracé et placements issus du ROM. Roule ou frappe les murs et caches. Les quatre lettres originales sont K O N G.",
 };

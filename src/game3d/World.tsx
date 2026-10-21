@@ -815,7 +815,14 @@ export const World = memo(function World({
   return (
     <>
       <color attach="background" args={[p.sky]} />
-      <fog attach="fog" args={[p.mist, 29, 77]} />
+      <fog
+        attach="fog"
+        args={[
+          p.mist,
+          level.originalTerrain === "coral" ? 18 : 29,
+          level.originalTerrain === "coral" ? 58 : 77,
+        ]}
+      />
       <hemisphereLight args={[level.biome === "lagoon" ? "#9dcedb" : "#d5dfbd", "#1a2013", 1.3]} />
       <ambientLight intensity={level.biome === "lagoon" ? 0.3 : 0.12} />
       <directionalLight position={[-7, 12, 9]} color={p.light} intensity={2.8} />
@@ -850,7 +857,31 @@ export const World = memo(function World({
       {level.originalTerrain === "coral" && (
         <CoralScatter length={level.length} />
       )}
-      {level.biome === "jungle" && (
+      {level.originalTerrain === "jungle" &&
+        level.breakableWalls?.map((wall, i) =>
+          game.brokenWalls.has(i) ? null : (
+        <group key={`facade-${i}`} position={[wall.x, wall.y + wall.h * 0.55, -0.4]}>
+          <mesh geometry={box} scale={[wall.w, wall.h, 0.12]}>
+            <meshStandardMaterial
+              color="#3d5a44"
+              map={texture("bark")}
+              transparent
+              opacity={0.92}
+            />
+          </mesh>
+          <mesh geometry={box} position={[0, wall.h * 0.15, 0.08]} scale={[wall.w * 0.85, wall.h * 0.35, 0.04]}>
+            <meshStandardMaterial
+              color="#9cc4a8"
+              transparent
+              opacity={0.55}
+              emissive="#4a7a62"
+              emissiveIntensity={0.2}
+            />
+          </mesh>
+        </group>
+          ),
+        )}
+      {level.biome === "jungle" && !level.originalTerrain && (
         <group position={[21, 2, -23]}>
           <mesh geometry={rock} scale={[4, 8, 3]} position={[-3, -1, -2]}>
             <meshStandardMaterial color="#3a5944" map={texture("soil")} />

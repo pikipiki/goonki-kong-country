@@ -6,19 +6,21 @@
 
 **Route ROM :** Jungle Hijinxs (`ROM_JUNGLE`, étape 0) et Coral Capers (`ROM_CORAL`, étape 3, `levelId` 3). `App` active la route originale pour 0 et 3. Cinq autres étapes restent le prototype.
 
-**Jungle (63/66 placements ROM) :** générateur `generate_original_jungle.py` (spawns cmd 1/15) — 17 ItemCache, 4 BreakableWall, décors (papillon, panneau, jeton, étincelles). Moteur : révélation/collecte caches, murs au roll ou baril lancé, indices panneaux. Rendu `OriginalLevelProps` dans `Actors.tsx`. Parité marche : `reference/jungle-parity-walk.json` + `tests/jungle-parity.test.ts` (dk-walk isolé). **3 spawns** encore omis (métadonnées sortie / scripts partiels).
+**Jungle (63/66 placements ROM) :** 17 ItemCache, 4 BreakableWall, **4 `bonusRooms`** (collectibles après mur cassé), décors, **Necky** (`pattern: necky` fixe en X). Façades lianes sur murs (`World.tsx`, masquées une fois ouverts). Parité dk-walk : **40 frames** max (oracle `runtime-player-analysis.json` ; pas de replay niveau entier). **3 spawns** cmd 5/8/ExitDoor encore omis.
 
-**Coral (37 placements) :** `generate_original_coral.py`, terrain `originalCoralTerrain.ts` avec bandes marine **512 px** (`marineBandLocal`, `probeCoralAtRom`), rendu `OriginalCoralGround.tsx`, décors sign/token. Collision et DA corail restent partielles vs ROM.
+**Coral (37 placements) :** terrain bandes 512 px, `OriginalCoralGround`, `CoralScatter`, brouillard renforcé en route ROM. Pas de textures/façades extraites du chip graphique.
 
-**Audio :** manifest 27 M4A + 119 WAV ; `audio.ts` HTMLAudio/WebAudio (SFX reveal/barrel-break mappés). Pas de mixage SNES identique.
+**Audio :** 27 M4A + 119 WAV ; SFX `place`/`throw`/`pickup`/etc. mappés sur IDs Rev 2. **Écoute comparative** et **téléphones réels** non automatisées — voir `reference/audio-playback-notes.md`.
 
-**Joueur / canons :** oracles runtime dans les tests ; délai 2 frames avant impulsion et portage SNES complet encore ouverts.
+**Joueur / canons :** portage maintien Action, lancer/poser, projectile vers **896 raw**, échange d’équipe animé ; canons avec compteurs **gravité/contrôle** par pas de simu (test `bonus-cannon.test.ts`), rotation visuelle en vol (`launched`).
 
-**70 tests unitaires, 9 fichiers** (`npm test`). Générateurs : `npm run generate:jungle`, `generate:jungle-parity`, `generate:coral`, `generate:coral-terrain`, `generate:terrain`. `npm run test:original` pour smoke navigateur terrain/audio.
+**75 tests, 10 fichiers** (`npm test`). Générateurs inchangés + `generate:jungle-parity`.
 
-**Runtime SNES de référence (hors repo) :** snes9x libretro + `work/runtime-rom/` ; traces sans patch RAM.
+**Limites honnêtes (pas un port DKC terminé) :** salles bonus = volumes + loot **authored** (pas niveaux bonus ROM décodés), pas de projectiles Necky, pas de textures ROM, pas de validation mobile physique dans cette passe.
 
-**Priorité suivante :** salles bonus liées aux murs, rejouabilité jungle complète (pas seulement fixture dk-walk), portage/canon fidèle, façades/DA ROM, validation téléphones réels, écoute audio comparative.
+**Priorité suivante :** capturer plus de traces SNES (marche jungle longue), décoder vrais niveaux bonus, projectiles Necky, écoute A/B audio, tests sur téléphone.
+
+**Désassemblage Yoshifanatic1 :** cible officielle **USA V1.0** (MD5 `30c5f292ff4cbbfcc00fd8fa96c2de3b`) — **pas** la Rev 2 (`revision` 2, SHA-256 dans `rom-analysis.json`). Utilisable pour **noms de routines / tables / logique**, avec relocalisation d’octets obligatoire (`analyze_level_tables.py`, `player-states.json`). Voir `reference/disassembly-rev2.md` après vérif MD5.
 
 ---
 

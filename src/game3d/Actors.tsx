@@ -186,6 +186,60 @@ function Pickups({ game }: { game: Game }) {
   );
 }
 
+function BonusPickups({ game }: { game: Game }) {
+  const rooms = game.level.bonusRooms;
+  if (!rooms?.length) return null;
+  return (
+    <group>
+      {rooms.map((room, roomIndex) => {
+        if (!game.brokenWalls.has(room.wallIndex)) return null;
+        return (
+          <group key={roomIndex}>
+            <mesh
+              position={[
+                room.bounds.x + room.bounds.w / 2,
+                room.bounds.y,
+                -0.45,
+              ]}
+              scale={[room.bounds.w, 0.06, room.bounds.h]}
+            >
+              <meshStandardMaterial
+                color="#c9a83a"
+                transparent
+                opacity={0.28}
+                emissive="#8a7030"
+                emissiveIntensity={0.15}
+              />
+            </mesh>
+            {room.pickups.map((item, pickupIndex) => {
+              const key = `${roomIndex}-${pickupIndex}`;
+              if (game.collectedBonus.has(key)) return null;
+              return (
+                <group
+                  key={key}
+                  position={[item.x, item.y, 0.25]}
+                  visible={Math.abs(item.x - game.player.x) < 24}
+                >
+                  {item.kind === "banana" ? (
+                    <BananaModel />
+                  ) : item.kind === "balloon" ? (
+                    <>
+                      <mesh geometry={sphere} scale={[0.35, 0.44, 0.26]}>
+                        <meshStandardMaterial color="#ef91ad" roughness={0.28} />
+                      </mesh>
+                      <Label text="1" position={[0, 0, 0.3]} scale={0.35} />
+                    </>
+                  ) : null}
+                </group>
+              );
+            })}
+          </group>
+        );
+      })}
+    </group>
+  );
+}
+
 function OriginalLevelProps({ game }: { game: Game }) {
   const level = game.level;
   const sparkle = useMemo(() => textTexture("✦", "#ffe6a5"), []);
@@ -253,17 +307,13 @@ function OriginalLevelProps({ game }: { game: Game }) {
             </>
           ) : null}
           {decor.kind === "sparkle" ? (
-            <Sprite
-              position={[0, 0, 0]}
-              scale={[0.4, 0.4, 1]}
-              material={
-                new SpriteMaterial({
-                  map: sparkle,
-                  transparent: true,
-                  depthWrite: false,
-                })
-              }
-            />
+            <sprite position={[0, 0, 0]} scale={[0.4, 0.4, 1]}>
+              <spriteMaterial
+                map={sparkle}
+                transparent
+                depthWrite={false}
+              />
+            </sprite>
           ) : null}
         </group>
       ))}
@@ -333,6 +383,7 @@ export const Actors = memo(function Actors({ game }: { game: Game }) {
     <>
       <ContactShadows game={game} />
       <Pickups game={game} />
+      <BonusPickups game={game} />
       <OriginalLevelProps game={game} />
       <group ref={barrels}>
         {level.barrels.map((b, i) => (

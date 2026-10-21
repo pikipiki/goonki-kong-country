@@ -95,9 +95,10 @@ for row in records:
             enemies.append(
                 dict(
                     point,
-                    min=max(0, point["x"] - 12),
-                    max=min(167.5, point["x"] + 12),
+                    min=point["x"],
+                    max=point["x"],
                     kind="bee",
+                    pattern="necky",
                 )
             )
             typ = "enemy"
@@ -162,6 +163,23 @@ for row in records:
             )
         )
 
+bonus_rooms = []
+for i, wall in enumerate(breakable_walls):
+    wx, wy = wall["x"], wall["y"]
+    bx = wx - 3.8 if i % 2 == 0 else wx + 1.2
+    bonus_rooms.append(
+        {
+            "wallIndex": i,
+            "label": "Salle bonus",
+            "bounds": {"x": bx, "y": wy - 0.35, "w": 4.8, "h": 3.1},
+            "pickups": [
+                {"x": bx + 1.4, "y": wy + 0.85, "kind": "banana", "amount": 10},
+                {"x": bx + 2.6, "y": wy + 0.45, "kind": "banana", "amount": 1},
+                {"x": bx + 3.5, "y": wy + 1.05, "kind": "balloon", "amount": 1},
+            ],
+        }
+    )
+
 for formation in r["levels"]["JungleHijinxs"]["bananaFormations"]["records"]:
     for banana in formation["expandedBananas"]:
         pickups.append(
@@ -173,7 +191,7 @@ for formation in r["levels"]["JungleHijinxs"]["bananaFormations"]["records"]:
         )
 
 compact = lambda x: json.dumps(x, separators=(",", ":"), ensure_ascii=False)
-s = '''import type { Level, Pickup, Platform, ItemCacheSpec, BreakableWallSpec, LevelDecor } from "./levels";
+s = '''import type { Level, Pickup, Platform, ItemCacheSpec, BreakableWallSpec, BonusRoomSpec, LevelDecor } from "./levels";
 import { terrainCellSNES } from "./originalTerrain";
 /** Coordinates proven against USA Rev2 metadata; see reference/level-tables.md.
  * Terrain uses exact ROM profiles in physics; these small rectangles support
@@ -203,6 +221,8 @@ const originalPickups: OriginalPickup[] = PICKUPS;
 const itemCaches: ItemCacheSpec[] = ITEM_CACHES;
 const breakableWalls: BreakableWallSpec[] = BREAKABLE_WALLS;
 const decors: LevelDecor[] = DECORS;
+const bonusRooms: BonusRoomSpec[] = BONUS_ROOMS;
+const movingPlatforms: Platform[] = MOVING_PLATFORMS;
 export const ROM_JUNGLE: Level & {
   originalTerrain: "jungle"; start: {x:number;y:number}; letterWord: "KONG";
 } = {
@@ -214,13 +234,14 @@ export const ROM_JUNGLE: Level & {
   start: {x:156/32,y:0},
   letterWord: "KONG",
   length: ORIGINAL_JUNGLE_EXIT.x + 2,
-  platforms: [...presentationPlatforms(), ...MOVING_PLATFORMS],
+  platforms: [...presentationPlatforms(), ...movingPlatforms],
   pickups: originalPickups,
   enemies: ENEMIES,
   barrels: BARRELS,
   animals: ANIMALS,
   itemCaches,
   breakableWalls,
+  bonusRooms,
   decors,
   tip: "Tracé et placements issus du ROM. Roule ou frappe les murs et caches. Les quatre lettres originales sont K O N G.",
 };
@@ -235,6 +256,7 @@ for key, value in [
     ("ITEM_CACHES", item_caches),
     ("BREAKABLE_WALLS", breakable_walls),
     ("DECORS", decors),
+    ("BONUS_ROOMS", bonus_rooms),
     (
         "__PROVENANCE__",
         dict(

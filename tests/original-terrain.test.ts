@@ -46,6 +46,7 @@ describe('original Jungle level and rendering subset', () => {
     expect(ROM_JUNGLE.barrels.filter(b=>b.kind==='cannon').every(b=>typeof b.angle==='number')).toBe(true);
     expect(ROM_JUNGLE.itemCaches).toHaveLength(17);
     expect(ROM_JUNGLE.breakableWalls).toHaveLength(4);
+    expect(ROM_JUNGLE.bonusRooms).toHaveLength(4);
     expect(ROM_JUNGLE.decors?.length).toBeGreaterThanOrEqual(9);
   });
   it('builds real finite 3D terrain retaining both stacked surfaces', () => {

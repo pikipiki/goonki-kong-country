@@ -46,6 +46,14 @@ Clavier : flèches ou Q/D (A/D également), Espace pour sauter/nager, Maj pour c
 
 Même famille que `tontie-re` : React 19, TypeScript 6, Vite 8, Three.js, React Three Fiber, MUI pour le thème de l’application, i18next / react-i18next pour les libellés. Moteur indépendant du rendu, simulation à 60 Hz, rendu WebGL 3D. Aucun émulateur Flash, aucune capture vidéo utilisée comme décor.
 
+## Projets similaires (web vs recomp)
+
+Il n’existe pas de port **DKC en Three.js** public abouti. Les voisins utiles :
+[Donkey Kong Kiro](https://github.com/dkljajo/donkey-kong-kiro) (clone Canvas 2D),
+anciens moteurs **Construct 2** (DKC Web Engine, abandonnés), et **[DKC1Recomp](https://github.com/elliotttate/DKC1Recomp)** (fidélité maximale, **PC natif + ROM possédée**, pas navigateur).
+Goonk Country vise un hybride : jeu web avec Goonk, données prouvées depuis la ROM Rev 2.
+Voir `reference/similar-projects.md` pour le tableau comparatif et la stratégie.
+
 ## Rétro-ingénierie
 
 `reference/rom-analysis.json` contient l’identité de la ROM USA Rev 2 fournie, son en-tête vérifié, les adresses des routines relocalisées, leurs octets et leur décodage 65C816. L’analyse initiale de l’archive par REA a été complétée par une analyse directe des octets et une comparaison avec le désassemblage public de Yoshifanatic1 (USA 1.0). Les correspondances ont été recherchées dans **la ROM Rev 2 réelle**, sans supposer les adresses identiques.
