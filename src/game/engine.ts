@@ -871,7 +871,13 @@ export class Game {
       actionUsed = true;
     }
     const chargeable = this.mount?.kind === "rambi" || this.mount?.kind === "enguarde";
-    if (chargeable && input.held.has("action")) {
+    const quickSwimAttack = this.mount?.kind === "enguarde" && input.pressed.has("jump");
+    if (quickSwimAttack) {
+      // Immediate, repeatable short thrust; cancel any prepared long charge.
+      p.mountCharge = 0; p.mountCharged = false; p.mountAttack = .32;
+      this.onEvent("roll");
+    }
+    if (chargeable && !quickSwimAttack && input.held.has("action")) {
       p.mountCharge = Math.min(.75,p.mountCharge+dt);
       if (p.mountCharge > .18) p.mountAttack = 0;
     } else if (chargeable && p.mountCharge > 0) {
@@ -992,7 +998,6 @@ export class Game {
     }
     if (water) {
       if (buddy?.kind === "enguarde") {
-        if (input.pressed.has("jump")) { p.mountAttack = 0.32; this.onEvent("roll"); }
         if (input.pressed.has("jump") || input.pressed.has("action")) p.vy = 0;
         const vertical = Number(input.held.has("up")) - Number(input.held.has("down"));
         p.vy = approach(p.vy, vertical * 5, 24 * dt);

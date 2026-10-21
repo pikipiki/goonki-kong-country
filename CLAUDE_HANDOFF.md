@@ -2,7 +2,15 @@
 
 Cette section prévaut sur l’historique ci-dessous. Dépôt : `Documents/git/goonk-country`. Handoff avant commit : `.cursor/skills/handoff-before-commit/SKILL.md`.
 
-**Synthèse commit 22 oct.** : import Canyon **50 canons** (groupes enfants ROM) ; fermeture bonus (intérieur + entrée après visite, plug 3D) ; charges montures / tonneaux tactiles ; flèches canons 3D alignées au tir ; sync prototype `Game` après HMR ; retrait bloc collision canyon post-canon 2 (`canyonTerrain.ts`) ; scripts `test:playthrough:canyon|coral`, régressions mécaniques/canon ; preuves `reference/*`. **200 tests / 34 fichiers**, `npm run build` OK.
+**Dernier commit** : Enguarde — attaque rapide répétable (bouton ➜, annule charge forte) + script `enguarde-quick-browser.mjs`. Commit précédent (22 oct.) : Canyon 50 canons, bonus fermés, tactile/charges, canons 3D, HMR, `canyonTerrain`, traversées. **202 tests / 34 fichiers**, `npm run build` OK.
+
+## Enguarde : petites attaques répétables sur mobile — 22 octobre 2026
+
+- Gros bouton droit **Attaque rapide** (flèche horizontale) distinct du bouton Charge. Chaque appui déclenche immédiatement une pointe courte de 0,32 s à vitesse 7,5, sans concentration. Bouton répétable aussi en mode clic : chaque appui recrée un front d’entrée, sans attendre l’ancienne impulsion de saut de 350 ms.
+- Bouton Charge inchangé pour la préparation puis le déclenchement de la forte accélération à vitesse 18. L’attaque rapide annule le verrou écran de charge et remet la préparation/`mountCharged` à zéro avant le calcul des vitesses : aucune charge forte accidentelle sur ce relâchement. Fonctionne aussi en clavier via le saut d’Enguarde.
+- Libellés et aide contextuelle EN/FR dans `GameControls.tsx` / `resources.ts`. Pas de quatrième bouton à ajouter sur petit écran. `repeatable` ne concerne que le bouton rapide d’Enguarde.
+- Tests unitaires : huit attaques de suite sans concentration, vitesse immédiate dès la première frame, annulation d’une charge déjà prête. **202 tests / 34 fichiers**, build TypeScript/Vite et diff-check OK.
+- `node scripts/enguarde-quick-browser.mjs` : huit vrais appuis = huit attaques courtes ; quatre cas portrait/paysage × tactile/clic. Preuves `reference/enguarde-quick-regression.json`, `enguarde-quick-*-*.png`.
 
 ## Entrée bonus condamnée après le retour — précision utilisateur, 22 octobre 2026
 

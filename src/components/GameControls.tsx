@@ -18,6 +18,7 @@ function ActionButton({
   chargeable = false,
   chargeProgress = 0,
   sustained = false,
+  repeatable = false,
 }: {
   controls: Controls;
   action: Key;
@@ -28,6 +29,7 @@ function ActionButton({
   chargeable?: boolean;
   chargeProgress?: number;
   sustained?: boolean;
+  repeatable?: boolean;
 }) {
   const { t } = useTranslation();
   const [down, setDown] = useState(false),
@@ -61,15 +63,20 @@ function ActionButton({
       onPointerDown={(e) => {
         e.preventDefault();
         e.currentTarget.setPointerCapture(e.pointerId);
+        if (repeatable) {
+          clearTimeout(timer.current);
+          controls.set("screen-action", "action", false);
+          controls.set(source, action, false);
+        }
         const next = latched ? !active : true;
         setDown(next);
         controls.set(source, action, next);
         feedback();
-        if (clickMode && !latched) {
+        if ((clickMode || repeatable) && !latched) {
           clearTimeout(timer.current);
           timer.current = setTimeout(
             () => controls.set(source, action, false),
-            action === "jump" ? 350 : 90,
+            repeatable ? 65 : action === "jump" ? 350 : 90,
           );
         }
       }}
@@ -82,6 +89,11 @@ function ActionButton({
       onLostPointerCapture={release}
       onClick={(e) => {
         if (e.detail === 0) {
+          clearTimeout(timer.current);
+          if (repeatable) {
+            controls.set("screen-action", "action", false);
+            controls.set(source, action, false);
+          }
           if (latched) {
             const next = !controls.input.held.has(action);
             controls.set(source,action,next);setDown(next);return;
@@ -202,7 +214,7 @@ export function GameControls({
       <div className="controller-toolbar">
         <span className="controller-label">
           <i />{" "}
-          {game.mount?.kind === "rambi" || game.mount?.kind === "enguarde" ? t("tapChargeHint") : game.mount?.kind === "expresso" ? t("tapFlutterHint") : game.player.carry >= 0 ? t("tapCarryHint") : clickMode ? t("clickModeHint") : t("touchModeHint")}
+          {game.mount?.kind === "enguarde" ? t("tapEnguardeHint") : game.mount?.kind === "rambi" ? t("tapChargeHint") : game.mount?.kind === "expresso" ? t("tapFlutterHint") : game.player.carry >= 0 ? t("tapCarryHint") : clickMode ? t("clickModeHint") : t("touchModeHint")}
         </span>
         <button
           className="input-mode"
@@ -318,8 +330,9 @@ export function GameControls({
             controls={controls}
             key={`jump-${game.levelId}-${game.sceneRevision}-${game.player.mount}-${game.player.cannon >= 0}`}
             action="jump"
-            title={game.player.cannon >= 0 ? t("blastOff") : game.mount?.kind === "enguarde" ? t("dart") : game.mount?.kind === "expresso" ? controls.input.held.has("jump") ? t("stopFlutter") : t("flutter") : game.mount?.kind === "winky" ? t("leap") : game.level.biome === "lagoon" ? t("swim") : t("jump")}
-            glyph="↑"
+            title={game.player.cannon >= 0 ? t("blastOff") : game.mount?.kind === "enguarde" ? t("quickAttack") : game.mount?.kind === "expresso" ? controls.input.held.has("jump") ? t("stopFlutter") : t("flutter") : game.mount?.kind === "winky" ? t("leap") : game.level.biome === "lagoon" ? t("swim") : t("jump")}
+            glyph={game.mount?.kind === "enguarde" ? "➜" : "↑"}
+            repeatable={game.mount?.kind === "enguarde"}
             className="jump-button"
             sustained={game.mount?.kind === "expresso"}
             clickMode={clickMode}
