@@ -15,6 +15,8 @@ import {
   coralSolidSpansWorld,
 } from "../game/originalCoralTerrain";
 
+import { CORAL_PIXELS_PER_WORLD_UNIT, coralWorldFromSource } from "../game/marineScale";
+
 const CHUNK_COLUMNS = 16,
   STRIP_PIXELS = 1,
   FRONT = 1.6,
@@ -46,8 +48,8 @@ export function createCoralGroundGeometry(
     (firstColumn + columnCount) * 32,
   );
   for (let px = firstColumn * 32; px < max; px += STRIP_PIXELS) {
-    const x0 = px / 32,
-      x1 = (px + STRIP_PIXELS) / 32;
+    const x0 = px / CORAL_PIXELS_PER_WORLD_UNIT,
+      x1 = (px + STRIP_PIXELS) / CORAL_PIXELS_PER_WORLD_UNIT;
     coralSolidSpansWorld(x0+0.00001).forEach((span,i)=>{
       const y0=span.bottom, yl=span.top, yr=span.top, seed=Math.floor(px/12)+i*19;
       quad([[x0,y0,FRONT],[x1,y0,FRONT],[x1,yr,FRONT],[x0,yl,FRONT]], "#687d70", seed);
@@ -104,7 +106,7 @@ function GroundChunk({
   useFrame(() => {
     if (root.current)
       root.current.visible =
-        Math.abs(index * CHUNK_COLUMNS + CHUNK_COLUMNS / 2 - game.player.x) < 28;
+        Math.abs(coralWorldFromSource(index * CHUNK_COLUMNS + CHUNK_COLUMNS / 2) - game.player.x) < coralWorldFromSource(CHUNK_COLUMNS / 2) + 28;
   });
   return (
     <group ref={root}>

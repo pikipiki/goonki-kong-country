@@ -19,6 +19,13 @@ const FRONT = 1.6;
 const BACK = -1.6;
 const COLUMN_COUNT = Math.ceil(ORIGINAL_CAVE_TERRAIN.widthPixels / 32);
 
+/** Chunks use absolute ROM columns; actors and cameras use the level origin. */
+export function caveGroundChunkVisible(firstColumn: number, playerX: number, columnCount = CHUNK_COLUMNS) {
+  const start = (firstColumn * 32 - ORIGINAL_REVERB_ORIGIN.x) / ORIGINAL_CAVE_TERRAIN.pixelsPerWorldUnit;
+  const end = start + columnCount * 32 / ORIGINAL_CAVE_TERRAIN.pixelsPerWorldUnit;
+  return end > playerX - 28 && start < playerX + 28;
+}
+
 function noise(seed: number) {
   const n = Math.sin(seed * 127.1 + 311.7) * 43758.5453;
   return n - Math.floor(n);
@@ -31,12 +38,14 @@ export function createCaveGroundGeometry(firstColumn: number, columnCount = CHUN
   const ox = ORIGINAL_REVERB_ORIGIN.x;
   const oy = ORIGINAL_REVERB_ORIGIN.y;
   const scale = ORIGINAL_CAVE_TERRAIN.pixelsPerWorldUnit;
-  function quad(points: number[][], tint: string, seed: number) {
-    const shade = new Color(tint).multiplyScalar(0.85 + noise(seed) * 0.3);
+  function quad(points: number[][], tint: string, seed: number, top = false) {
+    const shade = new Color(tint).multiplyScalar(0.94 + noise(seed) * 0.12);
     for (const i of [0, 1, 2, 0, 2, 3]) {
       const [x, y, z] = points[i];
       positions.push(x, y, z);
-      uvs.push(x * 0.7, y * 0.7);
+      // Flat tops need texture depth along Z, otherwise their V coordinate
+      // collapses to a single row of pixels and looks like smeared stripes.
+      uvs.push(x * 0.7, (top ? z : y) * 0.7);
       colors.push(shade.r, shade.g, shade.b);
     }
   }
@@ -62,8 +71,9 @@ export function createCaveGroundGeometry(firstColumn: number, columnCount = CHUN
       const yl = (span.left - oy) / scale;
       const yr = (span.right - oy) / scale;
       const x0 = wx-STRIP_PIXELS/scale/2, x1 = wx+STRIP_PIXELS/scale/2;
-      quad([[x0,yl,FRONT],[x1,yr,FRONT],[x1,yr,BACK],[x0,yl,BACK]], "#69704a", px);
-      quad([[x0,y0,BACK],[x1,y0,BACK],[x1,y0,FRONT],[x0,y0,FRONT]], "#302b27", px);
+      const seed = Math.floor(px / 96);
+      quad([[x0,yl,FRONT],[x1,yr,FRONT],[x1,yr,BACK],[x0,yl,BACK]], "#729344", seed, true);
+      quad([[x0,y0,BACK],[x1,y0,BACK],[x1,y0,FRONT],[x0,y0,FRONT]], "#302b27", seed, true);
 
       quad(
         [
@@ -72,18 +82,18 @@ export function createCaveGroundGeometry(firstColumn: number, columnCount = CHUN
           [wx + STRIP_PIXELS / scale / 2, yr, FRONT],
           [wx - STRIP_PIXELS / scale / 2, yl, FRONT],
         ],
-        "#4a4038",
-        px + span.bottom,
+        "#896447",
+        seed + span.bottom,
       );
       quad(
         [
-          [wx - STRIP_PIXELS / scale / 2, y0, BACK],
           [wx + STRIP_PIXELS / scale / 2, y0, BACK],
-          [wx + STRIP_PIXELS / scale / 2, yr, BACK],
+          [wx - STRIP_PIXELS / scale / 2, y0, BACK],
           [wx - STRIP_PIXELS / scale / 2, yl, BACK],
+          [wx + STRIP_PIXELS / scale / 2, yr, BACK],
         ],
         "#3a322c",
-        px + span.bottom + 17,
+        seed + span.bottom + 17,
       );
     }
   }
@@ -105,8 +115,8 @@ function soilTexture() {
     for (let x = 0; x < 128; x++) {
       const i = (y * 128 + x) * 4;
       const n =
-        0.38 +
-        noise(x + y * 128) * 0.28 +
+        0.62 +
+        noise(x + y * 128) * 0.2 +
         Math.sin(y * 0.17 + Math.sin(x * 0.07) * 1.3) * 0.065;
       data.data[i] = data.data[i + 1] = data.data[i + 2] = Math.round(n * 255);
       data.data[i + 3] = 255;
@@ -136,10 +146,10 @@ function GroundChunk({
   useFrame(() => {
     if (root.current)
       root.current.visible =
-        Math.abs(index * CHUNK_COLUMNS + CHUNK_COLUMNS / 2 - game.player.x) < 28;
+        caveGroundChunkVisible(index * CHUNK_COLUMNS, game.player.x);
   });
   return (
-    <group ref={root}>
+    <group ref={root} name="canyon-ground-chunk">
       <mesh geometry={geometry}>
         <meshStandardMaterial
           map={map}

@@ -1187,3 +1187,57 @@ h1 > span {
   .dpad-ring { left: calc(50% - 66px); }
   .stick { left: calc(50% - 29px); }
 }
+
+.game-button { overflow: hidden; }
+.charge-progress { position:absolute; inset:auto 0 0; background:rgba(255,219,104,.45); pointer-events:none; transition:height .06s linear; }
+.button-glyph,.button-caption { position:relative; z-index:1; }
+
+/* The island itself is the destination selector, with one clear confirmation. */
+.phase-title .explore-primary { min-width: 230px; }
+.phase-map .map-overlay { padding: max(14px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(14px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left)); overflow: hidden; align-items: stretch; }
+.phase-map .map-shell { display: flex; flex-direction: column; width: min(1080px,100%); height: 100%; min-height: 0; max-height: none; margin: 0 auto; overflow: visible; }
+.phase-map .back-link { position: absolute; z-index: 5; top: max(14px,env(safe-area-inset-top)); right: max(18px,env(safe-area-inset-right)); margin: 0; padding: 0 12px; min-height: 44px; background: #17362adf; border-radius: 10px; }
+.phase-map .map-heading { flex: 0 0 auto; padding-right: 85px; }
+.phase-map .map-heading .eyebrow { margin: 0 0 7px; font-size: 8px; }
+.phase-map .map-heading h2 { margin: 0 0 8px; font-size: clamp(25px,4vw,38px); }
+.phase-map .map-heading .panel-description { margin: 0; font-size: 11px; line-height: 1.5; }
+.phase-map .island-map { position: relative; flex: 1 1 0; height: auto; min-height: 0; margin: 15px 0 12px; overflow: hidden; border: 1px solid #b5a05b70; border-radius: 18px; outline: none; }
+.phase-map .island-map:focus-visible { box-shadow: 0 0 0 3px #f9ce5e; }
+.map-stage { display: flex; align-items: center; gap: 5px; width: 132px; min-height: 44px; padding: 6px 8px; border: 1px solid #9c9b66; border-bottom: 3px solid #0e281d; border-radius: 9px; background: #183a2ef2; color: #f6e7b8; font: 700 11px/1.15 Arial,sans-serif; text-align: left; box-shadow: 0 3px 9px #09271b70; cursor: pointer; touch-action: manipulation; }
+.map-stage-number { display: grid; place-items: center; flex: 0 0 22px; width: 22px; height: 24px; border-radius: 5px; color: #d3bc78; background: #102d24; font-size: 10px; }
+.map-stage.selected { background: #f6d575; border-color: #fce7a2; border-bottom-color: #9a6b25; color: #3a2a14; transform: translateY(-2px); }
+.map-stage.selected .map-stage-number { color: #fff1ba; background: #845d22; }
+.map-stage:focus-visible { outline: 3px solid white; outline-offset: 3px; }
+.phase-map .map-confirm { display: flex; gap: 16px; align-items: center; justify-content: space-between; flex: 0 0 auto; }
+.phase-map .map-selection { margin: 0; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.phase-map .map-selection span { color: #c3c094; font-size: 8px; letter-spacing: .6px; }
+.phase-map .map-selection strong { color: #ffe19b; font: 800 clamp(15px,2vw,21px)/1.2 Arial,sans-serif; }
+.phase-map .map-enter { margin: 0; flex-shrink: 0; min-height: 52px; padding: 12px 18px; gap: 14px; font-size: 12px; }
+@media (orientation: portrait) and (max-width: 600px) {
+  .phase-map .map-overlay { padding: max(16px,env(safe-area-inset-top)) 12px max(16px,env(safe-area-inset-bottom)); }
+  .phase-map .map-heading { padding-right: 65px; }
+  .phase-map .back-link { right: 10px; top: max(14px,env(safe-area-inset-top)); font-size: 10px; padding: 0 8px; }
+  .phase-map .map-heading .panel-description { max-width: 260px; font-size: 10px; }
+  .phase-map .map-confirm { flex-direction: column; align-items: stretch; gap: 10px; }
+  .phase-map .map-selection { text-align: center; }
+  .phase-map .map-enter { justify-content: center; width: 100%; }
+  .map-stage { width: 120px; font-size: 10px; padding: 5px 6px; }
+}
+@media (orientation: landscape) and (max-height: 560px) {
+  .phase-map .map-overlay { padding: 9px max(18px,env(safe-area-inset-right)) 9px max(18px,env(safe-area-inset-left)); }
+  .phase-map .map-heading h2 { font-size: 23px; margin-bottom: 3px; }
+  .phase-map .map-heading .eyebrow { display: none; }
+  .phase-map .map-heading .panel-description { font-size: 9px; }
+  .phase-map .island-map { margin: 8px 0; }
+  .phase-map .back-link { top: 8px; }
+  .phase-map .map-enter { min-height: 44px; font-size: 11px; padding: 8px 15px; }
+  .phase-map .map-selection span { font-size: 7px; }
+  .map-stage { width: 118px; font-size: 10px; }
+}
+
+.map-labels { position: absolute; inset: 0; pointer-events: none; }
+.map-label-anchor { position: absolute; transform: translate(-50%,-50%); pointer-events: auto; }
+@media (orientation: portrait) and (max-width: 360px) {
+  .phase-map .map-heading { padding-right: 80px; }
+  .phase-map .map-heading h2 { font-size: 22px; }
+}

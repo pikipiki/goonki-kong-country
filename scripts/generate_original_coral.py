@@ -30,7 +30,20 @@ def cannon_angle(ra):
     q = (ra.get("$14C5", 0) + 0x0AAA) & 0xF000
     idx = (q // 0x1000) % 16
     v = vectors[idx]
-    return math.atan2(-v["velocityYRaw"], v["velocityXRaw"])
+    return math.atan2(v["velocityYRaw"], v["velocityXRaw"])
+
+
+def cannon_motion(ra):
+    """ROM property bits enable a bounded moving cannon; raw sprite data stays intact."""
+    props = ra.get("$145D", 0)
+    bounds = ra.get("$13E9", 0)
+    raw = ra.get("$0F25", 0)
+    if not (props & 3) or not bounds or not raw:
+        return None
+    signed = raw if raw < 0x8000 else raw - 0x10000
+    return dict(axis="y" if props & 8 else "x", minimum=-(bounds >> 8) / 32,
+                maximum=(bounds & 255) / 32, speed=signed / 256 * 60 / 32,
+                activation="always" if props & 1 else "occupied", diagonal=bool(props & 16))
 
 
 def cannon_delays(ra):
@@ -102,6 +115,7 @@ for row in records:
                 "launchMultiplier": ra.get("$0FF5", 40),
                 "cannonGravityDelay": g_delay,
                 "cannonControlDelay": c_delay,
+                **({"motion": cannon_motion(ra)} if cannon_motion(ra) else {}),
             }
         )
         typ = "cannon"
@@ -144,12 +158,13 @@ for row in records:
 
 compact = lambda x: json.dumps(x, separators=(",", ":"), ensure_ascii=False)
 s = """import type { Level, Pickup, Platform, LevelDecor } from "./levels";
+import { coralWorldFromSource, scaleCoralLevel } from "./marineScale";
+export { CORAL_WATER_SURFACE_Y, CORAL_WATER_FLOOR_Y } from "./marineScale";
 
 export const ORIGINAL_CORAL_ORIGIN = Object.freeze({ x: 0, y: Y_ANCHOR });
-export const ORIGINAL_CORAL_EXIT = Object.freeze({ x: EXIT_X / 32, y: @@EXIT_Y_WEB@@ });
-/** Depth band limits: keep in sync with reference/underwater-motion.json */
-export const CORAL_WATER_SURFACE_Y = 53.9;
-export const CORAL_WATER_FLOOR_Y = -0.9;
+export const ORIGINAL_CORAL_EXIT = Object.freeze({ x: coralWorldFromSource(EXIT_X / 32), y: coralWorldFromSource(@@EXIT_Y_WEB@@) });
+/** Source coordinates below preserve 32 ROM pixels/unit. The exported playable
+ * level is expanded uniformly for roomier swimming without shrinking actors. */
 
 type OriginalPickup = Pickup & { amount?: number };
 
@@ -157,7 +172,7 @@ const originalPickups: OriginalPickup[] = PICKUPS;
 const decors: LevelDecor[] = DECORS;
 const finishZone = FINISH_ZONE;
 
-export const ROM_CORAL: Level & {
+export const ROM_CORAL_SOURCE: Level & {
   originalTerrain: "coral";
   start: { x: number; y: number };
   letterWord: "KONG";
@@ -179,6 +194,8 @@ export const ROM_CORAL: Level & {
   finishZone,
   tip: "Nage dans toutes les directions. Libère Enguarde et utilise Action pour son rostre.",
 };
+
+export const ROM_CORAL = scaleCoralLevel(ROM_CORAL_SOURCE);
 
 export const ORIGINAL_CORAL_PROVENANCE = __PROVENANCE__ as const;
 

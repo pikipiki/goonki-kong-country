@@ -11,7 +11,7 @@ export interface Animal extends AnimalSpawn {
 }
 export const ANIMAL_DESIGNS = {
   rambi: { name: "Rambi", seat: 1.25, width: 0.92, walk: speed(f.buddyWalkTargets.values.defaultIncludingRambiRaw), run: speed(f.buddyRunTargets.values.defaultIncludingRambiRaw), jump: speed(f.rambiExpressoJumpImpulse.values.verticalSpeedRaw) },
-  enguarde: { name: "Enguarde", seat: 0.95, width: 1.1, walk: 5.2, run: 5.2, jump: 0 },
+  enguarde: { name: "Enguarde", seat: 0.23, width: 1.1, walk: 5.2, run: 5.2, jump: 0 },
   winky: { name: "Winky", seat: 0.88, width: 0.67, walk: speed(f.buddyWalkTargets.values.winkyRaw), run: speed(f.buddyRunTargets.values.winkyRaw), jump: speed(f.winkyJumpImpulse.values.verticalSpeedRaw) },
   expresso: { name: "Expresso", seat: 1.65, width: 0.68, walk: speed(f.buddyWalkTargets.values.expressoRaw), run: speed(f.buddyRunTargets.values.expressoRaw), jump: speed(f.rambiExpressoJumpImpulse.values.verticalSpeedRaw) },
 } as const;
@@ -26,3 +26,6 @@ export const BUDDY_PHYSICS = {
   chainIncrement: speed(f.rollChainAcceleration.values.incrementRaw),
   chainCap: speed(f.rollChainAcceleration.values.capRaw),
 };
+
+/** Horizontal fish and rider, using the same corridor scale as the swimmer. */
+export const ENGUARDE_SWIM_BODY = { radius: .35, height: 1.25 };

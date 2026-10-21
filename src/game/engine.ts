@@ -1,4 +1,5 @@
-import { BUDDY_PHYSICS, ANIMAL_DESIGNS, type Animal } from "./animals";
+import { cannonWorldPosition } from './cannonMotion';
+import { BUDDY_PHYSICS, ANIMAL_DESIGNS, ENGUARDE_SWIM_BODY, type Animal } from "./animals";
 import { ROM_JUNGLE, ORIGINAL_JUNGLE_ORIGIN } from "./originalJungle";
 import { ROM_CORAL } from "./originalCoral";
 import { ROM_REVERB, ORIGINAL_REVERB_ORIGIN } from "./originalReverb";
@@ -14,11 +15,13 @@ import { ORIGINAL_CORAL_ORIGIN } from "./originalCoral";
 import { queryCoral } from "./originalCoralTerrain";
 import { terrainSolidSpans, resolveCoralMotion, resolveLandMotion, nearestCoralOpenY } from "./terrainSolids";
 import { ENEMY_DESIGNS } from "./enemies";
-import { LEVELS, type EnemySpec, type Platform } from "./levels";
+import { LEVELS, type EnemySpec, type Platform, type Level } from "./levels";
 import evidence from "../../reference/rom-analysis.json";
 import playerEvidence from "../../reference/player-states.json";
 import neckyEvidence from "../../reference/necky-ballistics.json";
 import underwaterMotion from "../../reference/underwater-motion.json";
+import { normalizeLandEnemyFeet, mineBeePatrolBounds, cannonMomentumDuration, mineEncounterClearance } from "./routeSafety";
+import { CORAL_WATER_SURFACE_Y, CORAL_WATER_FLOOR_Y, CORAL_WORLD_WIDTH } from "./marineScale";
 
 export const STEP = 1 / 60;
 /** ROM tag swap: state 17 / anim 80 lasts ~25 frames at 60 Hz. */
@@ -56,8 +59,6 @@ const ROM_SWIM_IDLE_SINK =
   underwaterMotion.verticalSwim.idleSinkSpeedWorld ?? 0.85;
 const ROM_SWIM_RISE = underwaterMotion.verticalSwim.riseSpeedWorld;
 const ROM_SWIM_DIVE = underwaterMotion.verticalSwim.diveSpeedWorld;
-const CORAL_WATER_SURFACE_Y = underwaterMotion.depthBandWeb.surfaceY;
-const CORAL_WATER_FLOOR_Y = underwaterMotion.depthBandWeb.floorY;
 const THROW_TARGET_VX = rawSpeed(THROW.horizontalTargetMagnitudeRaw);
 const rawAcceleration = (raw: number) => rawSpeed(raw) * 60;
 export type Key =
@@ -126,6 +127,8 @@ export interface Player {
   recentRun: number;
   mount: number;
   mountAttack: number;
+  mountCharge: number;
+  mountCharged: boolean;
   mountCooldown: number;
   carry: number;
   cannon: number;
@@ -145,7 +148,7 @@ const cannonLaunchVelocity = (angleRad: number) => {
   let bestDot = -Infinity;
   CANNON_VECTORS.forEach((v, i) => {
     const vx = rawSpeed(v.velocityXRaw);
-    const vy = -rawSpeed(v.velocityYRaw);
+    const vy = rawSpeed(v.velocityYRaw);
     const mag = Math.hypot(vx, vy) || 1;
     const dot = (vx / mag) * aimX + (vy / mag) * aimY;
     if (dot > bestDot) {
@@ -156,7 +159,7 @@ const cannonLaunchVelocity = (angleRad: number) => {
   const v = CANNON_VECTORS[best];
   return {
     vx: rawSpeed(v.velocityXRaw),
-    vy: -rawSpeed(v.velocityYRaw),
+    vy: rawSpeed(v.velocityYRaw),
   };
 };
 const clamp = (x: number, a: number, b: number) => Math.max(a, Math.min(b, x));
@@ -234,6 +237,10 @@ export class Game {
   sceneRevision = 0;
   cameraBounds: { x:number; y:number; halfX:number; halfY:number } | null = null;
   originalRoute = false;
+  /** Separate playable bonus scene; source-room layouts are still adapted. */
+  bonus: { index: number; stage: Level; sourceIndices: number[]; world: Pick<Game,
+    "player"|"enemies"|"animals"|"collected"|"letters"|"usedBarrels"|"thrown"|"enemyShots"|"checkpoint"|"companion"|"trail"> } | null = null;
+  bonusDoorCooldown = 0;
   lives = 5;
   bananas = 0;
   total = 0;
@@ -245,6 +252,7 @@ export class Game {
   brokenWalls = new Set<number>();
   collectedBonus = new Set<string>();
   usedBarrels = new Set<number>();
+  cannonTimes: number[] = [];
   enemies: Enemy[] = [];
   animals: Animal[] = [];
   particles: Particle[] = [];
@@ -265,7 +273,8 @@ export class Game {
     this.save = save;
     this.load(0, "title");
   }
-  get level() {
+  get level(): Level {
+    if (this.bonus) return this.bonus.stage;
     if (!this.originalRoute) return LEVELS[this.levelId];
     if (this.levelId === 0) return ROM_JUNGLE;
     if (this.levelId === 1) return ROM_REVERB;
@@ -318,6 +327,7 @@ export class Game {
     if(enemy.y < -8) enemy.alive = false;
   }
   load(id: number, phase: Phase = "playing") {
+    this.bonus = null; this.bonusDoorCooldown = 0;
     this.sceneRevision++;
     this.cameraBounds = null;
     this.levelId = clamp(id, 0, LEVELS.length - 1);
@@ -331,6 +341,7 @@ export class Game {
     this.brokenWalls = new Set();
     this.collectedBonus = new Set();
     this.usedBarrels = new Set();
+    this.cannonTimes = [];
     this.particles = [];
     this.thrown = [];
     this.trail = [];
@@ -350,7 +361,7 @@ export class Game {
       invincible: 0,
       roll: 0,
       rollJump: false, rollSpeed: 0, rollFacing: 1, rollChain: 0, rollAngle: 0, recentRun: 1,
-      mount: -1, mountAttack: 0, mountCooldown: 0,
+      mount: -1, mountAttack: 0, mountCharge: 0, mountCharged: false, mountCooldown: 0,
       carry: -1,
       cannon: -1, cannonLock: -1, cannonTime: 0, launched: 0,
       cannonGravityDelay: 0, cannonControlDelay: 0, jumpDelay: 0,
@@ -363,7 +374,8 @@ export class Game {
     this.companion = { x: startX - 1.8, y: floor, facing: 1 };
     this.swap = null;
     const spawnStart = this.level.start;
-    this.enemies = this.level.enemies.map((spec, i) => {
+    const encounterSpecs=this.level.originalTerrain === "mineCart" ? mineEncounterClearance(this.level.enemies) : this.level.enemies;
+    this.enemies = encounterSpecs.map((spec, i) => {
       let x = spec.x;
       if (
         this.level.originalTerrain === "coral" &&
@@ -393,8 +405,13 @@ export class Game {
     });
     if(this.level.biome !== "lagoon") for(const enemy of this.enemies) {
       if(enemy.kind === "bee" || enemy.kind === "boss" || enemy.pattern === "necky") continue;
-      const floor = this.supportAt(enemy.x, enemy.y, 0.5);
+      const floor = this.level.originalTerrain
+        ? normalizeLandEnemyFeet(this.level.originalTerrain,enemy.x,enemy.y,{radius:ENEMY_DESIGNS[enemy.kind].width*.65,height:ENEMY_DESIGNS[enemy.kind].height})
+        : this.supportAt(enemy.x, enemy.y, 0.5);
       if(floor !== null) { enemy.y = floor; enemy.originY = floor; }
+    }
+    if(this.level.originalTerrain === "mineCart") for(const enemy of this.enemies) {
+      if(enemy.kind === "bee" && enemy.pattern !== "necky") Object.assign(enemy,mineBeePatrolBounds(enemy,this.level.enemies,this.level.length));
     }
     if(this.level.originalTerrain === "coral") {
       for(const enemy of this.enemies) {
@@ -405,7 +422,7 @@ export class Game {
         }
         enemy.originY = enemy.y;
       }
-      for(const animal of this.animals) animal.y = nearestCoralOpenY(animal.x,animal.y,1.4);
+      for(const animal of this.animals) animal.y = nearestCoralOpenY(animal.x,animal.y,ENGUARDE_SWIM_BODY.height);
     }
     this.enemyShots = [];
     this.message(this.level.tip, 6);
@@ -437,42 +454,45 @@ export class Game {
     const room = this.level.bonusRooms?.find((r) => r.wallIndex === wallIndex);
     if (room) this.message(`${room.label} ouverte !`, 4);
   }
-  private collectBonusPickups(p: Player) {
-    this.level.bonusRooms?.forEach((room, roomIndex) => {
-      if (!this.brokenWalls.has(room.wallIndex)) return;
-      const inRoom =
-        p.x >= room.bounds.x &&
-        p.x <= room.bounds.x + room.bounds.w &&
-        p.y + 0.5 >= room.bounds.y &&
-        p.y <= room.bounds.y + room.bounds.h + 1.2;
-      if (!inRoom) return;
-      room.pickups.forEach((item, pickupIndex) => {
-        const key = `${roomIndex}-${pickupIndex}`;
-        if (this.collectedBonus.has(key)) return;
-        if (
-          Math.abs(p.x - item.x) > 0.85 ||
-          Math.abs(p.y + 0.85 - item.y) > 1.1
-        )
-          return;
-        this.collectedBonus.add(key);
-        if (item.kind === "letter" && item.letter) {
-          this.letters.add(this.level.pickups.length + roomIndex * 10 + pickupIndex);
-          this.pop(item.x, item.y, item.letter, "#ffdf80");
-          this.onEvent("letter");
-        } else if (item.kind === "balloon") {
-          this.lives++;
-          this.pop(item.x, item.y, "+1", "#ff9fd0");
-          this.onEvent("life");
-        } else {
-          const amount = item.amount ?? 1;
-          this.bananas += amount;
-          this.levelBananas += amount;
-          this.total += amount;
-          this.pop(item.x, item.y, `+${amount}`);
-          this.onEvent(amount > 1 ? "banana-bunch" : "banana");
-        }
-      });
-    });
+  private tryEnterBonus(input: Input, oldX: number) {
+    if (this.bonus || this.bonusDoorCooldown > 0) return false;
+    const p = this.player;
+    const index = this.level.bonusRooms?.findIndex(room => {
+      const wall = this.level.breakableWalls?.[room.wallIndex];
+      if (!wall || !this.brokenWalls.has(room.wallIndex)) return false;
+      const toward = Math.sign(wall.x-oldX);
+      const walking = Math.abs(p.x-oldX) > 0.001 && Math.sign(p.x-oldX) === toward;
+      return Math.abs(p.x-wall.x) < wall.w/2 + .7 && p.y + 1.35 > wall.y && p.y < wall.y+wall.h &&
+        (walking || input.pressed.has("up") || input.pressed.has("action"));
+    }) ?? -1;
+    if (index < 0) return false;
+    const source = this.level, room = source.bonusRooms![index];
+    const sourceIndices = room.pickups.map((_, i)=>i).filter(i=>!this.collectedBonus.has(`${index}-${i}`));
+    const world = { player: {...p,x:oldX}, enemies:this.enemies, animals:this.animals, collected:this.collected,
+      letters:this.letters, usedBarrels:this.usedBarrels, thrown:this.thrown, enemyShots:this.enemyShots,
+      checkpoint:this.checkpoint, companion:this.companion, trail:this.trail };
+    const stage: Level = { id:source.id, name:room.label, subtitle:"BONUS · RETROUVE LA SORTIE À DROITE", biome:"jungle",
+      length:17, platforms:[{x:8.5,y:0,w:19,h:4.4}], enemies:[], barrels:[],
+      pickups:sourceIndices.map((i)=>({...room.pickups[i],x:5+i*2.5,y:1.05})),
+      decors:[{x:13,y:1.5,kind:"sign",text:"SORTIE →"}], tip:"Ramasse les trésors puis rejoins la sortie à droite." };
+    this.bonus = {index,stage,sourceIndices,world};
+    this.player = {...p,x:2,y:0,vx:0,vy:0,grounded:true,carry:-1,cannon:-1,mount:-1,
+      roll:0,rollJump:false,mountAttack:0,mountCharge:0,mountCharged:false,invincible:1};
+    this.enemies=[];this.animals=[];this.collected=new Set();this.letters=new Set();this.usedBarrels=new Set();
+    this.thrown=[];this.enemyShots=[];this.checkpoint={x:2,y:0};this.companion={x:.75,y:0,facing:1};this.trail=[];this.swap=null;
+    this.sceneRevision++;this.cameraBounds=null;this.message(stage.tip,5);this.onEvent("enter-cannon");
+    input.pressed.clear(); input.released.clear();
+    return true;
+  }
+  leaveBonus() {
+    const visit = this.bonus;
+    if (!visit) return;
+    for (const pickup of this.collected) this.collectedBonus.add(`${visit.index}-${visit.sourceIndices[pickup]}`);
+    const hp=this.player.hp, active=this.player.active;
+    Object.assign(this,visit.world); this.bonus=null;
+    Object.assign(this.player,{hp,active,vx:0,vy:0,roll:0,rollJump:false,mountAttack:0,mountCharge:0,mountCharged:false,invincible:1.2});
+    this.bonusDoorCooldown=1;this.sceneRevision++;this.cameraBounds=null;this.swap=null;
+    this.message("De retour dans le niveau !",3);
   }
   private resolveBreakableWalls(p: Player, oldX: number) {
     const walls = this.level.breakableWalls;
@@ -490,7 +510,7 @@ export class Game {
         p.y + 1.1 > bottom &&
         p.y < top + 0.2;
       if (!overlap) continue;
-      if (p.roll > 0.12) {
+      if (p.roll > 0.12 || (this.mount?.kind === "rambi" && (p.mountAttack > 0 || Math.abs(p.vx) >= ANIMAL_DESIGNS.rambi.run - .1))) {
         this.brokenWalls.add(i);
         this.onEvent("barrel-break");
         this.openBonusRoom(i);
@@ -590,7 +610,7 @@ export class Game {
     if(this.level.originalTerrain === "coral") p.y=nearestCoralOpenY(p.x,p.y);
     p.vy = this.level.biome === "lagoon" ? 0 : 9;
     p.grounded = false; p.coyote = 0; p.buffer = 0;
-    p.mount = -1; p.mountAttack = 0; p.mountCooldown = 0.55;
+    p.mount = -1; p.mountAttack = 0; p.mountCharge = 0; p.mountCharged = false; p.mountCooldown = 0.55;
     if (flee) p.invincible = 1.4;
     this.onEvent("jump");
     this.message(flee ? "Rattrape ton compagnon !" : "Saute sur son dos pour remonter.");
@@ -598,6 +618,7 @@ export class Game {
   damage(fall = false) {
     const p = this.player;
     if (!fall && p.invincible > 0) return;
+    if (fall && this.bonus) { this.leaveBonus(); return; }
     if (this.mount) {
       this.dismount(true);
       if (!fall) { this.onEvent("hurt"); return; }
@@ -631,7 +652,7 @@ export class Game {
       carry: -1,
       cannon: -1, cannonLock: -1, cannonTime: 0, launched: 0,
       cannonGravityDelay: 0, cannonControlDelay: 0, jumpDelay: 0,
-      roll: 0, rollJump: false, rollChain: 0, mount: -1, mountAttack: 0, mountCooldown: 0.55,
+      roll: 0, rollJump: false, rollChain: 0, mount: -1, mountAttack: 0, mountCharge: 0, mountCharged: false, mountCooldown: 0.55,
     });
     this.trail = [];
     this.companion = { ...this.checkpoint, facing: 1 };
@@ -642,6 +663,10 @@ export class Game {
     this.message(
       "Une nouvelle chance. Retrouve ton amie dans un tonneau rose !",
     );
+  }
+  cannonPosition(index:number,level=this.level) {
+    const b=level.barrels[index];
+    return b?cannonWorldPosition(b,b.motion?.activation==='always'?this.time:(this.cannonTimes[index]??0)):{x:0,y:0};
   }
   cannonAngle(index: number, level = this.level) {
     const b = level.barrels[index];
@@ -698,11 +723,11 @@ export class Game {
         (water ? Math.abs(p.y - a.y) < 1.2 : descending)) {
         a.state = "ridden"; a.timer = 0;
         p.mount = i;
-        p.y = this.level.originalTerrain === "coral" ? nearestCoralOpenY(a.x,a.y,seat+1.3) : a.y;
+        p.y = this.level.originalTerrain === "coral" ? nearestCoralOpenY(a.x,a.y,ENGUARDE_SWIM_BODY.height) : a.y;
         a.y=p.y; p.vy = 0; p.grounded = !water;
         p.roll = 0; p.rollJump = false; p.carry = -1; p.coyote = 0;
         this.onEvent("mount");
-        this.message(`${ANIMAL_DESIGNS[a.kind].name} ! ${a.kind === "winky" ? "Sauter pour bondir très haut." : a.kind === "expresso" ? "Maintiens le saut en l’air pour planer." : a.kind === "enguarde" ? "Action : coup de rostre. Joystick : nager." : "Course et corne pour repousser les ennemis."}`, 5);
+        this.message(`${ANIMAL_DESIGNS[a.kind].name} ! ${a.kind === "winky" ? "Sauter pour bondir très haut." : a.kind === "expresso" ? "Maintiens le saut en l’air pour planer." : a.kind === "enguarde" ? "Maintiens Charge, puis relâche pour foncer. Joystick : nager." : "Maintiens Charge, puis relâche pour foncer et briser les planches."}`, 5);
       }
     });
   }
@@ -725,6 +750,7 @@ export class Game {
   update(input: Input, dt = STEP) {
     if (this.phase !== "playing") return;
     this.time += dt;
+    this.bonusDoorCooldown = Math.max(0,this.bonusDoorCooldown-dt);
     this.toastTimer = Math.max(0, this.toastTimer - dt);
     this.particles.forEach((p) => {
       p.age += dt;
@@ -738,7 +764,7 @@ export class Game {
     p.invincible = Math.max(0, p.invincible - dt);
     p.launched = Math.max(0, p.launched - dt);
     if (p.cannonLock >= 0) {
-      const source = this.level.barrels[p.cannonLock];
+      const source = this.level.barrels[p.cannonLock] && this.cannonPosition(p.cannonLock);
       if (!source || Math.hypot(p.x - source.x, p.y - source.y) > 1.7) p.cannonLock = -1;
     }
     p.roll = Math.max(0, p.roll - dt);
@@ -748,7 +774,7 @@ export class Game {
     if (p.roll === 0) { p.rollJump = false; p.rollChain = 0; }
     if (p.roll > 0) p.rollAngle += Math.abs(p.vx) * dt * 3.4;
     else p.rollAngle = 0;
-    p.buffer = input.pressed.has("jump") ? 0.13 : Math.max(0, p.buffer - dt);
+    p.buffer = input.pressed.has("jump") ? (cart ? .22 : .13) : Math.max(0, p.buffer - dt);
     p.coyote = p.grounded ? 0.1 : Math.max(0, p.coyote - dt);
     if (input.pressed.has("swap") && this.mount) this.dismount();
     else if (
@@ -786,6 +812,8 @@ export class Game {
     if (p.cannon >= 0) {
       const barrel = this.level.barrels[p.cannon];
       p.cannonTime += dt;
+      this.cannonTimes[p.cannon]=(this.cannonTimes[p.cannon]??0)+dt;
+      const position=this.cannonPosition(p.cannon);p.x=position.x;p.y=position.y;
       if (input.pressed.has("jump") || input.pressed.has("action") || (barrel.autoFire && p.cannonTime > 0.15)) {
         const angle = this.cannonAngle(p.cannon);
         const launch = cannonLaunchVelocity(angle);
@@ -793,7 +821,7 @@ export class Game {
           (barrel.launchMultiplier ?? CANNON_TEMPLATE.launchMultiplier) /
           CANNON_TEMPLATE.launchMultiplier;
         p.cannonLock = p.cannon;
-        p.launched = 0.65;
+        p.launched = cannonMomentumDuration(barrel);
         p.cannonGravityDelay =
           barrel.cannonGravityDelay ?? CANNON_TEMPLATE.gravityDelayCounter;
         p.cannonControlDelay =
@@ -816,11 +844,22 @@ export class Game {
     if (input.pressed.has("action") && this.mount) {
       const kind = this.mount.kind;
       if (kind === "rambi" || kind === "enguarde") {
-        p.mountAttack = 0.32;
+        p.mountAttack = 0.32; p.mountCharged = false; p.mountCharge = 0;
         this.onEvent("roll");
       }
       actionUsed = true;
     }
+    const chargeable = this.mount?.kind === "rambi" || this.mount?.kind === "enguarde";
+    if (chargeable && input.held.has("action")) {
+      p.mountCharge = Math.min(.75,p.mountCharge+dt);
+      if (p.mountCharge > .18) p.mountAttack = 0;
+    } else if (chargeable && p.mountCharge > 0) {
+      if (p.mountCharge >= .65) {
+        p.mountAttack = .85; p.mountCharged = true; this.onEvent("roll");
+      }
+      p.mountCharge = 0;
+    }
+    if (p.mountAttack === 0) p.mountCharged = false;
     if (input.pressed.has("action") && !this.mount && !cart) {
       const crate = this.animals.find(b => b.state === "crate" &&
         Math.abs(b.x - p.x) < 1.65 && Math.abs(b.y - p.y) < 1.8);
@@ -876,7 +915,7 @@ export class Game {
               : input.held.has("right") || input.held.has("left")
                 ? BUDDY_PHYSICS.rollMoving
                 : BUDDY_PHYSICS.rollStill;
-          p.rollSpeed = base * (p.active ? 1.125 : 1);
+          p.rollSpeed = base * (p.active ? 1 : 1.125);
           this.onEvent("roll");
         }
       }
@@ -893,10 +932,15 @@ export class Game {
     else if (cart) p.vx = 8.5;
     else if (p.cannonControlDelay > 0) {
       /* ROM cannon flight: ignore steering until the control counter expires. */
-    } else if (p.launched > 0) { /* Preserve the cannon impulse instead of braking it immediately. */ }
+    } else if (p.launched > 0) {
+      // Releasing the fire button must not brake a cannon shot in mid-flight.
+      // Steering is available only after the imported control delay expires.
+      if (direction) p.vx = approach(p.vx,direction*Math.max(Math.abs(p.vx),speed),12*dt);
+    }
+    else if (chargeable && p.mountCharge > .18) p.vx = approach(p.vx,0,60*dt);
     else if (p.roll > 0) p.vx = p.rollFacing * p.rollSpeed;
-    else if (buddy?.kind === "enguarde" && p.mountAttack > 0) p.vx = p.facing * BUDDY_PHYSICS.stabSpeed;
-    else if (buddy?.kind === "rambi" && p.mountAttack > 0) p.vx = p.facing * 9;
+    else if (buddy?.kind === "enguarde" && p.mountAttack > 0) p.vx = p.facing * (p.mountCharged ? 18 : BUDDY_PHYSICS.stabSpeed);
+    else if (buddy?.kind === "rambi" && p.mountAttack > 0) p.vx = p.facing * (p.mountCharged ? 16 : 9);
     else if (p.invincible < 1.9) {
       const swimSpeed =
         water && this.level.originalTerrain === "coral"
@@ -978,7 +1022,7 @@ export class Game {
       }
       // Expresso flutters while jump is tapped/held in the air, never climbs.
       if (buddy?.kind === "expresso" && !p.grounded && p.vy < 0 && input.held.has("jump"))
-        p.vy = Math.max(p.vy, -1.8);
+        p.vy = Math.max(p.vy, -.65);
     }
     const wasGrounded = p.grounded;
     const oldY = p.y,
@@ -992,6 +1036,7 @@ export class Game {
         p.vx = Math.max(0, p.vx);
       }
     }
+    if (this.tryEnterBonus(input,oldX)) return;
     p.y += p.vy * dt;
     p.grounded = false;
     if (water && this.level.originalTerrain === "coral") {
@@ -1009,11 +1054,11 @@ export class Game {
       if(contact.blockedX) p.vx = 0;
       if(contact.blockedY) p.vy = 0;
     } else if (this.level.originalTerrain === "coral") {
-      const swimBody = this.mount ? {radius:ANIMAL_DESIGNS[this.mount.kind].width*.7,height:ANIMAL_DESIGNS[this.mount.kind].seat+1.3} : undefined;
+      const swimBody = this.mount ? ENGUARDE_SWIM_BODY : undefined;
       const motion = resolveCoralMotion(oldX, oldY, p.x, p.y, swimBody);
       if(Math.abs(motion.x - p.x) > 0.00001) p.vx = 0;
       if(Math.abs(motion.y - p.y) > 0.00001) p.vy = 0;
-      p.x = clamp(motion.x,.3,63.7);
+      p.x = clamp(motion.x,.3,CORAL_WORLD_WIDTH-.3);
       p.y = clamp(motion.y, CORAL_WATER_FLOOR_Y, CORAL_WATER_SURFACE_Y);
       if(p.y === CORAL_WATER_FLOOR_Y && p.vy < 0) p.vy = 0;
       p.grounded = false;
@@ -1067,7 +1112,7 @@ export class Game {
     }
     this.updateItemCaches(p, input);
     this.maybeSignHint(p);
-    this.collectBonusPickups(p);
+    // Bonus rewards are collected by normal pickup handling in their own scene.
     this.level.pickups.forEach((item, i) => {
       if (
         this.collected.has(i) ||
@@ -1104,10 +1149,11 @@ export class Game {
       }
     });
     this.level.barrels.forEach((b, i) => {
+      const position=b.kind==='cannon'?this.cannonPosition(i):b;
       if (
         this.usedBarrels.has(i) ||
-        Math.abs(b.x - p.x) > 0.8 ||
-        Math.abs(b.y - p.y) > 1.1
+        Math.abs(position.x - p.x) > 0.8 ||
+        Math.abs(position.y - p.y) > 1.1
       )
         return;
       if (b.kind === "rescue") {
@@ -1127,8 +1173,8 @@ export class Game {
         p.cannon = i; p.cannonTime = 0; p.launched = 0;
         p.carry = -1; p.roll = 0; p.rollJump = false;
         this.onEvent("enter-cannon");
-        p.x = b.x;
-        p.y = b.y;
+        p.x = position.x;
+        p.y = position.y;
         p.vx = 0;
         p.vy = 0;
         this.message(b.autoFire ? "Canon automatique !" : "Sauter ou Action pour décoller. Observe la direction du canon.");
@@ -1198,15 +1244,15 @@ export class Game {
       if (enemy.kind === "boss") {
         const cycle = enemy.timer % 3.7;
         enemy.vulnerable = cycle > 2.55;
-        if (cycle < 2.4) {
+        if (cycle > .5 && cycle < 2.4) {
           enemy.x = approach(
             enemy.x,
             clamp(p.x, enemy.min, enemy.max),
-            (4.5 + (5 - enemy.hp) * 0.3) * dt,
+            (3.2 + (5 - enemy.hp) * 0.25) * dt,
           );
           enemy.y =
             Math.abs(Math.sin((cycle / 0.8) * Math.PI)) *
-            (1.8 + (5 - enemy.hp) * 0.12);
+            (.7 + (5 - enemy.hp) * 0.08);
         } else enemy.y = approach(enemy.y, 0, 12 * dt);
       } else if (enemy.pattern === "necky") {
         enemy.x = enemy.min;
@@ -1238,7 +1284,7 @@ export class Game {
         if(enemy.x < enemy.min || enemy.x > enemy.max) {
           enemy.x = clamp(enemy.x, enemy.min, enemy.max); enemy.vx *= -1;
         }
-        enemy.y = enemy.originY + Math.sin(enemy.timer * 2) * 0.6;
+        enemy.y = enemy.originY + Math.sin(enemy.timer * 2) * (enemy.hoverAmplitude ?? .6);
         if(water) {
           enemy.y = clamp(enemy.y, CORAL_WATER_FLOOR_Y, CORAL_WATER_SURFACE_Y - ENEMY_DESIGNS[enemy.kind].height * 0.5);
           if(this.level.originalTerrain === "coral") {
@@ -1257,8 +1303,7 @@ export class Game {
         if (
           barrel.active &&
           Math.abs(barrel.x - enemy.x) < width + 0.6 &&
-          Math.abs(barrel.y - enemy.y - height / 2) < height / 2 + 0.5 &&
-          (!boss || enemy.vulnerable)
+          Math.abs(barrel.y - enemy.y - height / 2) < height / 2 + 0.5
         ) {
           hit = true;
           barrel.active = false;
@@ -1267,7 +1312,7 @@ export class Game {
       if (
         Math.abs(p.x - enemy.x) < width + (this.mount ? ANIMAL_DESIGNS[this.mount.kind].width : 0.3) &&
         p.y <= enemy.y + height &&
-        p.y + 1.4 + (this.mount ? ANIMAL_DESIGNS[this.mount.kind].seat : 0) > enemy.y
+        p.y + (water ? this.mount ? ENGUARDE_SWIM_BODY.height : .95 : 1.35 + (this.mount ? ANIMAL_DESIGNS[this.mount.kind].seat : 0)) > enemy.y
       ) {
         const mount = this.mount;
         const mountHit = !!mount && !boss && (
@@ -1276,11 +1321,12 @@ export class Game {
           (mount.kind === "winky" && p.vy < -0.5 && oldY >= enemy.y + height - 0.4)
         );
         const strideOver = mount?.kind === "expresso" && enemy.kind === "beetle" && enemy.y <= p.y + 0.1;
+        const spiked = enemy.kind === "bee" && enemy.pattern !== "necky";
         const stomp = !mount && !water && p.vy < -0.5 &&
           oldY >= previousEnemyY + height - 0.18;
         const roll =
           p.roll > 0 &&
-          enemy.kind !== "bee" &&
+          !spiked &&
           !boss;
         if (mountHit) {
           hit = true;
@@ -1288,7 +1334,7 @@ export class Game {
         } else if (strideOver) { /* Expresso steps over small ground enemies. */ }
         else if (
           stomp &&
-          enemy.kind !== "bee" &&
+          !spiked &&
           (enemy.kind !== "armored" || p.active === 0)
         ) {
           // A protected head still bounces the player safely; only an exposed
@@ -1297,6 +1343,7 @@ export class Game {
           p.y = enemy.y + height;
           p.grounded = false;
           p.vy = rawSpeed(ROM.bounce[p.active]);
+          if(cart && !boss) p.invincible = Math.max(p.invincible,.18);
           this.onEvent("bounce");
         } else if (roll) {
           hit = true;
@@ -1318,7 +1365,9 @@ export class Game {
       }
     }
     const zone = this.level.finishZone;
-    if (zone) {
+    if (this.bonus && p.x >= this.level.length - 2) {
+      this.leaveBonus();
+    } else if (zone) {
       if (
         p.x >= zone.x - zone.w / 2 &&
         p.x <= zone.x + zone.w / 2 &&

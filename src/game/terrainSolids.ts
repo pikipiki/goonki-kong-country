@@ -5,6 +5,7 @@ import { ORIGINAL_JUNGLE_ORIGIN } from './originalJungle';
 import { ORIGINAL_REVERB_ORIGIN } from './originalReverb';
 import { ORIGINAL_MINE_CART_ORIGIN } from './originalMineCart';
 import { coralSolidSpansWorld } from './originalCoralTerrain';
+import { CORAL_WATER_FLOOR_Y, CORAL_WATER_SURFACE_Y } from './marineScale';
 
 export interface SolidSpan { bottom: number; top: number }
 /** The same solid metatile intervals as the terrain meshes, without internal seams. */
@@ -89,10 +90,10 @@ export function resolveLandMotion(kind: string, oldX: number, oldY: number, x: n
 export function nearestCoralOpenY(x: number, preferred: number, height = SWIM_BODY.height) {
   const blocked = (y:number) => [x-SWIM_BODY.radius,x,x+SWIM_BODY.radius].some(px =>
     terrainSolidSpans('coral',px).some(s => y+height > s.bottom+0.015 && y < s.top-0.015));
-  const candidates = [Math.max(-.9,Math.min(53.9,preferred)), -.9];
+  const candidates = [Math.max(CORAL_WATER_FLOOR_Y,Math.min(CORAL_WATER_SURFACE_Y,preferred)), CORAL_WATER_FLOOR_Y];
   for(const px of [x-SWIM_BODY.radius,x,x+SWIM_BODY.radius]) for(const s of terrainSolidSpans('coral',px)) {
     candidates.push(s.bottom-height-0.025, s.top+0.025);
   }
-  return candidates.filter(y=>y>=-.9 && y<=53.9 && !blocked(y))
-    .sort((a,b)=>Math.abs(a-preferred)-Math.abs(b-preferred))[0] ?? -.9;
+  return candidates.filter(y=>y>=CORAL_WATER_FLOOR_Y && y<=CORAL_WATER_SURFACE_Y && !blocked(y))
+    .sort((a,b)=>Math.abs(a-preferred)-Math.abs(b-preferred))[0] ?? CORAL_WATER_FLOOR_Y;
 }

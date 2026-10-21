@@ -41,8 +41,8 @@ export const ENEMY_DESIGNS: Record<
   boss: {
     name: "Le roi des voleurs",
     reference: "King K. Rool",
-    height: 2.35,
-    width: 1.32,
-    scale: 1.2,
+    height: 1.95,
+    width: 1.05,
+    scale: 1.05,
   },
 };

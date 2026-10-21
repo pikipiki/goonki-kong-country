@@ -12,20 +12,24 @@ describe("bonus rooms and cannon fidelity", () => {
     expect(bonusWalls.breakableWalls[1].entranceLevelId).toBe(45);
   });
 
-  it("collects bonus loot after the linked wall is broken", () => {
-    const game = new Game();
-    game.start(0, true);
-    const room = game.level.bonusRooms![1];
-    game.brokenWalls.add(room.wallIndex);
-    const banana = room.pickups[0];
-    game.player.x = banana.x;
-    game.player.y = banana.y - 0.85;
-    game.player.vy = 0;
-    game.player.grounded = true;
-    const before = game.bananas;
-    game.update(emptyInput());
-    expect(game.collectedBonus.size).toBeGreaterThan(0);
-    expect(game.bananas).toBeGreaterThan(before);
+  it("enters a separate playable bonus, collects loot and returns without resetting the stage", () => {
+    const game = new Game();game.start(0,true);game.enemies=[];
+    const room=game.level.bonusRooms![2],wall=game.level.breakableWalls![room.wallIndex];
+    const animal=game.animals[0];animal.state="ridden";
+    Object.assign(game.player,{x:wall.x-1.25,y:wall.y,vx:0,vy:0,grounded:true,mount:0});
+    game.collected.add(0);game.letters.add(1);
+    const savedCollected=game.collected,savedLetters=game.letters,revision=game.sceneRevision;
+    const strike=emptyInput();strike.pressed.add("action");strike.held.add("right");
+    game.update(strike);
+    expect(game.brokenWalls.has(room.wallIndex)).toBe(true);
+    expect(game.bonus?.index).toBe(2);expect(game.level.originalTerrain).toBeUndefined();
+    expect(game.sceneRevision).toBeGreaterThan(revision);expect(game.player.mount).toBe(-1);
+    const before=game.bananas,walk=emptyInput();walk.held.add("right");walk.held.add("run");
+    for(let i=0;i<220 && game.bonus;i++)game.update(walk);
+    expect(game.bonus).toBeNull();expect(game.bananas).toBeGreaterThan(before);
+    expect(game.collectedBonus.size).toBe(3);expect(game.collected).toBe(savedCollected);expect(game.letters).toBe(savedLetters);
+    expect(game.player.mount).toBe(0);expect(game.brokenWalls.has(room.wallIndex)).toBe(true);
+    expect(game.player.x).toBeLessThan(wall.x);expect(game.phase).toBe("playing");
   });
 
   it("exposes ROM ExitDoor finish volume on jungle", () => {

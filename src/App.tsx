@@ -177,8 +177,9 @@ export function App() {
         return;
       }
       if (e.code === "Enter" && game.phase === "title") {
+        if (e.target instanceof HTMLElement && e.target.closest("button")) return;
         e.preventDefault();
-        start(game.save.unlocked);
+        change(()=>{game.phase="map";setMapLevel(game.levelId);});
         return;
       }
       if (game.phase !== "playing") return;
@@ -419,16 +420,12 @@ export function App() {
               Une très grande aventure.
             </p>
             <div className="intro-cta">
-              <button
-                className="primary"
-                onClick={() => start(game.save.unlocked)}
-              >
-                {t(game.save.unlocked ? "continue" : "play")}
+              <button className="primary explore-primary" onClick={openMap} autoFocus>
+                {t("map")}
                 <Icon name="arrow" />
               </button>
-              <button className="secondary" onClick={openMap}>
-                {t("map")}
-                <span>07 étapes</span>
+              <button className="secondary" onClick={() => start(game.save.unlocked)}>
+                {t(game.save.unlocked ? "continue" : "play")}
               </button>
             </div>
             <div className="duo-note">
@@ -489,7 +486,7 @@ export function App() {
                     className={
                       [...game.letters].some(
                         (index) =>
-                          game.level.pickups[index].letter === letter &&
+                          game.level.pickups[index]?.letter === letter &&
                           game.level.pickups
                             .filter((p) => p.kind === "letter")
                             .findIndex(
@@ -567,55 +564,21 @@ export function App() {
               <Icon name="back" />
               Retour
             </button>
-            <p className="eyebrow">CHAQUE ÉTAPE, UNE NOUVELLE HISTOIRE</p>
-            <h2>
-              Une île à explorer<span>.</span>
-            </h2>
-            <p className="panel-description">
-              De la première feuille au dernier tonneau. Ensemble.
-            </p>
-            <IslandMap selected={mapLevel} initial={game.levelId} unlocked={LEVELS.length - 1} onSelect={setMapLevel}/>
-            <button className="primary map-enter" onClick={() => start(mapLevel)}>
-              Entrer · {MAP_LEVELS[mapLevel].name}
-            </button>
-            <p className="save-note">Toutes les étapes sont accessibles : Rose et Violette la rejoignent sur la carte.</p>
-            <div className="level-grid">
-              {MAP_LEVELS.map((level, i) => {
-                const best = game.save.best[i];
-                return (
-                  <button
-                    key={i}
-                    className={`level-card biome-${level.biome} ${best ? "completed" : ""} ${mapLevel === i ? "map-selected" : ""}`}
-                    aria-pressed={mapLevel === i}
-                    onClick={() => setMapLevel(i)}
-                  >
-                    <div className="level-art">
-                      <span className="level-number">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <span className="island-icon">
-                        {["❋", "♧", "◇", "≈", "❄", "⌘", "♜"][i]}
-                      </span>
-                      <span className="level-lock">
-                        {best
-                            ? "✓ Exploré"
-                            : "À découvrir"}
-                      </span>
-                    </div>
-                    <span className="level-region">{level.subtitle}</span>
-                    <strong>{level.name}</strong>
-                    <small>
-                      {best
-                        ? `${best.letters}/${level.letterWord?.length ?? 5} lettres · ${Math.floor(best.time)} s`
-                        : "Le voyage vous attend"}
-                    </small>
-                  </button>
-                );
-              })}
+            <div className="map-heading">
+              <p className="eyebrow">L’ÎLE AUX DEUX PELUCHES</p>
+              <h2>Une île à explorer<span>.</span></h2>
+              <p id="map-instructions" className="panel-description">Choisis une étape sur la carte. Flèches pour te déplacer, Entrée pour jouer.</p>
             </div>
-            <p className="save-note">
-              ✦ Progression sauvegardée automatiquement sur cet appareil.
-            </p>
+            <IslandMap selected={mapLevel} initial={game.levelId} unlocked={LEVELS.length - 1} onSelect={setMapLevel} onConfirm={() => start(mapLevel)} stages={MAP_LEVELS}/>
+            <div className="map-confirm">
+              <p className="map-selection" aria-live="polite" aria-atomic="true">
+                <span>{MAP_LEVELS[mapLevel].subtitle}</span>
+                <strong>{MAP_LEVELS[mapLevel].name}</strong>
+              </p>
+              <button className="primary map-enter" onClick={() => start(mapLevel)}>
+                Entrer dans l’étape <Icon name="arrow" />
+              </button>
+            </div>
           </div>
         </div>
       )}

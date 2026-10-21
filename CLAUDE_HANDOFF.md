@@ -1,8 +1,18 @@
-# État prioritaire de reprise — 0.4.0 — corrections du 21 octobre 2026
+# État prioritaire de reprise — 0.4.0 (21 octobre 2026)
 
-Cette section prévaut sur les rapports historiques ci-dessous. Passe : collisions/visibilité, carte débloquée, décor superposé, **imports ROM canyon/wagon/coral** (environnements Rev 2 corrigés), `terrainSolids`, tests `test:stages` / `test:decor`.
+Cette section prévaut sur l’historique ci-dessous. Dépôt : `Documents/git/goonk-country`. Handoff avant commit : `.cursor/skills/handoff-before-commit/SKILL.md`.
 
-**Dépôt :** `Documents/git/goonk-country`. Avant chaque commit : `.cursor/skills/handoff-before-commit/SKILL.md`.
+## Animaux, bonus, sols, carte (après `44dd570`)
+
+- **Montures / contrôles** : charges tenues (~0,65 s) et relâchement boost (adaptation, pas DKC1 ROM — voir `buddy-controls-review.md`). Flutter Expresso maintenu ou basculé au clic ; jauge + mode clic. Taille peluches **2,2 / 2,05** conservée.
+- **Bonus** : scène séparée, porte ouverte, sortie à droite ; restauration niveau, monture, pickups et murs cassés.
+- **Roulade** : multiplicateurs **Rose 1,125 / Violette 1,0** (course/saut à pied inchangés).
+- **Lagon** : échelle marine **×1,5** (`marineScale.ts`, `ROM_CORAL_SOURCE`, `marine-room-scale.md`) ; collision nage ~0,95 ; tests entrée→sortie.
+- **Sols visibles** : canyon/wagon/jungle — culling corrigé (origine ROM), faces opaques = collision, faux socles jungle retirés ; `routeSafety.ts`, `cannonMotion.ts`, `test:ground` + captures `ground-fixed-*`.
+- **Boss** : tonneaux blessent hors récupération ; sauts / phases testés.
+- **Carte** : `IslandMap` / `App` revus (`map-ui-review.md`). `test:mechanics` (montures + bonus).
+
+## Imports ROM (ne pas rétablir les anciennes approximations)
 
 ## Corrections critiques des imports : ne pas rétablir les anciennes approximations
 
@@ -26,17 +36,18 @@ Preuves : `reference/level-tables.json` → `routeEnvironmentEvidence`, `environ
 
 ## Validation et commandes
 
-**143 tests unitaires / 26 fichiers passent**, TypeScript et build Vite passent. Suites : `test:browser`, `test:map`, `test:mobile`, `test:stages` (7 étapes × portrait/paysage), et **`test:decor`** (9 positions dans les 7 étapes + portrait ; profondeur des décors, un seul mur, absence de wagon hors mine, caches cachées, captures). Détails : `reference/bugfix-validation.md` et `reference/decor-import-fixes.md`.
+**185 tests / 31 fichiers** (`npm test`). Navigateur : `test:browser`, `test:map`, `test:mobile`, `test:stages`, `test:decor`, **`test:ground`**, **`test:mechanics`**. Docs : `bugfix-validation.md`, `decor-import-fixes.md`, `route-safety-fixes.md`.
 
-`npm run analyze:levels`, `npm run analyze:coral-terrain`, `npm run generate:coral-terrain` (tables marines), puis générateurs de placements/terrain existants. Ne pas relancer un ancien générateur qui reconstituerait les tableaux contigus erronés ou la compression verticale du lagon.
+Générateurs : `analyze:levels`, `analyze:coral-terrain`, `generate:coral-terrain`, puis `generate:jungle|canyon|mine-cart|coral` — ne pas réintroduire l’ancienne compression verticale du lagon ni les attributs cave/cart concaténés.
 
 ## Limites de reprise
 
-- Les modèles et habillages restent une adaptation 3D ; pas d’extraction de textures ROM. Les profils numériques ne sont pas une reconstruction intégrale des graphismes d’origine.
-- Ennemis aquatiques et certains oiseaux utilisent encore des familles de modèles provisoires. Tous les comportements des objets/bonus/ennemis/boss du jeu complet ne sont pas portés.
-- Le départ exact des routes doit encore être confronté à des captures natives. La recherche de chemin marin prouve un corridor géométrique ; elle ne vaut pas parcours humain complet contre l’IA.
-- Tests Chrome sur macOS avec émulation tactile, pas Safari iOS/Android physiques. Les scripts préparent certains états pour isoler une régression.
-- Audio existant préservé : 27 M4A + 119 WAV et routage Rev 2 ; contrôle d’écoute comparée restant dans `audio-playback-notes.md`.
+- Modèles 3D adaptés ; pas de textures chip ROM. Charges montures = adaptation utilisateur, pas preuve DKC1.
+- Ennemis aquatiques / oiseaux encore partiellement provisoires ; espacement abeilles wagon à affiner si signalé.
+- Départs de routes et entrée SNES lagon encore partiellement inférés ; tests géométriques ≠ parcours humain complet.
+- Audio : 27 M4A + 119 WAV ; écoute comparative dans `audio-playback-notes.md`.
+
+**Priorité suivante :** captures SNES des spawns, hazards wagon omis, parité canons canyon si écart gameplay restant.
 
 
 ---

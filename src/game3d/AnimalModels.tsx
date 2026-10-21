@@ -167,8 +167,8 @@ function Expresso() {
 }
 
 /** Original DKC buddy silhouettes. Origin is the ground, forward is +X. */
-export function AnimalModel({ kind, moving = false, attacking = false, time = 0 }: {
-  kind: AnimalKind; moving?: boolean; attacking?: boolean; time?: number;
+export function AnimalModel({ kind, moving = false, attacking = false, time = 0, motion }: {
+  kind: AnimalKind; moving?: boolean; attacking?: boolean; time?: number; motion?: () => {moving:boolean;attacking:boolean;gliding:boolean;charging:number};
 }) {
   const root = useRef<Group>(null);
   const animated = useRef<Group[]>([]);
@@ -178,12 +178,13 @@ export function AnimalModel({ kind, moving = false, attacking = false, time = 0 
   }, [kind]);
   useFrame(({ clock }) => {
     const t = time || clock.elapsedTime;
+    const state=motion?.(), move=state?.moving ?? moving, attack=state?.attacking ?? attacking, glide=state?.gliding ?? false;
     for (const group of animated.current) {
-      if (group.name === 'animal-stride') group.rotation.z = Math.sin(t * (kind === 'expresso' ? 15 : 10) + (group.userData.phase || 0)) * (moving ? group.userData.amplitude : .025);
-      else if (group.name === 'animal-tail') group.rotation.y = Math.sin(t * (attacking ? 17 : moving ? 10 : 4)) * (moving ? .32 : .13);
+      if (group.name === 'animal-stride') group.rotation.z = Math.sin(t * (kind === 'expresso' ? 15 : 10) + (group.userData.phase || 0)) * (move ? group.userData.amplitude : .025);
+      else if (group.name === 'animal-tail') group.rotation.y = Math.sin(t * (attack ? 17 : move ? 10 : 4)) * (move ? .32 : .13);
       else if (group.name === 'animal-fin') group.rotation.x = Math.sin(t * 7 + group.userData.phase) * .13;
-      else if (group.name === 'animal-wing') group.rotation.x = group.userData.side * (attacking ? .70 + Math.sin(t * 20) * .35 : Math.sin(t * 6) * .07);
-      else if (group.name === 'animal-attack') group.rotation.z = attacking ? -.18 : 0;
+      else if (group.name === 'animal-wing') group.rotation.x = group.userData.side * (attack || glide ? .70 + Math.sin(t * 20) * .35 : Math.sin(t * 6) * .07);
+      else if (group.name === 'animal-attack') group.rotation.z = attack ? -.18 : state?.charging ? -.12 : 0;
     }
   });
   return <group ref={root} dispose={null}>

@@ -13,6 +13,9 @@ function ActionButton({
   glyph,
   className = "",
   clickMode = false,
+  chargeable = false,
+  chargeProgress = 0,
+  sustained = false,
 }: {
   controls: Controls;
   action: Key;
@@ -20,10 +23,14 @@ function ActionButton({
   glyph: string;
   className?: string;
   clickMode?: boolean;
+  chargeable?: boolean;
+  chargeProgress?: number;
+  sustained?: boolean;
 }) {
   const [down, setDown] = useState(false),
     timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const source = `screen-${action}`;
+  const source = `screen-${action}`, toggleable=chargeable || sustained;
+  useEffect(()=>{clearTimeout(timer.current);controls.set(source,action,false);setDown(false);},[clickMode,toggleable,controls,source,action]);
   useEffect(
     () => () => {
       clearTimeout(timer.current);
@@ -32,6 +39,7 @@ function ActionButton({
     [controls, source, action],
   );
   const release = () => {
+    if (clickMode && toggleable) return;
     setDown(false);
     if (!clickMode) controls.set(source, action, false);
   };
@@ -40,14 +48,16 @@ function ActionButton({
       className={`game-button ${className} ${down ? "is-down" : ""}`}
       aria-label={title}
       title={title}
+      aria-pressed={toggleable && clickMode ? down : undefined}
       onContextMenu={(e) => e.preventDefault()}
       onPointerDown={(e) => {
         e.preventDefault();
         e.currentTarget.setPointerCapture(e.pointerId);
-        setDown(true);
-        controls.set(source, action, true);
+        const next = clickMode && toggleable ? !controls.input.held.has(action) : true;
+        setDown(next);
+        controls.set(source, action, next);
         feedback();
-        if (clickMode) {
+        if (clickMode && !toggleable) {
           clearTimeout(timer.current);
           timer.current = setTimeout(
             () => controls.set(source, action, false),
@@ -64,6 +74,10 @@ function ActionButton({
       onLostPointerCapture={release}
       onClick={(e) => {
         if (e.detail === 0) {
+          if (toggleable && clickMode) {
+            const next = !controls.input.held.has(action);
+            controls.set(source,action,next);setDown(next);return;
+          }
           controls.set(source, action, true);
           timer.current = setTimeout(
             () => controls.set(source, action, false),
@@ -72,6 +86,7 @@ function ActionButton({
         }
       }}
     >
+      {chargeable && <span className="charge-progress" role="progressbar" aria-label="Puissance de charge" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(chargeProgress*100)} style={{height:`${chargeProgress*100}%`}}/>}
       <span className="button-glyph" aria-hidden="true">
         {glyph}
       </span>
@@ -274,9 +289,11 @@ export function GameControls({
           <ActionButton
             controls={controls}
             action="action"
-            title={game.player.cannon >= 0 ? "Tirer" : game.mount?.kind === "enguarde" ? "Rostre" : game.mount?.kind === "rambi" ? "Corne" : game.player.carry >= 0 ? "Lancer" : "Action"}
+            title={game.player.cannon >= 0 ? "Tirer" : game.mount?.kind === "enguarde" || game.mount?.kind === "rambi" ? game.player.mountCharge >= .65 ? "Relâcher" : "Charge" : game.player.carry >= 0 ? "Lancer" : "Action"}
             glyph="✦"
             className="action-button"
+            chargeable={game.mount?.kind === "rambi" || game.mount?.kind === "enguarde"}
+            chargeProgress={Math.min(1,game.player.mountCharge/.65)}
             clickMode={clickMode}
           />
           <ActionButton
@@ -285,6 +302,7 @@ export function GameControls({
             title={game.player.cannon >= 0 ? "Décoller" : game.mount?.kind === "enguarde" ? "Foncer" : game.mount?.kind === "expresso" ? "Planer" : game.mount?.kind === "winky" ? "Bondir" : game.level.biome === "lagoon" ? "Nager" : "Sauter"}
             glyph="↑"
             className="jump-button"
+            sustained={game.mount?.kind === "expresso"}
             clickMode={clickMode}
           />
         </div>

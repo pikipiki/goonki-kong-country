@@ -17,7 +17,7 @@ function Buddy({ animal, game }: { animal: Animal; game: Game }) {
     root.current.position.set(animal.x, animal.y, 0);
     const boxed = animal.state === "crate";
     crate.current.visible = boxed;
-    model.current.scale.setScalar(boxed ? 0.42 : 1);
+    model.current.scale.setScalar(boxed ? 0.42 : animal.kind === "enguarde" ? .78 : 1);
     model.current.position.set(0, boxed ? 0.36 : 0, boxed ? 0.62 : 0);
     model.current.rotation.y = animal.facing < 0 ? Math.PI : 0;
   });
@@ -29,7 +29,7 @@ function Buddy({ animal, game }: { animal: Animal; game: Game }) {
       <mesh geometry={box} material={wood} position={[0, 0.66, 0.53]} scale={[1.32, 0.13, 0.1]} rotation={[0, 0, -0.65]} dispose={null}/>
     </group>
     <group ref={model}>
-      <AnimalModel kind={animal.kind} moving={animal.state === "fleeing" || (animal.state === "ridden" && Math.abs(game.player.vx) > 0.2)} attacking={animal.state === "ridden" && game.player.mountAttack > 0}/>
+      <AnimalModel kind={animal.kind} moving={animal.state === "fleeing" || (animal.state === "ridden" && Math.abs(game.player.vx) > 0.2)} attacking={animal.state === "ridden" && game.player.mountAttack > 0} motion={() => ({moving: animal.state === "fleeing" || (animal.state === "ridden" && Math.abs(game.player.vx) > .2), attacking:animal.state === "ridden" && game.player.mountAttack > 0, gliding:animal.kind === "expresso" && animal.state === "ridden" && !game.player.grounded && game.player.vy >= -.66, charging:animal.state === "ridden" ? game.player.mountCharge : 0})}/>
     </group>
   </group>;
 }

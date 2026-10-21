@@ -189,20 +189,15 @@ function Pickups({ game }: { game: Game }) {
 
 function BonusRoom({game,index}:{game:Game;index:number}) {
   const root=useRef<Group>(null),room=game.level.bonusRooms![index];
+  const wall=game.level.breakableWalls![room.wallIndex];
   useFrame(()=>{
-    if(!root.current)return;
-    root.current.visible=game.brokenWalls.has(room.wallIndex);
-    root.current.children.forEach((object,i)=>{
-      object.visible=!game.collectedBonus.has(`${index}-${i}`) && Math.abs(room.pickups[i].x-game.player.x)<24;
-    });
+    if(root.current)root.current.visible=game.brokenWalls.has(room.wallIndex) && Math.abs(wall.x-game.player.x)<24;
   });
-  return <group ref={root} name="bonus-room">
-    {room.pickups.map((item,i)=><group key={i} position={[item.x,item.y,.25]}>
-      {item.kind === "banana" ? <BananaModel/> : item.kind === "balloon" ? <>
-        <mesh geometry={sphere} scale={[.35,.44,.26]}><meshStandardMaterial color="#ef91ad" roughness={.28}/></mesh>
-        <Label text="1" position={[0,0,.3]} scale={.35}/>
-      </> : null}
-    </group>)}
+  return <group ref={root} name="bonus-door" position={[wall.x,wall.y,1.7]}>
+    <mesh geometry={box} position={[0,1.05,0]} scale={[1.45,2.1,.10]}><meshStandardMaterial color="#10170d" roughness={1}/></mesh>
+    {[-.77,.77].map(x=><mesh key={x} geometry={box} position={[x,1.1,.1]} scale={[.16,2.3,.22]}><meshStandardMaterial color="#9b723d"/></mesh>)}
+    <mesh geometry={box} position={[0,2.25,.1]} scale={[1.7,.2,.22]}><meshStandardMaterial color="#b79552"/></mesh>
+    <Label text="BONUS →" position={[0,2.65,.15]} scale={.32}/>
   </group>;
 }
 function BonusPickups({game}:{game:Game}) {
@@ -318,7 +313,10 @@ export const Actors = memo(function Actors({ game }: { game: Game }) {
         return;
       }
       obj.visible = !game.usedBarrels.has(i);
-      if (b.kind === "cannon") obj.rotation.z = game.cannonAngle(i, level) - Math.PI / 2;
+      if (b.kind === "cannon") {
+        const position=game.cannonPosition(i,level);obj.position.set(position.x,position.y,0);
+        obj.rotation.z = game.cannonAngle(i, level) - Math.PI / 2;
+      }
     });
     if (carried.current) {
       carried.current.visible = game.player.carry >= 0;
