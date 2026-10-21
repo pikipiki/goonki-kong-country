@@ -25,6 +25,14 @@ export interface EnemySpec {
   kind: "beetle" | "croc" | "bee" | "armored" | "boss";
   /** ROM Necky family: fixed X, vertical hover only. */
   pattern?: "patrol" | "necky";
+  /** NutThrowingNecky (sprite 14) — not FlyingNecky / MiniNecky. */
+  throwsNuts?: boolean;
+}
+export interface FinishZone {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
 }
 export interface BonusRoomSpec {
   wallIndex: number;
@@ -86,6 +94,8 @@ export interface Level {
   originalTerrain?: "jungle" | "coral";
   start?: {x:number; y:number};
   letterWord?: string;
+  /** ROM ExitDoor trigger volume (world units). */
+  finishZone?: FinishZone;
 }
 
 const p = (x: number, w: number, y = 0, kind?: Platform["kind"]): Platform => ({

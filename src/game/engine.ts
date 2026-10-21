@@ -12,6 +12,7 @@ import { ENEMY_DESIGNS } from "./enemies";
 import { LEVELS, type EnemySpec, type Platform } from "./levels";
 import evidence from "../../reference/rom-analysis.json";
 import playerEvidence from "../../reference/player-states.json";
+import neckyEvidence from "../../reference/necky-ballistics.json";
 
 export const STEP = 1 / 60;
 /** ROM tag swap: state 17 / anim 80 lasts ~25 frames at 60 Hz. */
@@ -39,6 +40,8 @@ const THROW = playerEvidence.findings.thrownObjectVelocity.values;
 const CANNON_TEMPLATE = playerEvidence.findings.cannonBaseTemplate.values;
 const CANNON_VECTORS = playerEvidence.cannonBaseTemplateVectors;
 const JUMP_IMPULSE_DELAY_FRAMES = 2;
+const NECKY_NUT = neckyEvidence.engine;
+const NECKY_SHOOT_PERIOD = NECKY_NUT.shootPeriodFrames / 60;
 const WORLD_PIXELS = 32;
 const rawSpeed = (raw: number) => ((raw / 256) * 60) / WORLD_PIXELS;
 const THROW_TARGET_VX = rawSpeed(THROW.horizontalTargetMagnitudeRaw);
@@ -63,6 +66,7 @@ export interface Enemy extends EnemySpec {
   timer: number;
   hurt: number;
   vulnerable: boolean;
+  shootCooldown: number;
 }
 export interface Particle {
   x: number;
@@ -72,6 +76,13 @@ export interface Particle {
   color: string;
 }
 export interface Thrown {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  active: boolean;
+}
+export interface EnemyShot {
   x: number;
   y: number;
   vx: number;
@@ -194,6 +205,7 @@ export class Game {
   animals: Animal[] = [];
   particles: Particle[] = [];
   thrown: Thrown[] = [];
+  enemyShots: EnemyShot[] = [];
   player!: Player;
   time = 0;
   checkpoint = { x: 3, y: 0 };
@@ -280,7 +292,11 @@ export class Game {
       timer: 0,
       hurt: 0,
       vulnerable: false,
+      shootCooldown: spec.throwsNuts
+        ? NECKY_SHOOT_PERIOD * (0.85 + (i % 3) * 0.05)
+        : 0,
     }));
+    this.enemyShots = [];
     this.message(this.level.tip, 6);
   }
   start(id = 0, original = false) {
@@ -1027,6 +1043,34 @@ export class Game {
       if (b.y < -6 || Math.abs(b.x - p.x) > 30) b.active = false;
     });
     this.thrown = this.thrown.filter((b) => b.active);
+    this.enemyShots.forEach((shot) => {
+      if (!shot.active) return;
+      shot.x += shot.vx * dt;
+      shot.y += shot.vy * dt;
+      shot.vy -= rawAcceleration(NECKY_NUT.gravityRawPerFrame) * dt;
+      if (shot.y < -8 || Math.abs(shot.x - p.x) > 35) shot.active = false;
+      for (const barrel of this.thrown) {
+        if (
+          barrel.active &&
+          Math.abs(barrel.x - shot.x) < 0.55 &&
+          Math.abs(barrel.y - shot.y) < 0.55
+        ) {
+          shot.active = false;
+          barrel.active = false;
+        }
+      }
+      if (
+        shot.active &&
+        p.invincible <= 0 &&
+        Math.abs(p.x - shot.x) < 0.55 &&
+        p.y + 1.1 > shot.y &&
+        p.y < shot.y + 0.45
+      ) {
+        shot.active = false;
+        this.damage();
+      }
+    });
+    this.enemyShots = this.enemyShots.filter((s) => s.active);
     for (const enemy of this.enemies) {
       if (!enemy.alive) continue;
       enemy.timer += dt;
@@ -1048,6 +1092,27 @@ export class Game {
         enemy.x = enemy.min;
         enemy.vx = 0;
         enemy.y = enemy.originY + Math.sin(enemy.timer * 1.55) * 0.42;
+        if (enemy.throwsNuts && enemy.alive) {
+          enemy.shootCooldown -= dt;
+          const dx = p.x - enemy.x;
+          if (
+            enemy.shootCooldown <= 0 &&
+            Math.abs(dx) < 22 &&
+            Math.abs(dx) > 0.6 &&
+            Math.abs(p.y - enemy.y) < 5
+          ) {
+            const toward = Math.sign(dx) || 1;
+            this.enemyShots.push({
+              x: enemy.x,
+              y: enemy.y + 0.85,
+              vx: toward * Math.abs(rawSpeed(NECKY_NUT.nutVxRaw)),
+              vy: rawSpeed(NECKY_NUT.nutVyRaw),
+              active: true,
+            });
+            enemy.shootCooldown = NECKY_SHOOT_PERIOD;
+            this.onEvent("necky-shot");
+          }
+        }
       } else {
         enemy.x += enemy.vx * dt;
         if (enemy.x < enemy.min || enemy.x > enemy.max) {
@@ -1121,8 +1186,19 @@ export class Game {
         }
       }
     }
-    if (this.levelId !== LEVELS.length - 1 && p.x >= this.level.length - 2)
+    const zone = this.level.finishZone;
+    if (zone) {
+      if (
+        p.x >= zone.x - zone.w / 2 &&
+        p.x <= zone.x + zone.w / 2 &&
+        p.y >= zone.y - 0.6 &&
+        p.y <= zone.y + zone.h
+      ) {
+        this.finish();
+      }
+    } else if (this.levelId !== LEVELS.length - 1 && p.x >= this.level.length - 2) {
       this.finish();
+    }
     input.pressed.clear();
     input.released.clear();
   }

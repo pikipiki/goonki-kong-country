@@ -99,6 +99,7 @@ for row in records:
                     max=point["x"],
                     kind="bee",
                     pattern="necky",
+                    throwsNuts=sid == 14,
                 )
             )
             typ = "enemy"
@@ -163,6 +164,13 @@ for row in records:
             )
         )
 
+finish_zone = None
+for row in records:
+    if row.get("spawnCommand") == 2 and row.get("script", {}).get("spriteId") == 106:
+        door = scale(row["x"], row["y"])
+        finish_zone = dict(x=door["x"], y=door["y"], w=3.2, h=4.5)
+        break
+
 bonus_rooms = []
 for i, wall in enumerate(breakable_walls):
     wx, wy = wall["x"], wall["y"]
@@ -223,6 +231,7 @@ const breakableWalls: BreakableWallSpec[] = BREAKABLE_WALLS;
 const decors: LevelDecor[] = DECORS;
 const bonusRooms: BonusRoomSpec[] = BONUS_ROOMS;
 const movingPlatforms: Platform[] = MOVING_PLATFORMS;
+const finishZone = FINISH_ZONE;
 export const ROM_JUNGLE: Level & {
   originalTerrain: "jungle"; start: {x:number;y:number}; letterWord: "KONG";
 } = {
@@ -243,6 +252,7 @@ export const ROM_JUNGLE: Level & {
   breakableWalls,
   bonusRooms,
   decors,
+  finishZone,
   tip: "Tracé et placements issus du ROM. Roule ou frappe les murs et caches. Les quatre lettres originales sont K O N G.",
 };
 export const ORIGINAL_JUNGLE_PROVENANCE = __PROVENANCE__ as const;
@@ -257,6 +267,7 @@ for key, value in [
     ("BREAKABLE_WALLS", breakable_walls),
     ("DECORS", decors),
     ("BONUS_ROOMS", bonus_rooms),
+    ("FINISH_ZONE", finish_zone),
     (
         "__PROVENANCE__",
         dict(

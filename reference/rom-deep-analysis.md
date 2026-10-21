@@ -57,7 +57,7 @@ Livraison locale dans `public/audio/` : **27 fichiers M4A AAC et 119 fichiers WA
 ## Validation de cette passe
 
 - TypeScript : réussi.
-- **75 tests unitaires, dix fichiers : réussis**, dont oracles de mouvement, terrain original, bonus/canon, fixture `jungle-parity-walk.json` (dk-walk, 40 frames max).
+- **78 tests unitaires, onze fichiers : réussis**, dont `necky-ballistics.json`, bonus/canon/Necky, fixture `jungle-parity-walk.json` (**120** frames dk-walk recapturées).
 - Nouveau contrôle navigateur `test:original` : sol original actif, quatre lettres KONG, déplacement, lecture de DK Island Swing et d’un bruitage, passage à Aquatic Ambience, pause/reprise, portrait/paysage ; aucune erreur.
 - Tests navigateur et mobile historiques : réussis sur le build intégré, avec attente de l’arrêt après l’inertie mesurée. Six formats, sept transitions, multi-touch et clic ; aucune erreur.
 - Le premier rendu original a été inspecté en capture ; aucune partie complète de Jungle Hijinxs n’est attestée.
@@ -65,7 +65,7 @@ Livraison locale dans `public/audio/` : **27 fichiers M4A AAC et 119 fichiers WA
 
 ## Suite la plus utile
 
-1. **Jungle Hijinxs** — bonus **authored** (`bonusRooms` ×4), façades murs, Necky fixe en X ; parité dk-walk **40 frames** ; pas de niveaux bonus ROM ni tirs Necky.
+1. **Jungle Hijinxs** — bonus **authored**, **NutThrowingNecky** (noix), `finishZone` ExitDoor ; parité dk-walk **40 frames** ; pas de niveaux bonus ROM décodés.
 2. **Portage / canons** — chemin maintien/relâchement/poser, projectile **896 raw**, compteurs canon par frame de simu, pose visuelle canon ; animations SNES de lancer non reproduites.
 3. **Coral Capers** — collision bandes 512 px, sol corail, scatter + fog ; pas d’extraction graphique ROM.
 4. **Audio** — mapping SFX étendu (`place`, etc.) ; validation oreille / mobile hors repo.
