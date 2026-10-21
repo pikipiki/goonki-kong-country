@@ -22,6 +22,9 @@ import neckyEvidence from "../../reference/necky-ballistics.json";
 import underwaterMotion from "../../reference/underwater-motion.json";
 import { normalizeLandEnemyFeet, mineBeePatrolBounds, cannonMomentumDuration, mineEncounterClearance } from "./routeSafety";
 import { CORAL_WATER_SURFACE_Y, CORAL_WATER_FLOOR_Y, CORAL_WORLD_WIDTH } from "./marineScale";
+import { tr } from "../i18n";
+import { L } from "../i18n/keys";
+import { tx } from "../i18n/resolveText";
 
 export const STEP = 1 / 60;
 /** ROM tag swap: state 17 / anim 80 lasts ~25 frames at 60 Hz. */
@@ -425,7 +428,7 @@ export class Game {
       for(const animal of this.animals) animal.y = nearestCoralOpenY(animal.x,animal.y,ENGUARDE_SWIM_BODY.height);
     }
     this.enemyShots = [];
-    this.message(this.level.tip, 6);
+    this.message(tx(this.level.tip), 6);
   }
   start(id = 0, original = false) {
     this.originalRoute = original;
@@ -452,7 +455,7 @@ export class Game {
   }
   private openBonusRoom(wallIndex: number) {
     const room = this.level.bonusRooms?.find((r) => r.wallIndex === wallIndex);
-    if (room) this.message(`${room.label} ouverte !`, 4);
+    if (room) this.message(tr("game.bonusOpened", { label: tx(room.label) }), 4);
   }
   private tryEnterBonus(input: Input, oldX: number) {
     if (this.bonus || this.bonusDoorCooldown > 0) return false;
@@ -471,16 +474,16 @@ export class Game {
     const world = { player: {...p,x:oldX}, enemies:this.enemies, animals:this.animals, collected:this.collected,
       letters:this.letters, usedBarrels:this.usedBarrels, thrown:this.thrown, enemyShots:this.enemyShots,
       checkpoint:this.checkpoint, companion:this.companion, trail:this.trail };
-    const stage: Level = { id:source.id, name:room.label, subtitle:"BONUS · RETROUVE LA SORTIE À DROITE", biome:"jungle",
+    const stage: Level = { id:source.id, name:room.label, subtitle:"game.bonusSubtitle", biome:"jungle",
       length:17, platforms:[{x:8.5,y:0,w:19,h:4.4}], enemies:[], barrels:[],
       pickups:sourceIndices.map((i)=>({...room.pickups[i],x:5+i*2.5,y:1.05})),
-      decors:[{x:13,y:1.5,kind:"sign",text:"SORTIE →"}], tip:"Ramasse les trésors puis rejoins la sortie à droite." };
+      decors:[{x:13,y:1.5,kind:"sign",text:"game.bonusSign"}], tip:"game.bonusTip" };
     this.bonus = {index,stage,sourceIndices,world};
     this.player = {...p,x:2,y:0,vx:0,vy:0,grounded:true,carry:-1,cannon:-1,mount:-1,
       roll:0,rollJump:false,mountAttack:0,mountCharge:0,mountCharged:false,invincible:1};
     this.enemies=[];this.animals=[];this.collected=new Set();this.letters=new Set();this.usedBarrels=new Set();
     this.thrown=[];this.enemyShots=[];this.checkpoint={x:2,y:0};this.companion={x:.75,y:0,facing:1};this.trail=[];this.swap=null;
-    this.sceneRevision++;this.cameraBounds=null;this.message(stage.tip,5);this.onEvent("enter-cannon");
+    this.sceneRevision++;this.cameraBounds=null;this.message(tx(stage.tip),5);this.onEvent("enter-cannon");
     input.pressed.clear(); input.released.clear();
     return true;
   }
@@ -492,7 +495,7 @@ export class Game {
     Object.assign(this,visit.world); this.bonus=null;
     Object.assign(this.player,{hp,active,vx:0,vy:0,roll:0,rollJump:false,mountAttack:0,mountCharge:0,mountCharged:false,invincible:1.2});
     this.bonusDoorCooldown=1;this.sceneRevision++;this.cameraBounds=null;this.swap=null;
-    this.message("De retour dans le niveau !",3);
+    this.message(tr("game.returnToLevel"),3);
   }
   private resolveBreakableWalls(p: Player, oldX: number) {
     const walls = this.level.breakableWalls;
@@ -514,7 +517,7 @@ export class Game {
         this.brokenWalls.add(i);
         this.onEvent("barrel-break");
         this.openBonusRoom(i);
-        this.pop(wall.x, wall.y + wall.h * 0.5, "BONUS!", "#f5c98a");
+        this.pop(wall.x, wall.y + wall.h * 0.5, tr("game.bonusBanner"), "#f5c98a");
         continue;
       }
       p.x = oldX;
@@ -584,7 +587,7 @@ export class Game {
     for (const decor of this.level.decors ?? []) {
       if (decor.kind !== "sign" || !decor.text) continue;
       if (Math.abs(p.x - decor.x) < 2.2 && Math.abs(p.y - decor.y) < 2.5) {
-        this.message(decor.text, 3);
+        this.message(tx(decor.text), 3);
         return;
       }
     }
@@ -613,7 +616,7 @@ export class Game {
     p.mount = -1; p.mountAttack = 0; p.mountCharge = 0; p.mountCharged = false; p.mountCooldown = 0.55;
     if (flee) p.invincible = 1.4;
     this.onEvent("jump");
-    this.message(flee ? "Rattrape ton compagnon !" : "Saute sur son dos pour remonter.");
+    this.message(flee ? tr("game.catchBuddyFlee") : tr("game.catchBuddyMount"));
   }
   damage(fall = false) {
     const p = this.player;
@@ -632,7 +635,7 @@ export class Game {
       p.vx = -p.facing * 3;
       p.roll = 0;
       p.carry = -1;
-      this.pop(p.x, p.y + 2, "Tiens bon !", "#f6a4c9");
+      this.pop(p.x, p.y + 2, tr("game.holdOn"), "#f6a4c9");
       return;
     }
     this.lives--;
@@ -660,9 +663,7 @@ export class Game {
     this.level.barrels.forEach((b, i) => {
       if (b.kind === "rescue") this.usedBarrels.delete(i);
     });
-    this.message(
-      "Une nouvelle chance. Retrouve ton amie dans un tonneau rose !",
-    );
+    this.message(tr("game.extraChance"));
   }
   cannonPosition(index:number,level=this.level) {
     const b=level.barrels[index];
@@ -675,9 +676,9 @@ export class Game {
   }
   releaseAnimal(animal: Animal) {
     animal.state = "idle";
-    this.pop(animal.x, animal.y + 1.8, ANIMAL_DESIGNS[animal.kind].name, "#f9df93");
+    this.pop(animal.x, animal.y + 1.8, tx(ANIMAL_DESIGNS[animal.kind].name), "#f9df93");
     this.onEvent("rescue");
-    this.message(animal.kind === "enguarde" ? "Enguarde : approche pour monter. Action pour le rostre, joystick pour nager." : `${ANIMAL_DESIGNS[animal.kind].name} : saute sur son dos. Changer pour descendre.`, 5);
+    this.message(animal.kind === "enguarde" ? tr("game.releaseEnguarde") : tr("game.releaseMount", { name: tx(ANIMAL_DESIGNS[animal.kind].name) }), 5);
   }
   updateAnimals(input: Input, oldY: number, dt: number) {
     const p = this.player, water = this.level.biome === "lagoon";
@@ -727,7 +728,7 @@ export class Game {
         a.y=p.y; p.vy = 0; p.grounded = !water;
         p.roll = 0; p.rollJump = false; p.carry = -1; p.coyote = 0;
         this.onEvent("mount");
-        this.message(`${ANIMAL_DESIGNS[a.kind].name} ! ${a.kind === "winky" ? "Sauter pour bondir très haut." : a.kind === "expresso" ? "Maintiens le saut en l’air pour planer." : a.kind === "enguarde" ? "Maintiens Charge, puis relâche pour foncer. Joystick : nager." : "Maintiens Charge, puis relâche pour foncer et briser les planches."}`, 5);
+        this.message(`${tr("game.mountGreeting", { name: tx(ANIMAL_DESIGNS[a.kind].name) })} ${a.kind === "winky" ? tr("game.mountWinky") : a.kind === "expresso" ? tr("game.mountExpresso") : a.kind === "enguarde" ? tr("game.mountEnguarde") : tr("game.mountRambi")}`, 5);
       }
     });
   }
@@ -793,7 +794,7 @@ export class Game {
       this.pop(
         p.x,
         p.y + 2,
-        p.active ? "Violette" : "Rose",
+        tx(p.active ? L.buddies.violet : L.buddies.rose),
         p.active ? "#c0a2ff" : "#f6a4c9",
       );
     }
@@ -1127,12 +1128,12 @@ export class Game {
         this.onEvent("letter");
         if (this.letters.size === this.letterWord.length) {
           this.lives++;
-          this.pop(p.x, p.y + 3, `${this.letterWord} ! +1 vie`);
+          this.pop(p.x, p.y + 3, tr("game.letterLife", { word: this.letterWord }));
           this.onEvent("life");
         }
       } else if (item.kind === "balloon") {
         this.lives += item.amount ?? 1;
-        this.pop(item.x, item.y, `+${item.amount ?? 1} vie`);
+        this.pop(item.x, item.y, tr("game.extraLifeCount", { count: item.amount ?? 1 }));
         this.onEvent("life");
       } else {
         const amount=item.amount ?? 1;
@@ -1143,7 +1144,7 @@ export class Game {
         if (this.bananas >= ROM.bananas) {
           this.bananas -= ROM.bananas;
           this.lives++;
-          this.pop(p.x, p.y + 2, "+1 vie");
+          this.pop(p.x, p.y + 2, tr("game.extraLife"));
           this.onEvent("life");
         }
       }
@@ -1160,13 +1161,13 @@ export class Game {
         p.hp = 2;
         this.usedBarrels.add(i);
         this.onEvent("rescue");
-        this.pop(b.x, b.y + 2, "Ensemble !", "#f4a9d5");
+        this.pop(b.x, b.y + 2, tr("game.together"), "#f4a9d5");
       }
       if (b.kind === "checkpoint") {
         this.checkpoint = { x: b.x, y: b.y };
         this.usedBarrels.add(i);
         this.onEvent("checkpoint");
-        this.message("Point de passage enregistré");
+        this.message(tr("game.checkpoint"));
         this.pop(b.x, b.y + 2, "✓", "#b5e7a0");
       }
       if (b.kind === "cannon" && p.cannonLock !== i && !this.mount) {
@@ -1177,7 +1178,7 @@ export class Game {
         p.y = position.y;
         p.vx = 0;
         p.vy = 0;
-        this.message(b.autoFire ? "Canon automatique !" : "Sauter ou Action pour décoller. Observe la direction du canon.");
+        this.message(b.autoFire ? tr("game.cannonAuto") : tr("game.cannonManual"));
       }
     });
     this.breakWallsWithThrown();

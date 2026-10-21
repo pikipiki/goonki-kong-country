@@ -1,7 +1,7 @@
 {
   "name": "Goonk Country",
   "short_name": "Goonk",
-  "lang": "fr",
+  "lang": "en",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

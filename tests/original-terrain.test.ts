@@ -109,7 +109,7 @@ describe('original Coral Capers placements', () => {
   it('selects ROM coral when starting lagoon with original route', () => {
     const game=new Game();
     game.start(3,true);
-    expect(game.level.name).toBe('Coral Capers');
+    expect(game.level.name).toBe("levels.romCoral.name");
     expect(game.level.length).toBeCloseTo(world(65.25),2);
     expect(game.enemies.filter(e=>e.kind==='croc').length).toBeGreaterThan(10);
   });

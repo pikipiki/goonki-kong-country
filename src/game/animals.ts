@@ -1,4 +1,5 @@
 import evidence from "../../reference/buddy-analysis.json";
+import { L } from "../i18n/keys";
 const speed = (raw: number) => raw / 256 * 60 / 32;
 const f = evidence.findings;
 /** Behaviour follows the Nintendo DKC manual; numerical tuning is an adaptation
@@ -10,10 +11,10 @@ export interface Animal extends AnimalSpawn {
   vx: number; vy: number; facing: number; timer: number;
 }
 export const ANIMAL_DESIGNS = {
-  rambi: { name: "Rambi", seat: 1.25, width: 0.92, walk: speed(f.buddyWalkTargets.values.defaultIncludingRambiRaw), run: speed(f.buddyRunTargets.values.defaultIncludingRambiRaw), jump: speed(f.rambiExpressoJumpImpulse.values.verticalSpeedRaw) },
-  enguarde: { name: "Enguarde", seat: 0.23, width: 1.1, walk: 5.2, run: 5.2, jump: 0 },
-  winky: { name: "Winky", seat: 0.88, width: 0.67, walk: speed(f.buddyWalkTargets.values.winkyRaw), run: speed(f.buddyRunTargets.values.winkyRaw), jump: speed(f.winkyJumpImpulse.values.verticalSpeedRaw) },
-  expresso: { name: "Expresso", seat: 1.65, width: 0.68, walk: speed(f.buddyWalkTargets.values.expressoRaw), run: speed(f.buddyRunTargets.values.expressoRaw), jump: speed(f.rambiExpressoJumpImpulse.values.verticalSpeedRaw) },
+  rambi: { name: L.animals.rambi, seat: 1.25, width: 0.92, walk: speed(f.buddyWalkTargets.values.defaultIncludingRambiRaw), run: speed(f.buddyRunTargets.values.defaultIncludingRambiRaw), jump: speed(f.rambiExpressoJumpImpulse.values.verticalSpeedRaw) },
+  enguarde: { name: L.animals.enguarde, seat: 0.23, width: 1.1, walk: 5.2, run: 5.2, jump: 0 },
+  winky: { name: L.animals.winky, seat: 0.88, width: 0.67, walk: speed(f.buddyWalkTargets.values.winkyRaw), run: speed(f.buddyRunTargets.values.winkyRaw), jump: speed(f.winkyJumpImpulse.values.verticalSpeedRaw) },
+  expresso: { name: L.animals.expresso, seat: 1.65, width: 0.68, walk: speed(f.buddyWalkTargets.values.expressoRaw), run: speed(f.buddyRunTargets.values.expressoRaw), jump: speed(f.rambiExpressoJumpImpulse.values.verticalSpeedRaw) },
 } as const;
 
 export const BUDDY_PHYSICS = {

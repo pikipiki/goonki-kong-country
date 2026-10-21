@@ -196,7 +196,7 @@ for i, wall in enumerate(breakable_walls):
     bonus_rooms.append(
         {
             "wallIndex": i,
-            "label": "Salle bonus",
+            "label": "bonus.room",
             "romRam1375": meta.get("ram1375"),
             "romRam13E9": meta.get("ram13E9"),
             "bounds": {"x": bx, "y": wy - 0.35, "w": 4.8, "h": 3.1},

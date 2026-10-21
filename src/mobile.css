@@ -59,6 +59,11 @@ body {
 .top-actions {
   gap: 9px;
 }
+.lang-select-input {
+  min-width: 4.75rem;
+  height: 34px;
+  font-size: 10px;
+}
 .brand-mark {
   color: #f3bd43;
 }
