@@ -17,11 +17,15 @@ export function Goonk({
   game,
   companion = false,
   preview = false,
+  mapWalk = 0,
+  mapCelebrate = false,
 }: {
   pink: boolean;
   game?: Game;
   companion?: boolean;
   preview?: boolean;
+  mapWalk?: number;
+  mapCelebrate?: boolean;
 }) {
   const fabric = usePlushFabric(pink);
   const root = useRef<Group>(null),
@@ -35,7 +39,7 @@ export function Goonk({
     const mount = !companion && game?.mount;
     const swimming = !preview && game?.level.biome === "lagoon" && (!mount || mount.kind === "enguarde");
     const riding = !!mount;
-    const walking = preview || cart || riding ? 0 : Math.abs(p?.vx ?? 0);
+    const walking = preview ? mapWalk : cart || riding ? 0 : Math.abs(p?.vx ?? 0);
     const grounded = p?.grounded ?? true;
     const pose = companion ? game?.companion : p;
     const swap = game?.swap;
@@ -109,6 +113,14 @@ export function Goonk({
     limbs.current.forEach((limb, i) => {
       if (!limb) return;
       const swing = Math.sin(t * walking * 2.1 + (i % 2) * Math.PI);
+      if (mapCelebrate) {
+        limb.rotation.x =
+          i < 2
+            ? -2.15 + Math.sin(t * 12 + i * 1.4) * 0.35
+            : Math.sin(t * 10 + i * Math.PI) * 0.45;
+        limb.rotation.z = (i % 2 ? 1 : -1) * (i < 2 ? 0.38 : 0.15);
+        return;
+      }
       if (swapping) {
         limb.rotation.x = (i < 2 ? -1.1 : 0.65) * swapHop;
         limb.rotation.z =

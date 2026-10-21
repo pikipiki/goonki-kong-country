@@ -20,7 +20,7 @@ import evidence from "../../reference/rom-analysis.json";
 import playerEvidence from "../../reference/player-states.json";
 import neckyEvidence from "../../reference/necky-ballistics.json";
 import underwaterMotion from "../../reference/underwater-motion.json";
-import { normalizeLandEnemyFeet, mineBeePatrolBounds, cannonMomentumDuration, mineEncounterClearance } from "./routeSafety";
+import { normalizeLandEnemyFeet, mineBeePatrolBounds, cannonMomentumDuration, mineEncounterClearance, mineBirdHasCloseBee } from "./routeSafety";
 import { CORAL_WATER_SURFACE_Y, CORAL_WATER_FLOOR_Y, CORAL_WORLD_WIDTH } from "./marineScale";
 import { tr } from "../i18n";
 import { L } from "../i18n/keys";
@@ -126,6 +126,8 @@ export interface Player {
   roll: number;
   rollJump: boolean;
   rollJumpMomentum: number;
+  /** Complete the forced rebound before the next mine Zinger, even after a short tap. */
+  cartRebound: boolean;
   rollSpeed: number;
   rollFacing: number;
   rollChain: number;
@@ -241,6 +243,7 @@ export class Game {
   phase: Phase = "title";
   levelId = 0;
   sceneRevision = 0;
+  private mineRecoveryLayout = 1;
   cameraBounds: { x:number; y:number; halfX:number; halfY:number } | null = null;
   originalRoute = false;
   /** Separate playable bonus scene; source-room layouts are still adapted. */
@@ -337,6 +340,7 @@ export class Game {
     this.bonus = null; this.bonusDoorCooldown = 0;
     this.sceneRevision++;
     this.cameraBounds = null;
+    this.mineRecoveryLayout = 1;
     this.levelId = clamp(id, 0, LEVELS.length - 1);
     this.phase = phase;
     this.time = 0;
@@ -368,7 +372,7 @@ export class Game {
       hp: 2,
       invincible: 0,
       roll: 0,
-      rollJump: false, rollJumpMomentum: 0, rollSpeed: 0, rollFacing: 1, rollChain: 0, rollAngle: 0, recentRun: 1,
+      rollJump: false, rollJumpMomentum: 0, cartRebound: false, rollSpeed: 0, rollFacing: 1, rollChain: 0, rollAngle: 0, recentRun: 1,
       mount: -1, mountAttack: 0, mountCharge: 0, mountCharged: false, mountCooldown: 0,
       carry: -1,
       cannon: -1, cannonLock: -1, cannonTime: 0, launched: 0,
@@ -493,7 +497,7 @@ export class Game {
       decors:[{x:13,y:1.5,kind:"sign",text:"game.bonusSign"}], tip:"game.bonusTip" };
     this.bonus = {index,stage,sourceIndices,world};
     this.player = {...p,x:2,y:0,vx:0,vy:0,grounded:true,carry:-1,cannon:-1,mount:-1,
-      roll:0,rollJump:false,rollJumpMomentum:0,mountAttack:0,mountCharge:0,mountCharged:false,invincible:1};
+      roll:0,rollJump:false,rollJumpMomentum:0,cartRebound:false,mountAttack:0,mountCharge:0,mountCharged:false,invincible:1};
     this.enemies=[];this.animals=[];this.collected=new Set();this.letters=new Set();this.usedBarrels=new Set();
     this.thrown=[];this.enemyShots=[];this.checkpoint={x:2,y:0};this.companion={x:.75,y:0,facing:1};this.trail=[];this.swap=null;
     this.sceneRevision++;this.cameraBounds=null;this.message(tx(stage.tip),5);this.onEvent("enter-cannon");
@@ -507,7 +511,7 @@ export class Game {
     const hp=this.player.hp, active=this.player.active;
     Object.assign(this,visit.world); this.bonus=null;
     (this.completedBonus ??= new Set()).add(visit.index);
-    Object.assign(this.player,{hp,active,vx:0,vy:0,roll:0,rollJump:false,rollJumpMomentum:0,mountAttack:0,mountCharge:0,mountCharged:false,invincible:1.2});
+    Object.assign(this.player,{hp,active,vx:0,vy:0,roll:0,rollJump:false,rollJumpMomentum:0,cartRebound:false,mountAttack:0,mountCharge:0,mountCharged:false,invincible:1.2});
     this.bonusDoorCooldown=1;this.sceneRevision++;this.cameraBounds=null;this.swap=null;
     this.message(tr("game.returnToLevel"),3);
   }
@@ -670,7 +674,7 @@ export class Game {
       carry: -1,
       cannon: -1, cannonLock: -1, cannonTime: 0, launched: 0,
       cannonGravityDelay: 0, cannonControlDelay: 0, jumpDelay: 0,
-      roll: 0, rollJump: false, rollJumpMomentum: 0, rollChain: 0, mount: -1, mountAttack: 0, mountCharge: 0, mountCharged: false, mountCooldown: 0.55,
+      roll: 0, rollJump: false, rollJumpMomentum: 0, cartRebound: false, rollChain: 0, mount: -1, mountAttack: 0, mountCharge: 0, mountCharged: false, mountCooldown: 0.55,
     });
     this.trail = [];
     this.companion = { ...this.checkpoint, facing: 1 };
@@ -769,6 +773,18 @@ export class Game {
   }
   update(input: Input, dt = STEP) {
     if (this.phase !== "playing") return;
+    // Fast Refresh preserves existing actors as well as the Game instance.
+    // Migrate only the two new landing corridors in an already-open cart run.
+    if(this.level.originalTerrain === "mineCart" && this.mineRecoveryLayout !== 1) {
+      const layout=mineEncounterClearance(this.level.enemies);
+      for(const bird of this.level.enemies.filter(e=>mineBirdHasCloseBee(e,this.level.enemies))) {
+        for(const spec of layout.filter(e=>e.kind==='bee'&&e.pattern!=='necky'&&e.x>bird.x&&e.x-bird.x<12)) {
+          const actor=this.enemies.find(e=>e.kind==='bee'&&e.pattern!=='necky'&&Math.abs(e.x-spec.x)<.65);
+          if(actor){actor.originY=spec.y;actor.y=spec.y;actor.hoverAmplitude=0;}
+        }
+      }
+      this.mineRecoveryLayout=1;
+    }
     this.time += dt;
     this.bonusDoorCooldown = Math.max(0,this.bonusDoorCooldown-dt);
     this.toastTimer = Math.max(0, this.toastTimer - dt);
@@ -781,6 +797,7 @@ export class Game {
       cart =
         this.level.originalTerrain === "mineCart" ||
         (this.level.biome === "mine" && this.level.originalTerrain !== "cave");
+    if (!cart || p.grounded || this.mount) p.cartRebound = false;
     p.invincible = Math.max(0, p.invincible - dt);
     p.launched = Math.max(0, p.launched - dt);
     if (p.cannonLock >= 0) {
@@ -1051,7 +1068,7 @@ export class Game {
       if (p.cannonGravityDelay > 0) p.cannonGravityDelay--;
       else {
         const gravity =
-          input.held.has("jump") ? buddy ? BUDDY_PHYSICS.heldGravity : ROM.held[p.active] : ROM.gravity;
+          cart && p.cartRebound ? ROM.held[0] : input.held.has("jump") ? buddy ? BUDDY_PHYSICS.heldGravity : ROM.held[p.active] : ROM.gravity;
         p.vy = Math.max(
           -rawSpeed(ROM.terminal),
           p.vy - rawAcceleration(gravity) * dt,
@@ -1132,7 +1149,7 @@ export class Game {
       this.damage(true);
       return;
     }
-    if (p.grounded) { p.launched = 0; p.rollJumpMomentum = 0; }
+    if (p.grounded) { p.launched = 0; p.rollJumpMomentum = 0; p.cartRebound = false; }
     this.updateAnimals(input, oldY, dt);
     if (!swapping) {
       this.trail.push({ x: p.x, y: p.y, facing: p.facing });
@@ -1382,6 +1399,9 @@ export class Game {
           p.y = enemy.y + height;
           p.grounded = false;
           p.vy = rawSpeed(ROM.bounce[p.active]);
+          if(this.level.originalTerrain === "mineCart" && mineBirdHasCloseBee(enemy,this.level.enemies)) {
+            p.vy = Math.max(p.vy,16); p.cartRebound = true;
+          }
           if(cart && !boss) p.invincible = Math.max(p.invincible,.18);
           this.onEvent("bounce");
         } else if (roll) {

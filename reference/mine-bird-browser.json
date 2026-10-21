@@ -1,0 +1,102 @@
+{
+  "setup": "Targeted descending-contact setup before each bird; normal runtime thereafter, all enemies and damage active",
+  "results": [
+    {
+      "orientation": "portrait",
+      "birdX": 106.28125,
+      "active": 0,
+      "x": 124.09791666666655,
+      "y": 1.125,
+      "hp": 2,
+      "lives": 5,
+      "grounded": true,
+      "enemies": 30,
+      "beesAlive": 14
+    },
+    {
+      "orientation": "portrait",
+      "birdX": 106.28125,
+      "active": 1,
+      "x": 124.09791666666655,
+      "y": 1.125,
+      "hp": 2,
+      "lives": 5,
+      "grounded": true,
+      "enemies": 30,
+      "beesAlive": 14
+    },
+    {
+      "orientation": "portrait",
+      "birdX": 404.34375,
+      "active": 0,
+      "x": 430.09374999999716,
+      "y": 7.78125,
+      "hp": 2,
+      "lives": 5,
+      "grounded": true,
+      "enemies": 30,
+      "beesAlive": 14
+    },
+    {
+      "orientation": "portrait",
+      "birdX": 404.34375,
+      "active": 1,
+      "x": 430.09374999999716,
+      "y": 7.78125,
+      "hp": 2,
+      "lives": 5,
+      "grounded": true,
+      "enemies": 30,
+      "beesAlive": 14
+    },
+    {
+      "orientation": "landscape",
+      "birdX": 106.28125,
+      "active": 0,
+      "x": 124.09791666666655,
+      "y": 1.125,
+      "hp": 2,
+      "lives": 5,
+      "grounded": true,
+      "enemies": 30,
+      "beesAlive": 14
+    },
+    {
+      "orientation": "landscape",
+      "birdX": 106.28125,
+      "active": 1,
+      "x": 124.09791666666655,
+      "y": 1.125,
+      "hp": 2,
+      "lives": 5,
+      "grounded": true,
+      "enemies": 30,
+      "beesAlive": 14
+    },
+    {
+      "orientation": "landscape",
+      "birdX": 404.34375,
+      "active": 0,
+      "x": 430.09374999999716,
+      "y": 7.78125,
+      "hp": 2,
+      "lives": 5,
+      "grounded": true,
+      "enemies": 30,
+      "beesAlive": 14
+    },
+    {
+      "orientation": "landscape",
+      "birdX": 404.34375,
+      "active": 1,
+      "x": 430.09374999999716,
+      "y": 7.78125,
+      "hp": 2,
+      "lives": 5,
+      "grounded": true,
+      "enemies": 30,
+      "beesAlive": 14
+    }
+  ],
+  "errors": []
+}

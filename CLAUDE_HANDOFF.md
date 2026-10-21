@@ -4,6 +4,13 @@ Cette section prévaut sur l’historique ci-dessous. Dépôt : `Documents/git/g
 
 **Dernier commit** : mode **démo 2D** jungle (`Scene2D`, assets `public/rom2d/`, `scripts/extract_jungle_2d.py`) — même moteur `Game`, rendu canvas + calques ROM ; entrée `?demo=2d` / bouton titre. Le jeu principal reste 2,5D Three.js. **202 tests / 34 fichiers**, build OK.
 
+## Reprise Gemini et rebonds du wagon — dernière passe
+
+- Rapport demandé par l’utilisateur : **`GEMINI_HANDOFF.md`**. Lire ce fichier en priorité pour reprendre les corrections du wagon et les vérifications restantes.
+- Deux enchaînements oiseau→abeille corrigés (x106→114 et x404→412) : abeilles déplacées en hauteur sur copies runtime, rebond forcé complet jusqu’au rail, cohérent sur les deux peluches et après un appui court. Tailles et vitesse du wagon conservées ; aucun ennemi supprimé. Migration du placement pour les parties déjà ouvertes.
+- **208 tests / 35 fichiers**, build et diff-check OK. 48 configurations simulées, huit vérifications navigateur en portrait/paysage avec HP2, cinq vies et 30 ennemis actifs. Script `scripts/mine-bird-browser.mjs`, preuves `reference/mine-bird-*`.
+- **Limite : pas de traversée complète du wagon validée.** Le planificateur expérimental bloque ses candidats vers x360 ; à inspecter, sans conclure prématurément à une impasse. Rapport Gemini détaille les prochaines étapes. Aucun commit/push dans cette passe ; démo 2D du commit c3abef3 préservée.
+
 ## Démo rendu 2D jungle (ROM) — 22 octobre 2026
 
 - `src/game2d/Scene2D.tsx` + `plushSprite.ts` : canvas 2D, parallaxe calques extraits, sprites sheet `public/rom2d/manifest.json`.

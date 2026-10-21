@@ -36,6 +36,11 @@ export function cannonMomentumDuration(spec:{cannonGravityDelay?:number;cannonCo
   return Math.max(1.6,(Math.max(spec.cannonGravityDelay??16,spec.cannonControlDelay??16)+1)/60+1.2);
 }
 
+/** A forced bird rebound needs a landing corridor before the next Zinger. */
+export function mineBirdHasCloseBee(bird: EnemySpec, enemies: readonly EnemySpec[]) {
+  return bird.pattern === 'necky' && enemies.some(e => e.kind === 'bee' && e.pattern !== 'necky' && e.x > bird.x && e.x - bird.x < 12);
+}
+
 /** Mobile cart adaptation, applied to runtime copies only. Nearby low/high
  * Keep a low jump obstacle, a clear overhead corridor, and predictable height.
  * Source metadata and intentional same-column stacks remain unchanged.
@@ -65,6 +70,21 @@ export function mineEncounterClearance(enemies:readonly EnemySpec[]):EnemySpec[]
     }
     result[index].y=y;
     result[index].hoverAmplitude=0;
+  }
+  // Two source formations place a Zinger in the forced rebound descent.
+  // Keep the actor at its source X, visibly above that landing corridor.
+  for (const bird of enemies.filter(e => mineBirdHasCloseBee(e, enemies))) {
+    for (let index=0; index<enemies.length; index++) {
+      const bee=enemies[index];
+      if(bee.kind!=='bee' || bee.pattern==='necky' || bee.x<=bird.x || bee.x-bird.x>=12)continue;
+      let y=Math.max(result[index].y,bird.y+5);
+      for(let attempt=0;attempt<16;attempt++) {
+        const overlaps=[bee.x-.6,bee.x,bee.x+.6].flatMap(x=>terrainSolidSpans('mineCart',x)).filter(span=>y-.15<span.top&&y+1.35>span.bottom);
+        if(!overlaps.length)break;
+        y=Math.max(...overlaps.map(span=>span.top))+.2;
+      }
+      result[index].y=y;result[index].hoverAmplitude=0;
+    }
   }
   return result;
 }

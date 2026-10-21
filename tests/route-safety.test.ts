@@ -134,7 +134,7 @@ it('adapts close mine formations on runtime copies and keeps a real low jump obs
  const source=JSON.stringify(ROM_MINE_CART.enemies),adapted=mineEncounterClearance(ROM_MINE_CART.enemies);
  expect(JSON.stringify(ROM_MINE_CART.enemies)).toBe(source);expect(adapted).toHaveLength(ROM_MINE_CART.enemies.length);
  const changed=adapted.filter((e,i)=>e.y!==ROM_MINE_CART.enemies[i].y);
- expect(changed.map(e=>e.x)).toEqual([269.34375,272.84375,372.84375,377.46875,381.96875]);
+ expect(changed.map(e=>e.x)).toEqual([114.90625,269.34375,272.84375,372.84375,377.46875,381.96875,412.90625]);
  expect(changed.every(e=>e.hoverAmplitude===0)).toBe(true);
  for(const anchor of [269.34375,372.84375]) {
   const lower=adapted.find(e=>e.x===anchor)!,original=ROM_MINE_CART.enemies.find(e=>e.x===anchor)!;

@@ -15,6 +15,7 @@ interface SpriteFrame {
 interface Manifest2D {
   skyDay: [number, number, number][];
   skyNight: [number, number, number][];
+  layer1ChunkWidth?: number;
   frames: SpriteFrame[];
   groups: Record<string, number[]>;
 }
@@ -35,14 +36,10 @@ interface TransientFx {
 interface Assets2D {
   manifest: Manifest2D;
   sprites: HTMLImageElement;
-  l1Back: HTMLImageElement;
-  l1Front: HTMLImageElement;
-  l1BackNight: HTMLImageElement;
-  l1FrontNight: HTMLImageElement;
+  l1BackChunks: HTMLImageElement[];
+  l1FrontChunks: HTMLImageElement[];
   l2: HTMLImageElement;
-  l2Night: HTMLImageElement;
   l3: HTMLImageElement;
-  l3Night: HTMLImageElement;
   caveBack: HTMLImageElement;
   caveFront: HTMLImageElement;
 }
@@ -50,13 +47,22 @@ interface Assets2D {
 const SCREEN_H = 224;
 const LEVEL_W = 5408;
 const LEVEL_H = 512;
+const DEFAULT_CHUNK_W = 2048;
+
+function assetUrl(path: string): string {
+  const base =
+    typeof import.meta !== "undefined" && import.meta.env?.BASE_URL
+      ? import.meta.env.BASE_URL
+      : "/";
+  return `${base.replace(/\/?$/, "/")}${path.replace(/^\//, "")}`;
+}
 
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => resolve(img);
-    img.onerror = reject;
-    img.src = src;
+    img.onerror = () => reject(new Error(`Failed to load ${src}`));
+    img.src = assetUrl(src);
   });
 }
 
@@ -64,53 +70,91 @@ let cachedAssetsPromise: Promise<Assets2D> | null = null;
 function loadAssets2D(): Promise<Assets2D> {
   if (!cachedAssetsPromise) {
     cachedAssetsPromise = Promise.all([
-      fetch("/rom2d/manifest.json").then((r) => r.json() as Promise<Manifest2D>),
-      loadImage("/rom2d/sprites.png"),
-      loadImage("/rom2d/layer1-back.png"),
-      loadImage("/rom2d/layer1-front.png"),
-      loadImage("/rom2d/layer1-back-night.png"),
-      loadImage("/rom2d/layer1-front-night.png"),
-      loadImage("/rom2d/layer2.png"),
-      loadImage("/rom2d/layer2-night.png"),
-      loadImage("/rom2d/layer3.png"),
-      loadImage("/rom2d/layer3-night.png"),
-      loadImage("/rom2d/bonus-cave-back.png"),
-      loadImage("/rom2d/bonus-cave-front.png"),
-    ]).then(
-      ([
-        manifest,
-        sprites,
-        l1Back,
-        l1Front,
-        l1BackNight,
-        l1FrontNight,
-        l2,
-        l2Night,
-        l3,
-        l3Night,
-        caveBack,
-        caveFront,
-      ]) => ({
-        manifest,
-        sprites,
-        l1Back,
-        l1Front,
-        l1BackNight,
-        l1FrontNight,
-        l2,
-        l2Night,
-        l3,
-        l3Night,
-        caveBack,
-        caveFront,
+      fetch(assetUrl("rom2d/manifest.json")).then((r) => {
+        if (!r.ok) throw new Error("Failed to load rom2d/manifest.json");
+        return r.json() as Promise<Manifest2D>;
       }),
-    );
+      loadImage("rom2d/sprites.png"),
+      loadImage("rom2d/layer1-back-0.png"),
+      loadImage("rom2d/layer1-back-1.png"),
+      loadImage("rom2d/layer1-back-2.png"),
+      loadImage("rom2d/layer1-front-0.png"),
+      loadImage("rom2d/layer1-front-1.png"),
+      loadImage("rom2d/layer1-front-2.png"),
+      loadImage("rom2d/layer2.png"),
+      loadImage("rom2d/layer3.png"),
+      loadImage("rom2d/bonus-cave-back.png"),
+      loadImage("rom2d/bonus-cave-front.png"),
+    ])
+      .then(
+        ([
+          manifest,
+          sprites,
+          l1Back0,
+          l1Back1,
+          l1Back2,
+          l1Front0,
+          l1Front1,
+          l1Front2,
+          l2,
+          l3,
+          caveBack,
+          caveFront,
+        ]) => ({
+          manifest,
+          sprites,
+          l1BackChunks: [l1Back0, l1Back1, l1Back2],
+          l1FrontChunks: [l1Front0, l1Front1, l1Front2],
+          l2,
+          l3,
+          caveBack,
+          caveFront,
+        }),
+      )
+      .catch((err) => {
+        cachedAssetsPromise = null;
+        throw err;
+      });
   }
   return cachedAssetsPromise;
 }
 
 function clamp(v: number, lo: number, hi: number) {
   return Math.max(lo, Math.min(hi, v));
+}
+
+function drawChunkedLayer(
+  ctx: CanvasRenderingContext2D,
+  chunks: HTMLImageElement[],
+  chunkW: number,
+  camX: number,
+  camY: number,
+  screenW: number,
+  screenH: number,
+) {
+  const viewLeft = Math.round(camX);
+  const viewTop = Math.round(camY);
+  const viewRight = viewLeft + screenW;
+
+  for (let i = 0; i < chunks.length; i++) {
+    const img = chunks[i];
+    const chunkLeft = i * chunkW;
+    const chunkRight = chunkLeft + img.width;
+    if (chunkRight <= viewLeft || chunkLeft >= viewRight) continue;
+
+    const overlapLeft = Math.max(viewLeft, chunkLeft);
+    const overlapRight = Math.min(viewRight, chunkRight);
+    const w = overlapRight - overlapLeft;
+    if (w <= 0) continue;
+
+    const sx = overlapLeft - chunkLeft;
+    const sy = clamp(viewTop, 0, Math.max(0, img.height - screenH));
+    const dx = overlapLeft - viewLeft;
+    const h = Math.min(screenH, img.height - sy);
+    if (h <= 0) continue;
+
+    ctx.drawImage(img, sx, sy, w, h, dx, 0, w, h);
+  }
 }
 
 export function Scene2D({
@@ -130,9 +174,13 @@ export function Scene2D({
     let assets: Assets2D | null = null;
     const plushRenderer = new PlushSpriteRenderer();
 
-    void loadAssets2D().then((loaded) => {
-      if (active) assets = loaded;
-    });
+    void loadAssets2D()
+      .then((loaded) => {
+        if (active) assets = loaded;
+      })
+      .catch((err) => {
+        console.error("[Scene2D] asset load error:", err);
+      });
 
     let lastTime = performance.now();
     let accumulator = 0;
@@ -469,10 +517,10 @@ export function Scene2D({
         const lookAhead = game.player.facing * (isPortrait ? 22 : 28);
         const anchorX = isPortrait ? 0.42 : 0.44;
         const anchorY = isPortrait
-          ? Math.round(screenH * 0.72)
+          ? Math.round(screenH * 0.68)
           : isShortLandscape
-            ? Math.round(screenH * 0.64)
-            : 166;
+            ? Math.round(screenH * 0.65)
+            : 164;
         const targetX = clamp(
           pPos.px + lookAhead - screenW * anchorX,
           0,
@@ -492,7 +540,7 @@ export function Scene2D({
 
       // Render scene
       if (!assets) {
-        ctx.fillStyle = "#122014";
+        ctx.fillStyle = "#1a0a14";
         ctx.fillRect(0, 0, screenW, screenH);
       } else if (game.bonus) {
         // Cave bonus room centered for both portrait and landscape
@@ -535,24 +583,34 @@ export function Scene2D({
                   : 0;
         const dawnBlend = wx < 146 ? 0 : clamp((wx - 146) / 12, 0, 1);
 
-        // 1. Sky HDMA Scanline Table (stretched across screenH)
+        // 1. Sky HDMA Scanline Table (0..70 dawn sky gradient, then deep jungle canopy below)
         const skyDay = assets.manifest.skyDay;
         const skyNight = assets.manifest.skyNight;
-        for (let y = 0; y < screenH; y++) {
-          const hdmaY = Math.min(
-            SCREEN_H - 1,
-            Math.floor((y / Math.max(1, screenH)) * SCREEN_H),
+        const skyHeightPx = Math.round(screenH * 0.34);
+        const skyHorizLen = Math.min(71, skyDay.length);
+        for (let y = 0; y < skyHeightPx; y++) {
+          const u = y / Math.max(1, skyHeightPx - 1);
+          const dayIdx = Math.min(
+            skyHorizLen - 1,
+            Math.floor(u * (skyHorizLen - 1)),
           );
-          const d = skyDay[Math.min(hdmaY, skyDay.length - 1)] ?? [72, 16, 0];
-          const n = skyNight[Math.min(hdmaY, skyNight.length - 1)] ?? [8, 16, 24];
-          let r = d[0] * (1 - nightBlend) + n[0] * nightBlend;
-          let g = d[1] * (1 - nightBlend) + n[1] * nightBlend;
-          let b = d[2] * (1 - nightBlend) + n[2] * nightBlend;
+          const nightIdx = Math.min(
+            skyNight.length - 1,
+            Math.floor(u * 70),
+          );
+          const d = skyDay[dayIdx] ?? [224, 216, 128];
+          const n = skyNight[nightIdx] ?? [8, 16, 24];
+          // Enrich warm golden-amber dawn tint so SNES BGR555 midtones never look flat grey on sRGB
+          const warmR = Math.min(255, d[0] * 1.06 + u * 18);
+          const warmG = Math.min(255, d[1] * 0.98 + u * 8);
+          const warmB = Math.max(0, d[2] * (1 - u * 0.28));
+          let r = warmR * (1 - nightBlend) + n[0] * nightBlend;
+          let g = warmG * (1 - nightBlend) + n[1] * nightBlend;
+          let b = warmB * (1 - nightBlend) + n[2] * nightBlend;
           if (dawnBlend > 0) {
-            const u = y / screenH;
-            const dr = 255 * (1 - u * 0.35);
-            const dg = 120 + u * 95;
-            const db = 65 + u * 80;
+            const dr = 255 * (1 - u * 0.25);
+            const dg = 135 + u * 95;
+            const db = 75 + u * 80;
             r = r * (1 - dawnBlend * 0.65) + dr * (dawnBlend * 0.65);
             g = g * (1 - dawnBlend * 0.65) + dg * (dawnBlend * 0.65);
             b = b * (1 - dawnBlend * 0.65) + db * (dawnBlend * 0.65);
@@ -561,62 +619,42 @@ export function Scene2D({
           ctx.fillRect(0, y, screenW, 1);
         }
 
-        // 2. Layer 3 Distant Canopy Silhouette (0.25x horizontal parallax)
+        // Deep jungle backdrop below the sky horizon (never gray!)
+        const bgR = Math.round(4 * (1 - nightBlend) + 2 * nightBlend);
+        const bgG = Math.round(24 * (1 - nightBlend) + 10 * nightBlend);
+        const bgB = Math.round(6 * (1 - nightBlend) + 20 * nightBlend);
+        ctx.fillStyle = `rgb(${bgR},${bgG},${bgB})`;
+        ctx.fillRect(0, skyHeightPx, screenW, screenH - skyHeightPx);
+
+        // 2. Layer 3 Distant Canopy Silhouette (0.25x horizontal parallax, locked to horizon scanline)
         const l3ScrollX = Math.floor(camX * 0.25) % 256;
-        const l3Y = Math.round(64 - (camY - 168) * 0.12);
+        const l3Y = Math.max(0, skyHeightPx - 7);
         for (let x = -l3ScrollX; x < screenW; x += 256) {
           ctx.drawImage(assets.l3, x, l3Y);
-          if (nightBlend > 0.01) {
-            ctx.save();
-            ctx.globalAlpha = nightBlend;
-            ctx.drawImage(assets.l3Night, x, l3Y);
-            ctx.restore();
-          }
         }
 
-        // 3. Layer 2 Parallax Palm Trees (0.5x X parallax, 0.25x Y parallax)
+        // 3. Layer 2 Parallax Palm Trees (0.5x X parallax, anchored to fill the screen behind Layer 1)
         const l2ScrollX = Math.floor(camX * 0.5) % 512;
-        const l2ScrollY = Math.round(-(camY * 0.15));
+        const l2ScrollY = clamp(
+          Math.round(screenH - 256 - (camY - 168) * 0.15),
+          screenH - 256,
+          0,
+        );
         for (let x = -l2ScrollX; x < screenW; x += 512) {
           ctx.drawImage(assets.l2, x, l2ScrollY);
-          if (nightBlend > 0.01) {
-            ctx.save();
-            ctx.globalAlpha = nightBlend;
-            ctx.drawImage(assets.l2Night, x, l2ScrollY);
-            ctx.restore();
-          }
         }
 
         // 4. Layer 1 Back (priority 0: main ground, treehouse, trunks, back foliage)
-        const srcX = Math.round(camX);
-        const srcY = Math.round(camY);
-        ctx.drawImage(
-          assets.l1Back,
-          srcX,
-          srcY,
-          screenW,
-          screenH,
-          0,
-          0,
+        const chunkW = assets.manifest.layer1ChunkWidth ?? DEFAULT_CHUNK_W;
+        drawChunkedLayer(
+          ctx,
+          assets.l1BackChunks,
+          chunkW,
+          camX,
+          camY,
           screenW,
           screenH,
         );
-        if (nightBlend > 0.01) {
-          ctx.save();
-          ctx.globalAlpha = nightBlend;
-          ctx.drawImage(
-            assets.l1BackNight,
-            srcX,
-            srcY,
-            screenW,
-            screenH,
-            0,
-            0,
-            screenW,
-            screenH,
-          );
-          ctx.restore();
-        }
 
         // 5. Stage 1 Decors, Ground Covers, Breakable Walls, Moving Platforms
         game.level.breakableWalls?.forEach((wall, i) => {
@@ -802,35 +840,29 @@ export function Scene2D({
         });
 
         // 12. Layer 1 Front (priority 1: foreground leaves & secret cave tunnel mouths)
-        ctx.drawImage(
-          assets.l1Front,
-          srcX,
-          srcY,
-          screenW,
-          screenH,
-          0,
-          0,
+        drawChunkedLayer(
+          ctx,
+          assets.l1FrontChunks,
+          chunkW,
+          camX,
+          camY,
           screenW,
           screenH,
         );
-        if (nightBlend > 0.01) {
+
+        // 13. Atmospheric Night / Dawn Color Grading & Weather (CODE_80AC8B + Rain/Lightning)
+        if (nightBlend > 0.02) {
           ctx.save();
-          ctx.globalAlpha = nightBlend;
-          ctx.drawImage(
-            assets.l1FrontNight,
-            srcX,
-            srcY,
-            screenW,
-            screenH,
-            0,
-            0,
-            screenW,
-            screenH,
-          );
+          ctx.fillStyle = `rgba(8, 22, 46, ${(nightBlend * 0.42).toFixed(2)})`;
+          ctx.fillRect(0, 0, screenW, screenH);
           ctx.restore();
         }
-
-        // 13. Weather: ROM Rain & Lightning Flash during the night storm section
+        if (dawnBlend > 0.02) {
+          ctx.save();
+          ctx.fillStyle = `rgba(255, 165, 85, ${(dawnBlend * 0.14).toFixed(2)})`;
+          ctx.fillRect(0, 0, screenW, screenH);
+          ctx.restore();
+        }
         if (nightBlend > 0.15) {
           ctx.save();
           ctx.strokeStyle = `rgba(185, 215, 255, ${(nightBlend * 0.42).toFixed(2)})`;
@@ -902,6 +934,7 @@ function drawPlushCast(
   const swapU = swap ? 1 - swap.remaining / TEAM_SWAP_DURATION : 0;
   const swapHop = Math.sin(Math.min(1, swapU) * Math.PI);
   const swapping = swapU > 0 && swapU < 1;
+  const celebrating = game.phase === "clear" || game.phase === "victory";
 
   // 1. Companion plush (drawn behind active plush when hp === 2)
   if (p.hp === 2) {
@@ -937,6 +970,7 @@ function drawPlushCast(
       companion: true,
       riding: false,
       carrying: false,
+      celebrating,
       time: game.time,
     });
   }
@@ -963,6 +997,7 @@ function drawPlushCast(
       companion: false,
       riding: !!mount,
       carrying: p.carry >= 0,
+      celebrating,
       time: game.time,
     });
   }
