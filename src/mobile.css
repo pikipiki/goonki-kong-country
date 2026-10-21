@@ -1246,3 +1246,45 @@ h1 > span {
   .phase-map .map-heading { padding-right: 80px; }
   .phase-map .map-heading h2 { font-size: 22px; }
 }
+
+.demo-2d-button {
+  padding: 9px 14px;
+  border-radius: 9px;
+  border: 1px solid #d4b96a66;
+  background: linear-gradient(145deg, #2b422de6, #192b1ee8);
+  color: #ffe394;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  box-shadow: 0 3px 10px #09170e70;
+}
+.demo-2d-button:hover {
+  background: linear-gradient(145deg, #37553ae6, #223828e8);
+  border-color: #f3d27a;
+}
+@media (orientation: portrait) and (max-width: 900px) {
+  .intro-cta {
+    bottom: max(48px, calc(env(safe-area-inset-bottom) + 36px));
+    gap: 6px;
+  }
+  .demo-2d-button {
+    min-height: 42px;
+    justify-content: center;
+    font-size: 12px;
+  }
+}
+@media (orientation: landscape) and (max-height: 560px) {
+  .intro-copy {
+    top: 16%;
+  }
+  .intro-description {
+    margin: 10px 0 12px;
+  }
+  .intro-cta {
+    gap: 5px;
+  }
+  .demo-2d-button {
+    padding: 6px 12px;
+    min-height: 34px;
+    font-size: 10px;
+  }
+}

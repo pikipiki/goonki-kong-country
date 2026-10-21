@@ -18,6 +18,7 @@ import { Controls, KEYBOARD } from "./game/input";
 import { AudioSystem } from "./game/audio";
 import { IslandMap } from "./IslandMap";
 import { Scene } from "./Scene";
+import { Scene2D } from "./game2d/Scene2D";
 import { GameControls } from "./components/GameControls";
 import i18n from "./i18n";
 import { L } from "./i18n/keys";
@@ -116,6 +117,7 @@ export function App() {
       Object.setPrototypeOf(game, Game.prototype);
   }, [game, Game]);
   const [mapLevel, setMapLevel] = useState(0);
+  const [demo2D, setDemo2D] = useState(false);
   const [controls] = useState(() => new Controls()),
     [audio] = useState(() => new AudioSystem());
   const [, render] = useState(0),
@@ -141,10 +143,16 @@ export function App() {
   const start = useCallback(
     (id = 0) => {
       audio.boot();
+      setDemo2D(false);
       change(() => game.start(id, id === 0 || id === 1 || id === 2 || id === 3));
     },
     [audio, change, game],
   );
+  const startDemo2D = useCallback(() => {
+    audio.boot();
+    setDemo2D(true);
+    change(() => game.start(0, true));
+  }, [audio, change, game]);
   const openMap = () =>
     change(() => {
       setMapLevel(game.levelId);
@@ -267,6 +275,22 @@ export function App() {
   }, []);
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+    const mode2d =
+      params.get("demo") === "2d" ||
+      params.get("mode") === "2d" ||
+      params.get("play") === "2d";
+    if (mode2d) {
+      audio.boot();
+      setDemo2D(true);
+      change(() => {
+        game.start(0, true);
+        const xParam = params.get("x");
+        const yParam = params.get("y");
+        if (xParam !== null && xParam !== "") game.player.x = Number(xParam);
+        if (yParam !== null && yParam !== "") game.player.y = Number(yParam);
+      });
+      return;
+    }
     const play = params.get("play") ?? params.get("level");
     const coral =
       play === "coral" || play === "lagoon" || play === "3";
@@ -328,11 +352,18 @@ export function App() {
   return (
     <div
       ref={root}
-      className={`app phase-${phase} ${showControls ? "has-controls" : ""}`}
+      className={`app phase-${phase} ${showControls ? "has-controls" : ""} ${demo2D ? "demo-2d" : ""}`}
     >
-      <div className="scene" aria-label="3D game scene">
+      <div
+        className="scene"
+        aria-label={demo2D && phase !== "title" && phase !== "map" ? "2D game scene" : "3D game scene"}
+      >
         <SceneBoundary>
-          <Scene game={game} input={controls.input} onTick={tick} />
+          {demo2D && phase !== "title" && phase !== "map" ? (
+            <Scene2D game={game} input={controls.input} onTick={tick} />
+          ) : (
+            <Scene game={game} input={controls.input} onTick={tick} />
+          )}
         </SceneBoundary>
       </div>
       <div className="vignette" />
@@ -342,6 +373,7 @@ export function App() {
           className="brand"
           onClick={() =>
             change(() => {
+              setDemo2D(false);
               game.load(0, "title");
             })
           }
@@ -436,6 +468,9 @@ export function App() {
               <button className="secondary" onClick={() => start(game.save.unlocked)}>
                 {t(game.save.unlocked ? "continue" : "play")}
               </button>
+              <button className="secondary demo-2d-button" onClick={startDemo2D}>
+                try 2D demo (1 stage only)
+              </button>
             </div>
             <div className="duo-note">
               <div className="portraits">
@@ -482,35 +517,37 @@ export function App() {
                 </div>
               </div>
             </div>
-            <div className="hud-stats">
-              <div>
-                <span className="banana-symbol">☽</span>
-                <strong>{String(game.bananas).padStart(2, "0")}</strong>
-                <small>/ 100</small>
+            {!demo2D && (
+              <div className="hud-stats">
+                <div>
+                  <span className="banana-symbol">☽</span>
+                  <strong>{String(game.bananas).padStart(2, "0")}</strong>
+                  <small>/ 100</small>
+                </div>
+                <div className="letter-track">
+                  {game.letterWord.split("").map((letter, i) => (
+                    <span
+                      key={i}
+                      className={
+                        [...game.letters].some(
+                          (index) =>
+                            game.level.pickups[index]?.letter === letter &&
+                            game.level.pickups
+                              .filter((p) => p.kind === "letter")
+                              .findIndex(
+                                (p) => p === game.level.pickups[index],
+                              ) === i,
+                        )
+                          ? "found"
+                          : ""
+                      }
+                    >
+                      {letter}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <div className="letter-track">
-                {game.letterWord.split("").map((letter, i) => (
-                  <span
-                    key={i}
-                    className={
-                      [...game.letters].some(
-                        (index) =>
-                          game.level.pickups[index]?.letter === letter &&
-                          game.level.pickups
-                            .filter((p) => p.kind === "letter")
-                            .findIndex(
-                              (p) => p === game.level.pickups[index],
-                            ) === i,
-                      )
-                        ? "found"
-                        : ""
-                    }
-                  >
-                    {letter}
-                  </span>
-                ))}
-              </div>
-            </div>
+            )}
           </div>
           <div className="progress-track">
             <span
@@ -656,9 +693,16 @@ export function App() {
               onClick={() =>
                 phase === "paused"
                   ? change(() => game.pause())
-                  : phase === "clear"
-                    ? change(() => game.load(game.levelId + 1))
-                    : start(phase === "gameover" ? game.levelId : 0)
+                  : demo2D
+                    ? phase === "clear"
+                      ? change(() => {
+                          setDemo2D(false);
+                          game.load(0, "title");
+                        })
+                      : startDemo2D()
+                    : phase === "clear"
+                      ? change(() => game.load(game.levelId + 1))
+                      : start(phase === "gameover" ? game.levelId : 0)
               }
             >
               {t(
