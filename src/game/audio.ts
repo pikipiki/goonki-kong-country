@@ -37,6 +37,8 @@ export function resolveAudioEffectId(
     checkpoint: 0x10,
     reveal: 0x10,
     "necky-shot": 0x5c,
+    "map-step": 0x33,
+    "map-arrive": 0x60,
   };
   if (name === "hurt") return c.character ? 0x43 : 0x46;
   if (name === "letter") return 0x4f + Math.min(3, c.letterIndex ?? 0);

@@ -293,7 +293,7 @@ def main():
         day_pals.append(dp)
         night_pals.append(np)
 
-    print("Rendering Layer 1 (Back & Front, Day & Night)...")
+    print("Rendering Layer 1 (Back & Front chunks <= 2048px for iOS/Android)...")
     l1_back = render_metatile_layer(
         rom, jungle_gfx, day_pals, 0x190000, 0x19A3C0, 0, 169, 0, 16,
         priority_filter=0, skip_wrapped_canopy=True
@@ -302,28 +302,21 @@ def main():
         rom, jungle_gfx, day_pals, 0x190000, 0x19A3C0, 0, 169, 0, 16,
         priority_filter=1, skip_wrapped_canopy=True
     )
-    l1_back_night = render_metatile_layer(
-        rom, jungle_gfx, night_pals, 0x190000, 0x19A3C0, 0, 169, 0, 16,
-        priority_filter=0, skip_wrapped_canopy=True
-    )
-    l1_front_night = render_metatile_layer(
-        rom, jungle_gfx, night_pals, 0x190000, 0x19A3C0, 0, 169, 0, 16,
-        priority_filter=1, skip_wrapped_canopy=True
-    )
-    l1_back.save(os.path.join(OUT_DIR, "layer1-back.png"), optimize=True)
-    l1_front.save(os.path.join(OUT_DIR, "layer1-front.png"), optimize=True)
-    l1_back_night.save(os.path.join(OUT_DIR, "layer1-back-night.png"), optimize=True)
-    l1_front_night.save(os.path.join(OUT_DIR, "layer1-front-night.png"), optimize=True)
+    chunk_w = 2048
+    for idx, x0 in enumerate(range(0, l1_back.width, chunk_w)):
+        x1 = min(l1_back.width, x0 + chunk_w)
+        l1_back.crop((x0, 0, x1, 512)).save(
+            os.path.join(OUT_DIR, f"layer1-back-{idx}.png"), optimize=True
+        )
+        l1_front.crop((x0, 0, x1, 512)).save(
+            os.path.join(OUT_DIR, f"layer1-front-{idx}.png"), optimize=True
+        )
 
-    print("Rendering Layer 2 (Day & Night)...")
+    print("Rendering Layer 2...")
     l2_day = render_metatile_layer(
         rom, jungle_gfx, day_pals, 0x190000, 0x19A3C0, 168, 16, 0, 8
     )
-    l2_night = render_metatile_layer(
-        rom, jungle_gfx, night_pals, 0x190000, 0x19A3C0, 168, 16, 0, 8
-    )
     l2_day.save(os.path.join(OUT_DIR, "layer2.png"), optimize=True)
-    l2_night.save(os.path.join(OUT_DIR, "layer2-night.png"), optimize=True)
 
     # 2. Layer 3 distant canopy silhouette & Sky HDMA tables
     print("Rendering Layer 3 & Sky HDMA...")
@@ -338,6 +331,8 @@ def main():
         for _ in range(cnt):
             sky_day_hdma.append([r, g, b])
         pos += 5
+    # Only keep scanlines 0..74 (dawn gradient); scanlines >= 75 in ROM are grey filler behind BG2/BG3
+    sky_day_hdma = sky_day_hdma[:75]
 
     sky_night_hdma = []
     for i in range(71):
@@ -382,15 +377,60 @@ def main():
                 screen_y = 64 + ty * 8 + py
                 dcol = l3_hdma_day[min(screen_y, len(l3_hdma_day) - 1)]
                 ncol = l3_hdma_night[min(screen_y, len(l3_hdma_night) - 1)]
+                sday = sky_day_hdma[min(screen_y, len(sky_day_hdma) - 1)]
                 for px in range(8):
                     sx = (7 - px) if hflip else px
                     c_idx = tile[sy][sx]
                     if c_idx != 0:
                         l3_dpix[tx * 8 + px, ty * 8 + py] = dcol
                         l3_npix[tx * 8 + px, ty * 8 + py] = ncol
+                    elif (ty * 8 + py) >= 7:
+                        l3_dpix[tx * 8 + px, ty * 8 + py] = (sday[0], sday[1], sday[2], 255)
 
     l3_day_img.save(os.path.join(OUT_DIR, "layer3.png"), optimize=True)
-    l3_night_img.save(os.path.join(OUT_DIR, "layer3-night.png"), optimize=True)
+
+    # 2b. World Map & Kongo Jungle Map 2D backgrounds from ROM
+    print("Rendering 2D Overworld Maps from ROM...")
+    def render_raw_tilemap(tm_off: int, gfx_off: int, gfx_end: int, pal_off: int) -> Image.Image:
+        mpals = []
+        for p in range(8):
+            mpals.append(
+                [
+                    bgr555_to_rgba(
+                        struct.unpack_from("<H", rom, pal_off + (p * 16 + c) * 2)[0],
+                        False,
+                    )
+                    for c in range(16)
+                ]
+            )
+        mgfx = rom[gfx_off:gfx_end]
+        mtiles = [decode_4bpp_tile(mgfx, i) for i in range(len(mgfx) // 32)]
+        mim = Image.new("RGBA", (256, 224), (0, 0, 0, 255))
+        mpix = mim.load()
+        for ty in range(28):
+            for tx in range(32):
+                tw = struct.unpack_from("<H", rom, tm_off + (ty * 32 + tx) * 2)[0]
+                t_idx = tw & 0x3FF
+                pal_idx = (tw >> 10) & 7
+                hf = (tw & 0x4000) != 0
+                vf = (tw & 0x8000) != 0
+                if t_idx >= len(mtiles):
+                    continue
+                tile = mtiles[t_idx]
+                pal = mpals[pal_idx]
+                for py in range(8):
+                    sy = (7 - py) if vf else py
+                    for px in range(8):
+                        sx = (7 - px) if hf else px
+                        mpix[tx * 8 + px, ty * 8 + py] = pal[tile[sy][sx]]
+        return mim
+
+    render_raw_tilemap(0x050912, 0x051012, 0x056FB2, 0x39C103).save(
+        os.path.join(OUT_DIR, "map-kongo.png"), optimize=True
+    )
+    render_raw_tilemap(0x010FF0, 0x0116F1, 0x016AD1, 0x39BE03).save(
+        os.path.join(OUT_DIR, "map-island.png"), optimize=True
+    )
 
     # 3. Cave Bonus Room
     print("Rendering Cave Bonus Room...")

@@ -117,6 +117,7 @@ export function App() {
       Object.setPrototypeOf(game, Game.prototype);
   }, [game, Game]);
   const [mapLevel, setMapLevel] = useState(0);
+  const [clearTargetLevel, setClearTargetLevel] = useState(0);
   const [demo2D, setDemo2D] = useState(false);
   const [controls] = useState(() => new Controls()),
     [audio] = useState(() => new AudioSystem());
@@ -187,6 +188,15 @@ export function App() {
     else audio.stop();
     return () => audio.stop();
   }, [phase, audio, game.levelId]);
+  useEffect(() => {
+    if (phase !== "clear") return;
+    setClearTargetLevel(game.levelId);
+    const nextId = Math.min(MAP_LEVELS.length - 1, game.levelId + 1);
+    const timer = window.setTimeout(() => {
+      setClearTargetLevel(nextId);
+    }, 380);
+    return () => window.clearTimeout(timer);
+  }, [phase, game.levelId]);
   useEffect(() => {
     const keydown = (e: KeyboardEvent) => {
       if (e.code === "Escape" || e.code === "KeyP") {
@@ -359,9 +369,9 @@ export function App() {
         aria-label={demo2D && phase !== "title" && phase !== "map" ? "2D game scene" : "3D game scene"}
       >
         <SceneBoundary>
-          {demo2D && phase !== "title" && phase !== "map" ? (
+          {phase === "map" ? null : demo2D && phase !== "title" ? (
             <Scene2D game={game} input={controls.input} onTick={tick} />
-          ) : (
+          ) : phase === "clear" ? null : (
             <Scene game={game} input={controls.input} onTick={tick} />
           )}
         </SceneBoundary>
@@ -429,13 +439,23 @@ export function App() {
             <Icon name="expand" />
           </button>
           {phase === "playing" ? (
-            <button
-              className="icon-button"
-              aria-label={t("pauseGame")}
-              onClick={() => change(() => game.pause())}
-            >
-              <Icon name="pause" />
-            </button>
+            <>
+              <button
+                className="icon-button"
+                aria-label={t("map")}
+                title={t("map")}
+                onClick={openMap}
+              >
+                <Icon name="map" />
+              </button>
+              <button
+                className="icon-button"
+                aria-label={t("pauseGame")}
+                onClick={() => change(() => game.pause())}
+              >
+                <Icon name="pause" />
+              </button>
+            </>
           ) : (
             <button className="text-button" onClick={() => setHelp(true)}>
               {t("howToPlay")} <span>↗</span>
@@ -615,13 +635,29 @@ export function App() {
               <h2>{t("mapTitle")}<span>.</span></h2>
               <p id="map-instructions" className="panel-description">{t("mapInstructions")}</p>
             </div>
-            <IslandMap selected={mapLevel} initial={game.levelId} unlocked={LEVELS.length - 1} onSelect={setMapLevel} onConfirm={() => start(mapLevel)} stages={MAP_LEVELS}/>
+            <IslandMap
+              selected={mapLevel}
+              initial={game.levelId}
+              unlocked={LEVELS.length - 1}
+              onSelect={setMapLevel}
+              onConfirm={() =>
+                demo2D && mapLevel === 0 ? startDemo2D() : start(mapLevel)
+              }
+              stages={MAP_LEVELS}
+              mode2D={demo2D}
+              onSound={(name) => audio.effect(name)}
+            />
             <div className="map-confirm">
               <p className="map-selection" aria-live="polite" aria-atomic="true">
                 <span>{tx(MAP_LEVELS[mapLevel].subtitle)}</span>
                 <strong>{tx(MAP_LEVELS[mapLevel].name)}</strong>
               </p>
-              <button className="primary map-enter" onClick={() => start(mapLevel)}>
+              <button
+                className="primary map-enter"
+                onClick={() =>
+                  demo2D && mapLevel === 0 ? startDemo2D() : start(mapLevel)
+                }
+              >
                 {t("mapEnter")} <Icon name="arrow" />
               </button>
             </div>
@@ -632,8 +668,8 @@ export function App() {
         phase === "clear" ||
         phase === "gameover" ||
         phase === "victory") && (
-        <div className="overlay">
-          <main className="panel">
+        <div className={`overlay ${phase === "clear" ? "clear-overlay" : ""}`}>
+          <main className={`panel ${phase === "clear" ? "clear-panel" : ""}`}>
             <span className="panel-flower">
               {phase === "gameover" ? "☁" : phase === "paused" ? "❋" : "✦"}
             </span>
@@ -666,6 +702,27 @@ export function App() {
                     ? t("panelGameoverDesc")
                     : t("panelClearDesc")}
             </p>
+            {phase === "clear" && (
+              <div className="clear-map-preview">
+                <IslandMap
+                  selected={clearTargetLevel}
+                  initial={game.levelId}
+                  unlocked={Math.max(
+                    game.save.unlocked,
+                    Math.min(MAP_LEVELS.length - 1, game.levelId + 1),
+                  )}
+                  onSelect={setClearTargetLevel}
+                  onConfirm={() =>
+                    demo2D
+                      ? startDemo2D()
+                      : change(() => game.load(clearTargetLevel))
+                  }
+                  stages={MAP_LEVELS}
+                  mode2D={demo2D}
+                  onSound={(name) => audio.effect(name)}
+                />
+              </div>
+            )}
             {phase !== "paused" && (
               <div className="results">
                 <div>
