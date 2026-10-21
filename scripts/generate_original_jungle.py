@@ -1,8 +1,17 @@
 """Generate the supported Original Jungle level subset from verified metadata."""
-import collections,json
+import collections,json,math
 from pathlib import Path
 base=Path(__file__).resolve().parents[1]
 r=json.loads((base/'reference/level-tables.json').read_text())
+vectors=json.loads((base/'reference/player-states.json').read_text())['cannonBaseTemplateVectors']
+def cannon_angle(ra):
+    q=(ra.get('$14C5',0)+0x0AAA)&0xF000
+    idx=(q//0x1000)%16
+    v=vectors[idx]
+    return math.atan2(-v['velocityYRaw'],v['velocityXRaw'])
+def cannon_delays(ra):
+    fc1=ra.get('$0FC1',0x1010)
+    return (fc1>>8)&0xFF, fc1&0xFF
 records=r['levels']['JungleHijinxs']['spawnList']['records']
 enemies=[];pickups=[];barrels=[];animals=[];omissions=[];imported=[]
 scale=lambda x,y:{'x':x/32,'y':(y-175)/32}
@@ -19,10 +28,14 @@ for row in records:
         barrels.append(dict(point,kind={35:'throw',38:'rescue',74:'checkpoint'}[sid]));typ='barrel'
     elif sid==24 and script['ramAssignments'].get('$1375')==0:
         animals.append(dict(point,kind='rambi'));typ='rambi-crate'
+    elif sid==56:
+        ra=script.get('ramAssignments',{})
+        g_delay,c_delay=cannon_delays(ra)
+        barrels.append(dict(point,kind='cannon',angle=cannon_angle(ra),launchMultiplier=ra.get('$0FF5',40),
+            cannonGravityDelay=g_delay,cannonControlDelay=c_delay));typ='cannon'
     if typ:imported.append(dict(offset=row['offset'],spriteId=sid,kind=typ,originalX=row['x'],originalY=row['y']))
     else:
         reason='Not yet represented by the web engine; omitted without substituting a different object.'
-        if sid==56:reason='Original cannon launch scripts/targets not imported; omit rather than invent angle.'
         if sid==44:reason='Hidden ItemCache requires reveal/slap rules; do not expose as free pickup.'
         if sid==20:reason='BreakableWall/bonus entrance requires original exit linkage, not imported.'
         if sid==106:reason='ExitDoor coordinate is the completion trigger metadata, no actor required.'

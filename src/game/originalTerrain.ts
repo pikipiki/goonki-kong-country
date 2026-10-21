@@ -86,6 +86,22 @@ export function query(xWorld: number, yWorld: number, origin: TerrainOrigin = { 
 /** Diagnostic only: nearest per-tile candidate below Y across all 16 rows.
  * Interior solid cells can appear here; this is not the original neighbour probe.
  */
+/** Lowest solid underside (full 31px profile) above py in SNES space, if any. */
+export function ceilingSNES(px: number, py: number): number | null {
+  if (!Number.isFinite(px) || !Number.isFinite(py)) return null;
+  let ceiling: number | null = null;
+  for (let row = 0; row < 16; row++) {
+    const cell = terrainCellSNES(px, row);
+    if (!cell || cell.localHeight < 0) continue;
+    if (cell.floorY > py && (ceiling === null || cell.floorY < ceiling)) ceiling = cell.floorY;
+  }
+  return ceiling;
+}
+export function ceilingWorld(xWorld: number, headWorld: number, origin: TerrainOrigin = { x: 0, y: 0 }) {
+  const scale = ORIGINAL_TERRAIN.pixelsPerWorldUnit;
+  const hit = ceilingSNES(xWorld * scale + origin.x, headWorld * scale + origin.y);
+  return hit === null ? null : (hit - origin.y) / scale;
+}
 export function nearestCandidateBelowSNES(px: number, py: number): TerrainContact | null {
   if (!Number.isFinite(px) || !Number.isFinite(py)) return null;
   let best: Omit<TerrainContact, "referenceRowFromTop"> | null = null;
