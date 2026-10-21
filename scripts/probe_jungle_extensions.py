@@ -15,6 +15,7 @@ from probe_player_motion import (
 )
 
 REPORT = Path(__file__).resolve().parents[1] / "reference/runtime-player-analysis.json"
+NECKY_STATE = DEFAULT_WORK / "runtime-rom/jungle-necky/necky-approach.state"
 
 
 def scan_sprites(probe: SnesProbe) -> list[dict]:
@@ -89,6 +90,11 @@ def run_necky_watch(probe: SnesProbe, state_path: Path, out: Path) -> dict:
 
 
 def main() -> None:
+    import argparse
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--necky-state", type=Path, default=NECKY_STATE)
+    args = parser.parse_args()
     out = (DEFAULT_WORK / "runtime-rom/player-motion").resolve()
     out.mkdir(parents=True, exist_ok=True)
     rom = "/Users/sevenone./Downloads/Donkey Kong Country (USA) (Rev 2).zip"
@@ -105,7 +111,9 @@ def main() -> None:
         out,
         False,
     )
-    scenarios["dk-necky-watch"] = run_necky_watch(probe, DEFAULT_GROUND, out)
+    necky_state = args.necky_state if args.necky_state.is_file() else DEFAULT_GROUND
+    scenarios["dk-necky-watch"] = run_necky_watch(probe, necky_state, out)
+    scenarios["dk-necky-watch"]["neckyStatePath"] = str(necky_state)
     report["scenarios"] = scenarios
     report["jungleExtensionNote"] = (
         "dk-walk-terrain: 300f hold Right for slope samples; "

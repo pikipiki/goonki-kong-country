@@ -18,7 +18,7 @@
 
 **Limites honnêtes :** loot bonus toujours **authored** (ROM `$1375` seulement annoté) ; Necky in-game SNES nécessite save state après la fosse ; pas de textures ROM.
 
-**Priorité suivante :** save state / séquence saut vers x≈2560 pour noix SNES, décoder entrées bonus depuis `$1375`, parité simulation↔SNES sur pentes (pas seulement oracle X→floor), audio/mobile.
+**Priorité suivante :** save state `work/runtime-rom/jungle-necky/necky-approach.state` (voir `jungle-necky-probe.md`), décoder entrées bonus depuis `$1375`, parité dynamique sur pentes, audio/mobile.
 
 **Désassemblage Yoshifanatic1 :** cible officielle **USA V1.0** (MD5 `30c5f292ff4cbbfcc00fd8fa96c2de3b`) — **pas** la Rev 2 (`revision` 2, SHA-256 dans `rom-analysis.json`). Utilisable pour **noms de routines / tables / logique**, avec relocalisation d’octets obligatoire (`analyze_level_tables.py`, `player-states.json`). Voir `reference/disassembly-rev2.md` après vérif MD5.
 
