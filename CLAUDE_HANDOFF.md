@@ -6,19 +6,19 @@
 
 **Route ROM :** Jungle Hijinxs (`ROM_JUNGLE`, étape 0) et Coral Capers (`ROM_CORAL`, étape 3, `levelId` 3). `App` active la route originale pour 0 et 3. Cinq autres étapes restent le prototype.
 
-**Jungle (63/66 placements ROM) :** bonus rooms avec **`romRam1375`/`romRam13E9`** (`jungle-bonus-walls.json`), Necky (`necky-ballistics.json`), `finishZone`. Parité : **120** frames vx + **241** échantillons sol (`dk-walk-terrain` 300f, `jungle-parity-walk.json`). Capture noix live bloquée par fosse x≈454 → `necky-runtime-capture.json` + `npm run probe:jungle`.
+**Jungle (63/66 placements ROM) :** bonus rooms avec **`romRam1375`/`romRam13E9`** + **`entranceLevelId`** via table `entranceToLevelId` (`jungle-bonus-walls.json`, `npm run analyze:jungle-bonus`), Necky (`necky-ballistics.json`), `finishZone`. Parité : **120** frames vx, **241** échantillons sol, **155** frames position dynamique (`dynamicParity` dans `jungle-parity-walk.json`). Fosse SNES x≈454 documentée (`jungle-walk-pit.md`) — métatuiles plates, chute côté objet/état. Capture noix → `necky-runtime-capture.json` + `npm run probe:jungle --necky-state`.
 
-**Coral (37 placements) :** terrain bandes 512 px, `OriginalCoralGround`, `CoralScatter`, brouillard renforcé en route ROM. Pas de textures/façades extraites du chip graphique.
+**Coral (37 placements) :** terrain bandes 512 px, nage horizontale **vxRaw 512** (`underwater-motion.json`), collision swim corrigée (`blocksCoralHorizontal`), `finishZone` **UnderwaterExitDoor** @ x=2024, ennemis tagués `romSpriteId`/`patrolSpeed` (`coral-rom-notes.md`). Pas de textures chip.
 
 **Audio :** 27 M4A + 119 WAV ; SFX `place`/`throw`/`pickup`/etc. mappés sur IDs Rev 2. **Écoute comparative** et **téléphones réels** non automatisées — voir `reference/audio-playback-notes.md`.
 
 **Joueur / canons :** portage maintien Action, lancer/poser, projectile vers **896 raw**, échange d’équipe animé ; canons avec compteurs **gravité/contrôle** par pas de simu (test `bonus-cannon.test.ts`), rotation visuelle en vol (`launched`).
 
-**79 tests, 11 fichiers** (`npm test`). `probe:jungle`, `analyze:jungle-bonus`, `generate:jungle-parity`.
+**83 tests, 11 fichiers** (`npm test`). `probe:jungle`, `analyze:jungle-bonus`, `generate:jungle-parity`, `generate:coral`.
 
-**Limites honnêtes :** loot bonus toujours **authored** (ROM `$1375` seulement annoté) ; Necky in-game SNES nécessite save state après la fosse ; pas de textures ROM.
+**Limites honnêtes :** loot bonus **authored** (cibles `entranceLevelId` décodées, pas la géométrie ROM) ; rebord x≈454 non simulé (sol statique continu) ; Necky SNES = save state ; pas de textures ROM.
 
-**Priorité suivante :** save state `work/runtime-rom/jungle-necky/necky-approach.state` (voir `jungle-necky-probe.md`), décoder entrées bonus depuis `$1375`, parité dynamique sur pentes, audio/mobile.
+**Priorité suivante :** collision objet/cmd 5–8 au rebord, save state Necky, parité sur pentes après frame 155, audio/mobile.
 
 **Désassemblage Yoshifanatic1 :** cible officielle **USA V1.0** (MD5 `30c5f292ff4cbbfcc00fd8fa96c2de3b`) — **pas** la Rev 2 (`revision` 2, SHA-256 dans `rom-analysis.json`). Utilisable pour **noms de routines / tables / logique**, avec relocalisation d’octets obligatoire (`analyze_level_tables.py`, `player-states.json`). Voir `reference/disassembly-rev2.md` après vérif MD5.
 

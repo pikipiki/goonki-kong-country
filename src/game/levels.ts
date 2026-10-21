@@ -27,6 +27,10 @@ export interface EnemySpec {
   pattern?: "patrol" | "necky";
   /** NutThrowingNecky (sprite 14) — not FlyingNecky / MiniNecky. */
   throwsNuts?: boolean;
+  /** Rev 2 sprite id when imported from spawn tables (Coral fish families). */
+  romSpriteId?: number;
+  /** Horizontal patrol speed in world units/s when spawned. */
+  patrolSpeed?: number;
 }
 export interface FinishZone {
   x: number;

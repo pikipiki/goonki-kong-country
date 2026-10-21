@@ -72,7 +72,7 @@ it('expands original bitmap bananas instead of inventing regular spacing', () =>
 });
 
 import { ROM_CORAL, ORIGINAL_CORAL_PROVENANCE } from '../src/game/originalCoral';
-import { Game } from '../src/game/engine';
+import { Game, emptyInput } from '../src/game/engine';
 import { queryCoral, marineBandLocal, coralRomYFromWeb } from '../src/game/originalCoralTerrain';
 import { ORIGINAL_CORAL_ORIGIN } from '../src/game/originalCoral';
 
@@ -111,5 +111,35 @@ describe('original Coral Capers placements', () => {
     expect(game.level.name).toBe('Coral Capers');
     expect(game.level.length).toBeCloseTo(65.25,2);
     expect(game.enemies.filter(e=>e.kind==='croc').length).toBeGreaterThan(10);
+  });
+  it('exposes UnderwaterExitDoor finish zone from ROM', () => {
+    expect(ROM_CORAL.finishZone?.x).toBeCloseTo(2024 / 32, 3);
+    expect(ROM_CORAL.finishZone?.y).toBeCloseTo(0.93, 2);
+  });
+  it('does not block horizontal swim at the coral start column', () => {
+    const game = new Game();
+    game.start(3, true);
+    game.enemies = [];
+    const input = emptyInput();
+    input.held.add('right');
+    const x0 = game.player.x;
+    for (let i = 0; i < 40; i++) game.update(input);
+    expect(game.player.x).toBeGreaterThan(x0 + 0.8);
+    expect(Math.abs(game.player.vx)).toBeGreaterThan(0.5);
+  });
+  it('swims vertically in coral without interior ceiling crushing the surface band', () => {
+    const game = new Game();
+    game.start(3, true);
+    game.enemies = [];
+    const input = emptyInput();
+    input.held.add('jump');
+    const y0 = game.player.y;
+    for (let i = 0; i < 35; i++) game.update(input);
+    expect(game.player.y).toBeGreaterThan(y0 - 0.15);
+    expect(game.player.y).toBeLessThanOrEqual(5.49);
+    input.held.delete('jump');
+    input.held.add('down');
+    for (let i = 0; i < 45; i++) game.update(input);
+    expect(game.player.y).toBeLessThan(y0 - 0.35);
   });
 });

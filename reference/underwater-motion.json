@@ -1,0 +1,17 @@
+{
+  "romSha256": "628147468c3539283197f58f03b94df49758a332831857481ea9cc31645f0527",
+  "source": "Interim constants until dk-swim SNES trace exists (see probe:coral roadmap).",
+  "horizontalCruiseVxRaw": 512,
+  "note": "512 matches dk-walk-terrain flat-ground cap in runtime-player-analysis.json; applied on ROM Coral route.",
+  "verticalSwim": {
+    "sinkAccelerationWorldPerSecond": 7,
+    "riseSpeedWorld": 4.3,
+    "diveSpeedWorld": 4,
+    "limitation": "Not yet traced from underwater player state; Enguarde uses buddy-analysis stab/walk."
+  },
+  "depthBandWeb": {
+    "surfaceY": 5.48,
+    "floorY": 0.35,
+    "yMapping": "ROM marine Y 17960..19632 linear to web 5.5..0.5 (generate_original_coral.py)"
+  }
+}
