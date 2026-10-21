@@ -32,6 +32,41 @@ describe("bonus rooms and cannon fidelity", () => {
     expect(game.player.x).toBeLessThan(wall.x);expect(game.phase).toBe("playing");
   });
 
+  it("seals the entrance behind the player while leaving the right exit usable", () => {
+    const g=new Game();g.start(0,true);g.enemies=[];
+    const room=g.level.bonusRooms![2],wall=g.level.breakableWalls![room.wallIndex];
+    g.brokenWalls.add(room.wallIndex);Object.assign(g.player,{x:wall.x-1.1,y:wall.y,grounded:true});
+    const enter=emptyInput();enter.pressed.add("up");g.update(enter);expect(g.bonus).not.toBeNull();
+    const left=emptyInput();left.held.add("left");left.held.add("run");
+    for(let i=0;i<90;i++)g.update(left);
+    expect(g.bonus).not.toBeNull();expect(g.player.x).toBeGreaterThanOrEqual(1.04);
+    const right=emptyInput();right.held.add("right");right.held.add("run");
+    for(let i=0;i<240 && g.bonus;i++)g.update(right);
+    expect(g.bonus).toBeNull();expect(g.phase).toBe("playing");
+  });
+
+  it("permanently plugs a visited entrance for this run, even without collecting loot", () => {
+    const g=new Game();g.start(0,true);g.enemies=[];g.animals=[];
+    const index=2,room=g.level.bonusRooms![index],wall=g.level.breakableWalls![room.wallIndex];
+    const approach=()=>{Object.assign(g.player,{x:wall.x-1.1,y:wall.y,vx:0,vy:0,grounded:true});const input=emptyInput();input.pressed.add("up");g.update(input);};
+    g.brokenWalls.add(room.wallIndex);approach();expect(g.bonus?.index).toBe(index);
+    g.leaveBonus();expect(g.collectedBonus.size).toBe(0);expect(g.isBonusCompleted(index)).toBe(true);
+    g.bonusDoorCooldown=0;approach();expect(g.bonus).toBeNull();
+    g.player.invincible=0;g.damage(true);g.bonusDoorCooldown=0;approach();
+    expect(g.bonus).toBeNull();expect(g.isBonusCompleted(index)).toBe(true);
+    // The bonus plug is a closed doorway behind the main route, not a new
+    // barrier across the route. Breaking/throwing at it must not re-enable entry.
+    g.player.roll=.4;g.thrown.push({x:wall.x,y:wall.y+1,vx:1,vy:0,active:true});approach();
+    expect(g.bonus).toBeNull();expect(g.isBonusCompleted(index)).toBe(true);
+    expect(g.isBonusCompleted(1)).toBe(false);
+    g.start(0,true);expect(g.isBonusCompleted(index)).toBe(false);
+  });
+
+  it("recognizes rewards from a completed visit in a hot-reloaded older game", () => {
+    const g=new Game();g.start(0,true);g.collectedBonus.add("2-0");
+    expect(g.isBonusCompleted(2)).toBe(true);expect(g.isBonusCompleted(1)).toBe(false);
+  });
+
   it("exposes ROM ExitDoor finish volume on jungle", () => {
     expect(ROM_JUNGLE.finishZone).toBeDefined();
     expect(ROM_JUNGLE.finishZone!.x).toBeCloseTo(5296 / 32, 3);

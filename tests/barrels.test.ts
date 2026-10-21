@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { Vector3 } from "three";
 import { Game, emptyInput } from "../src/game/engine";
 
 describe("cannon travel and thrown barrels", () => {
@@ -27,6 +28,20 @@ describe("cannon travel and thrown barrels", () => {
     const i=g.level.barrels.findIndex(b=>b.rotationSpeed);
     const a=g.cannonAngle(i);g.time=0.8;
     expect(g.cannonAngle(i)).not.toBe(a);
+  });
+  it("points the mouth and non-billboard arrow along the actual quantized shot",()=>{
+    const g=new Game();g.start(1);g.enemies=[];g.animals=[];
+    const i=g.level.barrels.findIndex(b=>b.kind==='cannon'),b=g.level.barrels[i],saved={...b};
+    try {
+      for(const angle of [0,Math.PI/2,Math.PI,-Math.PI/2,.25,.8,2.6,-2.2]) {
+        b.angle=angle;b.rotationSpeed=0;
+        Object.assign(g.player,{x:b.x,y:b.y,cannon:i,grounded:false,cannonTime:0});
+        const display=g.cannonAngle(i),axis=new Vector3(0,1,0).applyAxisAngle(new Vector3(0,0,1),display-Math.PI/2);
+        const input=emptyInput();input.pressed.add('jump');g.update(input);
+        const velocity=new Vector3(g.player.vx,g.player.vy,0).normalize();
+        expect(axis.dot(velocity)).toBeCloseTo(1,8);
+      }
+    }finally{Object.assign(b,saved);}
   });
   it("fires an automatic cannon without a button press", () => {
     const g=new Game();g.start(1);g.enemies=[];

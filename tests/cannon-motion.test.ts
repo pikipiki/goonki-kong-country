@@ -33,3 +33,9 @@ it('moves only occupied-triggered barrels on entry, while always-moving barrels 
  const moving=g.level.barrels.findIndex(b=>b.motion?.activation==='always');
  expect(moving).toBeGreaterThan(-1);expect(g.cannonPosition(moving)).not.toEqual({x:g.level.barrels[moving].x,y:g.level.barrels[moving].y});
 });
+
+it('captures the player body when the head enters a cannon above the feet',()=>{
+ const g=new Game();g.start(1,true);g.enemies=[];g.animals=[];
+ const b=g.level.barrels[7];Object.assign(g.player,{x:b.x,y:b.y-1.8,vx:0,vy:0,grounded:false});
+ g.update(emptyInput());expect(g.player.cannon).toBe(7);
+});

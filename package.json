@@ -42,7 +42,9 @@
     "test:decor": "node scripts/visual-layers-browser.mjs",
     "analyze:coral-terrain": "python3 scripts/analyze_coral_terrain.py",
     "test:mechanics": "node scripts/mechanics-browser.mjs",
-    "test:ground": "node scripts/ground-rendering-browser.mjs"
+    "test:ground": "node scripts/ground-rendering-browser.mjs",
+    "test:playthrough:canyon": "node scripts/playthrough-canyon.mjs",
+    "test:playthrough:coral": "node scripts/playthrough-coral.mjs"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

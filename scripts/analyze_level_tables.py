@@ -191,6 +191,19 @@ def main():
         spawn=spawn_records(ptr)
         levels[name]={'entranceId':entry,'levelId':level_id,'spawnList':spawn,
           'music':music_for(entry),'bananaFormations':formation_records(level_id)}
+    # Canyon command 5 refers to a bank-local child list, preceded by an
+    # eight-byte zero header. Decode only the six observed Rev2 lists here.
+    # Native activation timing is still handled by the browser's actor culling.
+    for row in levels['ReverbCave']['spawnList']['records']:
+        if row['spawnCommand'] != 5: continue
+        ptr=int(row['scriptPointer'][1:],16)
+        addr=(spawns&0xff0000)+ptr
+        if rom[addr:addr+8] != bytes(8): raise ValueError('Unsupported Canyon group header '+hx(addr))
+        children=spawn_records(ptr+8)
+        if not children['records'] or any(c['spawnCommand'] not in (1,2,15) for c in children['records']):
+            raise ValueError('Unsupported Canyon group child command '+hx(addr))
+        row['groupedSpawnList']={'header':evidence(addr,8),**children}
+        row['scriptInterpretation']='Bank-local grouped spawn list with zero header and typed child records; native activation timing not executed.'
     surfaces=[{'x':x,'surfaces':jungle_surfaces(x)} for x in range(0,0x1520,8)]
     reverb_xs=[row['x'] for row in levels['ReverbCave']['spawnList']['records']]
     cave_x_end=((max(reverb_xs)//32)+8)*32
@@ -227,7 +240,7 @@ def main():
       'jungleCollisionSurfaceSamples':{'sampleSpacingPixels':8,'xEndExclusive':0x1520,'coordinateSystem':'SNES sprite world X right; Y up from the 512px-high horizontal level floor. Per-metatile candidate tops, including interior solid tiles; NOT a single flattened walkable ground height.','samples':surfaces},
       'caveCollisionSurfaceSamples':{'sampleSpacingPixels':8,'xEndExclusive':cave_x_end,'coordinateSystem':'SNES sprite world X right; Y up from the 512px-high horizontal level floor. Cave environment ($DA0000) with cave collision attribute slice.','samples':cave_surface_samples},
       'limitations':['Not a full decompilation or an emulator. No runtime/frame-parity validation.',
-       'Spawn type1/2/15 scripts decoded only for initial assignments/calls/known opcodes. Native callbacks and grouped scripts are not executed.',
+       'Spawn type1/2/15 scripts decoded only for initial assignments/calls/known opcodes. Canyon command5 child lists are decoded structurally; native activation timing and other native callbacks are not executed.',
        'Semantic sprite and environment names are cross-referenced labels from public V1 source; numeric IDs, coordinates, pointers, and initial assignments come from actual Rev2.',
        'Collision shape evaluation recreates observed scalar routines, not dynamic object platforms, water, hazards, camera or all collision state. Exported tops include interior solid tiles and require the original Y-dependent probe/neighbor logic to decide support.',
        'Jungle tile surface sampling range is chosen to cover its spawn coordinates; exact playable camera boundaries still require decoding.',

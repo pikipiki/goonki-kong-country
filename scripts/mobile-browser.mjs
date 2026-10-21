@@ -23,6 +23,8 @@ page.on("console", (m) => {
   if (m.type() === "error") errors.push(m.text());
 });
 await page.goto(process.env.GAME_URL || "http://127.0.0.1:5174/");
+  await page.locator('.lang-select-input').selectOption('fr');
+  await page.waitForFunction(()=>document.documentElement.lang==='fr');
 await page.waitForTimeout(1700);
 await page.screenshot({ path: output + "/mobile-title.png" });
 await page.getByRole("button", { name: "Commencer l’aventure" }).click();

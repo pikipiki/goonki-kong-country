@@ -1,8 +1,8 @@
-import { useLayoutEffect, useRef } from 'react';
+import { useLayoutEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import {
   BoxGeometry, CatmullRomCurve3, ConeGeometry, ExtrudeGeometry, Group,
-  MeshStandardMaterial, Shape, SphereGeometry, TubeGeometry, Vector3,
+  MeshStandardMaterial, Shape, SphereGeometry, TubeGeometry, TorusGeometry, Vector3,
 } from 'three';
 
 export type AnimalKind = 'rambi' | 'enguarde' | 'winky' | 'expresso';
@@ -10,6 +10,7 @@ type V3 = [number, number, number];
 const sphere = new SphereGeometry(1, 20, 14);
 const cone = new ConeGeometry(1, 1, 12);
 const box = new BoxGeometry(1, 1, 1);
+const chargeRing = new TorusGeometry(.65, .025, 6, 32);
 const palette = new Map<string, MeshStandardMaterial>();
 function mat(color: string) {
   if (!palette.has(color)) palette.set(color, new MeshStandardMaterial({ color, roughness: .69, metalness: 0 }));
@@ -170,8 +171,9 @@ function Expresso() {
 export function AnimalModel({ kind, moving = false, attacking = false, time = 0, motion }: {
   kind: AnimalKind; moving?: boolean; attacking?: boolean; time?: number; motion?: () => {moving:boolean;attacking:boolean;gliding:boolean;charging:number};
 }) {
-  const root = useRef<Group>(null);
+  const root = useRef<Group>(null), windup = useRef<Group>(null);
   const animated = useRef<Group[]>([]);
+  const metadata = useMemo(() => ({kind}), [kind]);
   useLayoutEffect(() => {
     animated.current = [];
     root.current?.traverse(node => { if (node instanceof Group && node.name.startsWith('animal-')) animated.current.push(node); });
@@ -179,15 +181,41 @@ export function AnimalModel({ kind, moving = false, attacking = false, time = 0,
   useFrame(({ clock }) => {
     const t = time || clock.elapsedTime;
     const state=motion?.(), move=state?.moving ?? moving, attack=state?.attacking ?? attacking, glide=state?.gliding ?? false;
+    const charge = Math.min(1, (state?.charging ?? 0) / .65);
+    const ready = charge >= 1;
+    if (root.current) {
+      root.current.position.x = -charge * .16 + (charge ? Math.sin(t * (ready ? 46 : 26)) * .025 * charge : 0);
+      root.current.position.y = kind === 'rambi' ? -charge * .10 : glide ? Math.sin(t * 20) * .035 : charge ? Math.sin(t * 28) * .025 : 0;
+      root.current.rotation.z = kind === 'enguarde' ? charge * .08 : 0;
+      root.current.scale.set(1 + (attack ? .08 : charge * .03), 1 - charge * .06, 1);
+      root.current.userData.animation = glide ? 'flutter' : charge ? ready ? 'ready' : 'charging' : attack ? 'attack' : move ? 'moving' : 'idle';
+    }
+    if (windup.current) {
+      windup.current.visible = charge > .04;
+      windup.current.scale.setScalar(.65 + charge * .35 + Math.sin(t * (ready ? 22 : 12)) * .04);
+      windup.current.rotation.z = t * 2;
+    }
     for (const group of animated.current) {
-      if (group.name === 'animal-stride') group.rotation.z = Math.sin(t * (kind === 'expresso' ? 15 : 10) + (group.userData.phase || 0)) * (move ? group.userData.amplitude : .025);
-      else if (group.name === 'animal-tail') group.rotation.y = Math.sin(t * (attack ? 17 : move ? 10 : 4)) * (move ? .32 : .13);
-      else if (group.name === 'animal-fin') group.rotation.x = Math.sin(t * 7 + group.userData.phase) * .13;
-      else if (group.name === 'animal-wing') group.rotation.x = group.userData.side * (attack || glide ? .70 + Math.sin(t * 20) * .35 : Math.sin(t * 6) * .07);
-      else if (group.name === 'animal-attack') group.rotation.z = attack ? -.18 : state?.charging ? -.12 : 0;
+      const phase = group.userData.phase || 0;
+      if (group.name === 'animal-stride') {
+        group.rotation.z = charge && kind === 'rambi'
+          ? Math.sin(t * (ready ? 30 : 18) + phase) * .22 * charge
+          : Math.sin(t * (kind === 'expresso' ? 15 : 10) + phase) * (move ? group.userData.amplitude : .025);
+      } else if (group.name === 'animal-tail') group.rotation.y = Math.sin(t * (charge ? 24 : attack ? 22 : move ? 10 : 4)) * (charge ? .55 : move ? .32 : .13);
+      else if (group.name === 'animal-fin') group.rotation.x = Math.sin(t * (charge || attack ? 22 : 7) + phase) * (charge ? .55 : .13);
+      else if (group.name === 'animal-wing') {
+        group.rotation.x = group.userData.side * (glide ? .85 + Math.sin(t * 20) * .55 : Math.sin(t * 6) * .07);
+        // Profile-view silhouette needs a visible up/down stroke as well.
+        group.rotation.z = glide ? -.2 + Math.sin(t * 20) * .65 : 0;
+        group.scale.setScalar(glide ? 1.3 : 1);
+      } else if (group.name === 'animal-attack') group.rotation.z = attack ? -.30 : -charge * .25;
     }
   });
-  return <group ref={root} dispose={null}>
+  return <group ref={root} name="animal-model" userData={metadata} dispose={null}>
+    <group ref={windup} name="animal-charge-windup" visible={false} position={[0,.8,.52]}>
+      <mesh geometry={chargeRing}><meshBasicMaterial color="#ffe395" transparent opacity={.75} depthWrite={false}/></mesh>
+      {[0,1,2].map(i=><mesh key={i} geometry={box} position={[-.82,.25-i*.25,0]} scale={[.2,.035,.025]}><meshBasicMaterial color="#ffe395"/></mesh>)}
+    </group>
     {kind === 'rambi' ? <Rambi /> : kind === 'enguarde' ? <Enguarde /> : kind === 'winky' ? <Winky /> : <Expresso />}
   </group>;
 }

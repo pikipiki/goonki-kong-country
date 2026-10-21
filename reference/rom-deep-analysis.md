@@ -1,3 +1,5 @@
+> Mise à jour du 21 octobre 2026 : les six groupes command5 de Barrel Cannon Canyon sont maintenant décodés structurellement et importés. Ils ajoutent 14 canons et quatre Zingers (50 canons au total). Le parcours réel au clavier de cette version est terminé sans mort, cinq vies conservées, en 49,28 s ; voir `canyon-groups-evidence.json` et `gameplay-playthrough-report.md`. L’activation native et les trajectoires exactes ne sont pas émulées intégralement. Les limites plus anciennes sur ces six groupes sont donc historiques.
+
 > Mise à jour prioritaire du 21 octobre 2026 : les anciens repères et noms ci-dessous peuvent être obsolètes. Lire `decor-import-fixes.md` et le haut de `CLAUDE_HANDOFF.md` : pointeurs d’attributs explicites, Canyon Jungle, Minecart Madness Walkway et véritable carte marine à échelle uniforme.
 
 # Analyse ROM et intégration 0.4 — 21 octobre 2026

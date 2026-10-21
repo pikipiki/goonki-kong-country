@@ -1,0 +1,539 @@
+[
+  {
+    "when": {
+      "x": [
+        310,
+        333
+      ],
+      "grounded": true,
+      "cannon": -1
+    },
+    "keys": [
+      "right",
+      "run",
+      "action"
+    ]
+  },
+  {
+    "when": {
+      "x": [
+        190,
+        199.99
+      ],
+      "grounded": true,
+      "cannon": -1
+    },
+    "keys": [
+      "right",
+      "run",
+      "action"
+    ]
+  },
+  {
+    "when": {
+      "cannon": 30
+    },
+    "keys": [
+      "action"
+    ]
+  },
+  {
+    "when": {
+      "cannon": 27
+    },
+    "keys": [
+      "jump"
+    ]
+  },
+  {
+    "when": {
+      "cannon": 28
+    },
+    "keys": [
+      "action"
+    ]
+  },
+  {
+    "when": {
+      "x": [
+        236.4,
+        250.5
+      ],
+      "launched": [
+        0.01,
+        null
+      ],
+      "cannon": -1,
+      "vx": [
+        10,
+        null
+      ]
+    },
+    "keys": [
+      "left"
+    ]
+  },
+  {
+    "when": {
+      "x": [
+        220.5,
+        223
+      ],
+      "roll": [
+        0.001,
+        0.6
+      ],
+      "cannon": -1
+    },
+    "keys": [
+      "right",
+      "run",
+      "jump"
+    ]
+  },
+  {
+    "when": {
+      "x": [
+        219,
+        221.1
+      ],
+      "roll": [
+        0.001,
+        0.6
+      ],
+      "cannon": -1
+    },
+    "keys": [
+      "right",
+      "run"
+    ]
+  },
+  {
+    "when": {
+      "x": [
+        216,
+        219
+      ],
+      "y": [
+        -1.2,
+        -0.8
+      ],
+      "grounded": true,
+      "cannon": -1
+    },
+    "keys": [
+      "right",
+      "run"
+    ]
+  },
+  {
+    "when": {
+      "x": [
+        219,
+        220
+      ],
+      "y": [
+        -1.5,
+        -0.8
+      ],
+      "grounded": true,
+      "roll": 0,
+      "cannon": -1
+    },
+    "keys": [
+      "right",
+      "run",
+      "action"
+    ]
+  },
+  {
+    "when": {
+      "x": [
+        221,
+        229.6
+      ],
+      "rollJumpMomentum": [
+        0.01,
+        null
+      ],
+      "vy": [
+        0,
+        null
+      ],
+      "cannon": -1
+    },
+    "keys": [
+      "right",
+      "run",
+      "jump"
+    ]
+  },
+  {
+    "when": {
+      "x": [
+        219,
+        230
+      ],
+      "grounded": false,
+      "vy": [
+        null,
+        0
+      ],
+      "cannon": -1
+    },
+    "keys": [
+      "right",
+      "run"
+    ]
+  },
+  {
+    "when": {
+      "x": [
+        222,
+        229.6
+      ],
+      "grounded": true,
+      "cannon": -1
+    },
+    "keys": [
+      "right",
+      "run"
+    ]
+  },
+  {
+    "when": {
+      "x": [
+        229.6,
+        231.1
+      ],
+      "grounded": true,
+      "roll": 0,
+      "cannon": -1
+    },
+    "keys": [
+      "right",
+      "run",
+      "action"
+    ]
+  },
+  {
+    "when": {
+      "x": [
+        229.6,
+        231.1
+      ],
+      "roll": [
+        0.001,
+        0.6
+      ],
+      "cannon": -1
+    },
+    "keys": [
+      "right",
+      "run"
+    ]
+  },
+  {
+    "when": {
+      "x": [
+        231.1,
+        233.5
+      ],
+      "roll": [
+        0.001,
+        0.6
+      ],
+      "cannon": -1
+    },
+    "keys": [
+      "right",
+      "run",
+      "jump"
+    ]
+  },
+  {
+    "when": {
+      "x": [
+        231.1,
+        233.5
+      ],
+      "rollJumpMomentum": [
+        0.01,
+        null
+      ],
+      "cannon": -1
+    },
+    "keys": [
+      "right",
+      "run",
+      "jump"
+    ]
+  },
+  {
+    "when": {
+      "x": [
+        107.5,
+        109
+      ],
+      "y": [
+        9.45,
+        null
+      ],
+      "cannon": -1
+    },
+    "keys": [
+      "left"
+    ]
+  },
+  {
+    "when": {
+      "x": [
+        202.25,
+        203.75
+      ],
+      "y": [
+        null,
+        2
+      ],
+      "cannon": -1
+    },
+    "keys": [
+      "jump"
+    ]
+  },
+  {
+    "when": {
+      "x": [
+        200,
+        202.25
+      ],
+      "y": [
+        null,
+        2
+      ],
+      "cannon": -1
+    },
+    "keys": [
+      "right"
+    ]
+  },
+  {
+    "when": {
+      "cannon": 12,
+      "x": [
+        null,
+        86.49
+      ]
+    },
+    "keys": []
+  },
+  {
+    "when": {
+      "cannon": -1,
+      "x": [
+        88.2,
+        90.05
+      ],
+      "y": [
+        7.4,
+        7.6
+      ],
+      "grounded": true,
+      "hp": 2,
+      "active": 1
+    },
+    "keys": [
+      "swap"
+    ]
+  },
+  {
+    "when": {
+      "x": [
+        90,
+        99
+      ],
+      "roll": [
+        0.001,
+        0.22
+      ],
+      "cannon": -1
+    },
+    "keys": [
+      "right",
+      "run",
+      "jump"
+    ]
+  },
+  {
+    "when": {
+      "x": [
+        90,
+        99
+      ],
+      "roll": [
+        0.22,
+        0.6
+      ],
+      "cannon": -1
+    },
+    "keys": [
+      "right",
+      "run"
+    ]
+  },
+  {
+    "when": {
+      "x": [
+        85,
+        110
+      ],
+      "y": [
+        5.4,
+        null
+      ],
+      "vy": [
+        null,
+        0
+      ],
+      "cannon": -1,
+      "grounded": false
+    },
+    "keys": [
+      "right",
+      "run"
+    ]
+  },
+  {
+    "when": {
+      "x": [
+        88.3,
+        90.1
+      ],
+      "y": [
+        7.4,
+        7.6
+      ],
+      "cannon": -1,
+      "grounded": true
+    },
+    "keys": [
+      "right",
+      "run"
+    ]
+  },
+  {
+    "when": {
+      "x": [
+        90.1,
+        91.4
+      ],
+      "y": [
+        7.4,
+        7.6
+      ],
+      "cannon": -1,
+      "grounded": true
+    },
+    "keys": [
+      "right",
+      "run",
+      "action"
+    ]
+  },
+  {
+    "when": {
+      "x": [
+        90,
+        101
+      ],
+      "rollJumpMomentum": [
+        0.01,
+        null
+      ],
+      "cannon": -1
+    },
+    "keys": [
+      "right",
+      "run",
+      "jump"
+    ]
+  },
+  {
+    "when": {
+      "x": [
+        98.8,
+        101.1
+      ],
+      "y": [
+        5.4,
+        5.6
+      ],
+      "cannon": -1,
+      "grounded": true
+    },
+    "keys": [
+      "right",
+      "run"
+    ]
+  },
+  {
+    "when": {
+      "x": [
+        101.1,
+        102.2
+      ],
+      "y": [
+        5.4,
+        5.6
+      ],
+      "cannon": -1,
+      "grounded": true
+    },
+    "keys": [
+      "right",
+      "run",
+      "jump"
+    ]
+  },
+  {
+    "when": {
+      "x": [
+        101,
+        106
+      ],
+      "y": [
+        5.4,
+        null
+      ],
+      "vy": [
+        0,
+        null
+      ],
+      "cannon": -1,
+      "grounded": false
+    },
+    "keys": [
+      "right",
+      "run",
+      "jump"
+    ]
+  },
+  {
+    "when": {
+      "x": [
+        103.8,
+        109
+      ],
+      "y": [
+        7.8,
+        8.3
+      ],
+      "cannon": -1,
+      "grounded": true
+    },
+    "keys": [
+      "right",
+      "run"
+    ]
+  }
+]

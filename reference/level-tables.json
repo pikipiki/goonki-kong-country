@@ -5371,7 +5371,110 @@
             "x": 29071,
             "y": 143,
             "scriptPointer": "$9BE4",
-            "scriptInterpretation": "Grouped spawn or native callback; not a normal B5 script."
+            "scriptInterpretation": "Bank-local grouped spawn list with zero header and typed child records; native activation timing not executed.",
+            "groupedSpawnList": {
+              "header": {
+                "fileOffset": "0x3D9BE4",
+                "hiromAddress": "$FD9BE4",
+                "signature": "00 00 00 00 00 00 00 00"
+              },
+              "start": {
+                "fileOffset": "0x3D9BEC",
+                "hiromAddress": "$FD9BEC",
+                "signature": "01 00 8f 71 8f 00 b1 c7"
+              },
+              "terminatorOffset": "0x3D9C04",
+              "recordCount": 3,
+              "records": [
+                {
+                  "offset": "0x3D9BEC",
+                  "spawnCommand": 1,
+                  "x": 29071,
+                  "y": 143,
+                  "scriptPointer": "$C7B1",
+                  "script": {
+                    "spriteId": 56,
+                    "spriteName": "BarrelCannon",
+                    "animationIds": [
+                      323
+                    ],
+                    "ramAssignments": {
+                      "$0B8D": 236,
+                      "$0D45": 56,
+                      "$0F25": 512,
+                      "$0FC1": 4112,
+                      "$0FF5": 40,
+                      "$1029": 0,
+                      "$1139": 1280,
+                      "$11A1": 0,
+                      "$13E9": 4208,
+                      "$145D": 15,
+                      "$14C5": 49280,
+                      "$1561": 0
+                    },
+                    "partial": false
+                  }
+                },
+                {
+                  "offset": "0x3D9BF4",
+                  "spawnCommand": 1,
+                  "x": 29248,
+                  "y": 399,
+                  "scriptPointer": "$C7CB",
+                  "script": {
+                    "spriteId": 56,
+                    "spriteName": "BarrelCannon",
+                    "animationIds": [
+                      323
+                    ],
+                    "ramAssignments": {
+                      "$0B8D": 236,
+                      "$0D45": 56,
+                      "$0F25": 512,
+                      "$0FC1": 8224,
+                      "$0FF5": 40,
+                      "$1029": 0,
+                      "$1139": 1280,
+                      "$11A1": 0,
+                      "$13E9": 8224,
+                      "$145D": 512,
+                      "$14C5": 49152,
+                      "$1561": 0
+                    },
+                    "partial": false
+                  }
+                },
+                {
+                  "offset": "0x3D9BFC",
+                  "spawnCommand": 1,
+                  "x": 29248,
+                  "y": 239,
+                  "scriptPointer": "$C7E5",
+                  "script": {
+                    "spriteId": 56,
+                    "spriteName": "BarrelCannon",
+                    "animationIds": [
+                      323
+                    ],
+                    "ramAssignments": {
+                      "$0B8D": 236,
+                      "$0D45": 56,
+                      "$0F25": 65024,
+                      "$0FC1": 4112,
+                      "$0FF5": 40,
+                      "$1029": 0,
+                      "$1139": 1280,
+                      "$11A1": 0,
+                      "$13E9": 28688,
+                      "$145D": 521,
+                      "$14C5": 32832,
+                      "$1561": 0
+                    },
+                    "partial": false
+                  }
+                }
+              ]
+            }
           },
           {
             "offset": "0x3D9984",
@@ -5379,7 +5482,81 @@
             "x": 29464,
             "y": 399,
             "scriptPointer": "$9C0C",
-            "scriptInterpretation": "Grouped spawn or native callback; not a normal B5 script."
+            "scriptInterpretation": "Bank-local grouped spawn list with zero header and typed child records; native activation timing not executed.",
+            "groupedSpawnList": {
+              "header": {
+                "fileOffset": "0x3D9C0C",
+                "hiromAddress": "$FD9C0C",
+                "signature": "00 00 00 00 00 00 00 00"
+              },
+              "start": {
+                "fileOffset": "0x3D9C14",
+                "hiromAddress": "$FD9C14",
+                "signature": "01 00 18 73 ef 00 19 c8"
+              },
+              "terminatorOffset": "0x3D9C24",
+              "recordCount": 2,
+              "records": [
+                {
+                  "offset": "0x3D9C14",
+                  "spawnCommand": 1,
+                  "x": 29464,
+                  "y": 239,
+                  "scriptPointer": "$C819",
+                  "script": {
+                    "spriteId": 56,
+                    "spriteName": "BarrelCannon",
+                    "animationIds": [
+                      323
+                    ],
+                    "ramAssignments": {
+                      "$0B8D": 236,
+                      "$0D45": 56,
+                      "$0F25": 512,
+                      "$0FC1": 4112,
+                      "$0FF5": 40,
+                      "$1029": 0,
+                      "$1139": 1280,
+                      "$11A1": 0,
+                      "$13E9": 20536,
+                      "$145D": 1,
+                      "$14C5": 49280,
+                      "$1561": 0
+                    },
+                    "partial": false
+                  }
+                },
+                {
+                  "offset": "0x3D9C1C",
+                  "spawnCommand": 1,
+                  "x": 29464,
+                  "y": 399,
+                  "scriptPointer": "$C7FF",
+                  "script": {
+                    "spriteId": 56,
+                    "spriteName": "BarrelCannon",
+                    "animationIds": [
+                      323
+                    ],
+                    "ramAssignments": {
+                      "$0B8D": 236,
+                      "$0D45": 56,
+                      "$0F25": 65024,
+                      "$0FC1": 4112,
+                      "$0FF5": 40,
+                      "$1029": 0,
+                      "$1139": 1280,
+                      "$11A1": 0,
+                      "$13E9": 20536,
+                      "$145D": 519,
+                      "$14C5": 64,
+                      "$1561": 0
+                    },
+                    "partial": false
+                  }
+                }
+              ]
+            }
           },
           {
             "offset": "0x3D998C",
@@ -6506,7 +6683,160 @@
             "x": 33168,
             "y": 256,
             "scriptPointer": "$9C2C",
-            "scriptInterpretation": "Grouped spawn or native callback; not a normal B5 script."
+            "scriptInterpretation": "Bank-local grouped spawn list with zero header and typed child records; native activation timing not executed.",
+            "groupedSpawnList": {
+              "header": {
+                "fileOffset": "0x3D9C2C",
+                "hiromAddress": "$FD9C2C",
+                "signature": "00 00 00 00 00 00 00 00"
+              },
+              "start": {
+                "fileOffset": "0x3D9C34",
+                "hiromAddress": "$FD9C34",
+                "signature": "01 00 90 81 90 00 03 c9"
+              },
+              "terminatorOffset": "0x3D9C5C",
+              "recordCount": 5,
+              "records": [
+                {
+                  "offset": "0x3D9C34",
+                  "spawnCommand": 1,
+                  "x": 33168,
+                  "y": 144,
+                  "scriptPointer": "$C903",
+                  "script": {
+                    "spriteId": 56,
+                    "spriteName": "BarrelCannon",
+                    "animationIds": [
+                      323
+                    ],
+                    "ramAssignments": {
+                      "$0B8D": 236,
+                      "$0D45": 56,
+                      "$0F25": 1024,
+                      "$0FC1": 2056,
+                      "$0FF5": 40,
+                      "$1029": 0,
+                      "$1139": 1280,
+                      "$11A1": 0,
+                      "$13E9": 112,
+                      "$145D": 15,
+                      "$14C5": 49216,
+                      "$1561": 0
+                    },
+                    "partial": false
+                  }
+                },
+                {
+                  "offset": "0x3D9C3C",
+                  "spawnCommand": 1,
+                  "x": 33240,
+                  "y": 200,
+                  "scriptPointer": "$9D71",
+                  "script": {
+                    "spriteId": 25,
+                    "spriteName": "Zinger",
+                    "animationIds": [
+                      275
+                    ],
+                    "ramAssignments": {
+                      "$0B8D": 212,
+                      "$0D45": 25,
+                      "$0F8D": 65024,
+                      "$1029": 0,
+                      "$11A1": 32,
+                      "$14C5": 14392,
+                      "$152D": 27,
+                      "$1561": 0
+                    },
+                    "partial": false
+                  }
+                },
+                {
+                  "offset": "0x3D9C44",
+                  "spawnCommand": 1,
+                  "x": 33312,
+                  "y": 256,
+                  "scriptPointer": "$C91D",
+                  "script": {
+                    "spriteId": 56,
+                    "spriteName": "BarrelCannon",
+                    "animationIds": [
+                      323
+                    ],
+                    "ramAssignments": {
+                      "$0B8D": 236,
+                      "$0D45": 56,
+                      "$0F25": 64512,
+                      "$0FC1": 2056,
+                      "$0FF5": 40,
+                      "$1029": 0,
+                      "$1139": 1280,
+                      "$11A1": 0,
+                      "$13E9": 28672,
+                      "$145D": 15,
+                      "$14C5": 49216,
+                      "$1561": 0
+                    },
+                    "partial": false
+                  }
+                },
+                {
+                  "offset": "0x3D9C4C",
+                  "spawnCommand": 1,
+                  "x": 33384,
+                  "y": 200,
+                  "scriptPointer": "$9D7F",
+                  "script": {
+                    "spriteId": 25,
+                    "spriteName": "Zinger",
+                    "animationIds": [
+                      275
+                    ],
+                    "ramAssignments": {
+                      "$0B8D": 212,
+                      "$0D45": 25,
+                      "$0F8D": 512,
+                      "$1029": 0,
+                      "$11A1": 32,
+                      "$14C5": 14392,
+                      "$152D": 27,
+                      "$1561": 0
+                    },
+                    "partial": false
+                  }
+                },
+                {
+                  "offset": "0x3D9C54",
+                  "spawnCommand": 1,
+                  "x": 33456,
+                  "y": 144,
+                  "scriptPointer": "$C937",
+                  "script": {
+                    "spriteId": 56,
+                    "spriteName": "BarrelCannon",
+                    "animationIds": [
+                      323
+                    ],
+                    "ramAssignments": {
+                      "$0B8D": 236,
+                      "$0D45": 56,
+                      "$0F25": 1024,
+                      "$0FC1": 4112,
+                      "$0FF5": 40,
+                      "$1029": 0,
+                      "$1139": 1280,
+                      "$11A1": 0,
+                      "$13E9": 112,
+                      "$145D": 9,
+                      "$14C5": 64,
+                      "$1561": 0
+                    },
+                    "partial": false
+                  }
+                }
+              ]
+            }
           },
           {
             "offset": "0x3D9AEC",
@@ -6601,7 +6931,108 @@
             "x": 33728,
             "y": 264,
             "scriptPointer": "$9C64",
-            "scriptInterpretation": "Grouped spawn or native callback; not a normal B5 script."
+            "scriptInterpretation": "Bank-local grouped spawn list with zero header and typed child records; native activation timing not executed.",
+            "groupedSpawnList": {
+              "header": {
+                "fileOffset": "0x3D9C64",
+                "hiromAddress": "$FD9C64",
+                "signature": "00 00 00 00 00 00 00 00"
+              },
+              "start": {
+                "fileOffset": "0x3D9C6C",
+                "hiromAddress": "$FD9C6C",
+                "signature": "01 00 00 84 74 00 85 c9"
+              },
+              "terminatorOffset": "0x3D9C84",
+              "recordCount": 3,
+              "records": [
+                {
+                  "offset": "0x3D9C6C",
+                  "spawnCommand": 1,
+                  "x": 33792,
+                  "y": 116,
+                  "scriptPointer": "$C985",
+                  "script": {
+                    "spriteId": 56,
+                    "spriteName": "BarrelCannon",
+                    "animationIds": [
+                      323
+                    ],
+                    "ramAssignments": {
+                      "$0B8D": 236,
+                      "$0D45": 56,
+                      "$0F25": 1024,
+                      "$0FC1": 4112,
+                      "$0FF5": 40,
+                      "$1029": 0,
+                      "$1139": 1280,
+                      "$11A1": 0,
+                      "$13E9": 8272,
+                      "$145D": 4,
+                      "$14C5": 32832,
+                      "$1561": 0
+                    },
+                    "partial": false
+                  }
+                },
+                {
+                  "offset": "0x3D9C74",
+                  "spawnCommand": 1,
+                  "x": 33836,
+                  "y": 208,
+                  "scriptPointer": "$9EBD",
+                  "script": {
+                    "spriteId": 25,
+                    "spriteName": "Zinger",
+                    "animationIds": [
+                      275
+                    ],
+                    "ramAssignments": {
+                      "$0B8D": 212,
+                      "$0D45": 25,
+                      "$0F25": 65024,
+                      "$0F8D": 65024,
+                      "$1029": 0,
+                      "$11A1": 32,
+                      "$13E9": 26648,
+                      "$14C5": 514,
+                      "$152D": 28,
+                      "$1561": 0
+                    },
+                    "partial": false
+                  }
+                },
+                {
+                  "offset": "0x3D9C7C",
+                  "spawnCommand": 1,
+                  "x": 33836,
+                  "y": 280,
+                  "scriptPointer": "$C99F",
+                  "script": {
+                    "spriteId": 56,
+                    "spriteName": "BarrelCannon",
+                    "animationIds": [
+                      323
+                    ],
+                    "ramAssignments": {
+                      "$0B8D": 236,
+                      "$0D45": 56,
+                      "$0F25": 64512,
+                      "$0FC1": 4112,
+                      "$0FF5": 40,
+                      "$1029": 0,
+                      "$1139": 1280,
+                      "$11A1": 0,
+                      "$13E9": 26648,
+                      "$145D": 1,
+                      "$14C5": 49152,
+                      "$1561": 0
+                    },
+                    "partial": false
+                  }
+                }
+              ]
+            }
           },
           {
             "offset": "0x3D9B0C",
@@ -6609,7 +7040,110 @@
             "x": 33920,
             "y": 264,
             "scriptPointer": "$9C8C",
-            "scriptInterpretation": "Grouped spawn or native callback; not a normal B5 script."
+            "scriptInterpretation": "Bank-local grouped spawn list with zero header and typed child records; native activation timing not executed.",
+            "groupedSpawnList": {
+              "header": {
+                "fileOffset": "0x3D9C8C",
+                "hiromAddress": "$FD9C8C",
+                "signature": "00 00 00 00 00 00 00 00"
+              },
+              "start": {
+                "fileOffset": "0x3D9C94",
+                "hiromAddress": "$FD9C94",
+                "signature": "01 00 c0 84 18 01 b9 c9"
+              },
+              "terminatorOffset": "0x3D9CAC",
+              "recordCount": 3,
+              "records": [
+                {
+                  "offset": "0x3D9C94",
+                  "spawnCommand": 1,
+                  "x": 33984,
+                  "y": 280,
+                  "scriptPointer": "$C9B9",
+                  "script": {
+                    "spriteId": 56,
+                    "spriteName": "BarrelCannon",
+                    "animationIds": [
+                      323
+                    ],
+                    "ramAssignments": {
+                      "$0B8D": 236,
+                      "$0D45": 56,
+                      "$0F25": 1024,
+                      "$0FC1": 2056,
+                      "$0FF5": 40,
+                      "$1029": 0,
+                      "$1139": 1280,
+                      "$11A1": 0,
+                      "$13E9": 28672,
+                      "$145D": 14,
+                      "$14C5": 49216,
+                      "$1561": 0
+                    },
+                    "partial": false
+                  }
+                },
+                {
+                  "offset": "0x3D9C9C",
+                  "spawnCommand": 1,
+                  "x": 34144,
+                  "y": 232,
+                  "scriptPointer": "$C9D3",
+                  "script": {
+                    "spriteId": 56,
+                    "spriteName": "BarrelCannon",
+                    "animationIds": [
+                      323
+                    ],
+                    "ramAssignments": {
+                      "$0B8D": 236,
+                      "$0D45": 56,
+                      "$0F25": 1024,
+                      "$0FC1": 2056,
+                      "$0FF5": 40,
+                      "$1029": 0,
+                      "$1139": 1280,
+                      "$11A1": 0,
+                      "$13E9": 5140,
+                      "$145D": 15,
+                      "$14C5": 49216,
+                      "$1561": 0
+                    },
+                    "partial": false
+                  }
+                },
+                {
+                  "offset": "0x3D9CA4",
+                  "spawnCommand": 1,
+                  "x": 34304,
+                  "y": 264,
+                  "scriptPointer": "$C9ED",
+                  "script": {
+                    "spriteId": 56,
+                    "spriteName": "BarrelCannon",
+                    "animationIds": [
+                      323
+                    ],
+                    "ramAssignments": {
+                      "$0B8D": 236,
+                      "$0D45": 56,
+                      "$0F25": 1024,
+                      "$0FC1": 4112,
+                      "$0FF5": 40,
+                      "$1029": 0,
+                      "$1139": 1280,
+                      "$11A1": 0,
+                      "$13E9": 24592,
+                      "$145D": 9,
+                      "$14C5": 32832,
+                      "$1561": 0
+                    },
+                    "partial": false
+                  }
+                }
+              ]
+            }
           },
           {
             "offset": "0x3D9B14",
@@ -6783,7 +7317,79 @@
             "x": 34788,
             "y": 328,
             "scriptPointer": "$9CB4",
-            "scriptInterpretation": "Grouped spawn or native callback; not a normal B5 script."
+            "scriptInterpretation": "Bank-local grouped spawn list with zero header and typed child records; native activation timing not executed.",
+            "groupedSpawnList": {
+              "header": {
+                "fileOffset": "0x3D9CB4",
+                "hiromAddress": "$FD9CB4",
+                "signature": "00 00 00 00 00 00 00 00"
+              },
+              "start": {
+                "fileOffset": "0x3D9CBC",
+                "hiromAddress": "$FD9CBC",
+                "signature": "01 00 e4 87 48 01 d3 9e"
+              },
+              "terminatorOffset": "0x3D9CCC",
+              "recordCount": 2,
+              "records": [
+                {
+                  "offset": "0x3D9CBC",
+                  "spawnCommand": 1,
+                  "x": 34788,
+                  "y": 328,
+                  "scriptPointer": "$9ED3",
+                  "script": {
+                    "spriteId": 25,
+                    "spriteName": "Zinger",
+                    "animationIds": [
+                      275
+                    ],
+                    "ramAssignments": {
+                      "$0B8D": 212,
+                      "$0D45": 25,
+                      "$0F25": 1024,
+                      "$0F8D": 65024,
+                      "$1029": 0,
+                      "$11A1": 32,
+                      "$13E9": 112,
+                      "$14C5": 514,
+                      "$152D": 28,
+                      "$1561": 0
+                    },
+                    "partial": false
+                  }
+                },
+                {
+                  "offset": "0x3D9CC4",
+                  "spawnCommand": 1,
+                  "x": 34844,
+                  "y": 232,
+                  "scriptPointer": "$CA6F",
+                  "script": {
+                    "spriteId": 56,
+                    "spriteName": "BarrelCannon",
+                    "animationIds": [
+                      323
+                    ],
+                    "ramAssignments": {
+                      "$0B8D": 236,
+                      "$0D45": 56,
+                      "$0F25": 64000,
+                      "$0FC1": 8224,
+                      "$0FF5": 40,
+                      "$1029": 0,
+                      "$1139": 1280,
+                      "$11A1": 0,
+                      "$13E9": 18472,
+                      "$145D": 1,
+                      "$14C5": 49280,
+                      "$1561": 0
+                    },
+                    "partial": false
+                  }
+                }
+              ]
+            }
           },
           {
             "offset": "0x3D9B4C",
@@ -145292,7 +145898,7 @@
   "mineCartCollisionSurfaceSamples": {
     "sampleSpacingPixels": 8,
     "xEndExclusive": 15072,
-    "coordinateSystem": "SNES X right, Y up. Minecart Madness entrance $27 selects Walkway $CB0000 with attributes $F00000.",
+    "coordinateSystem": "SNES sprite world X right; Y up from the 512px-high horizontal level floor. Walkway environment ($CB0000) with its explicit $F00000 collision attributes (entrance $27).",
     "samples": [
       {
         "x": 0,
@@ -269940,7 +270546,7 @@
   },
   "limitations": [
     "Not a full decompilation or an emulator. No runtime/frame-parity validation.",
-    "Spawn type1/2/15 scripts decoded only for initial assignments/calls/known opcodes. Native callbacks and grouped scripts are not executed.",
+    "Spawn type1/2/15 scripts decoded only for initial assignments/calls/known opcodes. Canyon command5 child lists are decoded structurally; native activation timing and other native callbacks are not executed.",
     "Semantic sprite and environment names are cross-referenced labels from public V1 source; numeric IDs, coordinates, pointers, and initial assignments come from actual Rev2.",
     "Collision shape evaluation recreates observed scalar routines, not dynamic object platforms, water, hazards, camera or all collision state. Exported tops include interior solid tiles and require the original Y-dependent probe/neighbor logic to decide support.",
     "Jungle tile surface sampling range is chosen to cover its spawn coordinates; exact playable camera boundaries still require decoding.",

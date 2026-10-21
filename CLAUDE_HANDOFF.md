@@ -1,14 +1,61 @@
-# État prioritaire de reprise — 0.4.0 (21 octobre 2026)
+# État prioritaire de reprise — 0.4.0 (22 octobre 2026)
 
 Cette section prévaut sur l’historique ci-dessous. Dépôt : `Documents/git/goonk-country`. Handoff avant commit : `.cursor/skills/handoff-before-commit/SKILL.md`.
 
-## i18n EN/FR (dernière passe)
+**Synthèse commit 22 oct.** : import Canyon **50 canons** (groupes enfants ROM) ; fermeture bonus (intérieur + entrée après visite, plug 3D) ; charges montures / tonneaux tactiles ; flèches canons 3D alignées au tir ; sync prototype `Game` après HMR ; retrait bloc collision canyon post-canon 2 (`canyonTerrain.ts`) ; scripts `test:playthrough:canyon|coral`, régressions mécaniques/canon ; preuves `reference/*`. **200 tests / 34 fichiers**, `npm run build` OK.
+
+## Entrée bonus condamnée après le retour — précision utilisateur, 22 octobre 2026
+
+- L’entrée extérieure doit aussi être bouchée après avoir visité la salle. `Game.completedBonus` mémorise chaque bonus sorti, même sans trésor ramassé. `tryEnterBonus` refuse ensuite toute nouvelle entrée dans cette salle pendant ce parcours. Une perte de vie conserve cet état ; recommencer/changer le niveau le réinitialise avec les autres objets du parcours.
+- `isBonusCompleted` reconnaît aussi les récompenses d’anciennes visites dans les parties déjà ouvertes avant cette mise à jour. Le marqueur est indépendant du nombre de trésors pour les nouvelles visites.
+- `BonusRoom` affiche désormais des planches croisées (`completed-bonus-plug`) à la place du passage et retire la flèche BONUS. L’accès au bonus est désactivé ; le chemin principal reste praticable devant cette porte en profondeur. Les murs restent marqués cassés, donc roulade ou projectile ne réactivent pas la porte.
+- Tests : retour sans récompense, tentative de réentrée, perte de vie, roulade/projection, autre salle toujours disponible et remise à zéro sur nouveau parcours. Vérification navigateur après une vraie traversée de salle et après expiration du délai : plug visible, flèche cachée, entrée refusée, en portrait et paysage.
+- **Validation : 200 tests / 34 fichiers**, build TypeScript/Vite OK. `npm run test:mechanics` : 20 vérifications. Preuves `reference/mechanics-bonus-closed-*.png`, `mechanics-regression.json`.
+
+## Bonus, commandes tactiles, animaux et direction des canons — 22 octobre 2026
+
+- **Bonus :** à l’entrée dans la scène bonus, un obstacle solide pleine hauteur ferme le passage à gauche derrière les peluches. Planches et traverse visibles (`sealed-bonus-entrance`). La sortie à droite restitue toujours l’état du niveau et les récompenses. La fermeture concerne l’intérieur de la salle ; les murs cassés du niveau principal restent conservés.
+- **Mobile, dans les deux modes de direction :** un appui enclenche la préparation de charge Rambi/Enguarde, le suivant la lance. Jauge et bouton pressé restent visibles ; les doigts sont disponibles pour sauter/diriger. Expresso : appui pour battre des ailes/planer, second appui pour replier. Indications EN/FR contextuelles et libellé du bouton changent avec l’état.
+- **Tonneaux portés :** un appui écran prend le tonneau, relâcher le doigt le conserve, un second appui le lance, y compris en saut. `Input.tapAction` identifie l’action écran indépendamment du mode de direction. Clavier : maintien puis relâchement inchangés. `Controls.set` n’émet plus de faux relâchement lorsqu’une autre source tient encore la même touche.
+- **Animations :** Rambi abaisse la tête, se tasse et gratte le sol pendant la préparation ; Enguarde recule/tremble et accélère queue/nageoires ; halo pulsant indique la charge. Expresso déploie davantage ses ailes avec un battement lisible de profil. Tailles des peluches conservées. Charges adaptées, pas mécanique native DKC1 revendiquée.
+- **Canons :** suppression du sprite fixe ↗ qui restait orienté vers la caméra. Flèche en vraie géométrie 3D dans l’axe local +Y, bouche ouverte et cerclage de sortie distinct. `Game.cannonAngle` renvoie l’angle du vecteur discret réellement tiré : corps, flèche et tir concordent, y compris les canons oscillants. Centre du modèle canon aligné avec son ancre physique.
+- **Validation : 198 tests / 34 fichiers**, TypeScript/Vite build OK. `npm run test:mechanics` : 18 vérifications en portrait/paysage (charge + saut, animations, nage, ailes, port/saut/lancer, bonus fermé et retour). `node scripts/cannon-directions-browser.mjs` : 50 canons × 2 formats, axe de chaque flèche aligné avec le tir (dot minimal 0,9999999999999998), aucun sprite directionnel. `npm run test:mobile` : six tailles, multitouch, clic, rotation, pause, sept transitions, ~59 fps, aucune erreur JS. Tests ciblés, aucune nouvelle traversée complète revendiquée.
+- Preuves : `reference/mechanics-regression.json`, `mechanics-*-charging-*`, `cannon-direction-regression.json`, `cannon-direction-*.png`.
+
+## Mur invisible dans la partie déjà ouverte — correction suivante
+
+- Le bloc avait disparu du mesh mais React Fast Refresh conservait l'instance `Game` créée par `useState` et ses anciennes méthodes, pouvant conserver les anciennes fermetures de collisions.
+- `App.tsx` synchronise maintenant le prototype de l'instance existante avec `Game.prototype` dans un effet. Aucun reset de la position, vie, progression ou objets de la partie.
+- Régression `node scripts/engine-hot-update-browser.mjs` : ouvre une partie et place le joueur dans le canon 2 ; modification temporaire inoffensive du moteur, attend le vrai HMR, vérifie identité conservée + prototype renouvelé + position et canon inchangés, puis tire via Space. Résultat : x=29,0689, y=9,03125, HP2, cinq vies, aucune erreur JS. `engine.ts` restauré dans finally. Test ciblé, pas nouvelle traversée intégrale.
+- Preuves : `reference/canyon-hmr-regression.json`, `canyon-live-collision-fixed.png`.
+
+## Suppression ciblée du bloc après le tonneau — capture 23:41
+
+- Demande utilisateur : retirer la plateforme suspendue qui bloque le tir après le premier canon horizontal du Canyon (canon index 2, x=18,75).
+- `src/game/canyonTerrain.ts` retire uniquement la ligne 0 aux pixels ROM x=[26304,26368), soit monde x=[26,28), y=[9,53125,10,5]. Les données ROM brutes dans `originalCaveTerrain.ts` restent intactes. Sol en dessous conservé.
+- Moteur, volumes solides, mesh et plateformes de présentation utilisent cette même adaptation. Générateur reverb modifié pour conserver son import après régénération.
+- `tests/canyon-clearance.test.ts` contrôle les 64 bandes pixel, la conservation des autres cellules, l’absence de mesh/collision et le tir normal depuis le canon 2.
+- Validation actuelle : **193 tests / 33 fichiers**, build TypeScript/Vite et diff-check OK. Reproduction navigateur séparée en portrait 700×963 : tir via Space, x=29,0689, y=9,03125, HP2, cinq vies, aucune erreur JS. Placement initial dans le canon pour ce test ciblé ; aucune nouvelle traversée intégrale revendiquée.
+- Tests : `tests/canyon-clearance.test.ts`. Preuves traversée : `reference/canyon-playthrough.*`.
+
+## Parcours réels au clavier — terminés (passe précédente)
+
+- **Coral Capers : clear, zéro mort, cinq vies, HP final 1, 183,52 s.** Les 21 ennemis et les dégâts étaient actifs. Enguarde libéré puis monté ; suite à pied après perte de la monture sur contact, et seconde peluche récupérée normalement. Preuves : `reference/coral-playthrough.md`, JSON et capture.
+- **Barrel Cannon Canyon : clear, zéro mort, cinq vies, HP final 2, 49,28 s.** 35 ennemis initiaux actifs, 18 encore vivants à l’arrivée. Toutes les vies du journal sont à cinq. Preuves : `reference/canyon-playthrough.md`, JSON, règles et capture. Les essais antérieurs sont conservés séparément et ne constituent pas des réussites.
+- **Import critique : 50 canons, pas 36.** Les 120 enregistrements principaux contiennent six commandes5 vers des listes enfants après en-tête nul de huit octets. Ces listes ajoutent 18 acteurs : 14 canons + quatre Zingers. Décodage dans `analyze_level_tables.py`, génération dans `generate_original_reverb.py`, preuves Rev2 dans `canyon-groups-evidence.json`. Les indices directs restent stables, les enfants sont ajoutés en fin avec provenance parent/enfant. Le générateur conserve désormais les clés i18n du Canyon.
+- **Physique corrigée :** déplacement des canons partagé entre rendu et collision ; capture couvrant le corps au-dessus des pieds ; `rollJumpMomentum` conserve l’élan du saut après roulade et permet le freinage. Remise à zéro au sol, mur, dégât, canon, monture et bonus. Les tailles des peluches restent **2,2 / 2,05** ; course et saut normaux inchangés.
+- Le pilote lit `window.goonk`, simule des copies isolées et utilise les vraies touches, dont la pause KeyP. Aucune écriture de position, vie, invincibilité, ennemi ou horloge dans le jeu navigateur. Les pauses de préparation distinguent ce test d’une partie humaine continue. La pause remet les entrées à zéro : les touches sont envoyées après la reprise. Les règles pilotent uniquement des touches.
+- **Validation : 191 tests / 32 fichiers**, TypeScript/build OK. Carte : quatre formats. Mobile : six formats, multitouch, clic, rotation, pause, sept transitions. Mécaniques : 14 contrôles dans deux orientations. Stages : sept × deux orientations, dont 35 modèles ennemis au Canyon après l’import des groupes. Les tests de charge ont rétabli le libellé accessible EN/FR de la jauge.
+- Commandes : `npm run test:playthrough:canyon` et `npm run test:playthrough:coral` depuis le dépôt, serveur sur 5174. `GAME_URL`, `BROWSER_EXECUTABLE` possibles. Le serveur de la traversée était **Vite en développement** sur les sources canoniques ; build production vérifié séparément. La capture Canyon est prise à l’instant de fin avant le rafraîchissement du récapitulatif.
+- **Limites :** activation native des groupes, rotations/automatismes de canons et trajectoires natives des Zingers encore partiellement adaptés ; il ne s’agit pas d’une émulation complète. Les deux traversées ne prouvent pas tous les chemins.
+
+## i18n EN/FR
 
 - **Langue par défaut** : `en` (`src/i18n.ts`). Catalogue **EN + FR** dans `src/i18n/resources.ts` ; clés stables dans `src/i18n/keys.ts` ; données niveau / ennemis / animaux / décor = clés, affichage via `tx()` / `t()`.
 - **Sélecteur** : `LanguageSelect` dans la barre du haut ; persistance `localStorage` clé `goonk-country-lang` ; `document.documentElement.lang` synchronisé.
 - **Audio** : messages d’erreur chargement via `tr(L.audio.*)`.
-- **Générateurs** : labels salle bonus → clé `bonus.room` (jungle/reverb) ; regen reverb/jungle sans réintroduire du français en dur dans les TS générés (templates reverb : encore vérifier `tip`/`name` si regen complet).
-- **Tests** : **185 / 31** (`npm test`), `npm run build` OK.
+- **Générateurs** : labels salle bonus → clé `bonus.room` (jungle/reverb) ; regen reverb/jungle sans réintroduire du français en dur dans les TS générés Le générateur reverb conserve aussi `name`, `subtitle` et `tip` sous clés `L` (vérifié par régénération idempotente).
+- **Intégration actuelle** : **191 / 32** (`npm test`), `npm run build` OK.
 
 ## Animaux, bonus, sols, carte (après `44dd570`)
 
@@ -24,7 +71,7 @@ Cette section prévaut sur l’historique ci-dessous. Dépôt : `Documents/git/g
 
 ## Corrections critiques des imports : ne pas rétablir les anciennes approximations
 
-- L’entrée **$17** était appelée « Reverb Cave », mais c’est **Barrel Cannon Canyon**, niveau $06. Ses 120 placements (36 canons) étaient superposés à la carte **Cave $DA0000**, étrangère au parcours. La routine Rev 2 sélectionne **l’environnement 0, Jungle $D90000**. L’étape 1 utilise désormais les colonnes Jungle à X=25472..36112, et porte le bon nom/biome. `ROM_REVERB`, `originalTerrain="cave"`, `originalCaveTerrain.ts` et `/?play=reverb` restent des **alias techniques de compatibilité**, pas des preuves que cette route est une grotte. `/?play=canyon` fonctionne aussi. Les données de grotte véritable sont conservées dans `level-tables.json`, mais ce parcours n’en est pas une.
+- L’entrée **$17** était appelée « Reverb Cave », mais c’est **Barrel Cannon Canyon**, niveau $06. Ses 120 enregistrements principaux (36 canons directs, auxquels s’ajoutent désormais 14 canons de groupes) étaient superposés à la carte **Cave $DA0000**, étrangère au parcours. La routine Rev 2 sélectionne **l’environnement 0, Jungle $D90000**. L’étape 1 utilise désormais les colonnes Jungle à X=25472..36112, et porte le bon nom/biome. `ROM_REVERB`, `originalTerrain="cave"`, `originalCaveTerrain.ts` et `/?play=reverb` restent des **alias techniques de compatibilité**, pas des preuves que cette route est une grotte. `/?play=canyon` fonctionne aussi. Les données de grotte véritable sont conservées dans `level-tables.json`, mais ce parcours n’en est pas une.
 - L’entrée **$27** correspond à **Minecart Madness**, pas Carnage. Elle sélectionne **Walkway $CB0000, environnement 2**, avec attributs **$F00000**. Les placements étaient confrontés au terrain Carnage $E60D88. Carte et nom corrigés ; départ du mode wagon sur le premier wagon importé **x=699, y=178** (coordonnées web x=12.6875, y=0.09375), au lieu d’un point sous les rails. `ROM_MINE_CART` et les noms de fichiers existants restent compatibles.
 - Les attributs des environnements ne sont **pas des tranches concaténées après Jungle** : ils viennent de la table de pointeurs à `environmentPointers+0x70`. Ancien calcul cave/cart lisait notamment des données de sprites inutilisées. `analyze_level_tables.py` lit maintenant les vrais pointeurs.
 - Coral : ancienne lecture **column-major 16 rangées avec attributs Jungle** incorrecte. Le code marin Rev 2 à **0x018187** calcule une carte **row-major, 64 tuiles / 128 octets par rangée** ; attributs **0x29C380**, 197 classes, profils marins **0x01844B** (distincts de la table horizontale). `scripts/analyze_coral_terrain.py` reproduit l’extraction en lecture seule, SHA-256 Rev 2 vérifié ; `reference/coral-terrain-v2.json` conserve les octets de preuve et les tables numériques.
@@ -44,7 +91,7 @@ Preuves : `reference/level-tables.json` → `routeEnvironmentEvidence`, `environ
 
 ## Validation et commandes
 
-**185 tests / 31 fichiers** (`npm test`). Navigateur : `test:browser`, `test:map`, `test:mobile`, `test:stages`, `test:decor`, **`test:ground`**, **`test:mechanics`**. Docs : `bugfix-validation.md`, `decor-import-fixes.md`, `route-safety-fixes.md`.
+**191 tests / 32 fichiers** (`npm test`). Navigateur : `test:browser`, `test:map`, `test:mobile`, `test:stages`, `test:decor`, **`test:ground`**, **`test:mechanics`**. Docs : `bugfix-validation.md`, `decor-import-fixes.md`, `route-safety-fixes.md`.
 
 Générateurs : `analyze:levels`, `analyze:coral-terrain`, `generate:coral-terrain`, puis `generate:jungle|canyon|mine-cart|coral` — ne pas réintroduire l’ancienne compression verticale du lagon ni les attributs cave/cart concaténés.
 
