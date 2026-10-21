@@ -2,7 +2,13 @@
 
 Cette section prévaut sur l’historique ci-dessous. Dépôt : `Documents/git/goonk-country`. Handoff avant commit : `.cursor/skills/handoff-before-commit/SKILL.md`.
 
-**Dernier commit** : Enguarde — attaque rapide répétable (bouton ➜, annule charge forte) + script `enguarde-quick-browser.mjs`. Commit précédent (22 oct.) : Canyon 50 canons, bonus fermés, tactile/charges, canons 3D, HMR, `canyonTerrain`, traversées. **202 tests / 34 fichiers**, `npm run build` OK.
+**Dernier commit** : mode **démo 2D** jungle (`Scene2D`, assets `public/rom2d/`, `scripts/extract_jungle_2d.py`) — même moteur `Game`, rendu canvas + calques ROM ; entrée `?demo=2d` / bouton titre. Le jeu principal reste 2,5D Three.js. **202 tests / 34 fichiers**, build OK.
+
+## Démo rendu 2D jungle (ROM) — 22 octobre 2026
+
+- `src/game2d/Scene2D.tsx` + `plushSprite.ts` : canvas 2D, parallaxe calques extraits, sprites sheet `public/rom2d/manifest.json`.
+- `App.tsx` : bascule `demo2D`, styles `demo-2d` / `mobile.css`, query `demo=2d|mode=2d|play=2d` (+ `x`/`y` optionnels).
+- Extraction : `scripts/extract_jungle_2d.py` → PNG dans `public/rom2d/` (~2 Mo). Pas de remplacement du pipeline 3D existant.
 
 ## Enguarde : petites attaques répétables sur mobile — 22 octobre 2026
 
