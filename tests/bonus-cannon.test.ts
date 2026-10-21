@@ -1,12 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { Game, emptyInput, STEP } from "../src/game/engine";
 import { ROM_JUNGLE } from "../src/game/originalJungle";
+import bonusWalls from "../reference/jungle-bonus-walls.json";
 
 describe("bonus rooms and cannon fidelity", () => {
   it("exposes four jungle bonus chambers tied to breakable walls", () => {
     expect(ROM_JUNGLE.bonusRooms).toHaveLength(4);
     expect(ROM_JUNGLE.bonusRooms?.every((r) => r.pickups.length >= 3)).toBe(true);
     expect(ROM_JUNGLE.bonusRooms?.[0].romRam1375).toBe(92);
+    expect(bonusWalls.breakableWalls[0].entranceLevelId).toBe(64);
+    expect(bonusWalls.breakableWalls[1].entranceLevelId).toBe(45);
   });
 
   it("collects bonus loot after the linked wall is broken", () => {

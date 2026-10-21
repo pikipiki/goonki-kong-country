@@ -13,6 +13,7 @@ import { LEVELS, type EnemySpec, type Platform } from "./levels";
 import evidence from "../../reference/rom-analysis.json";
 import playerEvidence from "../../reference/player-states.json";
 import neckyEvidence from "../../reference/necky-ballistics.json";
+import underwaterMotion from "../../reference/underwater-motion.json";
 
 export const STEP = 1 / 60;
 /** ROM tag swap: state 17 / anim 80 lasts ~25 frames at 60 Hz. */
@@ -44,6 +45,12 @@ const NECKY_NUT = neckyEvidence.engine;
 const NECKY_SHOOT_PERIOD = NECKY_NUT.shootPeriodFrames / 60;
 const WORLD_PIXELS = 32;
 const rawSpeed = (raw: number) => ((raw / 256) * 60) / WORLD_PIXELS;
+const ROM_SWIM_HORIZONTAL = rawSpeed(underwaterMotion.horizontalCruiseVxRaw);
+const ROM_SWIM_SINK = underwaterMotion.verticalSwim.sinkAccelerationWorldPerSecond;
+const ROM_SWIM_RISE = underwaterMotion.verticalSwim.riseSpeedWorld;
+const ROM_SWIM_DIVE = underwaterMotion.verticalSwim.diveSpeedWorld;
+const CORAL_WATER_SURFACE_Y = underwaterMotion.depthBandWeb.surfaceY;
+const CORAL_WATER_FLOOR_Y = underwaterMotion.depthBandWeb.floorY;
 const THROW_TARGET_VX = rawSpeed(THROW.horizontalTargetMagnitudeRaw);
 const rawAcceleration = (raw: number) => rawSpeed(raw) * 60;
 export type Key =
@@ -285,7 +292,10 @@ export class Game {
     this.enemies = this.level.enemies.map((spec, i) => ({
       ...spec,
       originY: spec.y,
-      vx: (i % 2 ? 1 : -1) * (spec.kind === "croc" ? 1.8 : 1.25),
+      vx:
+        (i % 2 ? 1 : -1) *
+        (spec.patrolSpeed ??
+          (spec.kind === "croc" ? 1.8 : spec.kind === "bee" ? 1.25 : 1.25)),
       alive: true,
       hp: spec.kind === "boss" ? 5 : 1,
       vy: 0,
@@ -768,7 +778,19 @@ export class Game {
     else if (buddy?.kind === "enguarde" && p.mountAttack > 0) p.vx = p.facing * BUDDY_PHYSICS.stabSpeed;
     else if (buddy?.kind === "rambi" && p.mountAttack > 0) p.vx = p.facing * 9;
     else if (p.invincible < 1.9) {
-      const target = direction * (design ? (input.held.has("run") || input.held.has("action") ? design.run : design.walk) : water ? 4.8 : speed);
+      const swimSpeed =
+        water && this.level.originalTerrain === "coral"
+          ? ROM_SWIM_HORIZONTAL
+          : 4.8;
+      const target =
+        direction *
+        (design
+          ? input.held.has("run") || input.held.has("action")
+            ? design.run
+            : design.walk
+          : water
+            ? swimSpeed
+            : speed);
       // Mounts, swimming and ice retain their distinct movement handling.
       p.vx = !buddy && !water && this.level.biome !== "snow"
         ? approachFootVelocity(p.vx, target)
@@ -781,11 +803,14 @@ export class Game {
         const vertical = Number(input.held.has("up")) - Number(input.held.has("down"));
         p.vy = approach(p.vy, vertical * 5, 24 * dt);
       } else {
-      p.vy -= 7 * dt;
+      const sink = this.level.originalTerrain === "coral" ? ROM_SWIM_SINK : 7;
+      const rise = this.level.originalTerrain === "coral" ? ROM_SWIM_RISE : 4.3;
+      const dive = this.level.originalTerrain === "coral" ? ROM_SWIM_DIVE : 4;
+      p.vy -= sink * dt;
       if (input.held.has("jump") || input.held.has("up"))
-        p.vy = approach(p.vy, 4.3, 23 * dt);
-      if (input.held.has("down")) p.vy = -4;
-      p.vy = clamp(p.vy, -4, 4.3);
+        p.vy = approach(p.vy, rise, 23 * dt);
+      if (input.held.has("down")) p.vy = -dive;
+      p.vy = clamp(p.vy, -dive, rise);
       }
     } else {
       if (p.jumpDelay > 0) {
@@ -840,7 +865,16 @@ export class Game {
     }
     p.y += p.vy * dt;
     p.grounded = false;
-    if (water && p.y > 6 && this.level.originalTerrain !== "coral") {
+    if (water && this.level.originalTerrain === "coral") {
+      if (p.y > CORAL_WATER_SURFACE_Y) {
+        p.y = CORAL_WATER_SURFACE_Y;
+        p.vy = Math.min(0, p.vy);
+      }
+      if (p.y < CORAL_WATER_FLOOR_Y) {
+        p.y = CORAL_WATER_FLOOR_Y;
+        p.vy = Math.max(0, p.vy);
+      }
+    } else if (water && p.y > 6) {
       p.y = 6;
       p.vy = Math.min(0, p.vy);
     }
@@ -869,8 +903,13 @@ export class Game {
         p.vx = 0;
       }
       const hit = queryCoral(p.x, oldY + 0.35, ORIGINAL_CORAL_ORIGIN);
+      const footGap = hit ? p.y - hit.floorY : Infinity;
+      const swimFloor =
+        water &&
+        (!hit || footGap > 0.28 || p.vy > 0.35);
       if (
         hit &&
+        !swimFloor &&
         p.vy <= 0 &&
         p.y <= hit.floorY &&
         hit.floorY <= oldY + (wasGrounded ? 0.45 : 0.12)
@@ -885,11 +924,18 @@ export class Game {
       if (p.vy > 0) {
         const head = 1.35;
         const ceiling = ceilingCoralWorld(p.x, p.y + head, ORIGINAL_CORAL_ORIGIN);
-        if (ceiling !== null && p.y + head >= ceiling - 0.05) {
+        const openWaterCeiling =
+          water && ceiling !== null && ceiling >= CORAL_WATER_SURFACE_Y - 0.2;
+        if (
+          ceiling !== null &&
+          !openWaterCeiling &&
+          p.y + head >= ceiling - 0.05
+        ) {
           p.y = ceiling - head;
           p.vy = 0;
         }
       }
+      if (water && !p.grounded) p.grounded = false;
     } else for (const platform of this.level.platforms) {
       const top = this.surface(platform),
         left = platform.x - platform.w / 2,

@@ -29,6 +29,20 @@ describe("jungle ROM walk parity fixture", () => {
     }
   });
 
+  it("tracks SNES world X/Y while grounded on the flat intro (dk-walk-terrain)", () => {
+    const game = isolatedJungleGame();
+    const input = emptyInput();
+    input.held.add("right");
+    const rows = parity.dynamicParity?.frames ?? [];
+    expect(rows.length).toBeGreaterThan(100);
+    for (const row of rows) {
+      game.update(input);
+      expect(game.player.x).toBeCloseTo(row.x / 32, 1);
+      expect(game.player.y).toBeCloseTo(snesYToWorld(row.y), 1);
+      expect(game.player.grounded).toBe(true);
+    }
+  });
+
   it("maps original jungle floor height to SNES ground samples along the walk", () => {
     const game = isolatedJungleGame();
     const terrain = parity.terrainFrames ?? [];

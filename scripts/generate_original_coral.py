@@ -9,6 +9,13 @@ records = r["levels"]["CoralCapers"]["spawnList"]["records"]
 Y_MIN, Y_MAX = 17960, 19632
 Y_SPAN = Y_MAX - Y_MIN
 EXIT_X = 2024
+CORAL_FISH = {
+    83: ("croc", 2.05),  # Bitesize
+    84: ("croc", 1.55),  # Chomps
+    85: ("croc", 1.75),  # Chomps Jr
+    87: ("croc", 1.45),  # Croctopus
+    97: ("bee", 1.1),  # Clambo
+}
 
 
 def scale_y(y: int) -> float:
@@ -43,11 +50,19 @@ for row in records:
     sid = script.get("spriteId")
     pt = point(row["x"], row["y"])
     typ = None
-    if sid in (83, 84, 85, 87):
-        enemies.append({**pt, "min": max(0, pt["x"] - 10), "max": min(length_units, pt["x"] + 10), "kind": "croc"})
-        typ = "enemy"
-    elif sid == 97:
-        enemies.append({**pt, "min": max(0, pt["x"] - 8), "max": min(length_units, pt["x"] + 8), "kind": "bee"})
+    if sid in CORAL_FISH:
+        kind, patrol = CORAL_FISH[sid]
+        span = 10 if kind == "croc" else 8
+        enemies.append(
+            {
+                **pt,
+                "min": max(0, pt["x"] - span),
+                "max": min(length_units, pt["x"] + span),
+                "kind": kind,
+                "romSpriteId": sid,
+                "patrolSpeed": patrol,
+            }
+        )
         typ = "enemy"
     elif sid == 22:
         animation = next((a for a in script["animationIds"] if 261 <= a <= 264), None)
@@ -121,16 +136,27 @@ for formation in r["levels"]["CoralCapers"]["bananaFormations"]["records"]:
 
 platforms = []
 
+finish_zone = None
+for row in records:
+    if row.get("spawnCommand") == 2 and row.get("script", {}).get("spriteId") == 107:
+        door = point(row["x"], row["y"])
+        finish_zone = {"x": door["x"], "y": door["y"], "w": 3.2, "h": 4.5}
+        break
+
 compact = lambda x: json.dumps(x, separators=(",", ":"), ensure_ascii=False)
 s = """import type { Level, Pickup, Platform, LevelDecor } from "./levels";
 
 export const ORIGINAL_CORAL_ORIGIN = Object.freeze({ x: 0, y: Y_ANCHOR });
 export const ORIGINAL_CORAL_EXIT = Object.freeze({ x: EXIT_X / 32, y: @@EXIT_Y_WEB@@ });
+/** Depth band limits: keep in sync with reference/underwater-motion.json */
+export const CORAL_WATER_SURFACE_Y = 5.48;
+export const CORAL_WATER_FLOOR_Y = 0.35;
 
 type OriginalPickup = Pickup & { amount?: number };
 
 const originalPickups: OriginalPickup[] = PICKUPS;
 const decors: LevelDecor[] = DECORS;
+const finishZone = FINISH_ZONE;
 
 export const ROM_CORAL: Level & {
   originalTerrain: "coral";
@@ -151,7 +177,8 @@ export const ROM_CORAL: Level & {
   barrels: BARRELS,
   animals: ANIMALS,
   decors: DECORS,
-  tip: "Placements issus du ROM. Nage avec Espace, Action pour le rostre d'Enguarde. Les fonds utilisent encore la physique adaptée du prototype.",
+  finishZone,
+  tip: "Placements issus du ROM. Nage avec Espace, Action pour le rostre d'Enguarde. Sortie UnderwaterExitDoor @ x=2024.",
 };
 
 export const ORIGINAL_CORAL_PROVENANCE = __PROVENANCE__ as const;
@@ -173,6 +200,7 @@ replacements = {
     "BARRELS": compact(barrels),
     "ANIMALS": compact(animals),
     "DECORS": compact(decors),
+    "FINISH_ZONE": compact(finish_zone),
     "PLATFORMS": compact(platforms),
     "__PROVENANCE__": compact(
         {

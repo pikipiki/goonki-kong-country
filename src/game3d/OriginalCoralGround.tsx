@@ -65,9 +65,9 @@ export function createCoralGroundGeometry(
     const x0 = px / 32,
       x1 = (px + STRIP_PIXELS) / 32;
     intervals.forEach((span, i) => {
-      const y0 = coralWebYFromRom(originY + span.bottom) - 3,
-        yl = coralWebYFromRom(originY + span.left) - 3,
-        yr = coralWebYFromRom(originY + span.right) - 3,
+      const y0 = coralWebYFromRom(originY + span.bottom),
+        yl = coralWebYFromRom(originY + span.left),
+        yr = coralWebYFromRom(originY + span.right),
         seed = Math.floor(px / 12) + i * 19;
       quad(
         [[x0, y0, FRONT], [x1, y0, FRONT], [x1, yr, FRONT], [x0, yl, FRONT]],

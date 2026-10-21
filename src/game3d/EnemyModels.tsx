@@ -429,9 +429,15 @@ export function EnemyModel({
     const t = clock.elapsedTime;
     if (root.current) {
       if (!preview) root.current.position.set(enemy.x, enemy.y, 0);
+      const depthOk =
+        !game ||
+        game.level.biome !== "lagoon" ||
+        Math.abs(enemy.y - game.player.y) < 3.6;
       root.current.visible =
         preview ||
-        (enemy.alive && Math.abs(enemy.x - (game?.player.x ?? enemy.x)) < 24);
+        (enemy.alive &&
+          depthOk &&
+          Math.abs(enemy.x - (game?.player.x ?? enemy.x)) < 24);
       if (enemy.hurt > 0) root.current.visible = Math.sin(t * 32) > -0.25;
     }
     if (body.current) {
