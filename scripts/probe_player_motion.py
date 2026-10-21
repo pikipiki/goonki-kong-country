@@ -134,7 +134,7 @@ def main():
             ('dk-jump-held', seq((65, ['B'])), True),
             ('dk-jump-tap', seq((1, ['B']), (64, [])), True),
             ('dk-jump-release12', seq((12, ['B']), (53, [])), True),
-            ('dk-walk', seq((40, ['Right'])), False),
+            ('dk-walk', seq((120, ['Right'])), False),
             ('dk-walk-stop', seq((30, ['Right']), (30, [])), False),
             ('dk-roll-to-run', seq((60, ['Right', 'Y'])), False),
             ('dk-roll-tap', seq((15, ['Right']), (1, ['Right', 'Y']), (34, ['Right'])), False),

@@ -24,6 +24,30 @@ describe("bonus rooms and cannon fidelity", () => {
     expect(game.bananas).toBeGreaterThan(before);
   });
 
+  it("exposes ROM ExitDoor finish volume on jungle", () => {
+    expect(ROM_JUNGLE.finishZone).toBeDefined();
+    expect(ROM_JUNGLE.finishZone!.x).toBeCloseTo(5296 / 32, 3);
+  });
+
+  it("NutThrowingNecky throws nuts toward the player", () => {
+    const game = new Game();
+    game.start(0, true);
+    const necky = game.enemies.find((e) => e.throwsNuts);
+    expect(necky).toBeDefined();
+    expect(necky!.throwsNuts).toBe(true);
+    let sawShot = false;
+    for (let i = 0; i < 120; i++) {
+      game.player.x = necky!.x + 10;
+      game.player.y = necky!.y - 1.4;
+      game.player.vy = 0;
+      game.player.grounded = true;
+      necky!.shootCooldown = Math.min(necky!.shootCooldown, 0.05);
+      game.update(emptyInput());
+      if (game.enemyShots.length > 0) sawShot = true;
+    }
+    expect(sawShot).toBe(true);
+  });
+
   it("keeps Necky-family enemies on a fixed column", () => {
     const game = new Game();
     game.start(0, true);

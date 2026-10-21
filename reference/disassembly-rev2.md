@@ -32,7 +32,7 @@ Preuve locale (oct. 2026) : extraction de `Donkey Kong Country (USA) (Rev 2).sfc
    `git clone https://github.com/Yoshifanatic1/Donkey-Kong-Country-1-Disassembly.git`
 2. Trouver le label / la routine (ex. Necky, bonus room loader, projectile).
 3. Repérer une **séquence d’instructions courte et distinctive** (8–24 octets) dans le listing ou après build V1.0 **si** vous avez la V1.0.
-4. Chercher cette séquence dans la Rev 2 (`rom.find(bytes)`), exiger **unicité** (comme `locate()`).
+4. Chercher cette séquence dans la Rev 2 (`npm run relocate:pattern -- "aa bb cc …"`), exiger **unicité** (comme `locate()` dans `analyze_level_tables.py`). Exemple livré : `npm run analyze:necky` → `reference/necky-ballistics.json` (table `DATA_B68EE0` relocalisée).
 5. Décoder à la main ou étendre un script Python existant ; exporter vers JSON / générateur TS.
 6. Ajouter un test oracle ou une fixture si c’est gameplay (comme `jungle-parity-walk.json`).
 

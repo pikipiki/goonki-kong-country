@@ -327,6 +327,7 @@ export const Actors = memo(function Actors({ game }: { game: Game }) {
     carried = useRef<Group>(null),
     cart = useRef<Group>(null),
     projectiles = useRef<Group>(null),
+    nuts = useRef<Group>(null),
     fx = useRef<Group>(null);
   const texture = useMemo(() => textTexture("✦", "#ffe6a5"), []);
   useEffect(() => () => texture.dispose(), [texture]);
@@ -355,6 +356,11 @@ export const Actors = memo(function Actors({ game }: { game: Game }) {
         obj.position.set(projectile.x, projectile.y, 0.2);
         obj.rotation.z = -clock.elapsedTime * 12;
       }
+    });
+    nuts.current?.children.forEach((obj, i) => {
+      const shot = game.enemyShots[i];
+      obj.visible = !!shot;
+      if (shot) obj.position.set(shot.x, shot.y, 0.25);
     });
     if (fx.current) {
       const current = fx.current;
@@ -403,6 +409,13 @@ export const Actors = memo(function Actors({ game }: { game: Game }) {
           <group key={i} visible={false}>
             <Barrel />
           </group>
+        ))}
+      </group>
+      <group ref={nuts}>
+        {Array.from({ length: 12 }, (_, i) => (
+          <mesh key={i} geometry={sphere} visible={false} scale={0.22} castShadow>
+            <meshStandardMaterial color="#6b4a28" roughness={0.9} />
+          </mesh>
         ))}
       </group>
       <group ref={cart}>

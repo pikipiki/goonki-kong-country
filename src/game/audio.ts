@@ -81,6 +81,7 @@ export class AudioSystem {
       'banana':0x21,'banana-bunch':0x22,'life':0x2F,'stomp':0x08,'bounce':0x01,
       'cannon':0x04,'enter-cannon':0x26,'rescue':0x14,'mount':0x58,'swap':0x65,
       'barrel-break':0x14,'throw':0x02,'pickup':0x11,'place':0x11,'checkpoint':0x10,'reveal':0x10,
+      'necky-shot':0x5C,
     };
     if(name==='hurt')return c.character?0x43:0x46;
     if(name==='letter')return 0x4F+Math.min(3,c.letterIndex??0);

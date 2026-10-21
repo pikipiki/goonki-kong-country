@@ -1,0 +1,58 @@
+{
+  "romSha256": "628147468c3539283197f58f03b94df49758a332831857481ea9cc31645f0527",
+  "method": "Rev 2 signature on DATA_B68EE0 body; V1.0 disassembly for semantics.",
+  "relocated": {
+    "trajectoryTable": {
+      "fileOffset": "0x368EE2",
+      "hiromAddress": "$F68EE2"
+    }
+  },
+  "jungleHijinxsNutThrowingNecky": {
+    "spawnRam13E9": 36578,
+    "trajectoryFileOffset": "0x368EE4",
+    "spawnRam11A1Frames": 39
+  },
+  "trajectoryWords": [
+    16,
+    0,
+    1792,
+    96,
+    800,
+    1792,
+    16,
+    64736,
+    1792,
+    65535,
+    36578,
+    16,
+    0,
+    1792
+  ],
+  "nutSpawnTemplate": {
+    "vxRaw": -300,
+    "vyRaw": 768
+  },
+  "jungleTableSample": {
+    "words": [
+      0,
+      1792,
+      96,
+      800,
+      1792,
+      16,
+      64736,
+      1792
+    ],
+    "interpretedFirstImpulse": {
+      "vxRaw": 800,
+      "vyRaw": 1792
+    }
+  },
+  "engine": {
+    "gravityRawPerFrame": -112,
+    "shootPeriodFrames": 39,
+    "flipVxTowardPlayer": true,
+    "nutVxRaw": -300,
+    "nutVyRaw": 768
+  }
+}
