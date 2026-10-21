@@ -1,5 +1,7 @@
 # Données de niveaux originales — USA Rev 2
 
+Murs bonus Jungle : champs `$1375` / `$13E9` exportés dans `reference/jungle-bonus-walls.json` (`npm run analyze:jungle-bonus`). Capture NutThrowingNecky : voir `reference/jungle-necky-probe.md` (fosse ~x=454 depuis l’état de départ actuel).
+
 Extraction en lecture seule du ZIP fourni. Le script `scripts/analyze_level_tables.py` utilise uniquement Python standard. Il contrôle le SHA-256 du ROM et recherche des signatures uniques dans les octets Rev 2 (la table de formes de bananes, dupliquée, est résolue par le pointeur effectivement chargé par sa routine) ; il n'applique pas simplement les adresses de la désassemblage USA 1.0.
 
 Commande : `python3 scripts/analyze_level_tables.py [chemin-du-zip-ou-ROM]`
