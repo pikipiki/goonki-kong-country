@@ -37,6 +37,9 @@ export interface FinishZone {
 export interface BonusRoomSpec {
   wallIndex: number;
   label: string;
+  /** ROM sprite script $1375 at breakable-wall spawn (bonus routing hint). */
+  romRam1375?: number;
+  romRam13E9?: number;
   bounds: { x: number; y: number; w: number; h: number };
   pickups: Pickup[];
 }

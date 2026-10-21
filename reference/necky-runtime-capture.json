@@ -1,0 +1,13 @@
+{
+  "romSha256": "628147468c3539283197f58f03b94df49758a332831857481ea9cc31645f0527",
+  "scenario": {
+    "nutEventCount": 0,
+    "firstNutFrame": null
+  },
+  "nutEvents": [],
+  "limitations": [
+    "Straight Right from ground.state reaches the pit near x\u2248454 before NutThrowingNecky (x=2560).",
+    "Use a mid-level save state or a scripted jump route for live nut traces.",
+    "Static ballistics: reference/necky-ballistics.json."
+  ]
+}

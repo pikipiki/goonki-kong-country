@@ -1,0 +1,47 @@
+{
+  "romSha256": "628147468c3539283197f58f03b94df49758a332831857481ea9cc31645f0527",
+  "level": "JungleHijinxs",
+  "breakableWalls": [
+    {
+      "offset": "0x3D95DC",
+      "spawnCommand": 2,
+      "x": 4,
+      "y": 351,
+      "ram1375": 92,
+      "ram13E9": 14,
+      "ram1029": 8,
+      "ram145D": 1
+    },
+    {
+      "offset": "0x3D95F4",
+      "spawnCommand": 2,
+      "x": 84,
+      "y": 175,
+      "ram1375": 71,
+      "ram13E9": 95,
+      "ram1029": 7,
+      "ram145D": 1
+    },
+    {
+      "offset": "0x3D9734",
+      "spawnCommand": 1,
+      "x": 3564,
+      "y": 109,
+      "ram1375": 6,
+      "ram13E9": 8,
+      "ram1029": 0,
+      "ram145D": 0
+    },
+    {
+      "offset": "0x3D976C",
+      "spawnCommand": 1,
+      "x": 4300,
+      "y": 45,
+      "ram1375": 26,
+      "ram13E9": 110,
+      "ram1029": 0,
+      "ram145D": 0
+    }
+  ],
+  "note": "$1375 / $13E9 are sprite script fields from ROM spawns; bonus geometry is not fully decoded \u2014 use with Yoshifanatic entrance tables."
+}

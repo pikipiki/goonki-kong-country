@@ -6,6 +6,7 @@ describe("bonus rooms and cannon fidelity", () => {
   it("exposes four jungle bonus chambers tied to breakable walls", () => {
     expect(ROM_JUNGLE.bonusRooms).toHaveLength(4);
     expect(ROM_JUNGLE.bonusRooms?.every((r) => r.pickups.length >= 3)).toBe(true);
+    expect(ROM_JUNGLE.bonusRooms?.[0].romRam1375).toBe(92);
   });
 
   it("collects bonus loot after the linked wall is broken", () => {
