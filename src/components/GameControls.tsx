@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState, type PointerEvent } from "react";
+import { useTranslation } from "react-i18next";
+import { tx } from "../i18n/resolveText";
 import { ANIMAL_DESIGNS } from "../game/animals";
 import type { Game, Key } from "../game/engine";
 import type { Controls } from "../game/input";
@@ -86,7 +88,7 @@ function ActionButton({
         }
       }}
     >
-      {chargeable && <span className="charge-progress" role="progressbar" aria-label="Puissance de charge" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(chargeProgress*100)} style={{height:`${chargeProgress*100}%`}}/>}
+      {chargeable && <span className="charge-progress" role="progressbar" aria-label={title} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(chargeProgress*100)} style={{height:`${chargeProgress*100}%`}}/>}
       <span className="button-glyph" aria-hidden="true">
         {glyph}
       </span>
@@ -101,6 +103,7 @@ export function GameControls({
   controls: Controls;
   game: Game;
 }) {
+  const { t } = useTranslation();
   const [clickMode, setClickMode] = useState(() => {
       try {
         return localStorage.getItem("goonk-input-mode") === "click";
@@ -162,7 +165,7 @@ export function GameControls({
   const directionButton = (next: number) => (
     <button
       className={`direction-button ${next < 0 ? "left" : "right"} ${direction === next ? "is-down" : ""}`}
-      aria-label={next < 0 ? "Aller à gauche" : "Aller à droite"}
+      aria-label={next < 0 ? t("goLeft") : t("goRight")}
       aria-pressed={direction === next}
       onPointerDown={(e) => {
         e.stopPropagation();
@@ -188,14 +191,12 @@ export function GameControls({
   return (
     <section
       className={`controller-deck ${clickMode ? "click-mode" : ""}`}
-      aria-label="Manette virtuelle"
+      aria-label={t("virtualController")}
     >
       <div className="controller-toolbar">
         <span className="controller-label">
           <i />{" "}
-          {clickMode
-            ? "CLIC POUR AVANCER · RECLIC POUR STOPPER"
-            : "GLISSER POUR DIRIGER · MAINTENIR POUR SAUTER"}
+          {clickMode ? t("clickModeHint") : t("touchModeHint")}
         </span>
         <button
           className="input-mode"
@@ -205,7 +206,7 @@ export function GameControls({
             setClickMode(!clickMode);
           }}
         >
-          {clickMode ? "Mode clic" : "Mode tactile"} <span>⇄</span>
+          {clickMode ? t("clickMode") : t("touchMode")} <span>⇄</span>
         </button>
       </div>
       <div className="controller-layout">
@@ -213,7 +214,7 @@ export function GameControls({
           className="dpad"
           ref={pad}
           role="group"
-          aria-label="Direction et course"
+          aria-label={t("directionRun")}
           onPointerDown={(e) => {
             if (clickMode) return;
             e.preventDefault();
@@ -243,7 +244,7 @@ export function GameControls({
           />
           {game.level.biome === "lagoon" && (["up", "down"] as const).map((key) => (
             <button key={key} className={`swim-direction swim-${key}`}
-              aria-label={key === "up" ? "Nager vers le haut" : "Nager vers le bas"}
+              aria-label={key === "up" ? t("swimUp") : t("swimDown")}
               onPointerDown={(e) => {
                 e.stopPropagation(); e.preventDefault();
                 e.currentTarget.setPointerCapture(e.pointerId);
@@ -261,7 +262,7 @@ export function GameControls({
           {directionButton(1)}
           <button
             className="stop-button"
-            aria-label="Arrêter le déplacement"
+            aria-label={t("stopMove")}
             onPointerDown={(e) => {
               e.stopPropagation();
               clear();
@@ -270,18 +271,28 @@ export function GameControls({
             ■
           </button>
           <span className="direction-caption">
-            DIRECTION <b>•</b> COURSE
+            {t("directionRun")}
           </span>
         </div>
         <div className="controller-center">
           <span className="controller-emblem">{game.mount ? "🐾" : "GC"}</span>
-          <span>{game.mount ? ANIMAL_DESIGNS[game.mount.kind].name.toUpperCase() : <>AVENTURE<br />À DEUX</>}</span>
+          <span>
+            {game.mount
+              ? tx(ANIMAL_DESIGNS[game.mount.kind].name).toUpperCase()
+              : (
+                  <>
+                    {t("adventureDuoLine1")}
+                    <br />
+                    {t("adventureDuoLine2")}
+                  </>
+                )}
+          </span>
         </div>
         <div className="action-cluster">
           <ActionButton
             controls={controls}
             action="swap"
-            title={game.mount ? "Descendre" : "Changer"}
+            title={game.mount ? t("dismount") : t("swapBuddy")}
             glyph="⇄"
             className="swap-button"
             clickMode={clickMode}
@@ -289,7 +300,7 @@ export function GameControls({
           <ActionButton
             controls={controls}
             action="action"
-            title={game.player.cannon >= 0 ? "Tirer" : game.mount?.kind === "enguarde" || game.mount?.kind === "rambi" ? game.player.mountCharge >= .65 ? "Relâcher" : "Charge" : game.player.carry >= 0 ? "Lancer" : "Action"}
+            title={game.player.cannon >= 0 ? t("fire") : game.mount?.kind === "enguarde" || game.mount?.kind === "rambi" ? game.player.mountCharge >= .65 ? t("release") : t("charge") : game.player.carry >= 0 ? t("throw") : t("action")}
             glyph="✦"
             className="action-button"
             chargeable={game.mount?.kind === "rambi" || game.mount?.kind === "enguarde"}
@@ -299,7 +310,7 @@ export function GameControls({
           <ActionButton
             controls={controls}
             action="jump"
-            title={game.player.cannon >= 0 ? "Décoller" : game.mount?.kind === "enguarde" ? "Foncer" : game.mount?.kind === "expresso" ? "Planer" : game.mount?.kind === "winky" ? "Bondir" : game.level.biome === "lagoon" ? "Nager" : "Sauter"}
+            title={game.player.cannon >= 0 ? t("blastOff") : game.mount?.kind === "enguarde" ? t("dart") : game.mount?.kind === "expresso" ? t("flutter") : game.mount?.kind === "winky" ? t("leap") : game.level.biome === "lagoon" ? t("swim") : t("jump")}
             glyph="↑"
             className="jump-button"
             sustained={game.mount?.kind === "expresso"}

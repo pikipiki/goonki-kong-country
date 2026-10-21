@@ -223,7 +223,7 @@ for i, wall in enumerate(breakable_walls):
     meta = next((m for m in bonus_meta if m.get("wallIndex") == i), {})
     room = {
             "wallIndex": i,
-            "label": "Salle bonus",
+            "label": "bonus.room",
             "bounds": {"x": bx, "y": wy - 0.35, "w": 4.8, "h": 3.1},
             "pickups": [
                 {"x": bx + 1.4, "y": wy + 0.85, "kind": "banana", "amount": 10},

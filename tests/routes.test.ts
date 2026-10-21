@@ -53,7 +53,7 @@ it("allows every consecutive platform gap to be crossed using the real simulatio
           }
       if (!reachable)
         failures.push(
-          `${level.name}: ${from.x} → ${to.x} (gap ${left - edge})`,
+          `${level.id}: ${from.x} → ${to.x} (gap ${left - edge})`,
         );
     }
   }

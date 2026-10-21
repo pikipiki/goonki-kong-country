@@ -7,6 +7,7 @@ import { Actors } from "./game3d/Actors";
 import { World } from "./game3d/World";
 import { cameraLayout } from "./game/camera";
 import { STEP, type Game, type Input } from "./game/engine";
+import { tr } from "./i18n";
 
 function Director({
   game,
@@ -170,10 +171,7 @@ export function Scene({
         powerPreference: "high-performance",
       }}
       fallback={
-        <div className="webgl-fallback">
-          Ce navigateur ne permet pas l’affichage 3D. Active WebGL puis recharge
-          la page.
-        </div>
+        <div className="webgl-fallback">{tr("webglFallback")}</div>
       }
     >
       <Director game={game} input={input} onTick={onTick} />

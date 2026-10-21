@@ -2,6 +2,9 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Group, OrthographicCamera, Vector3 } from "three";
 import { Goonk } from "./game3d/Goonk";
+import { useTranslation } from "react-i18next";
+import { tr } from "./i18n";
+import { tx } from "./i18n/resolveText";
 
 // Seven adapted destinations. Alternate rows leave room for readable labels;
 // portrait follows a winding vertical trail instead of shrinking the island.
@@ -69,10 +72,11 @@ function Island({ selected, unlocked, onSelect, initial, onProject }: Omit<MapPr
   </>;
 }
 export function IslandMap(props:MapProps) {
+  useTranslation();
   const root=useRef<HTMLDivElement>(null),[positions,setPositions]=useState<{x:number;y:number}[]>([]);
   const onProject=useCallback((points:{x:number;y:number}[])=>setPositions(points),[]);
   useEffect(()=>{root.current?.focus({preventScroll:true});},[]);
-  return <div ref={root} className="island-map" role="group" tabIndex={0} aria-label="Carte de l’île" aria-describedby="map-instructions" onKeyDown={event=>{
+  return <div ref={root} className="island-map" role="group" tabIndex={0} aria-label={tr("islandMapAria")} aria-describedby="map-instructions" onKeyDown={event=>{
     const direction=event.key==='ArrowRight'||event.key==='ArrowDown'?1:event.key==='ArrowLeft'||event.key==='ArrowUp'?-1:0;
     if(direction){event.preventDefault();props.onSelect((props.selected+direction+props.stages.length)%props.stages.length);}
     else if(event.key==='Home'||event.key==='End'){event.preventDefault();props.onSelect(event.key==='Home'?0:props.stages.length-1);}
@@ -83,9 +87,9 @@ export function IslandMap(props:MapProps) {
     </Canvas>
     <div className="map-labels">
       {positions.map((position,i)=><div className="map-label-anchor" key={i} style={{left:position.x,top:position.y}}>
-        <button type="button" className={`map-stage${i===props.selected?' selected':''}`} aria-label={`${i+1}. ${props.stages[i].name}`} aria-pressed={i===props.selected} disabled={i>props.unlocked} onClick={()=>props.onSelect(i)}>
+        <button type="button" className={`map-stage${i===props.selected?' selected':''}`} aria-label={`${i+1}. ${tx(props.stages[i].name)}`} aria-pressed={i===props.selected} disabled={i>props.unlocked} onClick={()=>props.onSelect(i)}>
           <span className="map-stage-number" aria-hidden="true">{String(i+1).padStart(2,'0')}</span>
-          <span>{props.stages[i].name}</span>
+          <span>{tx(props.stages[i].name)}</span>
         </button>
       </div>)}
     </div>

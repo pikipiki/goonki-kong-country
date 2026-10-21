@@ -2,6 +2,9 @@
  * Asset provenance and imperfect loop-boundary limits live in /audio/manifest.json.
  * Music streams through HTMLAudio to avoid decoding minutes of PCM into mobile RAM.
  */
+import { tr } from "../i18n";
+import { L } from "../i18n/keys";
+
 type Music = {id:number; name:string; url:string; seconds:number; loop:{startSeconds:number;endSeconds:number;samplePerfect:boolean}|null};
 type Effect = {id:number;name:string;url:string;seconds:number};
 type Manifest = {music:Record<string,Music>;effects:Record<string,Effect>;provenance:unknown};
@@ -72,7 +75,7 @@ export class AudioSystem {
       this.context ??= new AudioContext();
       if(!this.master){this.master=this.context.createGain();this.master.gain.value=this.muted?0:0.6;this.master.connect(this.context.destination);}
       void this.context.resume();
-      void this.loadManifest().catch(()=>this.onError('Les sons ne sont pas encore disponibles.'));
+      void this.loadManifest().catch(()=>this.onError(tr(L.audio.soundsUnavailable)));
       if(this.active&&this.music&&!this.muted)void this.music.play().catch(()=>{});
     }catch{/* A browser without audio still permits playing. */}
   }
@@ -95,7 +98,7 @@ export class AudioSystem {
       if(!this.muted)void this.music.play().catch(()=>{});
       clearInterval(this.loopTimer);
       this.loopTimer=setInterval(()=>this.applyLoop(entry),30);
-    }).catch(()=>this.onError('La musique n’a pas pu être chargée.'));
+    }).catch(()=>this.onError(tr(L.audio.musicLoadFailed)));
   }
   private assetUrl(url:string){return `${import.meta.env.BASE_URL}${url.replace(/^\//,'')}`;}
   private applyLoop(entry:Music){

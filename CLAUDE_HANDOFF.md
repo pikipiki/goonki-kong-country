@@ -2,6 +2,14 @@
 
 Cette section prévaut sur l’historique ci-dessous. Dépôt : `Documents/git/goonk-country`. Handoff avant commit : `.cursor/skills/handoff-before-commit/SKILL.md`.
 
+## i18n EN/FR (dernière passe)
+
+- **Langue par défaut** : `en` (`src/i18n.ts`). Catalogue **EN + FR** dans `src/i18n/resources.ts` ; clés stables dans `src/i18n/keys.ts` ; données niveau / ennemis / animaux / décor = clés, affichage via `tx()` / `t()`.
+- **Sélecteur** : `LanguageSelect` dans la barre du haut ; persistance `localStorage` clé `goonk-country-lang` ; `document.documentElement.lang` synchronisé.
+- **Audio** : messages d’erreur chargement via `tr(L.audio.*)`.
+- **Générateurs** : labels salle bonus → clé `bonus.room` (jungle/reverb) ; regen reverb/jungle sans réintroduire du français en dur dans les TS générés (templates reverb : encore vérifier `tip`/`name` si regen complet).
+- **Tests** : **185 / 31** (`npm test`), `npm run build` OK.
+
 ## Animaux, bonus, sols, carte (après `44dd570`)
 
 - **Montures / contrôles** : charges tenues (~0,65 s) et relâchement boost (adaptation, pas DKC1 ROM — voir `buddy-controls-review.md`). Flutter Expresso maintenu ou basculé au clic ; jauge + mode clic. Taille peluches **2,2 / 2,05** conservée.

@@ -19,6 +19,10 @@ import { AudioSystem } from "./game/audio";
 import { IslandMap } from "./IslandMap";
 import { Scene } from "./Scene";
 import { GameControls } from "./components/GameControls";
+import i18n from "./i18n";
+import { L } from "./i18n/keys";
+import { tx } from "./i18n/resolveText";
+import { LanguageSelect } from "./components/LanguageSelect";
 
 const STORAGE = "goonk-country-v1";
 const MAP_LEVELS = [ROM_JUNGLE, ROM_REVERB, ROM_MINE_CART, ROM_CORAL, ...LEVELS.slice(4)];
@@ -85,10 +89,10 @@ class SceneBoundary extends Component<
   render() {
     return this.state.failed ? (
       <div className="webgl-fallback">
-        <h2>L’affichage 3D a été interrompu.</h2>
-        <p>Recharge la page pour retrouver l’aventure.</p>
+        <h2>{i18n.t("scene3dFailedTitle")}</h2>
+        <p>{i18n.t("scene3dFailedBody")}</p>
         <button className="primary" onClick={() => location.reload()}>
-          Recharger
+          {i18n.t("reload")}
         </button>
       </div>
     ) : (
@@ -155,10 +159,10 @@ export function App() {
       try {
         localStorage.setItem(STORAGE, JSON.stringify(save));
       } catch {
-        game.message("Sauvegarde indisponible dans ce navigateur.");
+        game.message(t("saveUnavailable"));
       }
     };
-  }, [game, audio]);
+  }, [game, audio, t]);
   useEffect(() => {
     if (phase === "playing") {
       const scene =
@@ -312,7 +316,7 @@ export function App() {
       void root.current
         ?.requestFullscreen()
         .catch(() =>
-          game.message("Utilise le mode plein écran de ton navigateur."),
+          game.message(t("fullscreenHint")),
         );
   };
   return (
@@ -320,7 +324,7 @@ export function App() {
       ref={root}
       className={`app phase-${phase} ${showControls ? "has-controls" : ""}`}
     >
-      <div className="scene" aria-label="Scène du jeu en trois dimensions">
+      <div className="scene" aria-label="3D game scene">
         <SceneBoundary>
           <Scene game={game} input={controls.input} onTick={tick} />
         </SceneBoundary>
@@ -335,7 +339,7 @@ export function App() {
               game.load(0, "title");
             })
           }
-          aria-label="Goonk Country, accueil"
+          aria-label={t("brandHome")}
         >
           <span className="brand-mark">g.</span>
           <span>
@@ -345,19 +349,18 @@ export function App() {
         {phase === "playing" && (
           <div className="stage-name">
             <span>{String(game.levelId + 1).padStart(2, "0")} / 07</span>
-            {game.level.name}
+            {tx(game.level.name)}
           </div>
         )}
-        <nav className="top-actions" aria-label="Options du jeu">
+        <nav className="top-actions" aria-label={t("gameOptions")}>
+          <LanguageSelect />
           {phase === "playing" && (
             <button
               className="icon-button control-toggle"
               aria-label={
-                showControls
-                  ? "Masquer la manette virtuelle"
-                  : "Afficher la manette virtuelle"
+                showControls ? t("hideVirtualPad") : t("showVirtualPad")
               }
-              title="Manette virtuelle"
+              title={t("virtualPad")}
               aria-pressed={showControls}
               onClick={() => {
                 controls.reset();
@@ -369,8 +372,8 @@ export function App() {
           )}
           <button
             className="icon-button"
-            aria-label={muted ? "Activer le son" : "Couper le son"}
-            title={muted ? "Activer le son" : "Couper le son"}
+            aria-label={muted ? t("soundOn") : t("soundOff")}
+            title={muted ? t("soundOn") : t("soundOff")}
             onClick={() => {
               audio.boot();
               audio.toggle();
@@ -381,8 +384,8 @@ export function App() {
           </button>
           <button
             className="icon-button fullscreen"
-            aria-label="Plein écran"
-            title="Plein écran"
+            aria-label={t("fullscreen")}
+            title={t("fullscreen")}
             onClick={fullscreen}
           >
             <Icon name="expand" />
@@ -390,14 +393,14 @@ export function App() {
           {phase === "playing" ? (
             <button
               className="icon-button"
-              aria-label="Mettre en pause"
+              aria-label={t("pauseGame")}
               onClick={() => change(() => game.pause())}
             >
               <Icon name="pause" />
             </button>
           ) : (
             <button className="text-button" onClick={() => setHelp(true)}>
-              Comment jouer <span>↗</span>
+              {t("howToPlay")} <span>↗</span>
             </button>
           )}
         </nav>
@@ -406,7 +409,7 @@ export function App() {
         <main className="intro">
           <div className="intro-copy">
             <p className="eyebrow">
-              <span /> L’ÎLE AUX DEUX PELUCHES
+              <span /> {t("eyebrowIsland")}
             </p>
             <h1>
               GOONK
@@ -415,9 +418,9 @@ export function App() {
               </span>
             </h1>
             <p className="intro-description">
-              Deux petites peluches.
+              {t("tagline1")}
               <br />
-              Une très grande aventure.
+              {t("tagline2")}
             </p>
             <div className="intro-cta">
               <button className="primary explore-primary" onClick={openMap} autoFocus>
@@ -434,25 +437,25 @@ export function App() {
                 <Portrait pink={false} small />
               </div>
               <p>
-                Rose & Violette<span>Jamais l’une sans l’autre.</span>
+                {t("roseViolet")}<span>{t("neverApart")}</span>
               </p>
             </div>
           </div>
           <span className="character-note pink-note">
-            Rose<span>LA FORCE TRANQUILLE</span>
+            {tx(L.buddies.rose)}<span>{t("roseTitle")}</span>
           </span>
           <span className="character-note violet-note">
-            Violette<span>L’ÉNERGIE PURE</span>
+            {tx(L.buddies.violet)}<span>{t("violetTitle")}</span>
           </span>
         </main>
       )}
       {phase === "title" && (
         <footer className="intro-footer">
           <span>
-            UNE AVENTURE FAITE DE DOUCEUR <i>✦</i> ET D’UN PEU DE COURAGE
+            {t("footerTagline")}
           </span>
           <span>
-            CLAVIER · MANETTE · TACTILE <span className="key-outline">↵</span>
+            {t("footerInput")} <span className="key-outline">↵</span>
           </span>
         </footer>
       )}
@@ -462,10 +465,10 @@ export function App() {
             <div className="team">
               <Portrait pink={game.player.active === 0} />
               <div>
-                <strong>{game.player.active ? "Violette" : "Rose"}{game.mount && ` · ${ANIMAL_DESIGNS[game.mount.kind].name}`}</strong>
+                <strong>{tx(game.player.active ? L.buddies.violet : L.buddies.rose)}{game.mount && ` · ${tx(ANIMAL_DESIGNS[game.mount.kind].name)}`}</strong>
                 <div
                   className="hearts"
-                  aria-label={`${game.player.hp} personnages disponibles`}
+                  aria-label={t("charactersAvailable", { count: game.player.hp })}
                 >
                   <span>♥</span>
                   <span className={game.player.hp < 2 ? "lost" : ""}>♥</span>
@@ -518,7 +521,7 @@ export function App() {
           )}
           {game.levelId === 6 && (
             <div className="boss-health">
-              <span>LE ROI DES VOLEURS</span>
+              <span>{t("bossName")}</span>
               <div>
                 {Array.from({ length: 5 }, (_, n) => (
                   <i
@@ -532,19 +535,19 @@ export function App() {
           <div className="keyboard-hint">
             <span>
               <kbd>←</kbd>
-              <kbd>→</kbd> Se déplacer
+              <kbd>→</kbd> {t("hintMove")}
             </span>
             <span>
-              <kbd>Espace</kbd> Sauter
+              <kbd>Space</kbd> {t("hintJump")}
             </span>
             <span>
-              <kbd>X</kbd> Roulade / tonneau
+              <kbd>X</kbd> {t("hintRoll")}
             </span>
             <span>
-              <kbd>C</kbd> Changer
+              <kbd>C</kbd> {t("hintSwap")}
             </span>
             <span>
-              <kbd>⇧</kbd> Courir
+              <kbd>⇧</kbd> {t("hintRun")}
             </span>
           </div>
           {showControls && <GameControls controls={controls} game={game} />}
@@ -562,21 +565,21 @@ export function App() {
               }
             >
               <Icon name="back" />
-              Retour
+              {t("mapBack")}
             </button>
             <div className="map-heading">
-              <p className="eyebrow">L’ÎLE AUX DEUX PELUCHES</p>
-              <h2>Une île à explorer<span>.</span></h2>
-              <p id="map-instructions" className="panel-description">Choisis une étape sur la carte. Flèches pour te déplacer, Entrée pour jouer.</p>
+              <p className="eyebrow">{t("eyebrowIsland")}</p>
+              <h2>{t("mapTitle")}<span>.</span></h2>
+              <p id="map-instructions" className="panel-description">{t("mapInstructions")}</p>
             </div>
             <IslandMap selected={mapLevel} initial={game.levelId} unlocked={LEVELS.length - 1} onSelect={setMapLevel} onConfirm={() => start(mapLevel)} stages={MAP_LEVELS}/>
             <div className="map-confirm">
               <p className="map-selection" aria-live="polite" aria-atomic="true">
-                <span>{MAP_LEVELS[mapLevel].subtitle}</span>
-                <strong>{MAP_LEVELS[mapLevel].name}</strong>
+                <span>{tx(MAP_LEVELS[mapLevel].subtitle)}</span>
+                <strong>{tx(MAP_LEVELS[mapLevel].name)}</strong>
               </p>
               <button className="primary map-enter" onClick={() => start(mapLevel)}>
-                Entrer dans l’étape <Icon name="arrow" />
+                {t("mapEnter")} <Icon name="arrow" />
               </button>
             </div>
           </div>
@@ -593,50 +596,52 @@ export function App() {
             </span>
             <p className="eyebrow">
               {phase === "paused"
-                ? "UN PETIT INSTANT"
+                ? t("panelPauseEyebrow")
                 : phase === "gameover"
-                  ? "ON NE BAISSE PAS LES BRAS"
+                  ? t("panelGameoverEyebrow")
                   : phase === "victory"
-                    ? "L’ÎLE VOUS DIT MERCI"
-                    : `ÉTAPE ${String(game.levelId + 1).padStart(2, "0")} TERMINÉE`}
+                    ? t("panelVictoryEyebrow")
+                    : t("panelClearEyebrow", {
+                        id: String(game.levelId + 1).padStart(2, "0"),
+                      })}
             </p>
             <h2>
               {phase === "paused"
-                ? "Une petite pause."
+                ? t("panelPauseTitle")
                 : phase === "clear"
-                  ? "Bien joué, les Goonk !"
+                  ? t("panelClearTitle")
                   : phase === "victory"
-                    ? "Ensemble, jusqu’au bout."
-                    : "Encore une aventure ?"}
+                    ? t("panelVictoryTitle")
+                    : t("panelGameoverTitle")}
             </h2>
             <p className="panel-description">
               {phase === "paused"
-                ? "L’aventure sera toujours là à votre retour."
+                ? t("panelPauseDesc")
                 : phase === "victory"
-                  ? "Les bananes sont de retour. Les deux amies peuvent enfin souffler."
+                  ? t("panelVictoryDesc")
                   : phase === "gameover"
-                    ? "La jungle garde encore quelques secrets pour vous."
-                    : "Un pas de plus vers le cœur de l’île."}
+                    ? t("panelGameoverDesc")
+                    : t("panelClearDesc")}
             </p>
             {phase !== "paused" && (
               <div className="results">
                 <div>
                   <strong>{game.levelBananas}</strong>
-                  <span>BANANES</span>
+                  <span>{t("statBananas")}</span>
                 </div>
                 <div>
                   <strong>
                     {game.letters.size}
                     <small>/{game.letterWord.length}</small>
                   </strong>
-                  <span>LETTRES</span>
+                  <span>{t("statLetters")}</span>
                 </div>
                 <div>
                   <strong>
                     {Math.floor(game.time)}
                     <small>s</small>
                   </strong>
-                  <span>EXPLORATION</span>
+                  <span>{t("statTime")}</span>
                 </div>
               </div>
             )}
@@ -672,59 +677,48 @@ export function App() {
           <main className="panel help-panel">
             <button
               className="close-button"
-              aria-label="Fermer les commandes"
+              aria-label={t("helpClose")}
               onClick={() => setHelp(false)}
             >
               ×
             </button>
-            <p className="eyebrow">PRENEZ LA ROUTE À DEUX</p>
+            <p className="eyebrow">{t("helpEyebrow")}</p>
             <h2>
-              Un peu de courage.
+              {t("helpTitle1")}
               <br />
-              Quelques touches.
+              {t("helpTitle2")}
             </h2>
             <div className="help-rows">
               <p>
                 <span>
-                  <kbd>←</kbd> <kbd>→</kbd> ou <kbd>Q</kbd> <kbd>D</kbd>
+                  <kbd>←</kbd> <kbd>→</kbd> or <kbd>Q</kbd> <kbd>D</kbd>
                 </span>
-                Marcher
+                {t("helpWalk")}
               </p>
               <p>
-                <kbd>Espace</kbd>Sauter / nager
+                <kbd>Space</kbd>{t("helpJumpSwim")}
               </p>
               <p>
-                <kbd>Maj</kbd>Courir
+                <kbd>Shift</kbd>{t("helpRun")}
               </p>
               <p>
-                <kbd>X</kbd>Roulade, ramasser et lancer un tonneau
+                <kbd>X</kbd>{t("helpRollBarrel")}
               </p>
               <p>
-                <kbd>C</kbd>Changer de peluche / descendre de l’animal
+                <kbd>C</kbd>{t("helpSwapMount")}
               </p>
               <p>
-                <kbd>Échap</kbd>Faire une pause
+                <kbd>Esc</kbd>{t("helpPause")}
               </p>
             </div>
-            <p className="panel-description">
-              Maintenez le saut pour monter plus haut. Rose terrasse les ennemis
-              casqués ; Violette court plus vite. Récupérez 100 bananes ou les
-              lettres de l’étape pour gagner une vie. Une roulade prolonge le
-              saut au-delà du rebord et accélère en enchaînant les ennemis.
-              Libérez les animaux des caisses puis sautez sur leur dos : Rambi
-              utilise sa corne, Winky bondit très haut, Expresso plane quand le
-              saut est maintenu, Enguarde nage dans toutes les directions et
-              attaque avec son rostre. Le bouton Changer permet de descendre.
-            </p>
+            <p className="panel-description">{t("helpBody")}</p>
             <p className="save-note">
-              Manette : A sauter · X action · B changer · RB courir
+              {t("helpGamepad")}
               <br />
-              Sur mobile : glisser à gauche pour diriger, grands boutons à
-              droite. Le mode clic maintient la direction jusqu’au prochain
-              clic.
+              {t("helpMobile")}
             </p>
             <button className="primary" onClick={() => setHelp(false)}>
-              C’est parti
+              {t("helpGo")}
               <Icon name="arrow" />
             </button>
           </main>
@@ -733,10 +727,10 @@ export function App() {
       {contextLost && (
         <div className="overlay">
           <main className="panel">
-            <h2>Une pause technique.</h2>
-            <p>Le navigateur a interrompu l’affichage 3D.</p>
+            <h2>{t("contextLostTitle")}</h2>
+            <p>{t("contextLostBody")}</p>
             <button className="primary" onClick={() => location.reload()}>
-              Recharger
+              {t("reload")}
             </button>
           </main>
         </div>

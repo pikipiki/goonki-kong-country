@@ -1,4 +1,5 @@
 import type { AnimalSpawn } from "./animals";
+import { L } from "../i18n/keys";
 
 export type Biome =
   "jungle" | "canopy" | "mine" | "lagoon" | "snow" | "temple" | "ship";
@@ -42,6 +43,7 @@ export interface FinishZone {
 }
 export interface BonusRoomSpec {
   wallIndex: number;
+  /** i18n key. */
   label: string;
   /** ROM sprite script $1375 at breakable-wall spawn (bonus routing hint). */
   romRam1375?: number;
@@ -68,6 +70,7 @@ export interface LevelDecor {
   x: number;
   y: number;
   kind: "butterfly" | "sign" | "token" | "sparkle";
+  /** i18n key when kind is sign. */
   text?: string;
 }
 export interface BarrelSpec {
@@ -89,7 +92,9 @@ export interface BarrelSpec {
 }
 export interface Level {
   id: number;
+  /** i18n key (see src/i18n/keys.ts). */
   name: string;
+  /** i18n key. */
   subtitle: string;
   biome: Biome;
   length: number;
@@ -97,6 +102,7 @@ export interface Level {
   pickups: Pickup[];
   enemies: EnemySpec[];
   barrels: BarrelSpec[];
+  /** i18n key. */
   tip: string;
   animals?: AnimalSpawn[];
   itemCaches?: ItemCacheSpec[];
@@ -178,8 +184,8 @@ function make(
 export const LEVELS: Level[] = [
   make(
     0,
-    "La jungle s’éveille",
-    "KONGO JUNGLE",
+    L.levels.p0.name,
+    L.levels.p0.subtitle,
     "jungle",
     124,
     [
@@ -211,12 +217,12 @@ export const LEVELS: Level[] = [
       { x: 68, y: 0, kind: "throw" },
       { x: 90, y: 0, kind: "rescue" },
     ],
-    "Maintiens le saut pour aller plus haut. Rose est puissante ; Violette est plus rapide.",
+    L.levels.p0.tip,
   ),
   make(
     1,
-    "Au-dessus des feuilles",
-    "VINE VALLEY",
+    L.levels.p1.name,
+    L.levels.p1.subtitle,
     "canopy",
     129,
     [
@@ -246,12 +252,12 @@ export const LEVELS: Level[] = [
       { x: 75, y: 1.3, kind: "cannon", angle: 0.75, rotationSpeed: 1.2 },
       { x: 111, y: 1, kind: "rescue" },
     ],
-    "Saute dans les tonneaux-canons. Espace pour décoller, puis dirige ton atterrissage.",
+    L.levels.p1.tip,
   ),
   make(
     2,
-    "Le grand déraillement",
-    "MONKEY MINES",
+    L.levels.p2.name,
+    L.levels.p2.subtitle,
     "mine",
     168,
     [
@@ -275,12 +281,12 @@ export const LEVELS: Level[] = [
       { x: 82, y: 0, kind: "checkpoint" },
       { x: 109, y: 0, kind: "rescue" },
     ],
-    "Le wagon avance tout seul. Anticipe les rails coupés et saute au-dessus des obstacles.",
+    L.levels.p2.tip,
   ),
   make(
     3,
-    "Sous le lagon",
-    "CORAL CAPERS",
+    L.levels.p3.name,
+    L.levels.p3.subtitle,
     "lagoon",
     126,
     [
@@ -303,12 +309,12 @@ export const LEVELS: Level[] = [
       { x: 65, y: -2.2, kind: "checkpoint" },
       { x: 93, y: -1.5, kind: "rescue" },
     ],
-    "Maintiens Espace pour nager. Explore les fonds, et garde tes distances avec les méduses.",
+    L.levels.p3.tip,
   ),
   make(
     4,
-    "Les flocons perdus",
-    "GORILLA GLACIER",
+    L.levels.p4.name,
+    L.levels.p4.subtitle,
     "snow",
     132,
     [
@@ -337,12 +343,12 @@ export const LEVELS: Level[] = [
       { x: 79, y: 1.1, kind: "throw" },
       { x: 111, y: 0.8, kind: "rescue" },
     ],
-    "La glace conserve ton élan. Relâche la course avant le bord des plateformes.",
+    L.levels.p4.tip,
   ),
   make(
     5,
-    "Le temple oublié",
-    "CHIMP CAVERNS",
+    L.levels.p5.name,
+    L.levels.p5.subtitle,
     "temple",
     135,
     [
@@ -371,12 +377,12 @@ export const LEVELS: Level[] = [
       { x: 68, y: 1, kind: "throw" },
       { x: 103, y: 1.2, kind: "cannon", angle: 0.7 },
     ],
-    "Une roulade de Rose peut vaincre les crocodiles casqués. Violette préfère les tonneaux.",
+    L.levels.p5.tip,
   ),
   make(
     6,
-    "Le roi des voleurs",
-    "GANGPLANK GALLEON",
+    L.levels.p6.name,
+    L.levels.p6.subtitle,
     "ship",
     46,
     [p(20, 56, 0, "wood")],
@@ -386,7 +392,7 @@ export const LEVELS: Level[] = [
       { x: 10, y: 0, kind: "throw" },
       { x: 20, y: 0, kind: "checkpoint" },
     ],
-    "Évite les bonds du roi. Quand il reprend son souffle, saute sur sa tête !",
+    L.levels.p6.tip,
   ),
 ];
 
