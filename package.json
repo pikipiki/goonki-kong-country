@@ -1,0 +1,49 @@
+{
+  "name": "goonk-country",
+  "version": "0.4.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "vitest run",
+    "analyze:rom": "python3 scripts/analyze_rom.py",
+    "test:browser": "node scripts/browser-smoke.mjs",
+    "test:mobile": "node scripts/mobile-browser.mjs",
+    "analyze:buddies": "python3 scripts/analyze_buddies.py",
+    "test:buddies": "node scripts/buddy-browser.mjs",
+    "test:map": "node scripts/map-browser.mjs",
+    "test:original": "node scripts/original-browser.mjs",
+    "analyze:player": "python3 scripts/analyze_player_states.py",
+    "analyze:audio": "python3 scripts/analyze_audio_rom.py",
+    "analyze:levels": "python3 scripts/analyze_level_tables.py",
+    "verify:rom": "python3 scripts/verify_rom_evidence.py"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/material": "^9.5.0",
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.2",
+    "i18next": "^26.5.2",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-i18next": "^17.1.0",
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "@types/three": "^0.186.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "typescript": "~6.0.2",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.5",
+    "playwright": "1.62.1"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

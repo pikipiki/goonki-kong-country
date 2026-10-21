@@ -1,0 +1,107 @@
+{
+  "romSha256": "628147468c3539283197f58f03b94df49758a332831857481ea9cc31645f0527",
+  "header": {
+    "title": "DONKEY KONG COUNTRY",
+    "mapMode": "0x31",
+    "romBytes": 4194304,
+    "sramBytes": 2048,
+    "region": 1,
+    "revision": 2,
+    "checksum": "0x2bcc",
+    "checksumComplement": "0xd433",
+    "computedChecksum": "0x2bcc",
+    "resetVector": "0x8000"
+  },
+  "findings": {
+    "gravity": {
+      "verified": true,
+      "matches": [
+        {
+          "fileOffset": "0x3FAF9C",
+          "hiromAddress": "$FFAF9C",
+          "bytes": "a9 90 ff 18 7d f1 0e 10 08 c9 00 f8 b0 03 a9 00 f8 9d f1 0e 60"
+        },
+        {
+          "fileOffset": "0x3FB176",
+          "hiromAddress": "$FFB176",
+          "bytes": "a9 90 ff 18 7d f1 0e 10 08 c9 00 f8 b0 03 a9 00 f8 9d f1 0e 60"
+        }
+      ],
+      "disassembly": "LDA #$FF90; CLC; ADC $0EF1,X; BPL +8; CMP #$F800; BCS +3; LDA #$F800; STA $0EF1,X; RTS",
+      "values": {
+        "accelerationRaw": -112,
+        "terminalVelocityRaw": -2048,
+        "fractionBits": 8
+      }
+    },
+    "heldJump": {
+      "verified": true,
+      "matches": [
+        {
+          "fileOffset": "0x3FB9AC",
+          "hiromAddress": "$FFB9AC",
+          "bytes": "a9 b8 ff c0 00 00 f0 03 a9 a6 ff 99 f9 16"
+        }
+      ],
+      "disassembly": "LDA #$FFB8; CPY #$0000; BEQ +3; LDA #$FFA6; STA $16F9,Y",
+      "values": {
+        "pinkGravityRaw": -72,
+        "violetGravityRaw": -90
+      }
+    },
+    "enemyBounce": {
+      "verified": true,
+      "matches": [
+        {
+          "fileOffset": "0x3FA7E7",
+          "hiromAddress": "$FFA7E7",
+          "bytes": "a9 20 07 e0 02 00 f0 03 a9 80 08 9d f1 0e"
+        }
+      ],
+      "disassembly": "LDA #$0720; CPX #$0002; BEQ +3; LDA #$0880; STA $0EF1,X",
+      "values": {
+        "pinkBounceRaw": 1824,
+        "violetBounceRaw": 2176
+      }
+    },
+    "bananaLife": {
+      "verified": true,
+      "matches": [
+        {
+          "fileOffset": "0x00A370",
+          "hiromAddress": "$C0A370",
+          "bytes": "ad 7b 05 38 e9 64 00 8d 7b 05"
+        }
+      ],
+      "disassembly": "LDA $057B; SEC; SBC #$0064; STA $057B",
+      "values": {
+        "bananasPerLife": 100
+      }
+    },
+    "characterEntry": {
+      "verified": true,
+      "matches": [
+        {
+          "fileOffset": "0x3F84A4",
+          "hiromAddress": "$FF84A4",
+          "bytes": "a9 02 00 85 84 80 02 64 84"
+        }
+      ],
+      "disassembly": "LDA #$0002; STA $84; BRA +2; STZ $84",
+      "values": {
+        "characterSelectors": [
+          0,
+          2
+        ]
+      }
+    }
+  },
+  "method": "Byte-pattern relocation against supplied Rev 2, followed by manual 65C816 decoding; fixed-point interpretation cross-checked with position-integration routines.",
+  "navigationSource": "https://github.com/Yoshifanatic1/Donkey-Kong-Country-1-Disassembly",
+  "limitations": [
+    "No SNES execution or frame-perfect verification.",
+    "Not a complete decompilation.",
+    "Level geometry, enemy AI, initial jump impulse, animations and audio of the web adaptation are newly authored.",
+    "Verified bytes establish these local routines, not every game state in which they execute."
+  ]
+}

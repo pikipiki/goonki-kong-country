@@ -1,0 +1,592 @@
+{
+  "source": "https://github.com/Yoshifanatic1/Donkey-Kong-Country-1-Disassembly",
+  "evidenceScope": "Labeled USA 1.0 navigation source only; IDs and playback not independently verified in supplied Rev 2. No audio extracted or delivered.",
+  "music": [
+    {
+      "name": "DKIslandSwing",
+      "sourceId": 0
+    },
+    {
+      "name": "CaveDwellerConcert",
+      "sourceId": 1
+    },
+    {
+      "name": "MistyMenance",
+      "sourceId": 2
+    },
+    {
+      "name": "AquaticAmbience",
+      "sourceId": 3
+    },
+    {
+      "name": "MineCartMadness",
+      "sourceId": 4
+    },
+    {
+      "name": "NorthernHemispheres",
+      "sourceId": 5
+    },
+    {
+      "name": "VoicesOfTheTemple",
+      "sourceId": 6
+    },
+    {
+      "name": "FearFactory",
+      "sourceId": 7
+    },
+    {
+      "name": "LifeInTheMines",
+      "sourceId": 8
+    },
+    {
+      "name": "TitleTheme",
+      "sourceId": 9
+    },
+    {
+      "name": "SplashScreenFanfare",
+      "sourceId": 10
+    },
+    {
+      "name": "IceCaveChant",
+      "sourceId": 11
+    },
+    {
+      "name": "SimianSegue",
+      "sourceId": 12
+    },
+    {
+      "name": "ForestFrenzy",
+      "sourceId": 13
+    },
+    {
+      "name": "CreditsConcerto",
+      "sourceId": 14
+    },
+    {
+      "name": "GameOver",
+      "sourceId": 15
+    },
+    {
+      "name": "BonusRoomBlitz",
+      "sourceId": 16
+    },
+    {
+      "name": "DeathMusic",
+      "sourceId": 17
+    },
+    {
+      "name": "Victory",
+      "sourceId": 18
+    },
+    {
+      "name": "TreetopRock",
+      "sourceId": 19
+    },
+    {
+      "name": "FunkysFugue",
+      "sourceId": 20
+    },
+    {
+      "name": "BadBossBoogie",
+      "sourceId": 21
+    },
+    {
+      "name": "CandysLoveSong",
+      "sourceId": 22
+    },
+    {
+      "name": "CrankysTheme",
+      "sourceId": 23
+    },
+    {
+      "name": "GangplankGalleon",
+      "sourceId": 24
+    },
+    {
+      "name": "Failure",
+      "sourceId": 25
+    },
+    {
+      "name": "BeatLevel",
+      "sourceId": 26
+    }
+  ],
+  "effects": [
+    {
+      "name": "None",
+      "sourceId": 0
+    },
+    {
+      "name": "TireBounce",
+      "sourceId": 1
+    },
+    {
+      "name": "SteelKeg",
+      "sourceId": 2
+    },
+    {
+      "name": "DiddySeeingStars",
+      "sourceId": 3
+    },
+    {
+      "name": "ShootOutOfBarrelCannon",
+      "sourceId": 4
+    },
+    {
+      "name": "DiddyBitesFinger",
+      "sourceId": 5
+    },
+    {
+      "name": "KlaptrapBite",
+      "sourceId": 6
+    },
+    {
+      "name": "LostLife",
+      "sourceId": 7
+    },
+    {
+      "name": "StompEnemy",
+      "sourceId": 8
+    },
+    {
+      "name": "Unknown09",
+      "sourceId": 9
+    },
+    {
+      "name": "RevealSecret1",
+      "sourceId": 10
+    },
+    {
+      "name": "RevealSecret2",
+      "sourceId": 11
+    },
+    {
+      "name": "BoomboxLands",
+      "sourceId": 12
+    },
+    {
+      "name": "RambiLand",
+      "sourceId": 13
+    },
+    {
+      "name": "QueenBBuzz",
+      "sourceId": 14
+    },
+    {
+      "name": "ZingerDead",
+      "sourceId": 15
+    },
+    {
+      "name": "RambiPant",
+      "sourceId": 16
+    },
+    {
+      "name": "OpenBox",
+      "sourceId": 17
+    },
+    {
+      "name": "Unknown12",
+      "sourceId": 18
+    },
+    {
+      "name": "DKHowl",
+      "sourceId": 19
+    },
+    {
+      "name": "BreakBarrel",
+      "sourceId": 20
+    },
+    {
+      "name": "KRoolLand",
+      "sourceId": 21
+    },
+    {
+      "name": "Scratch",
+      "sourceId": 22
+    },
+    {
+      "name": "MovingMinecart",
+      "sourceId": 23
+    },
+    {
+      "name": "ClamboSpitPearl",
+      "sourceId": 24
+    },
+    {
+      "name": "CroctopusBeginSpin",
+      "sourceId": 25
+    },
+    {
+      "name": "TNTFuse",
+      "sourceId": 26
+    },
+    {
+      "name": "Unknown1B",
+      "sourceId": 27
+    },
+    {
+      "name": "Unknown1C",
+      "sourceId": 28
+    },
+    {
+      "name": "KillSlippa",
+      "sourceId": 29
+    },
+    {
+      "name": "CannonballLand",
+      "sourceId": 30
+    },
+    {
+      "name": "Unknown1F",
+      "sourceId": 31
+    },
+    {
+      "name": "Unknown20",
+      "sourceId": 32
+    },
+    {
+      "name": "CollectBanana",
+      "sourceId": 33
+    },
+    {
+      "name": "CollectBananaBunch",
+      "sourceId": 34
+    },
+    {
+      "name": "KrashMinecart",
+      "sourceId": 35
+    },
+    {
+      "name": "Unknown24",
+      "sourceId": 36
+    },
+    {
+      "name": "Unknown25",
+      "sourceId": 37
+    },
+    {
+      "name": "EnterBarrelCannon",
+      "sourceId": 38
+    },
+    {
+      "name": "RambiWalk1",
+      "sourceId": 39
+    },
+    {
+      "name": "RambiWalk2",
+      "sourceId": 40
+    },
+    {
+      "name": "Unknown29",
+      "sourceId": 41
+    },
+    {
+      "name": "Unknown2A",
+      "sourceId": 42
+    },
+    {
+      "name": "Unknown2B",
+      "sourceId": 43
+    },
+    {
+      "name": "FuelPlatformTick",
+      "sourceId": 44
+    },
+    {
+      "name": "Unpause",
+      "sourceId": 45
+    },
+    {
+      "name": "HitWithBlownKiss",
+      "sourceId": 46
+    },
+    {
+      "name": "GainLife",
+      "sourceId": 47
+    },
+    {
+      "name": "Unknown30",
+      "sourceId": 48
+    },
+    {
+      "name": "CollectFuelCan",
+      "sourceId": 49
+    },
+    {
+      "name": "Unknown32",
+      "sourceId": 50
+    },
+    {
+      "name": "DiddyLand",
+      "sourceId": 51
+    },
+    {
+      "name": "RambiHitEnemy",
+      "sourceId": 52
+    },
+    {
+      "name": "Unknown35",
+      "sourceId": 53
+    },
+    {
+      "name": "Unknown36",
+      "sourceId": 54
+    },
+    {
+      "name": "Unknown37",
+      "sourceId": 55
+    },
+    {
+      "name": "Unknown38",
+      "sourceId": 56
+    },
+    {
+      "name": "Unknown39",
+      "sourceId": 57
+    },
+    {
+      "name": "Unknown3A",
+      "sourceId": 58
+    },
+    {
+      "name": "Unknown3B",
+      "sourceId": 59
+    },
+    {
+      "name": "Thunder1",
+      "sourceId": 60
+    },
+    {
+      "name": "Thunder2",
+      "sourceId": 61
+    },
+    {
+      "name": "DiddyMonkeySound",
+      "sourceId": 62
+    },
+    {
+      "name": "DKMonkeySound",
+      "sourceId": 63
+    },
+    {
+      "name": "DKTooCloseToEdge",
+      "sourceId": 64
+    },
+    {
+      "name": "DiddyTooCloseToEdge",
+      "sourceId": 65
+    },
+    {
+      "name": "KillKlaptrap",
+      "sourceId": 66
+    },
+    {
+      "name": "DiddyHurt",
+      "sourceId": 67
+    },
+    {
+      "name": "DKGulp",
+      "sourceId": 68
+    },
+    {
+      "name": "DiddyGulp",
+      "sourceId": 69
+    },
+    {
+      "name": "DKHurt",
+      "sourceId": 70
+    },
+    {
+      "name": "KillArmy",
+      "sourceId": 71
+    },
+    {
+      "name": "KillKlump",
+      "sourceId": 72
+    },
+    {
+      "name": "KillKritter",
+      "sourceId": 73
+    },
+    {
+      "name": "CrankyWhistle",
+      "sourceId": 74
+    },
+    {
+      "name": "Unknown4B",
+      "sourceId": 75
+    },
+    {
+      "name": "Unknown4C",
+      "sourceId": 76
+    },
+    {
+      "name": "CrankyFalls",
+      "sourceId": 77
+    },
+    {
+      "name": "ClamboClose",
+      "sourceId": 78
+    },
+    {
+      "name": "CollectK",
+      "sourceId": 79
+    },
+    {
+      "name": "CollectO",
+      "sourceId": 80
+    },
+    {
+      "name": "CollectN",
+      "sourceId": 81
+    },
+    {
+      "name": "CollectG",
+      "sourceId": 82
+    },
+    {
+      "name": "KillKrusha",
+      "sourceId": 83
+    },
+    {
+      "name": "KRoolRun",
+      "sourceId": 84
+    },
+    {
+      "name": "Unknown55",
+      "sourceId": 85
+    },
+    {
+      "name": "RambiStab",
+      "sourceId": 86
+    },
+    {
+      "name": "EnguardeStab",
+      "sourceId": 87
+    },
+    {
+      "name": "GetOnAnimalBuddy",
+      "sourceId": 88
+    },
+    {
+      "name": "WingFlap",
+      "sourceId": 89
+    },
+    {
+      "name": "Unknown5A",
+      "sourceId": 90
+    },
+    {
+      "name": "OilFireRise",
+      "sourceId": 91
+    },
+    {
+      "name": "MankyKongThrow",
+      "sourceId": 92
+    },
+    {
+      "name": "DiddyTrappedInBarrel",
+      "sourceId": 93
+    },
+    {
+      "name": "DKTrappedInBarrel",
+      "sourceId": 94
+    },
+    {
+      "name": "AnimalBuddyJump",
+      "sourceId": 95
+    },
+    {
+      "name": "Collect1stAnimalBuddyToken",
+      "sourceId": 96
+    },
+    {
+      "name": "Collect2ndAnimalBuddyToken",
+      "sourceId": 97
+    },
+    {
+      "name": "Collect3rdAnimalBuddyToken",
+      "sourceId": 98
+    },
+    {
+      "name": "Laugh",
+      "sourceId": 99
+    },
+    {
+      "name": "DKLand",
+      "sourceId": 100
+    },
+    {
+      "name": "SwitchKongs",
+      "sourceId": 101
+    },
+    {
+      "name": "KillMiniNecky",
+      "sourceId": 102
+    },
+    {
+      "name": "KillNecky",
+      "sourceId": 103
+    },
+    {
+      "name": "Unknown68",
+      "sourceId": 104
+    },
+    {
+      "name": "Unknown69",
+      "sourceId": 105
+    },
+    {
+      "name": "UnusedBubbleSound",
+      "sourceId": 106
+    },
+    {
+      "name": "UFOLikeNoise",
+      "sourceId": 107
+    },
+    {
+      "name": "UnusedMenuChoice",
+      "sourceId": 108
+    },
+    {
+      "name": "Unknown6D",
+      "sourceId": 109
+    },
+    {
+      "name": "ZingerBuzz",
+      "sourceId": 110
+    },
+    {
+      "name": "Unknown6F",
+      "sourceId": 111
+    },
+    {
+      "name": "CreditsCroctopus",
+      "sourceId": 112
+    },
+    {
+      "name": "UnusedFanfare1",
+      "sourceId": 113
+    },
+    {
+      "name": "UnusedFanfare2",
+      "sourceId": 114
+    },
+    {
+      "name": "CollectLifeBalloon",
+      "sourceId": 115
+    },
+    {
+      "name": "Unknown74",
+      "sourceId": 116
+    },
+    {
+      "name": "DKSwim",
+      "sourceId": 117
+    },
+    {
+      "name": "DiddySwim",
+      "sourceId": 118
+    }
+  ]
+}

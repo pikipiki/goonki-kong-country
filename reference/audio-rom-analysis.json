@@ -1,0 +1,3208 @@
+{
+  "romSha256": "628147468c3539283197f58f03b94df49758a332831857481ea9cc31645f0527",
+  "romBytes": 4194304,
+  "revision": 2,
+  "sourceArchiveSha256": "123f853708518bdb745990a37d90a1cc800a0f0911afcf3ce451d81c446f6b77",
+  "method": "Unique signature relocation, CPU/SPC instruction decoding, 24-bit table parsing and BRR header validation against supplied Rev 2 bytes; no emulation.",
+  "navigationSource": "https://github.com/Yoshifanatic1/Donkey-Kong-Country-1-Disassembly",
+  "bootstrap": {
+    "data": {
+      "fileOffset": "0x0AA342",
+      "hiromAddress": "$CAA342",
+      "sizeBytes": 40,
+      "sha256": "b67ddb826a27c0f2d02b0f41d60f057aad570546902dc627ca215a3da7496b4e",
+      "firstBytes": "cd 00 e4 f4 64 f4 d0 fa 65 de 04 f0 f5 c5 de 04 28 01 f0 0f e4 f5 64 f5"
+    },
+    "aramDestination": "0x04B8",
+    "handshakeByte": "0x04DE",
+    "stableReadPort0": true,
+    "stableReadPort1": true,
+    "cpuUploader": {
+      "fileOffset": "0x0AB0ED",
+      "hiromAddress": "$CAB0ED",
+      "sizeBytes": 70,
+      "sha256": "e5edf65e3795028d453867b37e7e44fc8e433c4c21ba8711fc007bf1e27062d2",
+      "firstBytes": "08 c2 20 e2 10 a9 aa bb cd 40 21 d0 fb a9 b8 04 8d 42 21 a9 cc 01 8d 40"
+    }
+  },
+  "driver": {
+    "data": {
+      "fileOffset": "0x0AA372",
+      "hiromAddress": "$CAA372",
+      "sizeBytes": 3451,
+      "sha256": "7278a9b94ca2886afb04c6ba31e8ecf79907d1d147f7a4c616b10f2cf011c43d",
+      "firstBytes": "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00"
+    },
+    "aramDestination": "0x04E8",
+    "aramEntry": "0x05E8",
+    "entryRom": "0x0AA472",
+    "cpuUploadSetup": {
+      "fileOffset": "0x0AB133",
+      "hiromAddress": "$CAB133",
+      "sizeBytes": 44,
+      "sha256": "75b22aa005e19bc52fa26a621541485ba1c912ce813c89a0ce6876d652bd27b3",
+      "firstBytes": "08 e2 20 c2 10 a2 6e a3 86 4c a9 8a 85 4e a2 7b 0d 86 4f a9 e8 eb a9 04"
+    },
+    "revisionDifference": "USA 1.0 source uses $04E0/$05E0, handshake $04D6 and $0D7E bytes; supplied Rev 2 uses $04E8/$05E8, $04DE and $0D7B bytes."
+  },
+  "brr": {
+    "pointerTable": {
+      "fileOffset": "0x09FF00",
+      "hiromAddress": "$C9FF00",
+      "sizeBytes": 210,
+      "sha256": "8ea0f4873a7ad817caa82ecce54d52ef04a2958f9f1510aebf5cf41aa1300a36",
+      "firstBytes": "00 00 c7 39 0e c7 6d 24 c7 08 28 c7 d8 29 c7 a5 2e c7 3e 40 c7 82 40 c7"
+    },
+    "samples": [
+      {
+        "id": "00",
+        "header": {
+          "fileOffset": "0x070000",
+          "hiromAddress": "$C70000",
+          "sizeBytes": 4,
+          "sha256": "d5b965461d019eb92f51b5f5c0f86e63727a6df00e01ab9c22bb1bd96dd220a1",
+          "firstBytes": "00 00 35 0e"
+        },
+        "headerBytes": "00 00 35 0e",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 3637,
+        "brrBlocks": 404,
+        "decodedFramesBeforeLoop": 6464,
+        "endHeader": "0x8B",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x99",
+        "payload": {
+          "fileOffset": "0x070004",
+          "hiromAddress": "$C70004",
+          "sizeBytes": 3637,
+          "sha256": "ca3218f2a49dd2dd8e3337747375650d2df771fbb1506d20a897feb5bc7c966c",
+          "firstBytes": "b0 0f ed dc cc cc cc cc cc 88 91 ec ee 5d e0 3c 00 12 88 d2 40 e4 2e 50"
+        }
+      },
+      {
+        "id": "01",
+        "header": {
+          "fileOffset": "0x070E39",
+          "hiromAddress": "$C70E39",
+          "sizeBytes": 4,
+          "sha256": "c72c3aeae7295ac9c01a7a96237d0deea3efdc29c4f5b2bd08e53f37a2d197ef",
+          "firstBytes": "00 00 30 16"
+        },
+        "headerBytes": "00 00 30 16",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 5680,
+        "brrBlocks": 631,
+        "decodedFramesBeforeLoop": 10096,
+        "endHeader": "0x97",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0xA4",
+        "payload": {
+          "fileOffset": "0x070E3D",
+          "hiromAddress": "$C70E3D",
+          "sizeBytes": 5680,
+          "sha256": "683d70d35c49bfdbdc858502ab28dec59653b0a2ee686fefee06d8766d71cdce",
+          "firstBytes": "b0 01 23 45 43 11 23 34 32 9c a6 a8 76 f2 02 11 fc bf 94 24 44 54 53 0b"
+        }
+      },
+      {
+        "id": "02",
+        "header": {
+          "fileOffset": "0x07246D",
+          "hiromAddress": "$C7246D",
+          "sizeBytes": 4,
+          "sha256": "ca0fd99df135b42a1fdcdb07fa916d736d114eb830e746522cdde2f3a76eb5bb",
+          "firstBytes": "00 00 97 03"
+        },
+        "headerBytes": "00 00 97 03",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 919,
+        "brrBlocks": 102,
+        "decodedFramesBeforeLoop": 1632,
+        "endHeader": "0x65",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x44",
+        "payload": {
+          "fileOffset": "0x072471",
+          "hiromAddress": "$C72471",
+          "sizeBytes": 919,
+          "sha256": "51ae641c55c21bad3cf534a9cea627e7d7d2f42abc3c2cab6ac8f00d4dcd3472",
+          "firstBytes": "a0 00 12 11 0e dc cb bc db 74 a1 9e df fe d2 00 7f 15 c0 00 10 10 02 10"
+        }
+      },
+      {
+        "id": "03",
+        "header": {
+          "fileOffset": "0x072808",
+          "hiromAddress": "$C72808",
+          "sizeBytes": 4,
+          "sha256": "902ad447cc7d82734a541accdaed77531eb4fd8ca9ec05d369d6de5168ef698a",
+          "firstBytes": "00 00 cc 01"
+        },
+        "headerBytes": "00 00 cc 01",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 460,
+        "brrBlocks": 51,
+        "decodedFramesBeforeLoop": 816,
+        "endHeader": "0x51",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x60",
+        "payload": {
+          "fileOffset": "0x07280C",
+          "hiromAddress": "$C7280C",
+          "sizeBytes": 460,
+          "sha256": "e69870f01a87b9f1ac68dfca1362cdb4a92e5bede3765103ffb44184a9142a3a",
+          "firstBytes": "b0 34 32 0d cc de 00 13 67 a8 be 1c f3 63 33 0b be ce a8 10 13 64 11 0e"
+        }
+      },
+      {
+        "id": "04",
+        "header": {
+          "fileOffset": "0x0729D8",
+          "hiromAddress": "$C729D8",
+          "sizeBytes": 4,
+          "sha256": "1c22f2776076cea5d35f5ce16ee2ad1b795237ebcffc4a1aef5f1e017a2bc946",
+          "firstBytes": "89 04 c9 04"
+        },
+        "headerBytes": "89 04 c9 04",
+        "loopOffsetBytes": 1161,
+        "uploadedBytes": 1225,
+        "brrBlocks": 136,
+        "decodedFramesBeforeLoop": 2176,
+        "endHeader": "0x6B",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0xE8",
+        "payload": {
+          "fileOffset": "0x0729DC",
+          "hiromAddress": "$C729DC",
+          "sizeBytes": 1225,
+          "sha256": "a0b5e4a6fbbe66e10c8e8a74dc76de4bb1813251428b5764362c26228a1c6d76",
+          "firstBytes": "a0 ff ff f0 11 00 0e ca aa 84 2b e3 3d af 00 10 03 ef 88 5f 9d 35 4e e3"
+        }
+      },
+      {
+        "id": "05",
+        "header": {
+          "fileOffset": "0x072EA5",
+          "hiromAddress": "$C72EA5",
+          "sizeBytes": 4,
+          "sha256": "8d521aaaaf72e60c1dde0c525a0c8342c79e959f4310d54d18a53865a35c3275",
+          "firstBytes": "00 00 95 11"
+        },
+        "headerBytes": "00 00 95 11",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 4501,
+        "brrBlocks": 500,
+        "decodedFramesBeforeLoop": 8000,
+        "endHeader": "0x91",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x84",
+        "payload": {
+          "fileOffset": "0x072EA9",
+          "hiromAddress": "$C72EA9",
+          "sizeBytes": 4501,
+          "sha256": "392d9dd7cf1b30a0d1a2a197b76abbb5053fa6263e265914ab5906c5b6238c95",
+          "firstBytes": "90 00 00 00 00 00 0f cd 26 a4 2e ab 17 3e e0 fe d0 37 a4 71 dc cc dd 05"
+        }
+      },
+      {
+        "id": "06",
+        "header": {
+          "fileOffset": "0x07403E",
+          "hiromAddress": "$C7403E",
+          "sizeBytes": 4,
+          "sha256": "413432a2e4977ca133f00f95e74dcb2af10220ee4bcf9c47ac33ed88a7d7bffa",
+          "firstBytes": "00 00 40 00"
+        },
+        "headerBytes": "00 00 40 00",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 64,
+        "brrBlocks": 7,
+        "decodedFramesBeforeLoop": 112,
+        "endHeader": "0x6F",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x88",
+        "payload": {
+          "fileOffset": "0x074042",
+          "hiromAddress": "$C74042",
+          "sizeBytes": 64,
+          "sha256": "e36838b0c1a34b1d9a479b3eb3e1e18606803636396287787db637d1ab2a74be",
+          "firstBytes": "b0 20 ec ba aa ab bb bb bb 88 0e ff e0 ef 0d 1d 12 65 78 50 bd ae 13 15"
+        }
+      },
+      {
+        "id": "07",
+        "header": {
+          "fileOffset": "0x074082",
+          "hiromAddress": "$C74082",
+          "sizeBytes": 4,
+          "sha256": "c365b81a290c3726646771f798835c58712906180ee71d19219a49c1d6bd774e",
+          "firstBytes": "ec 04 f6 04"
+        },
+        "headerBytes": "ec 04 f6 04",
+        "loopOffsetBytes": 1260,
+        "uploadedBytes": 1270,
+        "brrBlocks": 141,
+        "decodedFramesBeforeLoop": 2256,
+        "endHeader": "0xB3",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0xA4",
+        "payload": {
+          "fileOffset": "0x074086",
+          "hiromAddress": "$C74086",
+          "sizeBytes": 1270,
+          "sha256": "927f4000b680eb3e1e139c68bcf819a788f029d34b085559275105df09f268fe",
+          "firstBytes": "90 ff 02 64 1e 2c 9d 1f f9 a0 cd cf 44 47 40 f0 22 fc a0 aa b2 32 24 3f"
+        }
+      },
+      {
+        "id": "08",
+        "header": {
+          "fileOffset": "0x07457C",
+          "hiromAddress": "$C7457C",
+          "sizeBytes": 4,
+          "sha256": "cf88b989e6bfc6b2e66b1d2fa6b831bcd28f51fb32b3e97d1f33a5a831264a8b",
+          "firstBytes": "48 00 d6 03"
+        },
+        "headerBytes": "48 00 d6 03",
+        "loopOffsetBytes": 72,
+        "uploadedBytes": 982,
+        "brrBlocks": 109,
+        "decodedFramesBeforeLoop": 1744,
+        "endHeader": "0x9B",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0xC0",
+        "payload": {
+          "fileOffset": "0x074580",
+          "hiromAddress": "$C74580",
+          "sizeBytes": 982,
+          "sha256": "81e48bf140998a44c8380f8db4f46e77d993f0b0a94fee00978cce287b232bad",
+          "firstBytes": "c0 10 00 10 fe db bb cd ef 98 bc 54 6d 29 df 2b 07 14 a4 11 cb aa ae 04"
+        }
+      },
+      {
+        "id": "09",
+        "header": {
+          "fileOffset": "0x074956",
+          "hiromAddress": "$C74956",
+          "sizeBytes": 4,
+          "sha256": "08b7e0f9498e5694d7323013da63a9e56537306903077c8ca09d62dbedbe6a51",
+          "firstBytes": "00 00 35 05"
+        },
+        "headerBytes": "00 00 35 05",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 1333,
+        "brrBlocks": 148,
+        "decodedFramesBeforeLoop": 2368,
+        "endHeader": "0x65",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x55",
+        "payload": {
+          "fileOffset": "0x07495A",
+          "hiromAddress": "$C7495A",
+          "sizeBytes": 1333,
+          "sha256": "9014524e0e138a0d8a8239f676bce03d2882185b06d09415a8b1d8cfcc1046b3",
+          "firstBytes": "b0 00 00 00 00 00 00 00 f8 a4 95 10 f0 33 21 63 ef 54 c0 43 31 2d 0f 4e"
+        }
+      },
+      {
+        "id": "0A",
+        "header": {
+          "fileOffset": "0x074E8F",
+          "hiromAddress": "$C74E8F",
+          "sizeBytes": 4,
+          "sha256": "3ecbfd8118cc4b1c3d37ef268142dd63b710aba0aa5426539813cf2670822dc1",
+          "firstBytes": "eb 02 6a 03"
+        },
+        "headerBytes": "eb 02 6a 03",
+        "loopOffsetBytes": 747,
+        "uploadedBytes": 874,
+        "brrBlocks": 97,
+        "decodedFramesBeforeLoop": 1552,
+        "endHeader": "0x7B",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0xB0",
+        "payload": {
+          "fileOffset": "0x074E93",
+          "hiromAddress": "$C74E93",
+          "sizeBytes": 874,
+          "sha256": "6e88c4e0839b548be29837d16347a3f2364fa8469353a2a87413caff2ac3f280",
+          "firstBytes": "b0 fd cd ef fd cc e2 55 3f a4 cf 24 40 e0 46 40 ba c2 a4 45 5f cd 25 2e"
+        }
+      },
+      {
+        "id": "0B",
+        "header": {
+          "fileOffset": "0x0751FD",
+          "hiromAddress": "$C751FD",
+          "sizeBytes": 4,
+          "sha256": "b026be26ec383d8e7dcdac83f1d3d2f7cf3d0c86ef52be16864ed3dffcf946d1",
+          "firstBytes": "00 00 ae 04"
+        },
+        "headerBytes": "00 00 ae 04",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 1198,
+        "brrBlocks": 133,
+        "decodedFramesBeforeLoop": 2128,
+        "endHeader": "0x81",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x80",
+        "payload": {
+          "fileOffset": "0x075201",
+          "hiromAddress": "$C75201",
+          "sizeBytes": 1198,
+          "sha256": "42e78c9c0fec290f09aab35ee213e218dbe85ec9ed0ed29f89b648d20ba6efc6",
+          "firstBytes": "c0 e0 11 11 22 23 33 35 75 c0 0c b9 a8 9a ad 0f eb 9d c0 02 44 36 76 2e"
+        }
+      },
+      {
+        "id": "0C",
+        "header": {
+          "fileOffset": "0x0756AF",
+          "hiromAddress": "$C756AF",
+          "sizeBytes": 4,
+          "sha256": "52499679067291a7d1830076bbffc7518b6d55c6110aaf4f1a227a1115168aea",
+          "firstBytes": "00 00 a4 02"
+        },
+        "headerBytes": "00 00 a4 02",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 676,
+        "brrBlocks": 75,
+        "decodedFramesBeforeLoop": 1200,
+        "endHeader": "0x65",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x99",
+        "payload": {
+          "fileOffset": "0x0756B3",
+          "hiromAddress": "$C756B3",
+          "sizeBytes": 676,
+          "sha256": "a62b2c159bbe2019f9f78061af7eac9fcb4af694e4a8406e6a2ae69c42f7d19c",
+          "firstBytes": "c0 01 12 10 db d0 23 42 fe a0 ba d1 75 1f 1e bf 23 33 94 ad a3 53 e2 2e"
+        }
+      },
+      {
+        "id": "0D",
+        "header": {
+          "fileOffset": "0x075957",
+          "hiromAddress": "$C75957",
+          "sizeBytes": 4,
+          "sha256": "4a91b4d3f91037c423e87458302670663f4ec2f4c5c07c0d5622c67ca0982525",
+          "firstBytes": "00 00 61 03"
+        },
+        "headerBytes": "00 00 61 03",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 865,
+        "brrBlocks": 96,
+        "decodedFramesBeforeLoop": 1536,
+        "endHeader": "0x81",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x80",
+        "payload": {
+          "fileOffset": "0x07595B",
+          "hiromAddress": "$C7595B",
+          "sizeBytes": 865,
+          "sha256": "eac7a61a88da60fb166ef51019d1d9e76d82ec68e4a0fbe02aa4ff460ccc5b95",
+          "firstBytes": "b0 00 00 00 00 00 f0 6b 4f c0 b3 42 af 00 32 fa e7 4f c0 ae 12 20 fc 03"
+        }
+      },
+      {
+        "id": "0E",
+        "header": {
+          "fileOffset": "0x075CBC",
+          "hiromAddress": "$C75CBC",
+          "sizeBytes": 4,
+          "sha256": "f5ee259e7bdd76b6e714f4f389c20bcae1f3dad90300d1722bbe9d7c8fbd9cc9",
+          "firstBytes": "00 00 64 00"
+        },
+        "headerBytes": "00 00 64 00",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 100,
+        "brrBlocks": 11,
+        "decodedFramesBeforeLoop": 176,
+        "endHeader": "0x7B",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0xC0",
+        "payload": {
+          "fileOffset": "0x075CC0",
+          "hiromAddress": "$C75CC0",
+          "sizeBytes": 100,
+          "sha256": "badc429416c837d0e5e282d50cfad9e72bd54af777a95241fc0d210889f2f08f",
+          "firstBytes": "c0 d0 24 55 55 44 44 33 33 84 9e fe fe ee ed ed dd ed 6c fa 2d de dc ec"
+        }
+      },
+      {
+        "id": "0F",
+        "header": {
+          "fileOffset": "0x075D24",
+          "hiromAddress": "$C75D24",
+          "sizeBytes": 4,
+          "sha256": "62d10c15c1052a58211a8e07877ff5b3121dca1c61821e8f91905a5599b06c74",
+          "firstBytes": "00 00 13 00"
+        },
+        "headerBytes": "00 00 13 00",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 19,
+        "brrBlocks": 2,
+        "decodedFramesBeforeLoop": 32,
+        "endHeader": "0xB3",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x9F",
+        "payload": {
+          "fileOffset": "0x075D28",
+          "hiromAddress": "$C75D28",
+          "sizeBytes": 19,
+          "sha256": "1318ae085fa1c104921da606eae3baa4c44bd92ecc550d175e4ff925e337a423",
+          "firstBytes": "b0 ff 01 26 74 66 23 54 ff b3 de e1 66 ab aa a8 bc de 9f"
+        }
+      },
+      {
+        "id": "10",
+        "header": {
+          "fileOffset": "0x075D3B",
+          "hiromAddress": "$C75D3B",
+          "sizeBytes": 4,
+          "sha256": "8e8851bedff2d4a5075f9c57df83bc01aab8ad07aacf3bb96ec1f320fec6e815",
+          "firstBytes": "2b 05 46 05"
+        },
+        "headerBytes": "2b 05 46 05",
+        "loopOffsetBytes": 1323,
+        "uploadedBytes": 1350,
+        "brrBlocks": 150,
+        "decodedFramesBeforeLoop": 2400,
+        "endHeader": "0x8B",
+        "loopEnabled": true,
+        "extraUploadedBytes": 0,
+        "extraUploadedByte": null,
+        "payload": {
+          "fileOffset": "0x075D3F",
+          "hiromAddress": "$C75D3F",
+          "sizeBytes": 1350,
+          "sha256": "b7a9f00d095dc8e83f5d0fd71e03b438ddf6213b7e28a7fc57e6ab5afad1e12f",
+          "firstBytes": "02 00 00 00 00 00 00 00 00 02 00 00 00 00 00 00 00 00 82 00 00 bc de ee"
+        }
+      },
+      {
+        "id": "11",
+        "header": {
+          "fileOffset": "0x076285",
+          "hiromAddress": "$C76285",
+          "sizeBytes": 4,
+          "sha256": "3ae0291aebbc1f9c187a22a7081563eb267efc33f2734066dc52cc3c63fcf6e2",
+          "firstBytes": "00 00 34 03"
+        },
+        "headerBytes": "00 00 34 03",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 820,
+        "brrBlocks": 91,
+        "decodedFramesBeforeLoop": 1456,
+        "endHeader": "0x83",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0xA4",
+        "payload": {
+          "fileOffset": "0x076289",
+          "hiromAddress": "$C76289",
+          "sizeBytes": 820,
+          "sha256": "37c1f3a7edf8f26de205227ea1c72e256bc66e93926a9b951e3610418d978e90",
+          "firstBytes": "90 fd ca bd ee ff ff 00 ff 70 a9 9c 07 76 20 22 44 46 80 52 fd dc d2 31"
+        }
+      },
+      {
+        "id": "12",
+        "header": {
+          "fileOffset": "0x0765BD",
+          "hiromAddress": "$C765BD",
+          "sizeBytes": 4,
+          "sha256": "2a5e64cd81e55cc8586c2c3275351e9e1094368fd447dad41840af7bba2bda62",
+          "firstBytes": "00 00 3b 08"
+        },
+        "headerBytes": "00 00 3b 08",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 2107,
+        "brrBlocks": 234,
+        "decodedFramesBeforeLoop": 3744,
+        "endHeader": "0x91",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0xA0",
+        "payload": {
+          "fileOffset": "0x0765C1",
+          "hiromAddress": "$C765C1",
+          "sizeBytes": 2107,
+          "sha256": "7051a92ae08b30045a233c3992adbb81e643598f1732fc1c81ae25614c4794b4",
+          "firstBytes": "b0 00 00 00 00 f1 f2 ed 49 c0 4c 4d 3d 4d 12 c6 a5 e1 c0 2d 3c 5b 3c 01"
+        }
+      },
+      {
+        "id": "13",
+        "header": {
+          "fileOffset": "0x076DFC",
+          "hiromAddress": "$C76DFC",
+          "sizeBytes": 4,
+          "sha256": "413432a2e4977ca133f00f95e74dcb2af10220ee4bcf9c47ac33ed88a7d7bffa",
+          "firstBytes": "00 00 40 00"
+        },
+        "headerBytes": "00 00 40 00",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 64,
+        "brrBlocks": 7,
+        "decodedFramesBeforeLoop": 112,
+        "endHeader": "0x8B",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x5C",
+        "payload": {
+          "fileOffset": "0x076E00",
+          "hiromAddress": "$C76E00",
+          "sizeBytes": 64,
+          "sha256": "1b81e43db318be3e77fc8cf7f88517f699a30959d221aae53859ece6647f7f9d",
+          "firstBytes": "b0 12 34 56 67 77 66 54 32 84 eb cd f9 f2 22 55 54 21 88 fb 2f b3 d0 1f"
+        }
+      },
+      {
+        "id": "14",
+        "header": {
+          "fileOffset": "0x076E40",
+          "hiromAddress": "$C76E40",
+          "sizeBytes": 4,
+          "sha256": "413432a2e4977ca133f00f95e74dcb2af10220ee4bcf9c47ac33ed88a7d7bffa",
+          "firstBytes": "00 00 40 00"
+        },
+        "headerBytes": "00 00 40 00",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 64,
+        "brrBlocks": 7,
+        "decodedFramesBeforeLoop": 112,
+        "endHeader": "0xB7",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0xC0",
+        "payload": {
+          "fileOffset": "0x076E44",
+          "hiromAddress": "$C76E44",
+          "sizeBytes": 64,
+          "sha256": "a91db53b2aecda7254bbba42e5a38c268f32ab365e5f1d3cf210a937930173bb",
+          "firstBytes": "c0 13 54 45 42 21 12 24 34 b4 51 cf 00 c9 14 df 12 30 b4 cf ff d9 e6 ed"
+        }
+      },
+      {
+        "id": "15",
+        "header": {
+          "fileOffset": "0x076E84",
+          "hiromAddress": "$C76E84",
+          "sizeBytes": 4,
+          "sha256": "a43262bb126eabe7789ec4167948fe6d64258bc775e86962428468061f1a9444",
+          "firstBytes": "00 00 14 02"
+        },
+        "headerBytes": "00 00 14 02",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 532,
+        "brrBlocks": 59,
+        "decodedFramesBeforeLoop": 944,
+        "endHeader": "0x79",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0xC0",
+        "payload": {
+          "fileOffset": "0x076E88",
+          "hiromAddress": "$C76E88",
+          "sizeBytes": 532,
+          "sha256": "ec0fcaf48b76f9c5316fc093619a5d269063cbafe3264309a7d6ed79da4384a6",
+          "firstBytes": "90 00 00 00 00 00 0f 15 1f c0 02 20 11 00 12 4f 9b a9 c0 ce d1 32 02 11"
+        }
+      },
+      {
+        "id": "16",
+        "header": {
+          "fileOffset": "0x07709C",
+          "hiromAddress": "$C7709C",
+          "sizeBytes": 4,
+          "sha256": "d437e10a45a2027fdd78a1fe4d6cf813bd939d4b7b2fdf06f50bea4cb2abab81",
+          "firstBytes": "00 00 45 0a"
+        },
+        "headerBytes": "00 00 45 0a",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 2629,
+        "brrBlocks": 292,
+        "decodedFramesBeforeLoop": 4672,
+        "endHeader": "0xA1",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0xA0",
+        "payload": {
+          "fileOffset": "0x0770A0",
+          "hiromAddress": "$C770A0",
+          "sizeBytes": 2629,
+          "sha256": "eac0c5b57a8c44e5e0a6b3709d7444e2388cc3c2d20ce5000e9bbc2c42f8db06",
+          "firstBytes": "c0 e4 f2 e2 11 a3 fd 20 0f b0 ce f3 e5 e5 14 40 e3 e6 c0 e0 13 97 c0 c4"
+        }
+      },
+      {
+        "id": "17",
+        "header": {
+          "fileOffset": "0x077AE5",
+          "hiromAddress": "$C77AE5",
+          "sizeBytes": 4,
+          "sha256": "334a3b97f95a08cac58ce4171f99c3390a02c757ee3784117a113a0637f5c560",
+          "firstBytes": "00 00 9a 00"
+        },
+        "headerBytes": "00 00 9a 00",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 154,
+        "brrBlocks": 17,
+        "decodedFramesBeforeLoop": 272,
+        "endHeader": "0x7B",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x99",
+        "payload": {
+          "fileOffset": "0x077AE9",
+          "hiromAddress": "$C77AE9",
+          "sizeBytes": 154,
+          "sha256": "fa13f79eda1a3b27d579dcd09b94e94da541178cbc590246c28ac00007236e26",
+          "firstBytes": "b0 e0 24 56 77 77 77 77 76 8c 61 13 12 f0 cd df d2 01 78 63 34 00 e0 dd"
+        }
+      },
+      {
+        "id": "18",
+        "header": {
+          "fileOffset": "0x077B83",
+          "hiromAddress": "$C77B83",
+          "sizeBytes": 4,
+          "sha256": "413432a2e4977ca133f00f95e74dcb2af10220ee4bcf9c47ac33ed88a7d7bffa",
+          "firstBytes": "00 00 40 00"
+        },
+        "headerBytes": "00 00 40 00",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 64,
+        "brrBlocks": 7,
+        "decodedFramesBeforeLoop": 112,
+        "endHeader": "0x9B",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x84",
+        "payload": {
+          "fileOffset": "0x077B87",
+          "hiromAddress": "$C77B87",
+          "sizeBytes": 64,
+          "sha256": "8b8145376e91d0c4d7f5adcb8fe520a5b98e4c2855c306d6d60da06da8e63e50",
+          "firstBytes": "c0 dd ef ff ff 02 34 56 67 94 0e dd ed de dc 03 56 40 98 1c 10 30 d2 c3"
+        }
+      },
+      {
+        "id": "19",
+        "header": {
+          "fileOffset": "0x077BC7",
+          "hiromAddress": "$C77BC7",
+          "sizeBytes": 4,
+          "sha256": "aa282f59f9c3c5032b68f93f44ebba906e891f486f3f1ec70d23cd5894a74065",
+          "firstBytes": "00 00 1c 00"
+        },
+        "headerBytes": "00 00 1c 00",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 28,
+        "brrBlocks": 3,
+        "decodedFramesBeforeLoop": 48,
+        "endHeader": "0xB3",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x74",
+        "payload": {
+          "fileOffset": "0x077BCB",
+          "hiromAddress": "$C77BCB",
+          "sizeBytes": 28,
+          "sha256": "b6be56dc1e52b8e9e136bd0ca9dca87ce3487b32c0edc8181460f732cd99f8a4",
+          "firstBytes": "b0 32 32 e0 13 1c ed 89 f3 b0 db fc 9a f3 ee 00 12 34 b3 1f d1 51 33 33"
+        }
+      },
+      {
+        "id": "1A",
+        "header": {
+          "fileOffset": "0x077BE7",
+          "hiromAddress": "$C77BE7",
+          "sizeBytes": 4,
+          "sha256": "51d2fc3f366ef38add106f6affff6e9ab5ecd9c27a60721ecfec28e0d4ef6656",
+          "firstBytes": "ef 01 0a 02"
+        },
+        "headerBytes": "ef 01 0a 02",
+        "loopOffsetBytes": 495,
+        "uploadedBytes": 522,
+        "brrBlocks": 58,
+        "decodedFramesBeforeLoop": 928,
+        "endHeader": "0xB7",
+        "loopEnabled": true,
+        "extraUploadedBytes": 0,
+        "extraUploadedByte": null,
+        "payload": {
+          "fileOffset": "0x077BEB",
+          "hiromAddress": "$C77BEB",
+          "sizeBytes": 522,
+          "sha256": "49b90118805198fcf5cc810ac5b3d7b1452c65321cf7125390bc14a2ed399c45",
+          "firstBytes": "00 00 00 00 00 00 00 00 00 96 00 00 00 2c e0 30 11 01 86 ea 02 31 f1 2f"
+        }
+      },
+      {
+        "id": "1B",
+        "header": {
+          "fileOffset": "0x077DF5",
+          "hiromAddress": "$C77DF5",
+          "sizeBytes": 4,
+          "sha256": "059110c24d9bbd2a1ef63345d77ad48a10b931ad29d1fcd4f3dd79533917d0a9",
+          "firstBytes": "5d 06 dc 06"
+        },
+        "headerBytes": "5d 06 dc 06",
+        "loopOffsetBytes": 1629,
+        "uploadedBytes": 1756,
+        "brrBlocks": 195,
+        "decodedFramesBeforeLoop": 3120,
+        "endHeader": "0x7B",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x99",
+        "payload": {
+          "fileOffset": "0x077DF9",
+          "hiromAddress": "$C77DF9",
+          "sizeBytes": 1756,
+          "sha256": "34980ee655832a8229079b3e736b4c5649070190af26b06113beccc8335c6372",
+          "firstBytes": "90 12 24 56 55 21 ff f0 46 88 f5 02 1c 1e b2 c0 30 52 78 c0 29 4b 11 fe"
+        }
+      },
+      {
+        "id": "1C",
+        "header": {
+          "fileOffset": "0x0784D5",
+          "hiromAddress": "$C784D5",
+          "sizeBytes": 4,
+          "sha256": "48b110103bf5bc5eb423124e04981dcccde7cd90a7f690b33c74879e337e19a1",
+          "firstBytes": "00 00 b5 00"
+        },
+        "headerBytes": "00 00 b5 00",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 181,
+        "brrBlocks": 20,
+        "decodedFramesBeforeLoop": 320,
+        "endHeader": "0x77",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x68",
+        "payload": {
+          "fileOffset": "0x0784D9",
+          "hiromAddress": "$C784D9",
+          "sizeBytes": 181,
+          "sha256": "df79a0a95f759a724de9468fd390959429d68e38c679b3537fc57c11daf17b41",
+          "firstBytes": "b0 22 33 34 44 45 55 54 43 6c 5c 14 63 51 ce b3 f7 56 6c ee e9 3b 4b 6d"
+        }
+      },
+      {
+        "id": "1D",
+        "header": {
+          "fileOffset": "0x07858E",
+          "hiromAddress": "$C7858E",
+          "sizeBytes": 4,
+          "sha256": "7ba5af3b5fb5f04231b66c8095b5dc012f9c106427f05d79ea56e8e93af19bf6",
+          "firstBytes": "00 00 38 02"
+        },
+        "headerBytes": "00 00 38 02",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 568,
+        "brrBlocks": 63,
+        "decodedFramesBeforeLoop": 1008,
+        "endHeader": "0x87",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x90",
+        "payload": {
+          "fileOffset": "0x078592",
+          "hiromAddress": "$C78592",
+          "sizeBytes": 568,
+          "sha256": "30c261d6a94c06cb932aa1398488d510b139d46bf7dc7e3cd60449f1bed1541d",
+          "firstBytes": "80 00 01 fd 00 f0 34 2f 11 78 ea 56 00 a0 4a 42 e6 c1 74 ee fb 2e e0 d0"
+        }
+      },
+      {
+        "id": "1E",
+        "header": {
+          "fileOffset": "0x0787CA",
+          "hiromAddress": "$C787CA",
+          "sizeBytes": 4,
+          "sha256": "62d10c15c1052a58211a8e07877ff5b3121dca1c61821e8f91905a5599b06c74",
+          "firstBytes": "00 00 13 00"
+        },
+        "headerBytes": "00 00 13 00",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 19,
+        "brrBlocks": 2,
+        "decodedFramesBeforeLoop": 32,
+        "endHeader": "0xC3",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0xA7",
+        "payload": {
+          "fileOffset": "0x0787CE",
+          "hiromAddress": "$C787CE",
+          "sizeBytes": 19,
+          "sha256": "df03c0211bd6e36194bec5d560d5e066081abd842aa2dae2cfe341f6635d5e49",
+          "firstBytes": "c0 00 24 43 32 33 10 fe f0 c3 01 50 df ce ce ef ff 01 a7"
+        }
+      },
+      {
+        "id": "1F",
+        "header": {
+          "fileOffset": "0x0787E1",
+          "hiromAddress": "$C787E1",
+          "sizeBytes": 4,
+          "sha256": "231a52e71daba48d18050c410a271374c12a01bd803490b95a77e2eef5b601fd",
+          "firstBytes": "00 00 d0 00"
+        },
+        "headerBytes": "00 00 d0 00",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 208,
+        "brrBlocks": 23,
+        "decodedFramesBeforeLoop": 368,
+        "endHeader": "0x81",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x90",
+        "payload": {
+          "fileOffset": "0x0787E5",
+          "hiromAddress": "$C787E5",
+          "sizeBytes": 208,
+          "sha256": "74bb44fb29de2b8ba877cec97dfaaaba272a69a1c039d4c4dfdbca4473d3f07a",
+          "firstBytes": "80 c3 d4 b4 d4 c2 f0 fe 4c 90 2d 4c 3c 4d 3e 1f 01 e3 90 d4 c4 c4 d3 d1"
+        }
+      },
+      {
+        "id": "20",
+        "header": {
+          "fileOffset": "0x0788B5",
+          "hiromAddress": "$C788B5",
+          "sizeBytes": 4,
+          "sha256": "2c223c7c22220a76b34d7b3ddaf1c289c17cff98fb701c587b83c1d9b662abd5",
+          "firstBytes": "00 00 1d 0b"
+        },
+        "headerBytes": "00 00 1d 0b",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 2845,
+        "brrBlocks": 316,
+        "decodedFramesBeforeLoop": 5056,
+        "endHeader": "0x95",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0xA4",
+        "payload": {
+          "fileOffset": "0x0788B9",
+          "hiromAddress": "$C788B9",
+          "sizeBytes": 2845,
+          "sha256": "d3388c753f82ecd4ee36edd14ce8d6f5f02eedf3813402515a57d4abbc16c572",
+          "firstBytes": "b0 20 01 10 00 db dd cc dd a4 f1 0d f2 2f 34 00 62 91 a4 5c 15 f0 20 00"
+        }
+      },
+      {
+        "id": "21",
+        "header": {
+          "fileOffset": "0x0793D6",
+          "hiromAddress": "$C793D6",
+          "sizeBytes": 4,
+          "sha256": "504a996768643782bcd5b21a84e776168a5cced261a0b97e921a6fc4d9f1568e",
+          "firstBytes": "00 00 a5 04"
+        },
+        "headerBytes": "00 00 a5 04",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 1189,
+        "brrBlocks": 132,
+        "decodedFramesBeforeLoop": 2112,
+        "endHeader": "0x95",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x94",
+        "payload": {
+          "fileOffset": "0x0793DA",
+          "hiromAddress": "$C793DA",
+          "sizeBytes": 1189,
+          "sha256": "0e1d12e0d312c04ee1ea3103127d378f7f5f1889d8fecb6b50e9d935d36bfbb7",
+          "firstBytes": "c0 00 00 00 00 00 00 01 f9 c0 aa e5 bc cb 38 77 76 54 c0 33 40 79 99 ab"
+        }
+      },
+      {
+        "id": "22",
+        "header": {
+          "fileOffset": "0x07987F",
+          "hiromAddress": "$C7987F",
+          "sizeBytes": 4,
+          "sha256": "3cca4a6faf37f86be8bc0105f6a9c74a74ea7607acdb794361800c62066399c3",
+          "firstBytes": "00 00 37 00"
+        },
+        "headerBytes": "00 00 37 00",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 55,
+        "brrBlocks": 6,
+        "decodedFramesBeforeLoop": 96,
+        "endHeader": "0x91",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x95",
+        "payload": {
+          "fileOffset": "0x079883",
+          "hiromAddress": "$C79883",
+          "sizeBytes": 55,
+          "sha256": "73302d58d758e4c46a24d368e2bc5e11a90974bc809a74667358b1c5bc32cd92",
+          "firstBytes": "c0 dc 51 00 e7 d4 bf a1 aa b8 e5 2e 2e 59 0f 31 c4 b1 a8 a4 32 11 05 a6"
+        }
+      },
+      {
+        "id": "23",
+        "header": {
+          "fileOffset": "0x0798BA",
+          "hiromAddress": "$C798BA",
+          "sizeBytes": 4,
+          "sha256": "efd96854e821ced836d740b150107d52ea60633a31c93e03669eb04f212a375f",
+          "firstBytes": "00 00 51 07"
+        },
+        "headerBytes": "00 00 51 07",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 1873,
+        "brrBlocks": 208,
+        "decodedFramesBeforeLoop": 3328,
+        "endHeader": "0xA1",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0xB0",
+        "payload": {
+          "fileOffset": "0x0798BE",
+          "hiromAddress": "$C798BE",
+          "sizeBytes": 1873,
+          "sha256": "cc92ccc7d7ea8e4796799d47648366a06a60a3512a6f683ab0d6d081a15ac2e6",
+          "firstBytes": "c0 01 00 11 12 1f ef 13 44 c0 41 ed cb c0 34 41 03 2d c0 e2 55 77 73 00"
+        }
+      },
+      {
+        "id": "24",
+        "header": {
+          "fileOffset": "0x07A00F",
+          "hiromAddress": "$C7A00F",
+          "sizeBytes": 4,
+          "sha256": "902ad447cc7d82734a541accdaed77531eb4fd8ca9ec05d369d6de5168ef698a",
+          "firstBytes": "00 00 cc 01"
+        },
+        "headerBytes": "00 00 cc 01",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 460,
+        "brrBlocks": 51,
+        "decodedFramesBeforeLoop": 816,
+        "endHeader": "0x79",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x78",
+        "payload": {
+          "fileOffset": "0x07A013",
+          "hiromAddress": "$C7A013",
+          "sizeBytes": 460,
+          "sha256": "f7b8ec3793abf55e799dbb157b3582e188b464d89b91e7ba3304e7001e8566c9",
+          "firstBytes": "a0 f0 01 23 45 66 77 65 43 78 b4 10 10 2e fd eb bf 0c 98 0f 1f 27 32 11"
+        }
+      },
+      {
+        "id": "25",
+        "header": {
+          "fileOffset": "0x07A1DF",
+          "hiromAddress": "$C7A1DF",
+          "sizeBytes": 4,
+          "sha256": "ce256f1900ed02c45aad07de3765e49199aa8d633f108e7f2ca2f447ba919cc0",
+          "firstBytes": "00 00 26 02"
+        },
+        "headerBytes": "00 00 26 02",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 550,
+        "brrBlocks": 61,
+        "decodedFramesBeforeLoop": 976,
+        "endHeader": "0x79",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x78",
+        "payload": {
+          "fileOffset": "0x07A1E3",
+          "hiromAddress": "$C7A1E3",
+          "sizeBytes": 550,
+          "sha256": "a94ed8c272951ff18c52108994815556f70be674fa8d61091f02684dfb50b0c9",
+          "firstBytes": "c0 ee ee f1 23 44 43 10 fe 98 76 11 0d dc b0 f1 00 04 a8 62 d2 1d ed d0"
+        }
+      },
+      {
+        "id": "26",
+        "header": {
+          "fileOffset": "0x07A409",
+          "hiromAddress": "$C7A409",
+          "sizeBytes": 4,
+          "sha256": "721408513087dd2a485717909b5aaee5b88d3647b01dd4982a6a947c30493009",
+          "firstBytes": "00 00 60 01"
+        },
+        "headerBytes": "00 00 60 01",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 352,
+        "brrBlocks": 39,
+        "decodedFramesBeforeLoop": 624,
+        "endHeader": "0xB1",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0xB1",
+        "payload": {
+          "fileOffset": "0x07A40D",
+          "hiromAddress": "$C7A40D",
+          "sizeBytes": 352,
+          "sha256": "324ab5f47a02a72232cdd1ede6fe4f26a22c4313906f29aab592422c4cff4091",
+          "firstBytes": "90 00 00 00 00 00 06 00 0b ac 2d 20 00 36 f8 0d 22 0f a4 60 00 01 0d ef"
+        }
+      },
+      {
+        "id": "27",
+        "header": {
+          "fileOffset": "0x07A56D",
+          "hiromAddress": "$C7A56D",
+          "sizeBytes": 4,
+          "sha256": "6527919125dd56629d7a4d77771ad05eb5a14f2178337925cc70d554e52fe448",
+          "firstBytes": "00 00 80 02"
+        },
+        "headerBytes": "00 00 80 02",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 640,
+        "brrBlocks": 71,
+        "decodedFramesBeforeLoop": 1136,
+        "endHeader": "0xC1",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0xC0",
+        "payload": {
+          "fileOffset": "0x07A571",
+          "hiromAddress": "$C7A571",
+          "sizeBytes": 640,
+          "sha256": "4b8f1c7be35c726816be068e34972fdf4fdac140dacdf83b72604176bc410004",
+          "firstBytes": "b0 3f 14 30 12 0e fe ca cd b0 be 45 bd 57 20 12 30 10 b0 e0 2f bb ed c5"
+        }
+      },
+      {
+        "id": "28",
+        "header": {
+          "fileOffset": "0x07A7F1",
+          "hiromAddress": "$C7A7F1",
+          "sizeBytes": 4,
+          "sha256": "ee928dd55d55e1b4b9cd8b07a0bddd1c9f1117b6ae55482fee26b2140274313c",
+          "firstBytes": "00 00 9c 04"
+        },
+        "headerBytes": "00 00 9c 04",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 1180,
+        "brrBlocks": 131,
+        "decodedFramesBeforeLoop": 2096,
+        "endHeader": "0xA1",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0xA0",
+        "payload": {
+          "fileOffset": "0x07A7F5",
+          "hiromAddress": "$C7A7F5",
+          "sizeBytes": 1180,
+          "sha256": "c2fffd786236901dc8548493d8bfce8f4db246c798af413002bfdbfdc60a78b2",
+          "firstBytes": "b0 00 00 00 00 00 0f 00 35 c0 fd 02 1f f1 1f ed bf 66 b0 d9 04 4f 9f 65"
+        }
+      },
+      {
+        "id": "29",
+        "header": {
+          "fileOffset": "0x07AC91",
+          "hiromAddress": "$C7AC91",
+          "sizeBytes": 4,
+          "sha256": "f9766464da8448769f6965b29a7bb0a15b9466545b41cd109ff055f8533bb38e",
+          "firstBytes": "00 00 6a 03"
+        },
+        "headerBytes": "00 00 6a 03",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 874,
+        "brrBlocks": 97,
+        "decodedFramesBeforeLoop": 1552,
+        "endHeader": "0x59",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x58",
+        "payload": {
+          "fileOffset": "0x07AC95",
+          "hiromAddress": "$C7AC95",
+          "sizeBytes": 874,
+          "sha256": "93803590eaafe7d00f01f1983561adeb3c75e3a99347472ed303a68f31856b38",
+          "firstBytes": "b0 dd dd de ff 03 67 77 77 88 6c c2 5f ba d4 42 01 01 88 00 b0 33 30 e0"
+        }
+      },
+      {
+        "id": "2A",
+        "header": {
+          "fileOffset": "0x07AFFF",
+          "hiromAddress": "$C7AFFF",
+          "sizeBytes": 4,
+          "sha256": "20e1479e045b7a03deec59b5330c848632a7dd3c5b328fc27d534345c4903d4c",
+          "firstBytes": "00 00 f1 03"
+        },
+        "headerBytes": "00 00 f1 03",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 1009,
+        "brrBlocks": 112,
+        "decodedFramesBeforeLoop": 1792,
+        "endHeader": "0x85",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x84",
+        "payload": {
+          "fileOffset": "0x07B003",
+          "hiromAddress": "$C7B003",
+          "sizeBytes": 1009,
+          "sha256": "3d9d7a9930f5d335ce6b507c1091cbe256f8eb6445cc30f55a420960362b7264",
+          "firstBytes": "a0 02 34 54 56 65 55 31 11 98 f3 0e 3e ad 43 01 2c 0f 94 ed c2 76 15 2d"
+        }
+      },
+      {
+        "id": "2B",
+        "header": {
+          "fileOffset": "0x07B3F4",
+          "hiromAddress": "$C7B3F4",
+          "sizeBytes": 4,
+          "sha256": "89a84f34eb3096df6b02d7d9a3acb3fd6fc5833354610821f8ff8633ed36ad84",
+          "firstBytes": "00 00 1b 07"
+        },
+        "headerBytes": "00 00 1b 07",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 1819,
+        "brrBlocks": 202,
+        "decodedFramesBeforeLoop": 3232,
+        "endHeader": "0xA1",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0xA4",
+        "payload": {
+          "fileOffset": "0x07B3F8",
+          "hiromAddress": "$C7B3F8",
+          "sizeBytes": 1819,
+          "sha256": "21510ac1268e914a871444027e08883dcf812781e7cad49cc45fc343e8cd2e62",
+          "firstBytes": "c0 0f 0e f0 01 0f ca a0 66 c0 52 32 ea af 13 32 0f 0e b4 e7 6f 1e 9f dd"
+        }
+      },
+      {
+        "id": "2C",
+        "header": {
+          "fileOffset": "0x07BB13",
+          "hiromAddress": "$C7BB13",
+          "sizeBytes": 4,
+          "sha256": "413432a2e4977ca133f00f95e74dcb2af10220ee4bcf9c47ac33ed88a7d7bffa",
+          "firstBytes": "00 00 40 00"
+        },
+        "headerBytes": "00 00 40 00",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 64,
+        "brrBlocks": 7,
+        "decodedFramesBeforeLoop": 112,
+        "endHeader": "0x67",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x99",
+        "payload": {
+          "fileOffset": "0x07BB17",
+          "hiromAddress": "$C7BB17",
+          "sizeBytes": 64,
+          "sha256": "4ba165e15c5b98476b276d723f088784b58c9d081b73ad2cd9b581bb6e87f3fe",
+          "firstBytes": "c0 ff ff ff ff ff ff ff f4 c0 77 77 77 77 77 77 61 ff 84 b1 f1 e1 e0 ff"
+        }
+      },
+      {
+        "id": "2D",
+        "header": {
+          "fileOffset": "0x07BB57",
+          "hiromAddress": "$C7BB57",
+          "sizeBytes": 4,
+          "sha256": "413432a2e4977ca133f00f95e74dcb2af10220ee4bcf9c47ac33ed88a7d7bffa",
+          "firstBytes": "00 00 40 00"
+        },
+        "headerBytes": "00 00 40 00",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 64,
+        "brrBlocks": 7,
+        "decodedFramesBeforeLoop": 112,
+        "endHeader": "0x77",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x99",
+        "payload": {
+          "fileOffset": "0x07BB5B",
+          "hiromAddress": "$C7BB5B",
+          "sizeBytes": 64,
+          "sha256": "88a64cb5a6067acafd75b5dbdbb08a5cfa63774c846ae68a87f9cff804760f93",
+          "firstBytes": "c0 ee ee ee ee e4 77 77 77 94 73 43 43 43 43 43 34 33 c0 77 77 70 dd de"
+        }
+      },
+      {
+        "id": "2E",
+        "header": {
+          "fileOffset": "0x07BB9B",
+          "hiromAddress": "$C7BB9B",
+          "sizeBytes": 4,
+          "sha256": "413432a2e4977ca133f00f95e74dcb2af10220ee4bcf9c47ac33ed88a7d7bffa",
+          "firstBytes": "00 00 40 00"
+        },
+        "headerBytes": "00 00 40 00",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 64,
+        "brrBlocks": 7,
+        "decodedFramesBeforeLoop": 112,
+        "endHeader": "0x8F",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x99",
+        "payload": {
+          "fileOffset": "0x07BB9F",
+          "hiromAddress": "$C7BB9F",
+          "sizeBytes": 64,
+          "sha256": "04a6a7683d370df8ee231fc45f87d25e6e0a694eb8709233c58cc168f78ae8f8",
+          "firstBytes": "c0 aa af 77 77 77 77 77 77 88 70 52 53 43 44 26 23 62 7c 25 50 55 05 41"
+        }
+      },
+      {
+        "id": "2F",
+        "header": {
+          "fileOffset": "0x07BBDF",
+          "hiromAddress": "$C7BBDF",
+          "sizeBytes": 4,
+          "sha256": "413432a2e4977ca133f00f95e74dcb2af10220ee4bcf9c47ac33ed88a7d7bffa",
+          "firstBytes": "00 00 40 00"
+        },
+        "headerBytes": "00 00 40 00",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 64,
+        "brrBlocks": 7,
+        "decodedFramesBeforeLoop": 112,
+        "endHeader": "0xA7",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x99",
+        "payload": {
+          "fileOffset": "0x07BBE3",
+          "hiromAddress": "$C7BBE3",
+          "sizeBytes": 64,
+          "sha256": "ce4bca8383d53446e9492c2d0e171c5976e7cc08144373b74b834f1a49592fef",
+          "firstBytes": "c0 01 12 33 35 65 67 77 77 a4 4f c1 1c d2 eb f0 bc 0d a4 af ea cf c9 df"
+        }
+      },
+      {
+        "id": "30",
+        "header": {
+          "fileOffset": "0x07BC23",
+          "hiromAddress": "$C7BC23",
+          "sizeBytes": 4,
+          "sha256": "9577efcb8cb5712d30553bd74931eb11af140a8fd73f6e0bf8da382bf139782e",
+          "firstBytes": "00 00 be 00"
+        },
+        "headerBytes": "00 00 be 00",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 190,
+        "brrBlocks": 21,
+        "decodedFramesBeforeLoop": 336,
+        "endHeader": "0xBB",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0xC0",
+        "payload": {
+          "fileOffset": "0x07BC27",
+          "hiromAddress": "$C7BC27",
+          "sizeBytes": 190,
+          "sha256": "c8764dd01a2a5a34b3aa64d28d26ac23c29a8410f03b1800711f0c0b5346558d",
+          "firstBytes": "c0 04 55 55 55 55 55 55 55 78 26 75 36 63 56 35 64 46 6c 33 73 37 24 55"
+        }
+      },
+      {
+        "id": "31",
+        "header": {
+          "fileOffset": "0x07BCE5",
+          "hiromAddress": "$C7BCE5",
+          "sizeBytes": 4,
+          "sha256": "c2ce4cb8f783771a02b3488379e3369ba8d34a00e098023edd237b0b2ac686f0",
+          "firstBytes": "00 00 47 05"
+        },
+        "headerBytes": "00 00 47 05",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 1351,
+        "brrBlocks": 150,
+        "decodedFramesBeforeLoop": 2400,
+        "endHeader": "0xAB",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0xAB",
+        "payload": {
+          "fileOffset": "0x07BCE9",
+          "hiromAddress": "$C7BCE9",
+          "sizeBytes": 1351,
+          "sha256": "a5bf5797187e721aaf8dc555ee9df10b1fc8cd51c2b2248e8becd99e376f7a23",
+          "firstBytes": "c0 02 54 0d df fe ce 15 42 b4 d2 3d 9b 15 3e f2 74 db b4 c2 1e ad 46 4e"
+        }
+      },
+      {
+        "id": "32",
+        "header": {
+          "fileOffset": "0x07C230",
+          "hiromAddress": "$C7C230",
+          "sizeBytes": 4,
+          "sha256": "52499679067291a7d1830076bbffc7518b6d55c6110aaf4f1a227a1115168aea",
+          "firstBytes": "00 00 a4 02"
+        },
+        "headerBytes": "00 00 a4 02",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 676,
+        "brrBlocks": 75,
+        "decodedFramesBeforeLoop": 1200,
+        "endHeader": "0x85",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x80",
+        "payload": {
+          "fileOffset": "0x07C234",
+          "hiromAddress": "$C7C234",
+          "sizeBytes": 676,
+          "sha256": "2e3304daf02086a3b239293a830cb5cdf8df9f8d04d8711e9bd27887f4bf2b19",
+          "firstBytes": "c0 00 00 00 00 00 0e d1 42 c0 de 44 eb f4 0d f1 21 ff b0 03 2d d0 31 ed"
+        }
+      },
+      {
+        "id": "33",
+        "header": {
+          "fileOffset": "0x07C4D8",
+          "hiromAddress": "$C7C4D8",
+          "sizeBytes": 4,
+          "sha256": "e8c13b86382ed5261cf82b733c156cf03ec1c59c7bf25ffb252443186dae98fb",
+          "firstBytes": "00 00 3a 0f"
+        },
+        "headerBytes": "00 00 3a 0f",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 3898,
+        "brrBlocks": 433,
+        "decodedFramesBeforeLoop": 6928,
+        "endHeader": "0xC1",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0xC1",
+        "payload": {
+          "fileOffset": "0x07C4DC",
+          "hiromAddress": "$C7C4DC",
+          "sizeBytes": 3898,
+          "sha256": "3f9121826dd67d8962ee6567fdfe33a28501ec10dd3cfac5a531ecc70c8dec82",
+          "firstBytes": "b0 10 8b ec cc d7 30 23 44 c0 22 11 cf 0e ff e0 51 11 c0 ce 0f ff ff 06"
+        }
+      },
+      {
+        "id": "34",
+        "header": {
+          "fileOffset": "0x07D416",
+          "hiromAddress": "$C7D416",
+          "sizeBytes": 4,
+          "sha256": "3d60e6a6506461596b8b1a79560138d3a418c940182f5db68e8209f3666cf323",
+          "firstBytes": "00 00 70 06"
+        },
+        "headerBytes": "00 00 70 06",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 1648,
+        "brrBlocks": 183,
+        "decodedFramesBeforeLoop": 2928,
+        "endHeader": "0x69",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x79",
+        "payload": {
+          "fileOffset": "0x07D41A",
+          "hiromAddress": "$C7D41A",
+          "sizeBytes": 1648,
+          "sha256": "daec0299fd0c210dc585df40ef388c69d2f9eeccac4124b50bce244a6bcec6ed",
+          "firstBytes": "c0 00 0f ff db bd de 00 ef b4 10 fd b0 30 ef 10 00 00 b0 de 27 74 35 54"
+        }
+      },
+      {
+        "id": "35",
+        "header": {
+          "fileOffset": "0x07DA8A",
+          "hiromAddress": "$C7DA8A",
+          "sizeBytes": 4,
+          "sha256": "97be30085ef1a9c213b06e5046214a5c96574ffd5c8d46db392fe287ce12b253",
+          "firstBytes": "1a 07 3b 08"
+        },
+        "headerBytes": "1a 07 3b 08",
+        "loopOffsetBytes": 1818,
+        "uploadedBytes": 2107,
+        "brrBlocks": 234,
+        "decodedFramesBeforeLoop": 3744,
+        "endHeader": "0x8B",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x9B",
+        "payload": {
+          "fileOffset": "0x07DA8E",
+          "hiromAddress": "$C7DA8E",
+          "sizeBytes": 2107,
+          "sha256": "192169ea5fd5434a783acaee4d71eca0663e10c632307e0cffa8bcf061487ee6",
+          "firstBytes": "b0 ef ff ff ff cb dd cb be a0 ef 25 2b cf f1 41 ea 8e b0 2e d4 32 2f f3"
+        }
+      },
+      {
+        "id": "36",
+        "header": {
+          "fileOffset": "0x07E2C9",
+          "hiromAddress": "$C7E2C9",
+          "sizeBytes": 4,
+          "sha256": "59f7a2d90d72796e3506e892b2c869c742ffbb3ac03a97e1861eb225c8bb1ca3",
+          "firstBytes": "00 00 30 04"
+        },
+        "headerBytes": "00 00 30 04",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 1072,
+        "brrBlocks": 119,
+        "decodedFramesBeforeLoop": 1904,
+        "endHeader": "0xB1",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0xA0",
+        "payload": {
+          "fileOffset": "0x07E2CD",
+          "hiromAddress": "$C7E2CD",
+          "sizeBytes": 1072,
+          "sha256": "f05d9aaec0cec726ed1232072635f319642ef311fe0e67c811be61276dfc0ec4",
+          "firstBytes": "b0 2e de 01 23 00 12 fb 05 b0 2c 36 be 4f b0 4f a3 6f c0 d2 2b f3 ee 23"
+        }
+      },
+      {
+        "id": "37",
+        "header": {
+          "fileOffset": "0x07E6FD",
+          "hiromAddress": "$C7E6FD",
+          "sizeBytes": 4,
+          "sha256": "d144cc51499f3ecb5c29d6c4b909d7d45bafebe34f8bdd3cfa06b8d912c2b8a7",
+          "firstBytes": "00 00 f6 04"
+        },
+        "headerBytes": "00 00 f6 04",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 1270,
+        "brrBlocks": 141,
+        "decodedFramesBeforeLoop": 2256,
+        "endHeader": "0x67",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x99",
+        "payload": {
+          "fileOffset": "0x07E701",
+          "hiromAddress": "$C7E701",
+          "sizeBytes": 1270,
+          "sha256": "a1fdc0a692e45046351caf78a189113d30747a5a2df5baab0386302f885b53ca",
+          "firstBytes": "b0 00 00 00 00 00 13 45 44 b8 ef 02 10 10 0e fe 07 5a c0 79 53 fe ed dd"
+        }
+      },
+      {
+        "id": "38",
+        "header": {
+          "fileOffset": "0x07EBF7",
+          "hiromAddress": "$C7EBF7",
+          "sizeBytes": 4,
+          "sha256": "62d10c15c1052a58211a8e07877ff5b3121dca1c61821e8f91905a5599b06c74",
+          "firstBytes": "00 00 13 00"
+        },
+        "headerBytes": "00 00 13 00",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 19,
+        "brrBlocks": 2,
+        "decodedFramesBeforeLoop": 32,
+        "endHeader": "0xC3",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0xC3",
+        "payload": {
+          "fileOffset": "0x07EBFB",
+          "hiromAddress": "$C7EBFB",
+          "sizeBytes": 19,
+          "sha256": "71d8a0a81b7cb94bb0ed9ed77feddaaf37a9d3ad1eba14140eba02e537386592",
+          "firstBytes": "c0 2d 3c 5c 3c 01 f4 d3 a5 c3 b6 d0 2b 7b 5d f0 e4 e3 c3"
+        }
+      },
+      {
+        "id": "39",
+        "header": {
+          "fileOffset": "0x07EC0E",
+          "hiromAddress": "$C7EC0E",
+          "sizeBytes": 4,
+          "sha256": "3cca4a6faf37f86be8bc0105f6a9c74a74ea7607acdb794361800c62066399c3",
+          "firstBytes": "00 00 37 00"
+        },
+        "headerBytes": "00 00 37 00",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 55,
+        "brrBlocks": 6,
+        "decodedFramesBeforeLoop": 96,
+        "endHeader": "0xA1",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0xC0",
+        "payload": {
+          "fileOffset": "0x07EC12",
+          "hiromAddress": "$C7EC12",
+          "sizeBytes": 55,
+          "sha256": "b13a55f4d7499433e1d31faecc971f22000337f1b0dea7ea1c75753311f131de",
+          "firstBytes": "c0 2d f0 de ce 23 f0 22 0f b0 0b bc fc 16 0c 94 31 2c b0 8b df 44 14 6f"
+        }
+      },
+      {
+        "id": "3A",
+        "header": {
+          "fileOffset": "0x07EC49",
+          "hiromAddress": "$C7EC49",
+          "sizeBytes": 4,
+          "sha256": "862f9dd6c7aab517ced0c64ed0d488bebf0615c9b64ca528dfe2048bb40b6965",
+          "firstBytes": "00 00 82 06"
+        },
+        "headerBytes": "00 00 82 06",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 1666,
+        "brrBlocks": 185,
+        "decodedFramesBeforeLoop": 2960,
+        "endHeader": "0x79",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x78",
+        "payload": {
+          "fileOffset": "0x07EC4D",
+          "hiromAddress": "$C7EC4D",
+          "sizeBytes": 1666,
+          "sha256": "ccf3fbf88f22968cde4fa4db146ccbe698c74ccccd41ebdd4561d026d1d2fc34",
+          "firstBytes": "90 32 44 13 00 fc ca 9d 04 90 77 54 1e 0e 0a 98 9f 57 a0 53 2f 0f f0 0b"
+        }
+      },
+      {
+        "id": "3B",
+        "header": {
+          "fileOffset": "0x07F2CF",
+          "hiromAddress": "$C7F2CF",
+          "sizeBytes": 4,
+          "sha256": "70282e18f520a3bbb7c0b0d509e7624d49e45e755f0f0d6b9a5a9015703721a9",
+          "firstBytes": "00 00 eb 00"
+        },
+        "headerBytes": "00 00 eb 00",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 235,
+        "brrBlocks": 26,
+        "decodedFramesBeforeLoop": 416,
+        "endHeader": "0x3D",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x38",
+        "payload": {
+          "fileOffset": "0x07F2D3",
+          "hiromAddress": "$C7F2D3",
+          "sizeBytes": 235,
+          "sha256": "2b0a2055c80b6807eb42892b18beb34f11dcf38074746d0c6bdbfb7d1168bc8d",
+          "firstBytes": "a0 1f e2 2b 07 bd 50 b1 6a b0 e6 ed 41 d1 4d d7 ec 41 b0 c1 5c e7 cd 50"
+        }
+      },
+      {
+        "id": "3C",
+        "header": {
+          "fileOffset": "0x07F3BE",
+          "hiromAddress": "$C7F3BE",
+          "sizeBytes": 4,
+          "sha256": "44ade795bff6ea2ce075177ac487e6e6e62886f18520dba2f221eb0447205362",
+          "firstBytes": "00 00 ad 0b"
+        },
+        "headerBytes": "00 00 ad 0b",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 2989,
+        "brrBlocks": 332,
+        "decodedFramesBeforeLoop": 5312,
+        "endHeader": "0x81",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x81",
+        "payload": {
+          "fileOffset": "0x07F3C2",
+          "hiromAddress": "$C7F3C2",
+          "sizeBytes": 2989,
+          "sha256": "95889728909199fadddf7c18f2cf083fd7f2567079f43138516a619070ccad0a",
+          "firstBytes": "90 fa de 44 01 fd bf 0f 43 a0 22 0f df ef da e1 25 4e 90 a9 b1 67 42 dd"
+        }
+      },
+      {
+        "id": "3D",
+        "header": {
+          "fileOffset": "0x080000",
+          "hiromAddress": "$C80000",
+          "sizeBytes": 4,
+          "sha256": "489b8f5f4788f730643edefb7bf894ae90a1c11717570c77dc92661e3fc43e82",
+          "firstBytes": "00 00 f2 05"
+        },
+        "headerBytes": "00 00 f2 05",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 1522,
+        "brrBlocks": 169,
+        "decodedFramesBeforeLoop": 2704,
+        "endHeader": "0x91",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x90",
+        "payload": {
+          "fileOffset": "0x080004",
+          "hiromAddress": "$C80004",
+          "sizeBytes": 1522,
+          "sha256": "caa34451c570442f0c71774e2d5995cafd4772e284d7d16f489d657cf3e8b2d7",
+          "firstBytes": "b0 21 b4 3d 11 1f cd ed 1d b0 03 fd 2d 23 e4 f0 56 b6 c0 4f 22 21 e1 1e"
+        }
+      },
+      {
+        "id": "3E",
+        "header": {
+          "fileOffset": "0x0805F6",
+          "hiromAddress": "$C805F6",
+          "sizeBytes": 4,
+          "sha256": "d51895bac4f9cdaa2dc4960ac2cd9f9dc516ea341f75839ae6f89d3bc2791e55",
+          "firstBytes": "00 00 0d 06"
+        },
+        "headerBytes": "00 00 0d 06",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 1549,
+        "brrBlocks": 172,
+        "decodedFramesBeforeLoop": 2752,
+        "endHeader": "0x69",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x69",
+        "payload": {
+          "fileOffset": "0x0805FA",
+          "hiromAddress": "$C805FA",
+          "sizeBytes": 1549,
+          "sha256": "d19631b8c771e781541fac2d80e2ae3bc125eb41c74d17044353c0b8cbb28b2a",
+          "firstBytes": "a0 01 12 33 33 45 55 54 34 94 1f f3 31 fc df 02 50 d1 98 0f 00 da 03 42"
+        }
+      },
+      {
+        "id": "3F",
+        "header": {
+          "fileOffset": "0x080C07",
+          "hiromAddress": "$C80C07",
+          "sizeBytes": 4,
+          "sha256": "051a39b313b8320ab184b132a25e3dc8af9d708b5a05b907129a9ec21dc35955",
+          "firstBytes": "00 00 8f 05"
+        },
+        "headerBytes": "00 00 8f 05",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 1423,
+        "brrBlocks": 158,
+        "decodedFramesBeforeLoop": 2528,
+        "endHeader": "0x49",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x49",
+        "payload": {
+          "fileOffset": "0x080C0B",
+          "hiromAddress": "$C80C0B",
+          "sizeBytes": 1423,
+          "sha256": "3c8b08baf674586993f33a1001d8d0234f5ab8d90c1990c2609b399b64d1804a",
+          "firstBytes": "b0 00 00 fe fd cb bb ab bb a4 e6 d7 11 66 04 15 f2 42 a8 1b 50 c7 c6 9b"
+        }
+      },
+      {
+        "id": "40",
+        "header": {
+          "fileOffset": "0x08119A",
+          "hiromAddress": "$C8119A",
+          "sizeBytes": 4,
+          "sha256": "8786894b84a72da2e621bbbf704ea5810cbd3c62d0e71dc810a3bbac0bae44c3",
+          "firstBytes": "00 00 b5 09"
+        },
+        "headerBytes": "00 00 b5 09",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 2485,
+        "brrBlocks": 276,
+        "decodedFramesBeforeLoop": 4416,
+        "endHeader": "0x71",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x70",
+        "payload": {
+          "fileOffset": "0x08119E",
+          "hiromAddress": "$C8119E",
+          "sizeBytes": 2485,
+          "sha256": "fbf0dab45fc45efabe7005dbc4bf580669288db4924da2362c7943a0162dcc61",
+          "firstBytes": "30 e0 d2 11 ff fd 10 2e bd 24 6c 6b 41 1d 4d 37 82 00 90 00 00 00 00 e7"
+        }
+      },
+      {
+        "id": "41",
+        "header": {
+          "fileOffset": "0x081B53",
+          "hiromAddress": "$C81B53",
+          "sizeBytes": 4,
+          "sha256": "413432a2e4977ca133f00f95e74dcb2af10220ee4bcf9c47ac33ed88a7d7bffa",
+          "firstBytes": "00 00 40 00"
+        },
+        "headerBytes": "00 00 40 00",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 64,
+        "brrBlocks": 7,
+        "decodedFramesBeforeLoop": 112,
+        "endHeader": "0x87",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x14",
+        "payload": {
+          "fileOffset": "0x081B57",
+          "hiromAddress": "$C81B57",
+          "sizeBytes": 64,
+          "sha256": "c9d9721f4df498725d0e801d4582ff45881c7c79bc30d84a7ad81e4879f21b52",
+          "firstBytes": "a0 9b df 01 23 44 43 10 f0 88 0f c1 44 ed 35 61 df 0f 88 f1 65 eb df 1d"
+        }
+      },
+      {
+        "id": "42",
+        "header": {
+          "fileOffset": "0x081B97",
+          "hiromAddress": "$C81B97",
+          "sizeBytes": 4,
+          "sha256": "0a6886605ae0aed20f1a43bb4ea28995a8057bfbcc7fbe2622af79a1b3b1cc68",
+          "firstBytes": "00 00 89 02"
+        },
+        "headerBytes": "00 00 89 02",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 649,
+        "brrBlocks": 72,
+        "decodedFramesBeforeLoop": 1152,
+        "endHeader": "0x65",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x7C",
+        "payload": {
+          "fileOffset": "0x081B9B",
+          "hiromAddress": "$C81B9B",
+          "sizeBytes": 649,
+          "sha256": "a971c33a635a25852686579f61d849d3db6f89bedcee09cdab2bc52ad6b9b92f",
+          "firstBytes": "c0 00 10 00 fe 64 ba 55 ff c0 eb 15 4c f4 e4 5f b3 7d c0 9d 22 5e 9d 32"
+        }
+      },
+      {
+        "id": "43",
+        "header": {
+          "fileOffset": "0x081E24",
+          "hiromAddress": "$C81E24",
+          "sizeBytes": 4,
+          "sha256": "7745fc9b9c6c6abf36c3f0e088a9bba6e25e89adad4f0d5353af1d7ea0e0d931",
+          "firstBytes": "00 00 c3 01"
+        },
+        "headerBytes": "00 00 c3 01",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 451,
+        "brrBlocks": 50,
+        "decodedFramesBeforeLoop": 800,
+        "endHeader": "0x69",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x75",
+        "payload": {
+          "fileOffset": "0x081E28",
+          "hiromAddress": "$C81E28",
+          "sizeBytes": 451,
+          "sha256": "170865a9f933b0a3937ba8159d206e6f97b3ebc1b53183c70cc6c26dbc133082",
+          "firstBytes": "c0 00 01 11 22 11 01 fd cb b4 0e 00 63 23 44 ff 0d f1 a4 df 4d 91 ed fe"
+        }
+      },
+      {
+        "id": "44",
+        "header": {
+          "fileOffset": "0x081FEB",
+          "hiromAddress": "$C81FEB",
+          "sizeBytes": 4,
+          "sha256": "21861e216ea646636ecf58d24f24e67d21188cf79cf1e20fa536e865b6b2367f",
+          "firstBytes": "00 00 ba 01"
+        },
+        "headerBytes": "00 00 ba 01",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 442,
+        "brrBlocks": 49,
+        "decodedFramesBeforeLoop": 784,
+        "endHeader": "0x95",
+        "loopEnabled": false,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0x98",
+        "payload": {
+          "fileOffset": "0x081FEF",
+          "hiromAddress": "$C81FEF",
+          "sizeBytes": 442,
+          "sha256": "c7d3f5948c39b87b3d53fd83a52a55c054a4622e1b6b17ea07ae2e3e6d8401d1",
+          "firstBytes": "a0 31 fd ce f2 56 53 0d bb 98 11 ed c4 73 2c fe 9c 02 98 65 15 2b 9b ce"
+        }
+      },
+      {
+        "id": "45",
+        "header": {
+          "fileOffset": "0x0821A9",
+          "hiromAddress": "$C821A9",
+          "sizeBytes": 4,
+          "sha256": "3cca4a6faf37f86be8bc0105f6a9c74a74ea7607acdb794361800c62066399c3",
+          "firstBytes": "00 00 37 00"
+        },
+        "headerBytes": "00 00 37 00",
+        "loopOffsetBytes": 0,
+        "uploadedBytes": 55,
+        "brrBlocks": 6,
+        "decodedFramesBeforeLoop": 96,
+        "endHeader": "0xC3",
+        "loopEnabled": true,
+        "extraUploadedBytes": 1,
+        "extraUploadedByte": "0xC3",
+        "payload": {
+          "fileOffset": "0x0821AD",
+          "hiromAddress": "$C821AD",
+          "sizeBytes": 55,
+          "sha256": "1aa06ff7404824ac6e05c72f02e26281d65cb0148600f622195f10c3f66f093a",
+          "firstBytes": "c0 e1 44 13 43 34 1b dc de c0 ec ce 14 42 24 33 41 bd b4 ff 12 ce 37 61"
+        }
+      }
+    ],
+    "framing": "LE16 loop byte offset; LE16 upload size; 9-byte BRR blocks, each 16 samples. All 70 streams end with BRR END, preceding blocks do not. 68 uploads contain one byte beyond complete blocks; samples $10 and $1A do not.",
+    "totalUploadedBytes": 73787
+  },
+  "music": {
+    "pointerTable": {
+      "fileOffset": "0x0AB15E",
+      "hiromAddress": "$CAB15E",
+      "sizeBytes": 81,
+      "sha256": "8d8ec5198885476da6435289254fd6cfeccecef512759a267f11a314c6068fb0",
+      "firstBytes": "61 93 8a 00 00 c9 38 08 c9 00 80 8a bf 3b c9 f8 1c c9 50 16 df 83 0f c9"
+    },
+    "tracks": [
+      {
+        "id": 0,
+        "nameFromNavigationSource": "DKIslandSwing",
+        "cpuPointerBytes": "61 93 8a",
+        "header": {
+          "fileOffset": "0x0A9361",
+          "hiromAddress": "$CA9361",
+          "sizeBytes": 4,
+          "sha256": "b94162589fda5e85395303fc3c1b31f1b59ab89b828b5bb1a0d63046a68f8dbe",
+          "firstBytes": "dd 0f a0 12"
+        },
+        "headerBytes": "dd 0f a0 12",
+        "aramDestination": "0x12A0",
+        "payloadBytes": 4061,
+        "channelPointers": [
+          "0x12BE",
+          "0x16F7",
+          "0x17EB",
+          "0x1BD1",
+          "0x1E48",
+          "0x1FC7",
+          "0x208E",
+          "0x1A4F"
+        ],
+        "payload": {
+          "fileOffset": "0x0A9365",
+          "hiromAddress": "$CA9365",
+          "sizeBytes": 4061,
+          "sha256": "0d8d9cdfa891238ac8c0120c668700d912e48189888ec113e399b9cb1f9559c9",
+          "firstBytes": "be 12 f7 16 eb 17 d1 1b 48 1e c7 1f 8e 20 4f 1a a0 a0 99 99 99 99 96 95"
+        }
+      },
+      {
+        "id": 1,
+        "nameFromNavigationSource": "CaveDwellerConcert",
+        "cpuPointerBytes": "00 00 c9",
+        "header": {
+          "fileOffset": "0x090000",
+          "hiromAddress": "$C90000",
+          "sizeBytes": 4,
+          "sha256": "a03789b5715af82a30d7f2a5a3789fdaef1d6a60ae352dfde15ad3370dc6da72",
+          "firstBytes": "34 08 a0 12"
+        },
+        "headerBytes": "34 08 a0 12",
+        "aramDestination": "0x12A0",
+        "payloadBytes": 2100,
+        "channelPointers": [
+          "0x12FD",
+          "0x137D",
+          "0x16DA",
+          "0x18A0",
+          "0x1A46",
+          "0x1AC6",
+          "0x1AC1",
+          "0x19E4"
+        ],
+        "payload": {
+          "fileOffset": "0x090004",
+          "hiromAddress": "$C90004",
+          "sizeBytes": 2100,
+          "sha256": "1369ffff5881a97a40db13a2306cca8069a8f28dbc91437ae17123e0b48b4c3d",
+          "firstBytes": "fd 12 7d 13 da 16 a0 18 46 1a c6 1a c1 1a e4 19 c0 a0 28 0a 60 60 10 8f"
+        }
+      },
+      {
+        "id": 2,
+        "nameFromNavigationSource": "MistyMenace",
+        "cpuPointerBytes": "38 08 c9",
+        "header": {
+          "fileOffset": "0x090838",
+          "hiromAddress": "$C90838",
+          "sizeBytes": 4,
+          "sha256": "5671d505c85c532ca451b248bea38f0c9e048c93de8ce2de731be409edb00d2a",
+          "firstBytes": "47 07 a0 12"
+        },
+        "headerBytes": "47 07 a0 12",
+        "aramDestination": "0x12A0",
+        "payloadBytes": 1863,
+        "channelPointers": [
+          "0x12B9",
+          "0x1831",
+          "0x189B",
+          "0x1905",
+          "0x12E1",
+          "0x16D0",
+          "0x1972",
+          "0x1423"
+        ],
+        "payload": {
+          "fileOffset": "0x09083C",
+          "hiromAddress": "$C9083C",
+          "sizeBytes": 1863,
+          "sha256": "bcdd3a0c20733ccccd2a9639617649d8aeb8cbd685ff62212c4bddb121822db5",
+          "firstBytes": "b9 12 31 18 9b 18 05 19 e1 12 d0 16 72 19 23 14 80 a0 01 01 13 02 12 f4"
+        }
+      },
+      {
+        "id": 3,
+        "nameFromNavigationSource": "AquaticAmbience",
+        "cpuPointerBytes": "00 80 8a",
+        "header": {
+          "fileOffset": "0x0A8000",
+          "hiromAddress": "$CA8000",
+          "sizeBytes": 4,
+          "sha256": "bb8617a5a9605022128f9fdbba77826510f8f243943cb217654d8526282c3e59",
+          "firstBytes": "61 0c a0 12"
+        },
+        "headerBytes": "61 0c a0 12",
+        "aramDestination": "0x12A0",
+        "payloadBytes": 3169,
+        "channelPointers": [
+          "0x1974",
+          "0x147B",
+          "0x1434",
+          "0x13E7",
+          "0x13A1",
+          "0x12C6",
+          "0x1DE3",
+          "0x1C58"
+        ],
+        "payload": {
+          "fileOffset": "0x0A8004",
+          "hiromAddress": "$CA8004",
+          "sizeBytes": 3169,
+          "sha256": "c8fb9930c651d48c6fb9f30cf26b6cc394f2532cf47adc03e63cbfef71a77162",
+          "firstBytes": "74 19 7b 14 34 14 e7 13 a1 13 c6 12 e3 1d 58 1c 80 a0 80 80 05 01 01 80"
+        }
+      },
+      {
+        "id": 4,
+        "nameFromNavigationSource": "MineCartMadness",
+        "cpuPointerBytes": "bf 3b c9",
+        "header": {
+          "fileOffset": "0x093BBF",
+          "hiromAddress": "$C93BBF",
+          "sizeBytes": 4,
+          "sha256": "c049938d7ce4cf4d39209a66bd00ce5f298eb97d8479abdf29b5d63a6b72cf88",
+          "firstBytes": "a6 10 a0 12"
+        },
+        "headerBytes": "a6 10 a0 12",
+        "aramDestination": "0x12A0",
+        "payloadBytes": 4262,
+        "channelPointers": [
+          "0x1454",
+          "0x1977",
+          "0x16DB",
+          "0x1DEA",
+          "0x2002",
+          "0x1C3C",
+          "0x21A5",
+          "0x1507"
+        ],
+        "payload": {
+          "fileOffset": "0x093BC3",
+          "hiromAddress": "$C93BC3",
+          "sizeBytes": 4262,
+          "sha256": "06353d521d7c00037005079031f3ee33a6efc916378e9ceb77726a9761ef3e30",
+          "firstBytes": "54 14 77 19 db 16 ea 1d 02 20 3c 1c a5 21 07 15 8c a0 01 01 80 02 05 13"
+        }
+      },
+      {
+        "id": 5,
+        "nameFromNavigationSource": "NorthernHemispheres",
+        "cpuPointerBytes": "f8 1c c9",
+        "header": {
+          "fileOffset": "0x091CF8",
+          "hiromAddress": "$C91CF8",
+          "sizeBytes": 4,
+          "sha256": "e8a40e7c7ee33656bd13d7912dff9d59f5c38124776d62b2c307bb9c74f9eb04",
+          "firstBytes": "99 10 a0 12"
+        },
+        "headerBytes": "99 10 a0 12",
+        "aramDestination": "0x12A0",
+        "payloadBytes": 4249,
+        "channelPointers": [
+          "0x12B2",
+          "0x168E",
+          "0x187A",
+          "0x198C",
+          "0x1A94",
+          "0x1E9E",
+          "0x208B",
+          "0x1C8C"
+        ],
+        "payload": {
+          "fileOffset": "0x091CFC",
+          "hiromAddress": "$C91CFC",
+          "sizeBytes": 4249,
+          "sha256": "6485b85db266dfffc4405c74e865575d9d37d4aa03062f154ff4cc8759a373a5",
+          "firstBytes": "b2 12 8e 16 7a 18 8c 19 94 1a 9e 1e 8b 20 8c 1c a0 a0 2a 64 11 3c 3c 15"
+        }
+      },
+      {
+        "id": 6,
+        "nameFromNavigationSource": "VoicesOfTheTemple",
+        "cpuPointerBytes": "50 16 df",
+        "header": {
+          "fileOffset": "0x1F1650",
+          "hiromAddress": "$DF1650",
+          "sizeBytes": 4,
+          "sha256": "f772b3755da93a4d856af359dcaf957a6fd234e60eb3ca60b19aba8efc9c7e0d",
+          "firstBytes": "f0 0b a0 12"
+        },
+        "headerBytes": "f0 0b a0 12",
+        "aramDestination": "0x12A0",
+        "payloadBytes": 3056,
+        "channelPointers": [
+          "0x12B3",
+          "0x16A0",
+          "0x1833",
+          "0x1975",
+          "0x1496",
+          "0x1668",
+          "0x1CE0",
+          "0x143D"
+        ],
+        "payload": {
+          "fileOffset": "0x1F1654",
+          "hiromAddress": "$DF1654",
+          "sizeBytes": 3056,
+          "sha256": "eed6401c47f62f00c497e622b3f80fe4f323ce9cc709f2ecc06e68b9444f570b",
+          "firstBytes": "b3 12 a0 16 33 18 75 19 96 14 68 16 e0 1c 3d 14 9a a0 00 2a 64 11 42 42"
+        }
+      },
+      {
+        "id": 7,
+        "nameFromNavigationSource": "FearFactory",
+        "cpuPointerBytes": "83 0f c9",
+        "header": {
+          "fileOffset": "0x090F83",
+          "hiromAddress": "$C90F83",
+          "sizeBytes": 4,
+          "sha256": "116a893a6f428a99fae57260d2d69c718f376b2cd9dd11f32625ad04996027b0",
+          "firstBytes": "71 0d a0 12"
+        },
+        "headerBytes": "71 0d a0 12",
+        "aramDestination": "0x12A0",
+        "payloadBytes": 3441,
+        "channelPointers": [
+          "0x1322",
+          "0x1B6A",
+          "0x1453",
+          "0x16BB",
+          "0x1A14",
+          "0x1EA2",
+          "0x185E",
+          "0x150F"
+        ],
+        "payload": {
+          "fileOffset": "0x090F87",
+          "hiromAddress": "$C90F87",
+          "sizeBytes": 3441,
+          "sha256": "0dde903bd51ec3afff428e38b05c96c5c1b275a41a2ae95d8179cddc71b85f65",
+          "firstBytes": "22 13 6a 1b 53 14 bb 16 14 1a a2 1e 5e 18 0f 15 72 a0 13 00 01 00 12 b4"
+        }
+      },
+      {
+        "id": 8,
+        "nameFromNavigationSource": "LifeInTheMines",
+        "cpuPointerBytes": "a7 cd e3",
+        "header": {
+          "fileOffset": "0x23CDA7",
+          "hiromAddress": "$E3CDA7",
+          "sizeBytes": 4,
+          "sha256": "da243ee0eb7c257d5fbc7962621108b29a1f73b0e287ffa5835f544e5b07a2da",
+          "firstBytes": "00 0a a0 12"
+        },
+        "headerBytes": "00 0a a0 12",
+        "aramDestination": "0x12A0",
+        "payloadBytes": 2560,
+        "channelPointers": [
+          "0x12BA",
+          "0x144E",
+          "0x18BB",
+          "0x160F",
+          "0x1BDA",
+          "0x1760",
+          "0x148D",
+          "0x1B26"
+        ],
+        "payload": {
+          "fileOffset": "0x23CDAB",
+          "hiromAddress": "$E3CDAB",
+          "sizeBytes": 2560,
+          "sha256": "b7631bfc9a70ea8933e86b67d30089722912556dbf71a6ab7a700770976db611",
+          "firstBytes": "ba 12 4e 14 bb 18 0f 16 da 1b 60 17 8d 14 26 1b 7a a0 01 01 80 02 05 80"
+        }
+      },
+      {
+        "id": 9,
+        "nameFromNavigationSource": "TitleTheme",
+        "cpuPointerBytes": "8c d8 d3",
+        "header": {
+          "fileOffset": "0x13D88C",
+          "hiromAddress": "$D3D88C",
+          "sizeBytes": 4,
+          "sha256": "2f19ca9eddcc50b41673612b93f447869d0538509abf566252e5890698e332e1",
+          "firstBytes": "23 0a a0 12"
+        },
+        "headerBytes": "23 0a a0 12",
+        "aramDestination": "0x12A0",
+        "payloadBytes": 2595,
+        "channelPointers": [
+          "0x12B2",
+          "0x13B4",
+          "0x1770",
+          "0x17A8",
+          "0x1990",
+          "0x14D8",
+          "0x1587",
+          "0x1675"
+        ],
+        "payload": {
+          "fileOffset": "0x13D890",
+          "hiromAddress": "$D3D890",
+          "sizeBytes": 2595,
+          "sha256": "e23df364c8fba2e2470275e468837e4e04d418e27cd4ac629946f719804929d3",
+          "firstBytes": "b2 12 b4 13 70 17 a8 17 90 19 d8 14 87 15 75 16 de a0 2a 64 04 01 be 1c"
+        }
+      },
+      {
+        "id": 10,
+        "nameFromNavigationSource": "SplashScreenFanfare",
+        "cpuPointerBytes": "00 00 ea",
+        "header": {
+          "fileOffset": "0x2A0000",
+          "hiromAddress": "$EA0000",
+          "sizeBytes": 4,
+          "sha256": "ba5d78bc057e227844c9672a283bfb34587848e3712a08c603565149edbd9612",
+          "firstBytes": "07 02 a0 12"
+        },
+        "headerBytes": "07 02 a0 12",
+        "aramDestination": "0x12A0",
+        "payloadBytes": 519,
+        "channelPointers": [
+          "0x12B3",
+          "0x12F1",
+          "0x131F",
+          "0x136B",
+          "0x13BA",
+          "0x1405",
+          "0x12B2",
+          "0x147B"
+        ],
+        "payload": {
+          "fileOffset": "0x2A0004",
+          "hiromAddress": "$EA0004",
+          "sizeBytes": 519,
+          "sha256": "28c70164f350e76ec6ddd44e4d7e0766e23f31008bdcd081c5c574b25d7dae6d",
+          "firstBytes": "b3 12 f1 12 1f 13 6b 13 ba 13 05 14 b2 12 7b 14 a0 a0 00 2a 64 11 3c 3c"
+        }
+      },
+      {
+        "id": 11,
+        "nameFromNavigationSource": "IceCaveChant",
+        "cpuPointerBytes": "be 95 f0",
+        "header": {
+          "fileOffset": "0x3095BE",
+          "hiromAddress": "$F095BE",
+          "sizeBytes": 4,
+          "sha256": "442485369533d52cb66d36fb499fcb4c0b367a53731becae082b0263bfff3df9",
+          "firstBytes": "cc 0b a0 12"
+        },
+        "headerBytes": "cc 0b a0 12",
+        "aramDestination": "0x12A0",
+        "payloadBytes": 3020,
+        "channelPointers": [
+          "0x12B2",
+          "0x143A",
+          "0x1597",
+          "0x1751",
+          "0x1932",
+          "0x1827",
+          "0x1C4F",
+          "0x19F4"
+        ],
+        "payload": {
+          "fileOffset": "0x3095C2",
+          "hiromAddress": "$F095C2",
+          "sizeBytes": 3020,
+          "sha256": "33011c9177d1b1f2398481d4827e32d5957fa9f30c8a6f36619079e61e3e2822",
+          "firstBytes": "b2 12 3a 14 97 15 51 17 32 19 27 18 4f 1c f4 19 5b a0 2a 64 11 3c 3c 17"
+        }
+      },
+      {
+        "id": 12,
+        "nameFromNavigationSource": "SimianSegue",
+        "cpuPointerBytes": "84 6b c1",
+        "header": {
+          "fileOffset": "0x016B84",
+          "hiromAddress": "$C16B84",
+          "sizeBytes": 4,
+          "sha256": "6b6638c6b7ed8b5f6eb0744d094fc5f5e053739bc3475ecebd6884c1b2ed75fc",
+          "firstBytes": "32 09 a0 12"
+        },
+        "headerBytes": "32 09 a0 12",
+        "aramDestination": "0x12A0",
+        "payloadBytes": 2354,
+        "channelPointers": [
+          "0x12B2",
+          "0x1810",
+          "0x1951",
+          "0x13EF",
+          "0x138C",
+          "0x1601",
+          "0x1A5E",
+          "0x1747"
+        ],
+        "payload": {
+          "fileOffset": "0x016B88",
+          "hiromAddress": "$C16B88",
+          "sizeBytes": 2354,
+          "sha256": "b981fa28dc9c0c8eb8e1d1fa71c91f31976fede1f13d9ad8e5cabe65c415cb88",
+          "firstBytes": "b2 12 10 18 51 19 ef 13 8c 13 01 16 5e 1a 47 17 ff a0 2a 64 11 3c 3c 17"
+        }
+      },
+      {
+        "id": 13,
+        "nameFromNavigationSource": "ForestFrenzy",
+        "cpuPointerBytes": "00 00 c5",
+        "header": {
+          "fileOffset": "0x050000",
+          "hiromAddress": "$C50000",
+          "sizeBytes": 4,
+          "sha256": "baaa688c24ffba1b10f44739092527142e1c09fd265d8a9711284190259c353a",
+          "firstBytes": "0e 09 a0 12"
+        },
+        "headerBytes": "0e 09 a0 12",
+        "aramDestination": "0x12A0",
+        "payloadBytes": 2318,
+        "channelPointers": [
+          "0x12B2",
+          "0x141D",
+          "0x1466",
+          "0x15DE",
+          "0x159F",
+          "0x1529",
+          "0x1913",
+          "0x17D5"
+        ],
+        "payload": {
+          "fileOffset": "0x050004",
+          "hiromAddress": "$C50004",
+          "sizeBytes": 2318,
+          "sha256": "043f89ba0cb6c57f00715801d6a9983710f42a1229386815df04b7a7c71eb613",
+          "firstBytes": "b2 12 1d 14 66 14 de 15 9f 15 29 15 13 19 d5 17 50 a0 2a 64 11 40 40 17"
+        }
+      },
+      {
+        "id": 14,
+        "nameFromNavigationSource": "CreditsConcerto",
+        "cpuPointerBytes": "b4 db df",
+        "header": {
+          "fileOffset": "0x1FDBB4",
+          "hiromAddress": "$DFDBB4",
+          "sizeBytes": 4,
+          "sha256": "f42e136dc62312427173c122b0c3487397487829e33ab696c7e6ec515bae8071",
+          "firstBytes": "ce 05 a0 12"
+        },
+        "headerBytes": "ce 05 a0 12",
+        "aramDestination": "0x12A0",
+        "payloadBytes": 1486,
+        "channelPointers": [
+          "0x12BA",
+          "0x1399",
+          "0x13D9",
+          "0x13FA",
+          "0x15A5",
+          "0x147B",
+          "0x1509",
+          "0x141B"
+        ],
+        "payload": {
+          "fileOffset": "0x1FDBB8",
+          "hiromAddress": "$DFDBB8",
+          "sizeBytes": 1486,
+          "sha256": "dec72c14c876b5422778579c4bd52dd592e5e8f93ce510c3a609e467d12320dd",
+          "firstBytes": "ba 12 99 13 d9 13 fa 13 a5 15 7b 14 09 15 1b 14 7a a0 80 80 05 01 01 80"
+        }
+      },
+      {
+        "id": 15,
+        "nameFromNavigationSource": "GameOver",
+        "cpuPointerBytes": "00 00 f4",
+        "header": {
+          "fileOffset": "0x340000",
+          "hiromAddress": "$F40000",
+          "sizeBytes": 4,
+          "sha256": "ab34cfec4b87c95e318699c0dfa97ca821bf31bde2bd5ba4cd6378f53b715b11",
+          "firstBytes": "d3 01 a0 12"
+        },
+        "headerBytes": "d3 01 a0 12",
+        "aramDestination": "0x12A0",
+        "payloadBytes": 467,
+        "channelPointers": [
+          "0x12B3",
+          "0x133C",
+          "0x12ED",
+          "0x1313",
+          "0x13FA",
+          "0x1388",
+          "0x1424",
+          "0x13D0"
+        ],
+        "payload": {
+          "fileOffset": "0x340004",
+          "hiromAddress": "$F40004",
+          "sizeBytes": 467,
+          "sha256": "2ad6501089167a8f3d60e4e9db97e0a8cc6f71a33191406817b75bfb50b9ca75",
+          "firstBytes": "b3 12 3c 13 ed 12 13 13 fa 13 88 13 24 14 d0 13 54 80 00 2a 64 11 3c 3c"
+        }
+      },
+      {
+        "id": 16,
+        "nameFromNavigationSource": "BonusRoomBlitz",
+        "cpuPointerBytes": "d8 f5 db",
+        "header": {
+          "fileOffset": "0x1BF5D8",
+          "hiromAddress": "$DBF5D8",
+          "sizeBytes": 4,
+          "sha256": "5c1976fa54ed028afc18721315c96080c6a17f8e16fa1e038a95dfd8e52f9590",
+          "firstBytes": "5d 08 a0 12"
+        },
+        "headerBytes": "5d 08 a0 12",
+        "aramDestination": "0x12A0",
+        "payloadBytes": 2141,
+        "channelPointers": [
+          "0x12B3",
+          "0x15A1",
+          "0x13DF",
+          "0x175E",
+          "0x16DA",
+          "0x14C0",
+          "0x12B2",
+          "0x18FB"
+        ],
+        "payload": {
+          "fileOffset": "0x1BF5DC",
+          "hiromAddress": "$DBF5DC",
+          "sizeBytes": 2141,
+          "sha256": "543b62d9fb3ff6d926a7d374ff00024911ad90d06a3ca5f2dcee646b9717cec9",
+          "firstBytes": "b3 12 a1 15 df 13 5e 17 da 16 c0 14 b2 12 fb 18 ba a0 00 2a 64 11 36 36"
+        }
+      },
+      {
+        "id": 17,
+        "nameFromNavigationSource": "DeathMusic",
+        "cpuPointerBytes": "00 00 e1",
+        "header": {
+          "fileOffset": "0x210000",
+          "hiromAddress": "$E10000",
+          "sizeBytes": 4,
+          "sha256": "4ef61eb7bb78840528893c1bd202309cb0dc81442216400265815f3033a68776",
+          "firstBytes": "e1 01 a0 12"
+        },
+        "headerBytes": "e1 01 a0 12",
+        "aramDestination": "0x12A0",
+        "payloadBytes": 481,
+        "channelPointers": [
+          "0x12B2",
+          "0x1319",
+          "0x1354",
+          "0x139D",
+          "0x13E8",
+          "0x140D",
+          "0x1432",
+          "0x1457"
+        ],
+        "payload": {
+          "fileOffset": "0x210004",
+          "hiromAddress": "$E10004",
+          "sizeBytes": 481,
+          "sha256": "acfd2432232e11cf9ab9daddbf0b2b67a39d8d013a56d3a8bd42dd17c1b6a4cf",
+          "firstBytes": "b2 12 19 13 54 13 9d 13 e8 13 0d 14 32 14 57 14 a0 a0 2a 64 11 37 37 04"
+        }
+      },
+      {
+        "id": 18,
+        "nameFromNavigationSource": "Victory",
+        "cpuPointerBytes": "76 14 ee",
+        "header": {
+          "fileOffset": "0x2E1476",
+          "hiromAddress": "$EE1476",
+          "sizeBytes": 4,
+          "sha256": "f49e645d779322ee92578dd5d5f8407a53c99a2ec5261fb45de04825c746c029",
+          "firstBytes": "63 03 a0 12"
+        },
+        "headerBytes": "63 03 a0 12",
+        "aramDestination": "0x12A0",
+        "payloadBytes": 867,
+        "channelPointers": [
+          "0x12B2",
+          "0x1306",
+          "0x1339",
+          "0x137C",
+          "0x1462",
+          "0x14BD",
+          "0x151D",
+          "0x158A"
+        ],
+        "payload": {
+          "fileOffset": "0x2E147A",
+          "hiromAddress": "$EE147A",
+          "sizeBytes": 867,
+          "sha256": "eb3d903365f74a96f57afd1ad4dd530d643fd29c6947028ee6a9e42595d4f1b0",
+          "firstBytes": "b2 12 06 13 39 13 7c 13 62 14 bd 14 1d 15 8a 15 9a a0 2a 64 11 33 33 04"
+        }
+      },
+      {
+        "id": 19,
+        "nameFromNavigationSource": "TreetopRock",
+        "cpuPointerBytes": "c6 eb c5",
+        "header": {
+          "fileOffset": "0x05EBC6",
+          "hiromAddress": "$C5EBC6",
+          "sizeBytes": 4,
+          "sha256": "ee6b5e22a4ad014053c8192f142dee4eeb13217141c8b26a5a01be28d66d319a",
+          "firstBytes": "18 0b a0 12"
+        },
+        "headerBytes": "18 0b a0 12",
+        "aramDestination": "0x12A0",
+        "payloadBytes": 2840,
+        "channelPointers": [
+          "0x12B2",
+          "0x1495",
+          "0x15CF",
+          "0x1868",
+          "0x1688",
+          "0x1A98",
+          "0x1C87",
+          "0x1A47"
+        ],
+        "payload": {
+          "fileOffset": "0x05EBCA",
+          "hiromAddress": "$C5EBCA",
+          "sizeBytes": 2840,
+          "sha256": "178a0b068b56e35f78724ea0a8ee4a486308e17b463234831dfbf46fdf3c18d8",
+          "firstBytes": "b2 12 95 14 cf 15 68 18 88 16 98 1a 87 1c 47 1a 83 a0 2a 64 11 3d 3d 17"
+        }
+      },
+      {
+        "id": 20,
+        "nameFromNavigationSource": "FunkysFugue",
+        "cpuPointerBytes": "00 00 c6",
+        "header": {
+          "fileOffset": "0x060000",
+          "hiromAddress": "$C60000",
+          "sizeBytes": 4,
+          "sha256": "05d475aaf660f7212b7846df2bb71154d33942a294f2ba16b6900cd044016934",
+          "firstBytes": "75 09 a0 12"
+        },
+        "headerBytes": "75 09 a0 12",
+        "aramDestination": "0x12A0",
+        "payloadBytes": 2421,
+        "channelPointers": [
+          "0x12B2",
+          "0x1342",
+          "0x1472",
+          "0x159A",
+          "0x1689",
+          "0x1939",
+          "0x19C9",
+          "0x1BA9"
+        ],
+        "payload": {
+          "fileOffset": "0x060004",
+          "hiromAddress": "$C60004",
+          "sizeBytes": 2421,
+          "sha256": "24d2fc68c11f04c13634165eaf3108cb66c2755123aca3d276f9c6f198632a62",
+          "firstBytes": "b2 12 42 13 72 14 9a 15 89 16 39 19 c9 19 a9 1b 78 a0 2a 64 11 43 43 04"
+        }
+      },
+      {
+        "id": 21,
+        "nameFromNavigationSource": "BadBossBoogie",
+        "cpuPointerBytes": "a4 c6 e9",
+        "header": {
+          "fileOffset": "0x29C6A4",
+          "hiromAddress": "$E9C6A4",
+          "sizeBytes": 4,
+          "sha256": "ae6547e8ec908548bc6147f84ba21fc52063e3ac0523d0b7d6fb12ca1ba6b725",
+          "firstBytes": "34 10 a0 12"
+        },
+        "headerBytes": "34 10 a0 12",
+        "aramDestination": "0x12A0",
+        "payloadBytes": 4148,
+        "channelPointers": [
+          "0x12B2",
+          "0x1544",
+          "0x190D",
+          "0x1E67",
+          "0x146A",
+          "0x1C4B",
+          "0x2194",
+          "0x175D"
+        ],
+        "payload": {
+          "fileOffset": "0x29C6A8",
+          "hiromAddress": "$E9C6A8",
+          "sizeBytes": 4148,
+          "sha256": "032a76be75d65b548394d291712bfd2307c2329a94752eab46def574d4d52ca0",
+          "firstBytes": "b2 12 44 15 0d 19 67 1e 6a 14 4b 1c 94 21 5d 17 80 a0 2a 64 11 3e 3e 04"
+        }
+      },
+      {
+        "id": 22,
+        "nameFromNavigationSource": "CandysLoveSong",
+        "cpuPointerBytes": "58 bb f1",
+        "header": {
+          "fileOffset": "0x31BB58",
+          "hiromAddress": "$F1BB58",
+          "sizeBytes": 4,
+          "sha256": "24e15ee66494926244ccf1e801b3a3ac11674a17fd757381b695fc80fcb8d76f",
+          "firstBytes": "6b 07 a0 12"
+        },
+        "headerBytes": "6b 07 a0 12",
+        "aramDestination": "0x12A0",
+        "payloadBytes": 1899,
+        "channelPointers": [
+          "0x12B3",
+          "0x1415",
+          "0x14F7",
+          "0x187E",
+          "0x167A",
+          "0x17B1",
+          "0x1986",
+          "0x1374"
+        ],
+        "payload": {
+          "fileOffset": "0x31BB5C",
+          "hiromAddress": "$F1BB5C",
+          "sizeBytes": 1899,
+          "sha256": "086291eb69fa27684da2959a69ad1813a669f638e390ed0b5014d7967cd5a4ae",
+          "firstBytes": "b3 12 15 14 f7 14 7e 18 7a 16 b1 17 86 19 74 13 b8 a0 00 2a 64 11 3c 3c"
+        }
+      },
+      {
+        "id": 23,
+        "nameFromNavigationSource": "CrankysTheme",
+        "cpuPointerBytes": "65 8c 8a",
+        "header": {
+          "fileOffset": "0x0A8C65",
+          "hiromAddress": "$CA8C65",
+          "sizeBytes": 4,
+          "sha256": "654fa90bec1fd4ee04cbbcbe6634d89ef5999de4c808d3f969429814fb149341",
+          "firstBytes": "f8 06 a0 12"
+        },
+        "headerBytes": "f8 06 a0 12",
+        "aramDestination": "0x12A0",
+        "payloadBytes": 1784,
+        "channelPointers": [
+          "0x12B2",
+          "0x1334",
+          "0x13CC",
+          "0x1474",
+          "0x1679",
+          "0x183C",
+          "0x190A",
+          "0x1942"
+        ],
+        "payload": {
+          "fileOffset": "0x0A8C69",
+          "hiromAddress": "$CA8C69",
+          "sizeBytes": 1784,
+          "sha256": "c6e879af235ca8b478691bc315229942c01bb44898c0514d9ac1555a831be000",
+          "firstBytes": "b2 12 34 13 cc 13 74 14 79 16 3c 18 0a 19 42 19 90 a0 2a 64 11 39 39 04"
+        }
+      },
+      {
+        "id": 24,
+        "nameFromNavigationSource": "GangplankGalleon",
+        "cpuPointerBytes": "cc 2e c2",
+        "header": {
+          "fileOffset": "0x022ECC",
+          "hiromAddress": "$C22ECC",
+          "sizeBytes": 4,
+          "sha256": "5d6857b11ab342418d56e65f6126248550b9e8b8830a02cdb8b7a624068890b1",
+          "firstBytes": "5f 0f a0 12"
+        },
+        "headerBytes": "5f 0f a0 12",
+        "aramDestination": "0x12A0",
+        "payloadBytes": 3935,
+        "channelPointers": [
+          "0x12B2",
+          "0x16F4",
+          "0x1D35",
+          "0x1F9A",
+          "0x1AED",
+          "0x19DD",
+          "0x2139",
+          "0x15EB"
+        ],
+        "payload": {
+          "fileOffset": "0x022ED0",
+          "hiromAddress": "$C22ED0",
+          "sizeBytes": 3935,
+          "sha256": "16f0ac47608c641b8f53cb52354d4dff7f6e86f6fbe7a812f82e1b973601370a",
+          "firstBytes": "b2 12 f4 16 35 1d 9a 1f ed 1a dd 19 39 21 eb 15 ba a0 2a 64 11 3c 3c 04"
+        }
+      },
+      {
+        "id": 25,
+        "nameFromNavigationSource": "Failure",
+        "cpuPointerBytes": "b3 e2 d3",
+        "header": {
+          "fileOffset": "0x13E2B3",
+          "hiromAddress": "$D3E2B3",
+          "sizeBytes": 4,
+          "sha256": "2f19ca9eddcc50b41673612b93f447869d0538509abf566252e5890698e332e1",
+          "firstBytes": "23 0a a0 12"
+        },
+        "headerBytes": "23 0a a0 12",
+        "aramDestination": "0x12A0",
+        "payloadBytes": 2595,
+        "channelPointers": [
+          "0x12B2",
+          "0x131C",
+          "0x136F",
+          "0x13B0",
+          "0x13CB",
+          "0x13E6",
+          "0x13FD",
+          "0x153B"
+        ],
+        "payload": {
+          "fileOffset": "0x13E2B7",
+          "hiromAddress": "$D3E2B7",
+          "sizeBytes": 2595,
+          "sha256": "86e6c8e9b43ad27cf13a19353e06c4b5ae908f54bb2c65872aaf813a446454ef",
+          "firstBytes": "b2 12 1c 13 6f 13 b0 13 cb 13 e6 13 fd 13 3b 15 ba a0 2a 64 11 3c 3c 04"
+        }
+      },
+      {
+        "id": 26,
+        "nameFromNavigationSource": "BeatLevel",
+        "cpuPointerBytes": "89 e7 d3",
+        "header": {
+          "fileOffset": "0x13E789",
+          "hiromAddress": "$D3E789",
+          "sizeBytes": 4,
+          "sha256": "26f9ba49e04feda8c7ca03d283e56fd1d6056b6cba40ec17be234c0d1d3d0f83",
+          "firstBytes": "34 02 a0 12"
+        },
+        "headerBytes": "34 02 a0 12",
+        "aramDestination": "0x12A0",
+        "payloadBytes": 564,
+        "channelPointers": [
+          "0x12B2",
+          "0x12F4",
+          "0x1315",
+          "0x1346",
+          "0x13C4",
+          "0x13F7",
+          "0x1435",
+          "0x1481"
+        ],
+        "payload": {
+          "fileOffset": "0x13E78D",
+          "hiromAddress": "$D3E78D",
+          "sizeBytes": 564,
+          "sha256": "7624563338af907f52ba45cd136b3e01d413376fec7bc6c8ca36d3357162e2be",
+          "firstBytes": "b2 12 f4 12 15 13 46 13 c4 13 f7 13 35 14 81 14 b0 a0 2a 64 11 33 33 04"
+        }
+      }
+    ],
+    "framing": "LE16 payload size then LE16 ARAM upload destination; 27 actual runtime table entries, all destination $12A0. Names are source-assisted annotations, not strings contained in ROM."
+  },
+  "globalSoundEffects": {
+    "container": {
+      "fileOffset": "0x092D95",
+      "hiromAddress": "$C92D95",
+      "sizeBytes": 3626,
+      "sha256": "d4cce113bd7bb2d04d8b1c91a44be4b85cc10d0a02deb156d2f49ee1a98cf06f",
+      "firstBytes": "26 0e 80 23 b4 2f 9f 2f 8f 2f 23 2f 01 2f f6 2e eb 2e db 2e c0 2e 8b 2e"
+    },
+    "payloadBytes": 3622,
+    "aramDestination": "0x2380"
+  },
+  "instrumentLoadLists": {
+    "globalList": {
+      "data": {
+        "fileOffset": "0x0AB24A",
+        "hiromAddress": "$CAB24A",
+        "sizeBytes": 60,
+        "sha256": "cf36343e0399b628df1bbe3c85df291cfeac3a75c24311d4bc9850c0e90fcb55",
+        "firstBytes": "01 00 02 00 03 00 06 00 07 00 08 00 09 00 0a 00 0b 00 0e 00 0f 00 1f 00"
+      },
+      "sampleIds": [
+        "01",
+        "02",
+        "03",
+        "06",
+        "07",
+        "08",
+        "09",
+        "0A",
+        "0B",
+        "0E",
+        "0F",
+        "1F",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "44",
+        "26",
+        "27",
+        "28",
+        "29",
+        "2A",
+        "2B",
+        "11",
+        "1D",
+        "16",
+        "36"
+      ]
+    },
+    "setPointerTable": {
+      "fileOffset": "0x0AB212",
+      "hiromAddress": "$CAB212",
+      "sizeBytes": 56,
+      "sha256": "ab32652ef2110ee17e5c4632176ec6199bfed9cc415554f0b3914fc2027fbb87",
+      "firstBytes": "86 b2 9c b2 a8 b2 b6 b2 ce b2 dc b2 ec b2 f8 b2 0a b3 1c b3 3a b3 3e b3"
+    },
+    "sets": [
+      {
+        "index": 0,
+        "fileOffset": "0x0AB286",
+        "sampleIds": [
+          "00",
+          "12",
+          "15",
+          "19",
+          "1A",
+          "1C",
+          "31",
+          "10",
+          "32",
+          "1B"
+        ],
+        "raw": "00 00 12 00 15 00 19 00 1a 00 1c 00 31 00 10 00 32 00 1b 00 ff ff"
+      },
+      {
+        "index": 1,
+        "fileOffset": "0x0AB29C",
+        "sampleIds": [
+          "00",
+          "0C",
+          "12",
+          "15",
+          "1B"
+        ],
+        "raw": "00 00 0c 00 12 00 15 00 1b 00 ff ff"
+      },
+      {
+        "index": 2,
+        "fileOffset": "0x0AB2A8",
+        "sampleIds": [
+          "0C",
+          "0D",
+          "05",
+          "12",
+          "15",
+          "1B"
+        ],
+        "raw": "0c 00 0d 00 05 00 12 00 15 00 1b 00 ff ff"
+      },
+      {
+        "index": 3,
+        "fileOffset": "0x0AB2B6",
+        "sampleIds": [
+          "00",
+          "0C",
+          "05",
+          "13",
+          "14",
+          "45",
+          "38",
+          "17",
+          "18",
+          "1E",
+          "04"
+        ],
+        "raw": "00 00 0c 00 05 00 13 00 14 00 45 00 38 00 17 00 18 00 1e 00 04 00 ff ff"
+      },
+      {
+        "index": 4,
+        "fileOffset": "0x0AB2CE",
+        "sampleIds": [
+          "00",
+          "1C",
+          "04",
+          "10",
+          "1B",
+          "12"
+        ],
+        "raw": "00 00 1c 00 04 00 10 00 1b 00 12 00 ff ff"
+      },
+      {
+        "index": 5,
+        "fileOffset": "0x0AB2DC",
+        "sampleIds": [
+          "00",
+          "0C",
+          "0D",
+          "13",
+          "04",
+          "15",
+          "1B"
+        ],
+        "raw": "00 00 0c 00 0d 00 13 00 04 00 15 00 1b 00 ff ff"
+      },
+      {
+        "index": 6,
+        "fileOffset": "0x0AB2EC",
+        "sampleIds": [
+          "00",
+          "04",
+          "15",
+          "1B",
+          "35"
+        ],
+        "raw": "00 00 04 00 15 00 1b 00 35 00 ff ff"
+      },
+      {
+        "index": 7,
+        "fileOffset": "0x0AB2F8",
+        "sampleIds": [
+          "00",
+          "14",
+          "45",
+          "38",
+          "04",
+          "10",
+          "12",
+          "1B"
+        ],
+        "raw": "00 00 14 00 45 00 38 00 04 00 10 00 12 00 1b 00 ff ff"
+      },
+      {
+        "index": 8,
+        "fileOffset": "0x0AB30A",
+        "sampleIds": [
+          "0C",
+          "00",
+          "12",
+          "15",
+          "35",
+          "38",
+          "04",
+          "1B"
+        ],
+        "raw": "0c 00 00 00 12 00 15 00 35 00 38 00 04 00 1b 00 ff ff"
+      },
+      {
+        "index": 9,
+        "fileOffset": "0x0AB31C",
+        "sampleIds": [
+          "00",
+          "1B",
+          "2C",
+          "2D",
+          "2E",
+          "2F",
+          "30",
+          "05",
+          "45"
+        ],
+        "raw": "00 00 1b 00 2c 00 2d 00 2e 00 2f 00 30 00 05 00 45 00 ff ff"
+      },
+      {
+        "index": 10,
+        "fileOffset": "0x0AB33A",
+        "sampleIds": [
+          "10"
+        ],
+        "raw": "10 00 ff ff"
+      },
+      {
+        "index": 11,
+        "fileOffset": "0x0AB33E",
+        "sampleIds": [
+          "00",
+          "31",
+          "04",
+          "12",
+          "1B"
+        ],
+        "raw": "00 00 31 00 04 00 12 00 1b 00 ff ff"
+      },
+      {
+        "index": 12,
+        "fileOffset": "0x0AB34A",
+        "sampleIds": [
+          "00",
+          "1A",
+          "0D",
+          "04",
+          "1B"
+        ],
+        "raw": "00 00 1a 00 0d 00 04 00 1b 00 ff ff"
+      },
+      {
+        "index": 13,
+        "fileOffset": "0x0AB356",
+        "sampleIds": [
+          "00",
+          "0D",
+          "04",
+          "15",
+          "1B"
+        ],
+        "raw": "00 00 0d 00 04 00 15 00 1b 00 ff ff"
+      },
+      {
+        "index": 14,
+        "fileOffset": "0x0AB362",
+        "sampleIds": [
+          "00",
+          "13",
+          "17",
+          "18",
+          "14",
+          "33",
+          "04",
+          "34"
+        ],
+        "raw": "00 00 13 00 17 00 18 00 14 00 33 00 04 00 34 00 ff ff"
+      },
+      {
+        "index": 15,
+        "fileOffset": "0x0AB374",
+        "sampleIds": [
+          "00",
+          "04",
+          "35"
+        ],
+        "raw": "00 00 04 00 35 00 ff ff"
+      },
+      {
+        "index": 16,
+        "fileOffset": "0x0AB37C",
+        "sampleIds": [
+          "00",
+          "35",
+          "19",
+          "1B",
+          "15",
+          "1C"
+        ],
+        "raw": "00 00 35 00 19 00 1b 00 15 00 1c 00 ff ff"
+      },
+      {
+        "index": 17,
+        "fileOffset": "0x0AB394",
+        "sampleIds": [
+          "00",
+          "1B"
+        ],
+        "raw": "00 00 1b 00 ff ff"
+      },
+      {
+        "index": 18,
+        "fileOffset": "0x0AB38A",
+        "sampleIds": [
+          "00",
+          "35",
+          "10",
+          "1B"
+        ],
+        "raw": "00 00 35 00 10 00 1b 00 ff ff"
+      },
+      {
+        "index": 19,
+        "fileOffset": "0x0AB39A",
+        "sampleIds": [
+          "00",
+          "35",
+          "04",
+          "1B"
+        ],
+        "raw": "00 00 35 00 04 00 1b 00 ff ff"
+      },
+      {
+        "index": 20,
+        "fileOffset": "0x0AB3A4",
+        "sampleIds": [
+          "00",
+          "3A",
+          "3B",
+          "3C",
+          "2C",
+          "2D",
+          "2E",
+          "3D",
+          "1B"
+        ],
+        "raw": "00 00 3a 00 3b 00 3c 00 2c 00 2d 00 2e 00 3d 00 1b 00 ff ff"
+      },
+      {
+        "index": 21,
+        "fileOffset": "0x0AB3B8",
+        "sampleIds": [
+          "1B",
+          "3E",
+          "3D",
+          "15",
+          "45",
+          "42",
+          "34"
+        ],
+        "raw": "1b 00 3e 00 3d 00 15 00 45 00 42 00 34 00 ff ff"
+      },
+      {
+        "index": 22,
+        "fileOffset": "0x0AB3C8",
+        "sampleIds": [
+          "3F",
+          "40",
+          "39",
+          "43",
+          "1B",
+          "10",
+          "41",
+          "1A"
+        ],
+        "raw": "3f 00 40 00 39 00 43 00 1b 00 10 00 41 00 1a 00 ff ff"
+      },
+      {
+        "index": 23,
+        "fileOffset": "0x0AB3DA",
+        "sampleIds": [
+          "1B",
+          "43",
+          "35"
+        ],
+        "raw": "1b 00 43 00 35 00 ff ff"
+      },
+      {
+        "index": 24,
+        "fileOffset": "0x0AB3E2",
+        "sampleIds": [
+          "18",
+          "45",
+          "34",
+          "00",
+          "1B",
+          "35"
+        ],
+        "raw": "18 00 45 00 34 00 00 00 1b 00 35 00 ff ff"
+      },
+      {
+        "index": 25,
+        "fileOffset": "0x0AB3F0",
+        "sampleIds": [
+          "1B",
+          "35"
+        ],
+        "raw": "1b 00 35 00 ff ff"
+      },
+      {
+        "index": 26,
+        "fileOffset": "0x0AB38A",
+        "sampleIds": [
+          "00",
+          "35",
+          "10",
+          "1B"
+        ],
+        "raw": "00 00 35 00 10 00 1b 00 ff ff"
+      },
+      {
+        "index": 27,
+        "fileOffset": "0x0AB330",
+        "sampleIds": [
+          "01",
+          "0B",
+          "10",
+          "0E"
+        ],
+        "raw": "01 00 0b 00 10 00 0e 00 ff ff"
+      }
+    ],
+    "mappingLimit": "28 instrument sets exist for 27 runtime music IDs. Their caller-dependent mapping is not established here."
+  },
+  "runtimeMusicSelection": {
+    "musicTestMenuCode": {
+      "fileOffset": "0x00F94C",
+      "hiromAddress": "$C0F94C",
+      "sizeBytes": 38,
+      "sha256": "e3dff93805b357a52b33959527908d357e25e04733ce34d1f8c6fd61c0e26b00",
+      "firstBytes": "ad 6b 05 89 08 00 f0 38 ad 04 05 89 00 20 f0 30 20 04 c9 a5 7a 22 49 90"
+    },
+    "stateWriterCode": {
+      "fileOffset": "0x3990CE",
+      "hiromAddress": "$F990CE",
+      "sizeBytes": 23,
+      "sha256": "cb41b0e3bdd700f6f979c2b06482fb6f4fc982337ff8454084ddd8131dc70c73",
+      "firstBytes": "8d 23 05 22 cb b1 8a a9 01 00 8d 1d 05 e2 20 a2 fe 00 22 af b1 8a c2"
+    },
+    "currentMusicIdWram": "0x0523",
+    "activeFlagWram": "0x051D",
+    "musicTestFlagWram": "0x056B",
+    "musicTestFlagMask": "0x0008",
+    "menuNextMusicIdDirectPage": "0x007A",
+    "menuSelectPressedWram": "0x0504",
+    "menuSelectPressedMask": "0x2000",
+    "usage": "At file select, set music-test flag bit, choose DP $7A ID 0..26, then press Select. Static code establishes this path; runtime frontend must verify menu state and results."
+  },
+  "limitations": [
+    "Static data and local uploader behavior only; no SNES/SPC execution observed.",
+    "No music playback, mixing, ADSR, echo, resampling, instrument pitch or timing equivalence established.",
+    "The public source is USA 1.0 and was not assumed byte-identical; driver differences were verified directly.",
+    "Music sequence instruction sets and SFX event-to-ID mappings remain to decode.",
+    "68 of 70 samples upload one byte beyond complete BRR blocks; its musical purpose is not established."
+  ]
+}

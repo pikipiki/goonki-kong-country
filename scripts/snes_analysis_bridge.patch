@@ -1,0 +1,15 @@
+diff --git a/apu/apu.cpp b/apu/apu.cpp
+index a4ddd8c..a85d916 100644
+--- a/apu/apu.cpp
++++ b/apu/apu.cpp
+@@ -381,3 +381,10 @@ void S9xAPULoadBlarggState(uint8 *oldblock)
+     // blargg stores CPUIx in regs_in
+     memcpy(SNES::cpu.registers, regs_in + 4, 4);
+ }
++
++// Goonk read-only runtime inspection bridge (analysis only, not browser runtime).
++extern "C" const unsigned char *goonk_apuram() { return SNES::smp.apuram; }
++extern "C" unsigned goonk_apupc() { return SNES::smp.regs.pc; }
++extern "C" unsigned goonk_apudsp(unsigned reg) { return SNES::dsp.spc_dsp.read(reg & 127); }
++extern "C" void goonk_apuwrite(unsigned port, unsigned value) { S9xAPUWritePort(port & 3, value & 255); }
++extern "C" unsigned goonk_apuread(unsigned port) { return S9xAPUReadPort(port & 3); }

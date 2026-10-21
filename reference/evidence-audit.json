@@ -1,0 +1,371 @@
+{
+  "romSha256": "628147468c3539283197f58f03b94df49758a332831857481ea9cc31645f0527",
+  "romBytes": 4194304,
+  "reports": [
+    {
+      "file": "rom-analysis.json",
+      "sha256": "1977eac697fb83d4d846dc454d8c7256d149cc34688ab2993a50221b52b5727c",
+      "byteRecordsRechecked": 6
+    },
+    {
+      "file": "buddy-analysis.json",
+      "sha256": "663d1a3ec8aa15ff208bfc909e40819ef389cb305ebfc005f46d56816a9616d9",
+      "byteRecordsRechecked": 22
+    },
+    {
+      "file": "player-states.json",
+      "sha256": "1b708c8f214dd8469ab521ee5886ea7fa445469db4af20552a5bc5ee4f669e34",
+      "byteRecordsRechecked": 27
+    },
+    {
+      "file": "audio-rom-analysis.json",
+      "sha256": "4ee2102c96f7f0ca3915fe8832e398e74a7fe4d4e3bda62f54aaff12b0a2c9d5",
+      "byteRecordsRechecked": 0
+    },
+    {
+      "file": "level-tables.json",
+      "sha256": "527b1b9c9b7e97eb6f013022ba7f9d6c76d3ebf65d03aac9be21038dce6e31b8",
+      "byteRecordsRechecked": 0
+    }
+  ],
+  "missingReports": [],
+  "records": [
+    {
+      "report": "rom-analysis.json",
+      "jsonPointer": "/findings/gravity/matches/0",
+      "fileOffset": "0x3FAF9C",
+      "length": 21
+    },
+    {
+      "report": "rom-analysis.json",
+      "jsonPointer": "/findings/gravity/matches/1",
+      "fileOffset": "0x3FB176",
+      "length": 21
+    },
+    {
+      "report": "rom-analysis.json",
+      "jsonPointer": "/findings/heldJump/matches/0",
+      "fileOffset": "0x3FB9AC",
+      "length": 14
+    },
+    {
+      "report": "rom-analysis.json",
+      "jsonPointer": "/findings/enemyBounce/matches/0",
+      "fileOffset": "0x3FA7E7",
+      "length": 14
+    },
+    {
+      "report": "rom-analysis.json",
+      "jsonPointer": "/findings/bananaLife/matches/0",
+      "fileOffset": "0x00A370",
+      "length": 10
+    },
+    {
+      "report": "rom-analysis.json",
+      "jsonPointer": "/findings/characterEntry/matches/0",
+      "fileOffset": "0x3F84A4",
+      "length": 9
+    },
+    {
+      "report": "buddy-analysis.json",
+      "jsonPointer": "/findings/buddyRunTargets/matches/0",
+      "fileOffset": "0x3FB581",
+      "length": 37
+    },
+    {
+      "report": "buddy-analysis.json",
+      "jsonPointer": "/findings/buddyWalkTargets/matches/0",
+      "fileOffset": "0x3FB5BC",
+      "length": 37
+    },
+    {
+      "report": "buddy-analysis.json",
+      "jsonPointer": "/findings/rollBaseSpeeds/matches/0",
+      "fileOffset": "0x3FBDA1",
+      "length": 19
+    },
+    {
+      "report": "buddy-analysis.json",
+      "jsonPointer": "/findings/recentRunRollBonus/matches/0",
+      "fileOffset": "0x3FBDB4",
+      "length": 29
+    },
+    {
+      "report": "buddy-analysis.json",
+      "jsonPointer": "/findings/cartwheelSpeedScaling/matches/0",
+      "fileOffset": "0x3FBDDC",
+      "length": 21
+    },
+    {
+      "report": "buddy-analysis.json",
+      "jsonPointer": "/findings/rollChainAcceleration/matches/0",
+      "fileOffset": "0x3FBE3F",
+      "length": 18
+    },
+    {
+      "report": "buddy-analysis.json",
+      "jsonPointer": "/findings/rollingJumpGroundBypass/matches/0",
+      "fileOffset": "0x3FB977",
+      "length": 33
+    },
+    {
+      "report": "buddy-analysis.json",
+      "jsonPointer": "/findings/expressoFlutterEntry/matches/0",
+      "fileOffset": "0x3FBAA0",
+      "length": 23
+    },
+    {
+      "report": "buddy-analysis.json",
+      "jsonPointer": "/findings/riderAirGravity/matches/0",
+      "fileOffset": "0x3FBA54",
+      "length": 21
+    },
+    {
+      "report": "buddy-analysis.json",
+      "jsonPointer": "/findings/enguardeStabEntry/matches/0",
+      "fileOffset": "0x3F98DB",
+      "length": 28
+    },
+    {
+      "report": "buddy-analysis.json",
+      "jsonPointer": "/findings/rambiExpressoJumpImpulse/matches/0",
+      "fileOffset": "0x3EA7EF",
+      "length": 14
+    },
+    {
+      "report": "buddy-analysis.json",
+      "jsonPointer": "/findings/rambiExpressoJumpImpulse/matches/1",
+      "fileOffset": "0x3EA7FD",
+      "length": 14
+    },
+    {
+      "report": "buddy-analysis.json",
+      "jsonPointer": "/findings/rambiExpressoJumpImpulse/verifiedAnimationCalls/0",
+      "fileOffset": "0x3EC139",
+      "length": 4
+    },
+    {
+      "report": "buddy-analysis.json",
+      "jsonPointer": "/findings/rambiExpressoJumpImpulse/verifiedAnimationCalls/1",
+      "fileOffset": "0x3EC1B1",
+      "length": 4
+    },
+    {
+      "report": "buddy-analysis.json",
+      "jsonPointer": "/findings/rambiExpressoJumpImpulse/verifiedAnimationCalls/2",
+      "fileOffset": "0x3EC9E5",
+      "length": 4
+    },
+    {
+      "report": "buddy-analysis.json",
+      "jsonPointer": "/findings/rambiExpressoJumpImpulse/verifiedAnimationCalls/3",
+      "fileOffset": "0x3ECACF",
+      "length": 4
+    },
+    {
+      "report": "buddy-analysis.json",
+      "jsonPointer": "/findings/winkyJumpImpulse/matches/0",
+      "fileOffset": "0x3EA80B",
+      "length": 14
+    },
+    {
+      "report": "buddy-analysis.json",
+      "jsonPointer": "/findings/winkyJumpImpulse/verifiedAnimationCalls/0",
+      "fileOffset": "0x3EC570",
+      "length": 4
+    },
+    {
+      "report": "buddy-analysis.json",
+      "jsonPointer": "/findings/winkyJumpImpulse/verifiedAnimationCalls/1",
+      "fileOffset": "0x3EC698",
+      "length": 4
+    },
+    {
+      "report": "buddy-analysis.json",
+      "jsonPointer": "/findings/enguardeStabImpulse/matches/0",
+      "fileOffset": "0x3EBC17",
+      "length": 33
+    },
+    {
+      "report": "buddy-analysis.json",
+      "jsonPointer": "/findings/enguardeStabImpulse/verifiedAnimationCalls/0",
+      "fileOffset": "0x3EBBC4",
+      "length": 4
+    },
+    {
+      "report": "buddy-analysis.json",
+      "jsonPointer": "/findings/airGravitySelector/matches/0",
+      "fileOffset": "0x3FAF81",
+      "length": 48
+    },
+    {
+      "report": "player-states.json",
+      "jsonPointer": "/findings/pinkNormalJump/matches/0",
+      "fileOffset": "0x3EA7DA",
+      "length": 21
+    },
+    {
+      "report": "player-states.json",
+      "jsonPointer": "/findings/pinkNormalJump/animationCalls/0",
+      "fileOffset": "0x3E90F1",
+      "length": 4
+    },
+    {
+      "report": "player-states.json",
+      "jsonPointer": "/findings/pinkNormalJump/animationCalls/1",
+      "fileOffset": "0x3EA6B4",
+      "length": 4
+    },
+    {
+      "report": "player-states.json",
+      "jsonPointer": "/findings/pinkNormalJump/animationCalls/2",
+      "fileOffset": "0x3EAA1B",
+      "length": 4
+    },
+    {
+      "report": "player-states.json",
+      "jsonPointer": "/findings/violetNormalJump/matches/0",
+      "fileOffset": "0x3EA7C5",
+      "length": 21
+    },
+    {
+      "report": "player-states.json",
+      "jsonPointer": "/findings/violetNormalJump/animationCalls/0",
+      "fileOffset": "0x3EB1CA",
+      "length": 4
+    },
+    {
+      "report": "player-states.json",
+      "jsonPointer": "/findings/cannonAngleQuantization/matches/0",
+      "fileOffset": "0x3FE907",
+      "length": 13
+    },
+    {
+      "report": "player-states.json",
+      "jsonPointer": "/findings/pinkJumpPreparation/matches/0",
+      "fileOffset": "0x3EA6AD",
+      "length": 11
+    },
+    {
+      "report": "player-states.json",
+      "jsonPointer": "/findings/violetJumpPreparation/matches/0",
+      "fileOffset": "0x3EB1C0",
+      "length": 14
+    },
+    {
+      "report": "player-states.json",
+      "jsonPointer": "/findings/controllerHeldPressedMapping/matches/0",
+      "fileOffset": "0x3FB310",
+      "length": 14
+    },
+    {
+      "report": "player-states.json",
+      "jsonPointer": "/findings/carryHoldReleaseDispatch/matches/0",
+      "fileOffset": "0x3FB38C",
+      "length": 15
+    },
+    {
+      "report": "player-states.json",
+      "jsonPointer": "/findings/carryReleaseThrowOrPlace/matches/0",
+      "fileOffset": "0x3FBC4F",
+      "length": 68
+    },
+    {
+      "report": "player-states.json",
+      "jsonPointer": "/findings/thrownObjectVelocity/matches/0",
+      "fileOffset": "0x3E8EB8",
+      "length": 39
+    },
+    {
+      "report": "player-states.json",
+      "jsonPointer": "/findings/thrownObjectVelocity/animationCalls/0",
+      "fileOffset": "0x3E8E58",
+      "length": 4
+    },
+    {
+      "report": "player-states.json",
+      "jsonPointer": "/findings/thrownObjectVelocity/animationCalls/1",
+      "fileOffset": "0x3EAB58",
+      "length": 4
+    },
+    {
+      "report": "player-states.json",
+      "jsonPointer": "/findings/pinkThrowPreparation/matches/0",
+      "fileOffset": "0x3E8DF6",
+      "length": 16
+    },
+    {
+      "report": "player-states.json",
+      "jsonPointer": "/findings/animationDefaultSpeed/matches/0",
+      "fileOffset": "0x01D8D6",
+      "length": 12
+    },
+    {
+      "report": "player-states.json",
+      "jsonPointer": "/findings/animationDefaultSpeed/matches/1",
+      "fileOffset": "0x3E80B7",
+      "length": 12
+    },
+    {
+      "report": "player-states.json",
+      "jsonPointer": "/findings/animationDefaultSpeed/matches/2",
+      "fileOffset": "0x3E83F9",
+      "length": 12
+    },
+    {
+      "report": "player-states.json",
+      "jsonPointer": "/findings/animationTimerStep/matches/0",
+      "fileOffset": "0x01D8E4",
+      "length": 16
+    },
+    {
+      "report": "player-states.json",
+      "jsonPointer": "/findings/animationTimerStep/matches/1",
+      "fileOffset": "0x3E80E1",
+      "length": 16
+    },
+    {
+      "report": "player-states.json",
+      "jsonPointer": "/findings/jumpReleaseClearsHeldGravity/matches/0",
+      "fileOffset": "0x3FC20A",
+      "length": 12
+    },
+    {
+      "report": "player-states.json",
+      "jsonPointer": "/findings/cannonBaseTemplate/matches/0",
+      "fileOffset": "0x35AAB7",
+      "length": 28
+    },
+    {
+      "report": "player-states.json",
+      "jsonPointer": "/findings/cannonLaunchMultiply/matches/0",
+      "fileOffset": "0x3FE938",
+      "length": 38
+    },
+    {
+      "report": "player-states.json",
+      "jsonPointer": "/findings/cannonTrigLookup/matches/0",
+      "fileOffset": "0x3CBD08",
+      "length": 24
+    },
+    {
+      "report": "player-states.json",
+      "jsonPointer": "/findings/cannonAssignFlightTimers/matches/0",
+      "fileOffset": "0x3FE646",
+      "length": 19
+    },
+    {
+      "report": "player-states.json",
+      "jsonPointer": "/findings/cannonFlightCounterGate/matches/0",
+      "fileOffset": "0x3F9675",
+      "length": 40
+    }
+  ],
+  "uniqueBytesRechecked": 962,
+  "scope": "Only explicit fileOffset+bytes observations are rechecked. Decoded data, pointers and other assertions need each producer script and semantic review.",
+  "limitations": [
+    "Not complete reverse engineering.",
+    "No SNES runtime trace or frame parity.",
+    "Byte coverage is not a measure of semantic analysis completeness."
+  ]
+}

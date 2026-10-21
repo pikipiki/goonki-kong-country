@@ -1,0 +1,19 @@
+{
+  "name": "Goonk Country",
+  "short_name": "Goonk",
+  "lang": "fr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#152216",
+  "theme_color": "#192a1b",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

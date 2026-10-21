@@ -1,0 +1,292 @@
+{
+  "romSha256": "628147468c3539283197f58f03b94df49758a332831857481ea9cc31645f0527",
+  "method": "Exact byte relocation against user supplied Rev 2 followed by manual 65C816 decoding; USA 1.0 source used only for navigation and state names.",
+  "navigationSource": "https://github.com/Yoshifanatic1/Donkey-Kong-Country-1-Disassembly",
+  "units": "Speed raw is signed 8.8 SNES pixels per simulation tick, consistent with verified position integration; raw / 256 gives pixels/tick. World scale and seconds conversion are adaptation choices.",
+  "findings": {
+    "buddyRunTargets": {
+      "verified": true,
+      "matches": [
+        {
+          "fileOffset": "0x3FB581",
+          "hiromAddress": "$FFB581",
+          "bytes": "b9 12 05 f0 20 aa bd 45 0d c9 0a 00 f0 11 c9 0b 00 f0 06 a9 80 03 a6 82 60 a9 00 03 a6 82 60 a9 00 04 a6 82 60"
+        }
+      ],
+      "manual65C816Decoding": "Load rider buddy slot $0512,Y; compare buddy sprite $0D45,X with Expresso $000A and Winky $000B; return $0380 by default, $0300 for Winky, $0400 for Expresso.",
+      "values": {
+        "defaultIncludingRambiRaw": 896,
+        "winkyRaw": 768,
+        "expressoRaw": 1024
+      },
+      "limitation": "Local target speed, before character/state modifiers; not a universal observed maximum."
+    },
+    "buddyWalkTargets": {
+      "verified": true,
+      "matches": [
+        {
+          "fileOffset": "0x3FB5BC",
+          "hiromAddress": "$FFB5BC",
+          "bytes": "b9 12 05 f0 20 aa bd 45 0d c9 0a 00 f0 11 c9 0b 00 f0 06 a9 00 02 a6 82 60 a9 00 02 a6 82 60 a9 00 03 a6 82 60"
+        }
+      ],
+      "manual65C816Decoding": "Same buddy dispatch; return $0200 by default and for Winky, $0300 for Expresso.",
+      "values": {
+        "defaultIncludingRambiRaw": 512,
+        "winkyRaw": 512,
+        "expressoRaw": 768
+      },
+      "limitation": "The default branch includes other mounted types; source names alone do not establish all callers."
+    },
+    "rollBaseSpeeds": {
+      "verified": true,
+      "matches": [
+        {
+          "fileOffset": "0x3FBDA1",
+          "hiromAddress": "$FFBDA1",
+          "bytes": "a9 00 01 99 f1 16 a5 7e 29 00 03 f0 06 a9 00 03 99 f1 16"
+        }
+      ],
+      "manual65C816Decoding": "LDA #$0100; STA $16F1,Y; LDA $7E; AND #$0300; BEQ +6; LDA #$0300; STA $16F1,Y.",
+      "values": {
+        "stationaryRaw": 256,
+        "directionHeldRaw": 768
+      },
+      "limitation": "Roll/cartwheel speed accumulator initialization; additional bonus and character scaling follow."
+    },
+    "recentRunRollBonus": {
+      "verified": true,
+      "matches": [
+        {
+          "fileOffset": "0x3FBDB4",
+          "hiromAddress": "$FFBDB4",
+          "bytes": "a5 28 99 a1 16 99 a9 16 38 f9 e1 16 c9 10 00 10 0e a9 00 04 99 f1 16 a9 40 00 19 99 16"
+        }
+      ],
+      "manual65C816Decoding": "Store current counter $28; subtract timestamp $16E1,Y; if result below $0010, set roll speed $0400 and flag $0040.",
+      "values": {
+        "elapsedThreshold": 16,
+        "bonusSpeedRaw": 1024
+      },
+      "limitation": "Timestamp role is inferred from adjacent source updating it during running; signed comparison and clock wrap require runtime testing."
+    },
+    "cartwheelSpeedScaling": {
+      "verified": true,
+      "matches": [
+        {
+          "fileOffset": "0x3FBDDC",
+          "hiromAddress": "$FFBDDC",
+          "bytes": "a5 82 c9 02 00 f0 0e b9 f1 16 85 76 4a 4a 4a 18 65 76 99 f1 16"
+        }
+      ],
+      "manual65C816Decoding": "Compare current sprite index $82 with $0002; other index adds accumulator>>3 to itself.",
+      "values": {
+        "numerator": 9,
+        "denominator": 8,
+        "unscaledSpriteIndex": 2
+      },
+      "limitation": "For nonnegative raw speed, multiplier is 1.125 with integer truncation; index-to-character labeling comes from navigation source."
+    },
+    "rollChainAcceleration": {
+      "verified": true,
+      "matches": [
+        {
+          "fileOffset": "0x3FBE3F",
+          "hiromAddress": "$FFBE3F",
+          "bytes": "b9 f1 16 18 69 00 01 c9 00 08 30 03 a9 00 08 99 f1 16"
+        }
+      ],
+      "manual65C816Decoding": "LDA $16F1,Y; CLC; ADC #$0100; CMP #$0800; BMI +3; LDA #$0800; STA $16F1,Y.",
+      "values": {
+        "incrementRaw": 256,
+        "capRaw": 2048
+      },
+      "limitation": "The local routine is reached from roll chaining states; exact enemy-hit timing and duration are not traced."
+    },
+    "rollingJumpGroundBypass": {
+      "verified": true,
+      "matches": [
+        {
+          "fileOffset": "0x3FB977",
+          "hiromAddress": "$FFB977",
+          "bytes": "bd 29 10 c9 12 00 f0 19 c9 13 00 f0 14 c9 19 00 f0 0f bd 31 16 d0 6c bd 09 12 29 07 00 c5 f3 10 62"
+        }
+      ],
+      "manual65C816Decoding": "States $0012/$0013/$0019 branch past ordinary ground/terrain checks to shared jump setup.",
+      "values": {
+        "bypassStates": [
+          18,
+          19,
+          25
+        ]
+      },
+      "limitation": "Supports roll/cartwheel off-edge jump eligibility while roll state persists; it does not establish an arbitrary grace timer."
+    },
+    "expressoFlutterEntry": {
+      "verified": true,
+      "matches": [
+        {
+          "fileOffset": "0x3FBAA0",
+          "hiromAddress": "$FFBAA0",
+          "bytes": "a9 00 04 9d f1 0e bd c1 0b 18 69 18 00 9d c1 0b a9 43 00 22 92 80 be"
+        }
+      ],
+      "manual65C816Decoding": "Set vertical speed $0400; add $0018 to Y position; request animation $0043 through $BE8092.",
+      "values": {
+        "verticalSpeedRaw": 1024,
+        "poseRepositionPixels": 24,
+        "animation": 67
+      },
+      "limitation": "Entry behavior only. This is not a fall-speed cap; the animation/physics continuation must be traced separately."
+    },
+    "riderAirGravity": {
+      "verified": true,
+      "matches": [
+        {
+          "fileOffset": "0x3FBA54",
+          "hiromAddress": "$FFBA54",
+          "bytes": "a9 15 00 9d 29 10 a4 84 a9 b8 ff 99 f9 16 a9 2e 00 22 92 80 be"
+        }
+      ],
+      "manual65C816Decoding": "Set rider state $0015; store $FFB8 to $16F9,Y; request mounted jump animation $002E.",
+      "values": {
+        "heldGravityRaw": -72,
+        "animation": 46
+      },
+      "limitation": "Mounted land jump setup; the separate animation impulse signatures below establish initial velocity but not total jump height."
+    },
+    "enguardeStabEntry": {
+      "verified": true,
+      "matches": [
+        {
+          "fileOffset": "0x3F98DB",
+          "hiromAddress": "$FF98DB",
+          "bytes": "a4 84 b9 ad 16 c9 3d 00 f0 24 a9 3a 00 22 92 80 be a6 82 9e f1 0e a9 4c 00 9d 29 10"
+        }
+      ],
+      "manual65C816Decoding": "Check current animation $003D; request mounted-family attack $003A via dispatcher; zero vertical speed; enter state $004C.",
+      "values": {
+        "attackState": 76,
+        "enguardeAnimation": 61
+      },
+      "limitation": "Mounted animation dispatch maps attack family to Enguarde. Separate animation signature below verifies impulse, not full duration."
+    },
+    "rambiExpressoJumpImpulse": {
+      "verified": true,
+      "matches": [
+        {
+          "fileOffset": "0x3EA7EF",
+          "hiromAddress": "$FEA7EF",
+          "bytes": "a9 00 07 9d f1 0e a9 5f 00 22 8f fb bf 6b"
+        },
+        {
+          "fileOffset": "0x3EA7FD",
+          "hiromAddress": "$FEA7FD",
+          "bytes": "a9 00 07 9d f1 0e a9 5f 00 22 8f fb bf 6b"
+        }
+      ],
+      "manual65C816Decoding": "LDA #$0700; STA $0EF1,X; request animal jump sound $005F; RTL. Two adjacent instances are called from mounted Rambi and Expresso animation scripts.",
+      "values": {
+        "verticalSpeedRaw": 1792,
+        "pixelsPerTick": 7
+      },
+      "limitation": "The impulse occurs after animation preparation, not necessarily on the input tick. Calls at 0x3EC139/0x3EC1B1 target $BEA7EF (Rambi); 0x3EC9E5/0x3ECACF target $BEA7FD (Expresso).",
+      "verifiedAnimationCalls": [
+        {
+          "fileOffset": "0x3EC139",
+          "hiromAddress": "$FEC139",
+          "bytes": "81 ef a7 be"
+        },
+        {
+          "fileOffset": "0x3EC1B1",
+          "hiromAddress": "$FEC1B1",
+          "bytes": "81 ef a7 be"
+        },
+        {
+          "fileOffset": "0x3EC9E5",
+          "hiromAddress": "$FEC9E5",
+          "bytes": "81 fd a7 be"
+        },
+        {
+          "fileOffset": "0x3ECACF",
+          "hiromAddress": "$FECACF",
+          "bytes": "81 fd a7 be"
+        }
+      ]
+    },
+    "winkyJumpImpulse": {
+      "verified": true,
+      "matches": [
+        {
+          "fileOffset": "0x3EA80B",
+          "hiromAddress": "$FEA80B",
+          "bytes": "a9 00 08 9d f1 0e a9 5f 00 22 8f fb bf 6b"
+        }
+      ],
+      "manual65C816Decoding": "LDA #$0800; STA $0EF1,X; request animal jump sound $005F; RTL.",
+      "values": {
+        "verticalSpeedRaw": 2048,
+        "pixelsPerTick": 8
+      },
+      "limitation": "Called by Winky mounted animation after preparation poses; calls 0x3EC570/0x3EC698 target $BEA80B. Full jump height still depends on held input, gravity and contact.",
+      "verifiedAnimationCalls": [
+        {
+          "fileOffset": "0x3EC570",
+          "hiromAddress": "$FEC570",
+          "bytes": "81 0b a8 be"
+        },
+        {
+          "fileOffset": "0x3EC698",
+          "hiromAddress": "$FEC698",
+          "bytes": "81 0b a8 be"
+        }
+      ]
+    },
+    "enguardeStabImpulse": {
+      "verified": true,
+      "matches": [
+        {
+          "fileOffset": "0x3EBC17",
+          "hiromAddress": "$FEBC17",
+          "bytes": "a9 4d 00 9d 29 10 a6 82 a9 00 04 3c 69 0c 50 04 49 ff ff 1a 9d 89 0e 9d 25 0f a9 57 00 22 8f fb bf"
+        }
+      ],
+      "manual65C816Decoding": "Set state $004D; choose signed $0400 according to horizontal flip flag; store current and target horizontal speed; play Enguarde stab sound.",
+      "values": {
+        "horizontalMagnitudeRaw": 1024,
+        "pixelsPerTick": 4,
+        "state": 77
+      },
+      "limitation": "Animation call at 0x3EBBC4 targets $BEBC17. Attack duration and all interruption/collision paths still need runtime verification.",
+      "verifiedAnimationCalls": [
+        {
+          "fileOffset": "0x3EBBC4",
+          "hiromAddress": "$FEBBC4",
+          "bytes": "81 17 bc be"
+        }
+      ]
+    },
+    "airGravitySelector": {
+      "verified": true,
+      "matches": [
+        {
+          "fileOffset": "0x3FAF81",
+          "hiromAddress": "$FFAF81",
+          "bytes": "a6 82 a4 84 b9 99 16 29 02 00 f0 0a b9 f9 16 80 0d a9 90 ff 80 08 e0 04 00 f0 f6 a9 90 ff 18 7d f1 0e 10 08 c9 00 f8 b0 03 a9 00 f8 9d f1 0e 60"
+        }
+      ],
+      "manual65C816Decoding": "If $1699,Y bit $0002 is set, use acceleration parameter $16F9,Y; otherwise use $FF90. Add to vertical velocity with negative cap $F800.",
+      "values": {
+        "releasedGravityRaw": -112,
+        "terminalRaw": -2048,
+        "heldParameterAddress": "$16F9,Y"
+      },
+      "limitation": "Combined with mounted jump setup this establishes -72 while that flag persists. Exact input release/state lifetime still requires execution traces."
+    }
+  },
+  "limitations": [
+    "No SNES execution, complete decompilation, cycle-accurate timing or frame-perfect parity claim.",
+    "Exact mounted jump heights/timing, Expresso sustained flutter, Enguarde dash duration, mounted damage/recovery and every original level are not completely traced.",
+    "Some semantics use labeled USA 1.0 navigation source; verified bytes establish only the decoded local operations and branch conditions."
+  ]
+}
