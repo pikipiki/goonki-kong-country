@@ -26,13 +26,17 @@ export class Controls {
     if (down) {
       if (!this.input.held.has(key)) this.input.pressed.add(key);
       this.sources.set(source, key);
-    } else this.sources.delete(source);
+    } else {
+      if (this.sources.get(source) === key) this.input.released.add(key);
+      this.sources.delete(source);
+    }
     this.input.held = new Set(this.sources.values());
   }
   reset() {
     this.sources.clear();
     this.input.held.clear();
     this.input.pressed.clear();
+    this.input.released.clear();
   }
   gamepad() {
     const pad = Array.from(navigator.getGamepads?.() ?? []).find(Boolean);
