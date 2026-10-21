@@ -5,11 +5,11 @@
 [build.environment]
   NODE_VERSION = "22.12.0"
 
-# Netlify injects the "Powered by Netlify" HUD on Free public sites; block its script.
-[[redirects]]
-  from = "/.netlify/scripts/*"
-  status = 404
-  force = true
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Hides the injected "Powered by Netlify" HUD (see Netlify badge docs).
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; worker-src 'self' blob:; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'self';"
 
 [[redirects]]
   from = "/*"
