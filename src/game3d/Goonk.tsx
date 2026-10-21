@@ -8,7 +8,7 @@ import { Stitching } from "./plushGoonk/Stitching";
 import { YellowTuft } from "./plushGoonk/YellowTuft";
 import { usePlushFabric } from "./plushGoonk/usePlushFabric";
 import { ANIMAL_DESIGNS } from "../game/animals";
-import type { Game } from "../game/engine";
+import { TEAM_SWAP_DURATION, type Game } from "../game/engine";
 
 const sphere = new SphereGeometry(1, 20, 14);
 const arm = new CapsuleGeometry(0.045, 0.19, 6, 12);
@@ -37,8 +37,37 @@ export function Goonk({
     const walking = preview || cart || riding ? 0 : Math.abs(p?.vx ?? 0);
     const grounded = p?.grounded ?? true;
     const pose = companion ? game?.companion : p;
-    if (pose)
+    const swap = game?.swap;
+    const swapU = swap ? 1 - swap.remaining / TEAM_SWAP_DURATION : 0;
+    const swapHop = Math.sin(Math.min(1, swapU) * Math.PI);
+    if (swap && p && pose) {
+      if (companion) {
+        const start = swap.back;
+        const behindX = p.x - p.facing * 1.25;
+        let cx: number;
+        let cy: number;
+        if (swapU < 0.5) {
+          const t = swapU * 2;
+          const ease = 0.5 - 0.5 * Math.cos(t * Math.PI);
+          cx = start.x + (p.x - start.x) * ease;
+          cy = start.y + (p.y - start.y) * ease + swapHop * 0.55;
+        } else {
+          const t = (swapU - 0.5) * 2;
+          const ease = 0.5 - 0.5 * Math.cos(t * Math.PI);
+          cx = p.x + (behindX - p.x) * ease;
+          cy = p.y + swapHop * 0.25 * (1 - t);
+        }
+        root.current.position.set(cx, cy, -0.28 + swapHop * 0.15);
+      } else {
+        root.current.position.set(
+          p.x,
+          p.y + swapHop * 1.35,
+          0.3 + swapHop * 0.12,
+        );
+      }
+    } else if (pose) {
       root.current.position.set(pose.x, pose.y, companion ? -0.28 : 0.3);
+    }
     root.current.scale.setScalar((pink ? 2.2 : 2.05) * (cart ? 0.83 : riding ? 0.78 : 1));
     if (mount && p) root.current.position.set(p.x - p.facing * 0.12,
       p.y + ANIMAL_DESIGNS[mount.kind].seat - 0.03, 0.2);
@@ -54,9 +83,15 @@ export function Goonk({
     if (p && !companion && p.invincible > 0)
       root.current.visible = Math.sin(t * 34) > -0.45;
     const roll = !companion && (p?.roll ?? 0) > 0;
+    const cannonFlight = !companion && (p?.launched ?? 0) > 0;
+    const swapping = swapU > 0 && swapU < 1;
     body.current.rotation.z = roll
       ? -(p?.rollAngle ?? 0) * (p?.rollFacing ?? 1)
-      : Math.sin(t * 2.1) * 0.025;
+      : cannonFlight
+        ? t * 14 * (p?.facing ?? 1)
+        : swapping
+          ? (companion ? -1 : 1) * swapHop * (pink ? 0.35 : 0.85)
+          : Math.sin(t * 2.1) * 0.025;
     body.current.rotation.y =
       (pose?.facing ?? 1) * (walking > 0.3 ? 0.65 : 0.2);
     body.current.position.y =
@@ -73,6 +108,12 @@ export function Goonk({
     limbs.current.forEach((limb, i) => {
       if (!limb) return;
       const swing = Math.sin(t * walking * 2.1 + (i % 2) * Math.PI);
+      if (swapping) {
+        limb.rotation.x = (i < 2 ? -1.1 : 0.65) * swapHop;
+        limb.rotation.z =
+          (i % 2 ? 1 : -1) * swapHop * (pink ? 0.35 : 1.05);
+        return;
+      }
       limb.rotation.x =
         walking > 0.1
           ? swing * (i < 2 ? 0.6 : 0.85)

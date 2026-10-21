@@ -23,11 +23,23 @@ export interface EnemySpec {
   min: number;
   max: number;
   kind: "beetle" | "croc" | "bee" | "armored" | "boss";
+  /** ROM Necky family: fixed X, vertical hover only. */
+  pattern?: "patrol" | "necky";
 }
+export interface BonusRoomSpec {
+  wallIndex: number;
+  label: string;
+  bounds: { x: number; y: number; w: number; h: number };
+  pickups: Pickup[];
+}
+export type CacheReward =
+  | { kind: "banana"; amount?: number }
+  | { kind: "letter"; letter: string }
+  | { kind: "balloon"; amount?: number };
 export interface ItemCacheSpec {
   x: number;
   y: number;
-  reward: Pickup;
+  reward: CacheReward;
 }
 export interface BreakableWallSpec {
   x: number;
@@ -69,6 +81,7 @@ export interface Level {
   animals?: AnimalSpawn[];
   itemCaches?: ItemCacheSpec[];
   breakableWalls?: BreakableWallSpec[];
+  bonusRooms?: BonusRoomSpec[];
   decors?: LevelDecor[];
   originalTerrain?: "jungle" | "coral";
   start?: {x:number; y:number};

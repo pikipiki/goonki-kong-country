@@ -14,6 +14,12 @@ import evidence from "../../reference/rom-analysis.json";
 import playerEvidence from "../../reference/player-states.json";
 
 export const STEP = 1 / 60;
+/** ROM tag swap: state 17 / anim 80 lasts ~25 frames at 60 Hz. */
+export const TEAM_SWAP_DURATION = 0.42;
+export interface TeamSwap {
+  remaining: number;
+  back: { x: number; y: number; facing: number };
+}
 export const ROM = {
   gravity: -evidence.findings.gravity.values.accelerationRaw,
   terminal: -evidence.findings.gravity.values.terminalVelocityRaw,
@@ -35,6 +41,7 @@ const CANNON_VECTORS = playerEvidence.cannonBaseTemplateVectors;
 const JUMP_IMPULSE_DELAY_FRAMES = 2;
 const WORLD_PIXELS = 32;
 const rawSpeed = (raw: number) => ((raw / 256) * 60) / WORLD_PIXELS;
+const THROW_TARGET_VX = rawSpeed(THROW.horizontalTargetMagnitudeRaw);
 const rawAcceleration = (raw: number) => rawSpeed(raw) * 60;
 export type Key =
   "left" | "right" | "jump" | "action" | "swap" | "run" | "up" | "down";
@@ -181,6 +188,7 @@ export class Game {
   revealedCaches = new Set<number>();
   collectedCaches = new Set<number>();
   brokenWalls = new Set<number>();
+  collectedBonus = new Set<string>();
   usedBarrels = new Set<number>();
   enemies: Enemy[] = [];
   animals: Animal[] = [];
@@ -191,6 +199,7 @@ export class Game {
   checkpoint = { x: 3, y: 0 };
   trail: { x: number; y: number; facing: number }[] = [];
   companion = { x: 1.3, y: 0, facing: 1 };
+  swap: TeamSwap | null = null;
   toast = "";
   toastTimer = 0;
   save: Save;
@@ -229,6 +238,7 @@ export class Game {
     this.revealedCaches = new Set();
     this.collectedCaches = new Set();
     this.brokenWalls = new Set();
+    this.collectedBonus = new Set();
     this.usedBarrels = new Set();
     this.particles = [];
     this.thrown = [];
@@ -259,6 +269,7 @@ export class Game {
       ...spawn, state: "crate", vx: 0, vy: 0, facing: 1, timer: 0,
     }));
     this.companion = { x: startX - 1.8, y: floor, facing: 1 };
+    this.swap = null;
     this.enemies = this.level.enemies.map((spec, i) => ({
       ...spec,
       originY: spec.y,
@@ -283,8 +294,58 @@ export class Game {
     this.toast = text;
     this.toastTimer = duration;
   }
+  private throwableBarrelIndex(p: Player) {
+    return this.level.barrels.findIndex(
+      (b, i) =>
+        b.kind === "throw" &&
+        !this.usedBarrels.has(i) &&
+        Math.abs(b.x - p.x) < 1.7 &&
+        Math.abs(b.y - p.y) < 1.2,
+    );
+  }
   pop(x: number, y: number, text: string, color = "#ffdd75") {
     this.particles.push({ x, y, text, color, age: 0 });
+  }
+  private openBonusRoom(wallIndex: number) {
+    const room = this.level.bonusRooms?.find((r) => r.wallIndex === wallIndex);
+    if (room) this.message(`${room.label} ouverte !`, 4);
+  }
+  private collectBonusPickups(p: Player) {
+    this.level.bonusRooms?.forEach((room, roomIndex) => {
+      if (!this.brokenWalls.has(room.wallIndex)) return;
+      const inRoom =
+        p.x >= room.bounds.x &&
+        p.x <= room.bounds.x + room.bounds.w &&
+        p.y + 0.5 >= room.bounds.y &&
+        p.y <= room.bounds.y + room.bounds.h + 1.2;
+      if (!inRoom) return;
+      room.pickups.forEach((item, pickupIndex) => {
+        const key = `${roomIndex}-${pickupIndex}`;
+        if (this.collectedBonus.has(key)) return;
+        if (
+          Math.abs(p.x - item.x) > 0.85 ||
+          Math.abs(p.y + 0.85 - item.y) > 1.1
+        )
+          return;
+        this.collectedBonus.add(key);
+        if (item.kind === "letter" && item.letter) {
+          this.letters.add(this.level.pickups.length + roomIndex * 10 + pickupIndex);
+          this.pop(item.x, item.y, item.letter, "#ffdf80");
+          this.onEvent("letter");
+        } else if (item.kind === "balloon") {
+          this.lives++;
+          this.pop(item.x, item.y, "+1", "#ff9fd0");
+          this.onEvent("life");
+        } else {
+          const amount = item.amount ?? 1;
+          this.bananas += amount;
+          this.levelBananas += amount;
+          this.total += amount;
+          this.pop(item.x, item.y, `+${amount}`);
+          this.onEvent(amount > 1 ? "banana-bunch" : "banana");
+        }
+      });
+    });
   }
   private resolveBreakableWalls(p: Player, oldX: number) {
     const walls = this.level.breakableWalls;
@@ -305,7 +366,8 @@ export class Game {
       if (p.roll > 0.12) {
         this.brokenWalls.add(i);
         this.onEvent("barrel-break");
-        this.pop(wall.x, wall.y + wall.h * 0.5, "CRACK", "#f5c98a");
+        this.openBonusRoom(i);
+        this.pop(wall.x, wall.y + wall.h * 0.5, "BONUS!", "#f5c98a");
         continue;
       }
       p.x = oldX;
@@ -328,6 +390,7 @@ export class Game {
           this.brokenWalls.add(i);
           barrel.active = false;
           this.onEvent("barrel-break");
+          this.openBonusRoom(i);
         }
       }
     }
@@ -353,9 +416,12 @@ export class Game {
       if (dx > 0.85 || dy > 1.2) return;
       this.collectedCaches.add(i);
       const reward = cache.reward;
-      if (reward.kind === "letter" && reward.letter) {
+      if (reward.kind === "letter") {
         this.pop(cache.x, cache.y, reward.letter, "#ffdf80");
         this.onEvent("letter");
+      } else if (reward.kind === "balloon") {
+        this.pop(cache.x, cache.y, "1UP", "#ff9fd0");
+        this.onEvent("life");
       } else {
         const amount = reward.amount ?? 1;
         this.bananas += amount;
@@ -539,8 +605,18 @@ export class Game {
     p.buffer = input.pressed.has("jump") ? 0.13 : Math.max(0, p.buffer - dt);
     p.coyote = p.grounded ? 0.1 : Math.max(0, p.coyote - dt);
     if (input.pressed.has("swap") && this.mount) this.dismount();
-    else if (input.pressed.has("swap") && p.hp === 2 && p.cannon < 0) {
+    else if (
+      input.pressed.has("swap") &&
+      p.hp === 2 &&
+      p.cannon < 0 &&
+      !this.swap &&
+      p.roll <= 0
+    ) {
       p.active = 1 - p.active;
+      this.swap = {
+        remaining: TEAM_SWAP_DURATION,
+        back: { ...this.companion },
+      };
       this.onEvent("swap");
       this.pop(
         p.x,
@@ -549,6 +625,18 @@ export class Game {
         p.active ? "#c0a2ff" : "#f6a4c9",
       );
     }
+    if (this.swap) {
+      this.swap.remaining -= dt;
+      if (this.swap.remaining <= 0) {
+        this.companion = {
+          x: p.x - p.facing * 1.25,
+          y: p.y,
+          facing: p.facing,
+        };
+        this.swap = null;
+      }
+    }
+    const swapping = !!this.swap;
     if (p.cannon >= 0) {
       const barrel = this.level.barrels[p.cannon];
       p.cannonTime += dt;
@@ -592,14 +680,16 @@ export class Game {
         Math.abs(b.x - p.x) < 1.65 && Math.abs(b.y - p.y) < 1.8);
       if (crate) { this.releaseAnimal(crate); actionUsed = true; }
     }
-    if (!actionUsed && !water && !cart && p.launched === 0) {
+    if (!actionUsed && !water && !cart && p.launched === 0 && !swapping) {
       const releaseThrow =
         input.released.has("action") ||
         (input.clickMode && input.pressed.has("action"));
+      const barrelNear = this.throwableBarrelIndex(p);
       if (carryingAtStart && releaseThrow) {
         if (p.grounded && input.held.has("down")) {
           this.usedBarrels.delete(p.carry);
           p.carry = -1;
+          this.onEvent("place");
         } else {
           this.thrown.push({
             x: p.x + p.facing * 0.7,
@@ -611,25 +701,35 @@ export class Game {
           p.carry = -1;
           this.onEvent("throw");
         }
-      } else if (!carryingAtStart && input.pressed.has("action")) {
-        const barrel = this.level.barrels.findIndex(
-          (b, i) =>
-            b.kind === "throw" &&
-            !this.usedBarrels.has(i) &&
-            Math.abs(b.x - p.x) < 1.7 &&
-            Math.abs(b.y - p.y) < 1.2,
-        );
-        if (barrel >= 0) {
-          p.carry = barrel;
-          this.usedBarrels.add(barrel);
+      } else if (!carryingAtStart) {
+        const pickupBarrel =
+          input.clickMode
+            ? input.pressed.has("action") && barrelNear >= 0
+            : input.held.has("action") && barrelNear >= 0;
+        if (pickupBarrel) {
+          p.carry = barrelNear;
+          this.usedBarrels.add(barrelNear);
           this.onEvent("pickup");
-        } else if (p.grounded && p.roll === 0) {
+        } else if (
+          input.pressed.has("action") &&
+          p.grounded &&
+          p.roll === 0 &&
+          barrelNear < 0
+        ) {
           p.roll = 0.48;
-          p.rollJump = true; p.rollChain = 0; p.rollAngle = 0;
-          p.rollFacing = (Number(input.held.has("right")) - Number(input.held.has("left"))) || p.facing;
+          p.rollJump = true;
+          p.rollChain = 0;
+          p.rollAngle = 0;
+          p.rollFacing =
+            (Number(input.held.has("right")) - Number(input.held.has("left"))) ||
+            p.facing;
           p.facing = p.rollFacing;
-          const base = p.recentRun < BUDDY_PHYSICS.recentRunSeconds ? BUDDY_PHYSICS.rollRunning :
-            input.held.has("right") || input.held.has("left") ? BUDDY_PHYSICS.rollMoving : BUDDY_PHYSICS.rollStill;
+          const base =
+            p.recentRun < BUDDY_PHYSICS.recentRunSeconds
+              ? BUDDY_PHYSICS.rollRunning
+              : input.held.has("right") || input.held.has("left")
+                ? BUDDY_PHYSICS.rollMoving
+                : BUDDY_PHYSICS.rollStill;
           p.rollSpeed = base * (p.active ? 1.125 : 1);
           this.onEvent("roll");
         }
@@ -643,7 +743,8 @@ export class Game {
     const speed =
       (input.held.has("run") || input.held.has("action") ? 5.625 : 3.75) *
       (p.active ? 1.125 : 1);
-    if (cart) p.vx = 8.5;
+    if (swapping) p.vx = approach(p.vx, 0, 52 * dt);
+    else if (cart) p.vx = 8.5;
     else if (p.cannonControlDelay > 0) {
       /* ROM cannon flight: ignore steering until the control counter expires. */
     } else if (p.launched > 0) { /* Preserve the cannon impulse instead of braking it immediately. */ }
@@ -681,7 +782,11 @@ export class Game {
           p.coyote = 0;
           this.onEvent("jump");
         }
-      } else if (p.buffer > 0 && (p.coyote > 0 || p.rollJump)) {
+      } else if (
+        !swapping &&
+        p.buffer > 0 &&
+        (p.coyote > 0 || p.rollJump)
+      ) {
         p.buffer = 0;
         if (p.rollJump) {
           p.vy = design ? design.jump : rawSpeed(ROM.jump[p.active]);
@@ -804,16 +909,22 @@ export class Game {
     }
     if (p.grounded) p.launched = 0;
     this.updateAnimals(input, oldY, dt);
-    this.trail.push({ x: p.x, y: p.y, facing: p.facing });
-    if (this.trail.length > 22) {
-      const trail = this.trail.shift()!;
-      this.companion = {
-        ...trail,
-        x: Math.abs(trail.x - p.x) < 1.25 ? p.x - trail.facing * 1.25 : trail.x,
-      };
+    if (!swapping) {
+      this.trail.push({ x: p.x, y: p.y, facing: p.facing });
+      if (this.trail.length > 22) {
+        const trail = this.trail.shift()!;
+        this.companion = {
+          ...trail,
+          x:
+            Math.abs(trail.x - p.x) < 1.25
+              ? p.x - trail.facing * 1.25
+              : trail.x,
+        };
+      }
     }
     this.updateItemCaches(p, input);
     this.maybeSignHint(p);
+    this.collectBonusPickups(p);
     this.level.pickups.forEach((item, i) => {
       if (
         this.collected.has(i) ||
@@ -883,13 +994,34 @@ export class Game {
     this.breakWallsWithThrown();
     this.thrown.forEach((b) => {
       if (!b.active) return;
+      const targetVx = Math.sign(b.vx || p.facing) * THROW_TARGET_VX;
+      b.vx = approach(
+        b.vx,
+        targetVx,
+        rawSpeed(THROW.horizontalInitialMagnitudeRaw) * 2.2 * dt,
+      );
       b.x += b.vx * dt;
       b.y += b.vy * dt;
       b.vy -= 12 * dt;
-      for (const platform of this.level.platforms) {
-        const top = this.surface(platform) + 0.5;
-        if (Math.abs(b.x - platform.x) < platform.w / 2 && b.vy < 0 && b.y <= top && b.y - b.vy * dt >= top - 0.2) {
-          b.y = top; b.vy = 0;
+      const floor =
+        this.level.originalTerrain != null
+          ? this.floorAt(b.x, b.y)
+          : null;
+      if (floor !== null && b.vy < 0 && b.y <= floor + 0.55 && b.y - b.vy * dt >= floor - 0.15) {
+        b.y = floor + 0.55;
+        b.vy = 0;
+      } else {
+        for (const platform of this.level.platforms) {
+          const top = this.surface(platform) + 0.5;
+          if (
+            Math.abs(b.x - platform.x) < platform.w / 2 &&
+            b.vy < 0 &&
+            b.y <= top &&
+            b.y - b.vy * dt >= top - 0.2
+          ) {
+            b.y = top;
+            b.vy = 0;
+          }
         }
       }
       if (b.y < -6 || Math.abs(b.x - p.x) > 30) b.active = false;
@@ -912,6 +1044,10 @@ export class Game {
             Math.abs(Math.sin((cycle / 0.8) * Math.PI)) *
             (1.8 + (5 - enemy.hp) * 0.12);
         } else enemy.y = approach(enemy.y, 0, 12 * dt);
+      } else if (enemy.pattern === "necky") {
+        enemy.x = enemy.min;
+        enemy.vx = 0;
+        enemy.y = enemy.originY + Math.sin(enemy.timer * 1.55) * 0.42;
       } else {
         enemy.x += enemy.vx * dt;
         if (enemy.x < enemy.min || enemy.x > enemy.max) {

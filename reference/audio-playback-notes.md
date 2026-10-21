@@ -157,3 +157,12 @@ Le manifeste et les assets pèsent **53 681 710 octets** (environ 51,2 Mio). Les
 Les **19** candidats de boucles conservent `samplePerfect: false` ; les huit autres morceaux portent `loop: null`. Aucune limite arbitraire n'a remplacé une boucle absente. Les durées et limites restent sur la même timeline, car l'encodage conserve toute la capture et son silence initial.
 
 Validation effectuée après génération : les 27 M4A ont été ouverts par ffprobe (AAC, 32000 Hz, deux canaux, durée cohérente) puis entièrement décodés par FFmpeg sans erreur ; les 119 WAV ont été comparés octet pour octet au préfixe PCM source, et toutes les trames retirées étaient nulles ; les **146** empreintes SHA256 d'assets correspondent au manifeste. Les valeurs de crête et niveaux d'origine n'ont pas été normalisés.
+
+## Checklist écoute comparative (web vs captures)
+
+À faire manuellement ou via une session SNES9x parallèle ; non automatisé dans le dépôt :
+
+- [ ] Jungle : DK Island Swing + SFX saut, ramassage (`0x11`), lancer (`0x02`), pose tonneau, mur bonus (`0x14`).
+- [ ] Coral : Aquatic Ambience + SFX eau (`0x6A`/`0x75`/`0x76` si utilisés en jeu).
+- [ ] Boucles : discontinuité au repositionnement HTMLAudio sur les 19 candidats `samplePerfect: false`.
+- [ ] Mobile iOS/Android : déverrouillage audio, volume relatif musique/SFX, pas de saturation du bus WebAudio.

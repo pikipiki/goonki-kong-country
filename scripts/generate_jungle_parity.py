@@ -4,7 +4,7 @@ from pathlib import Path
 
 base = Path(__file__).resolve().parents[1]
 runtime = json.loads((base / "reference/runtime-player-analysis.json").read_text())
-trace = runtime["scenarios"]["dk-walk"]["trace"][:48]
+trace = runtime["scenarios"]["dk-walk"]["trace"][:120]
 initial = runtime["scenarios"]["dk-walk"]["initial"]
 out = {
     "scenario": "dk-walk",
