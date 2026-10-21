@@ -25,6 +25,23 @@ describe('requested animal attacks and boss balance',()=>{
  it('still attacks immediately on a short press',()=>{
   const g=mount('rambi');frame(g,[],['action']);expect(g.player.mountAttack).toBeGreaterThan(0);expect(g.player.vx).toBe(9);
  });
+ it('Enguarde immediately repeats short thrusts without building a charge',()=>{
+  const g=mount('enguarde');let attacks=0;g.onEvent=e=>{if(e==='roll')attacks++;};
+  for(let n=0;n<8;n++) {
+   frame(g,['jump'],['jump']);
+   expect(g.player.mountAttack).toBe(.32);expect(g.player.mountCharge).toBe(0);
+   expect(g.player.mountCharged).toBe(false);expect(g.player.vx).toBeGreaterThan(0);expect(g.player.vx).toBeLessThan(18);
+   for(let i=0;i<5;i++)frame(g);
+  }
+  expect(attacks).toBe(8);
+ });
+ it('a quick Enguarde thrust cancels a ready long charge instead of firing it',()=>{
+  const g=mount('enguarde');frame(g,['action'],['action']);for(let i=0;i<45;i++)frame(g,['action']);
+  expect(g.player.mountCharge).toBeGreaterThanOrEqual(.65);
+  frame(g,['jump'],['jump'],['action']);
+  expect(g.player.mountCharge).toBe(0);expect(g.player.mountCharged).toBe(false);
+  expect(g.player.mountAttack).toBe(.32);expect(g.player.vx).toBeGreaterThan(0);expect(g.player.vx).toBeLessThan(18);
+ });
  it('Enguarde can rise on the imported reef while carrying the plush',()=>{
   const g=new Game();g.start(3,true);g.enemies=[];const a=g.animals[0];a.state='idle';
   Object.assign(g.player,{x:a.x,y:a.y,vx:0,vy:0});frame(g);

@@ -1,0 +1,57 @@
+{
+  "results": [
+    {
+      "orientation": "portrait",
+      "mode": "touch",
+      "rapid": {
+        "count": 8,
+        "charge": 0,
+        "charged": false,
+        "attack": 0.32,
+        "vx": 7.5
+      },
+      "cancelsReadyCharge": true,
+      "strongChargeStillWorks": true
+    },
+    {
+      "orientation": "portrait",
+      "mode": "click",
+      "rapid": {
+        "count": 8,
+        "charge": 0,
+        "charged": false,
+        "attack": 0.32,
+        "vx": 7.5
+      },
+      "cancelsReadyCharge": true,
+      "strongChargeStillWorks": true
+    },
+    {
+      "orientation": "landscape",
+      "mode": "touch",
+      "rapid": {
+        "count": 8,
+        "charge": 0,
+        "charged": false,
+        "attack": 0.32,
+        "vx": 7.5
+      },
+      "cancelsReadyCharge": true,
+      "strongChargeStillWorks": true
+    },
+    {
+      "orientation": "landscape",
+      "mode": "click",
+      "rapid": {
+        "count": 8,
+        "charge": 0,
+        "charged": false,
+        "attack": 0.32,
+        "vx": 7.5
+      },
+      "cancelsReadyCharge": true,
+      "strongChargeStillWorks": true
+    }
+  ],
+  "errors": []
+}
