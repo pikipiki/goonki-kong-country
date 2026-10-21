@@ -215,6 +215,27 @@ export function App() {
       document.removeEventListener("visibilitychange", visibility);
     };
   }, [game, controls, change, start, tick]);
+  useEffect(() => {
+    const coarse = window.matchMedia("(pointer: coarse)");
+    if (!coarse.matches) return;
+    const stopGesture = (event: Event) => event.preventDefault();
+    document.addEventListener("gesturestart", stopGesture, { passive: false });
+    document.addEventListener("gesturechange", stopGesture, { passive: false });
+    document.addEventListener("gestureend", stopGesture, { passive: false });
+    let lastTouchEnd = 0;
+    const onTouchEnd = (event: TouchEvent) => {
+      const now = Date.now();
+      if (now - lastTouchEnd < 320) event.preventDefault();
+      lastTouchEnd = now;
+    };
+    document.addEventListener("touchend", onTouchEnd, { passive: false });
+    return () => {
+      document.removeEventListener("gesturestart", stopGesture);
+      document.removeEventListener("gesturechange", stopGesture);
+      document.removeEventListener("gestureend", stopGesture);
+      document.removeEventListener("touchend", onTouchEnd);
+    };
+  }, []);
   // A small inspection surface supports reproducible browser smoke checks.
   useEffect(() => {
     Object.defineProperty(window, "goonk", { value: game, configurable: true });
