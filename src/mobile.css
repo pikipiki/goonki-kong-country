@@ -268,17 +268,17 @@ h1 > span {
 }
 .dpad {
   position: relative;
-  width: 160px;
-  height: 142px;
+  width: 188px;
+  height: 150px;
   flex-shrink: 0;
   border-radius: 50%;
   isolation: isolate;
 }
 .dpad-ring {
   position: absolute;
-  width: 124px;
-  height: 124px;
-  left: 18px;
+  width: 132px;
+  height: 132px;
+  left: 28px;
   top: 0;
   border-radius: 50%;
   background: radial-gradient(circle, #263b24c9, #111e16cc);
@@ -290,8 +290,8 @@ h1 > span {
 }
 .stick {
   position: absolute;
-  left: 51px;
-  top: 32px;
+  left: 61px;
+  top: 34px;
   width: 58px;
   height: 58px;
   border-radius: 50%;
@@ -302,11 +302,13 @@ h1 > span {
 }
 .direction-button {
   position: absolute;
-  top: 32px;
-  width: 61px;
-  height: 61px;
+  top: 26px;
+  width: 76px;
+  height: 76px;
+  min-width: 76px;
+  min-height: 76px;
   border-radius: 50%;
-  font-size: 20px;
+  font-size: 24px;
   color: #dfd5a0;
   background: #283c26a6;
   border: 1px solid #b5ad6955;
@@ -326,7 +328,7 @@ h1 > span {
 }
 .stop-button {
   position: absolute;
-  left: 63px;
+  left: 73px;
   top: 47px;
   width: 34px;
   height: 34px;
@@ -574,26 +576,29 @@ h1 > span {
     gap: 5px;
   }
   .dpad {
-    width: 152px;
+    width: 176px;
   }
   .action-cluster {
     width: 176px;
   }
   .direction-button {
-    width: 58px;
-    height: 58px;
+    width: 72px;
+    height: 72px;
+    min-width: 72px;
+    min-height: 72px;
+    font-size: 22px;
   }
   .direction-button.right {
     right: 0;
   }
   .dpad-ring {
-    left: 14px;
+    left: 22px;
   }
   .stick {
-    left: 47px;
+    left: 55px;
   }
   .stop-button {
-    left: 59px;
+    left: 67px;
   }
   .jump-button {
     width: 75px;
@@ -733,20 +738,23 @@ h1 > span {
     padding-right: 8px;
   }
   .dpad {
-    width: 135px;
+    width: 158px;
   }
   .dpad-ring {
-    left: 5px;
+    left: 13px;
   }
   .direction-button {
-    width: 52px;
-    height: 57px;
+    width: 64px;
+    height: 64px;
+    min-width: 64px;
+    min-height: 64px;
+    font-size: 20px;
   }
   .stick {
-    left: 39px;
+    left: 47px;
   }
   .stop-button {
-    left: 51px;
+    left: 59px;
   }
   .action-cluster {
     width: 166px;
@@ -839,27 +847,30 @@ h1 > span {
     bottom: max(9px, env(safe-area-inset-bottom));
   }
   .dpad {
-    height: 116px;
-    width: 146px;
+    height: 124px;
+    width: 168px;
   }
   .dpad-ring {
     height: 106px;
     width: 106px;
-    left: 20px;
+    left: 31px;
   }
   .stick {
     width: 48px;
     height: 48px;
-    left: 49px;
+    left: 55px;
     top: 28px;
   }
   .direction-button {
-    top: 27px;
-    width: 57px;
-    height: 57px;
+    top: 22px;
+    width: 68px;
+    height: 68px;
+    min-width: 68px;
+    min-height: 68px;
+    font-size: 22px;
   }
   .stop-button {
-    left: 57px;
+    left: 65px;
     top: 39px;
     width: 32px;
     height: 32px;
