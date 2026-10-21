@@ -1,6 +1,13 @@
 import { BUDDY_PHYSICS, ANIMAL_DESIGNS, type Animal } from "./animals";
 import { ROM_JUNGLE, ORIGINAL_JUNGLE_ORIGIN } from "./originalJungle";
-import { ceilingWorld, query as originalTerrain } from "./originalTerrain";
+import { ROM_CORAL } from "./originalCoral";
+import { blocksHorizontalWorld, ceilingWorld, query as originalTerrain } from "./originalTerrain";
+import { ORIGINAL_CORAL_ORIGIN } from "./originalCoral";
+import {
+  blocksCoralHorizontal,
+  ceilingCoralWorld,
+  queryCoral,
+} from "./originalCoralTerrain";
 import { ENEMY_DESIGNS } from "./enemies";
 import { LEVELS, type EnemySpec, type Platform } from "./levels";
 import evidence from "../../reference/rom-analysis.json";
@@ -37,6 +44,8 @@ export interface Input {
   held: Set<Key>;
   pressed: Set<Key>;
   released: Set<Key>;
+  /** True when the mobile UI is in tap-to-toggle mode (see GameControls). */
+  clickMode?: boolean;
 }
 export interface Enemy extends EnemySpec {
   originY: number;
@@ -169,6 +178,9 @@ export class Game {
   levelBananas = 0;
   letters = new Set<number>();
   collected = new Set<number>();
+  revealedCaches = new Set<number>();
+  collectedCaches = new Set<number>();
+  brokenWalls = new Set<number>();
   usedBarrels = new Set<number>();
   enemies: Enemy[] = [];
   animals: Animal[] = [];
@@ -189,11 +201,17 @@ export class Game {
     this.load(0, "title");
   }
   get level() {
-    return this.originalRoute && this.levelId === 0 ? ROM_JUNGLE : LEVELS[this.levelId];
+    if (!this.originalRoute) return LEVELS[this.levelId];
+    if (this.levelId === 0) return ROM_JUNGLE;
+    if (this.levelId === 3) return ROM_CORAL;
+    return LEVELS[this.levelId];
   }
   get letterWord() { return this.level.letterWord ?? "GOONK"; }
   floorAt(x:number,y:number) {
-    if(this.level.originalTerrain === "jungle") return originalTerrain(x,y,ORIGINAL_JUNGLE_ORIGIN)?.floorY ?? null;
+    if (this.level.originalTerrain === "jungle")
+      return originalTerrain(x, y, ORIGINAL_JUNGLE_ORIGIN)?.floorY ?? null;
+    if (this.level.originalTerrain === "coral")
+      return queryCoral(x, y, ORIGINAL_CORAL_ORIGIN)?.floorY ?? null;
     let top:number|null=null;
     for(const platform of this.level.platforms) {
       const floor=this.surface(platform);
@@ -208,6 +226,9 @@ export class Game {
     this.levelBananas = 0;
     this.letters = new Set();
     this.collected = new Set();
+    this.revealedCaches = new Set();
+    this.collectedCaches = new Set();
+    this.brokenWalls = new Set();
     this.usedBarrels = new Set();
     this.particles = [];
     this.thrown = [];
@@ -264,6 +285,96 @@ export class Game {
   }
   pop(x: number, y: number, text: string, color = "#ffdd75") {
     this.particles.push({ x, y, text, color, age: 0 });
+  }
+  private resolveBreakableWalls(p: Player, oldX: number) {
+    const walls = this.level.breakableWalls;
+    if (!walls) return;
+    for (let i = 0; i < walls.length; i++) {
+      if (this.brokenWalls.has(i)) continue;
+      const wall = walls[i];
+      const left = wall.x - wall.w / 2;
+      const right = wall.x + wall.w / 2;
+      const bottom = wall.y;
+      const top = wall.y + wall.h;
+      const overlap =
+        p.x + 0.35 > left &&
+        p.x - 0.35 < right &&
+        p.y + 1.1 > bottom &&
+        p.y < top + 0.2;
+      if (!overlap) continue;
+      if (p.roll > 0.12) {
+        this.brokenWalls.add(i);
+        this.onEvent("barrel-break");
+        this.pop(wall.x, wall.y + wall.h * 0.5, "CRACK", "#f5c98a");
+        continue;
+      }
+      p.x = oldX;
+      p.vx = 0;
+    }
+  }
+  private breakWallsWithThrown() {
+    const walls = this.level.breakableWalls;
+    if (!walls) return;
+    for (const barrel of this.thrown) {
+      if (!barrel.active) continue;
+      for (let i = 0; i < walls.length; i++) {
+        if (this.brokenWalls.has(i)) continue;
+        const wall = walls[i];
+        if (
+          Math.abs(barrel.x - wall.x) < wall.w / 2 + 0.5 &&
+          barrel.y > wall.y - 0.5 &&
+          barrel.y < wall.y + wall.h + 0.5
+        ) {
+          this.brokenWalls.add(i);
+          barrel.active = false;
+          this.onEvent("barrel-break");
+        }
+      }
+    }
+  }
+  private updateItemCaches(p: Player, input: Input) {
+    const caches = this.level.itemCaches;
+    if (!caches) return;
+    caches.forEach((cache, i) => {
+      if (this.collectedCaches.has(i)) return;
+      const dx = Math.abs(p.x - cache.x);
+      const dy = Math.abs(p.y + 0.8 - cache.y);
+      if (!this.revealedCaches.has(i)) {
+        const slap =
+          p.roll > 0.1 ||
+          (input.pressed.has("action") && p.grounded && input.held.has("down"));
+        if (slap && dx < 1.5 && dy < 1.8) {
+          this.revealedCaches.add(i);
+          this.onEvent("reveal");
+          this.pop(cache.x, cache.y, "?", "#ffe08a");
+        }
+        return;
+      }
+      if (dx > 0.85 || dy > 1.2) return;
+      this.collectedCaches.add(i);
+      const reward = cache.reward;
+      if (reward.kind === "letter" && reward.letter) {
+        this.pop(cache.x, cache.y, reward.letter, "#ffdf80");
+        this.onEvent("letter");
+      } else {
+        const amount = reward.amount ?? 1;
+        this.bananas += amount;
+        this.levelBananas += amount;
+        this.total += amount;
+        this.pop(cache.x, cache.y, `+${amount}`);
+        this.onEvent(amount > 1 ? "banana-bunch" : "banana");
+      }
+    });
+  }
+  private maybeSignHint(p: Player) {
+    if (this.toastTimer > 0) return;
+    for (const decor of this.level.decors ?? []) {
+      if (decor.kind !== "sign" || !decor.text) continue;
+      if (Math.abs(p.x - decor.x) < 2.2 && Math.abs(p.y - decor.y) < 2.5) {
+        this.message(decor.text, 3);
+        return;
+      }
+    }
   }
   pause() {
     if (this.phase === "playing") this.phase = "paused";
@@ -466,7 +577,7 @@ export class Game {
         this.onEvent("cannon");
       } else return;
     }
-    const wasCarrying = p.carry >= 0;
+    const carryingAtStart = p.carry >= 0;
     let actionUsed = false;
     if (input.pressed.has("action") && this.mount) {
       const kind = this.mount.kind;
@@ -482,7 +593,10 @@ export class Game {
       if (crate) { this.releaseAnimal(crate); actionUsed = true; }
     }
     if (!actionUsed && !water && !cart && p.launched === 0) {
-      if (wasCarrying && (input.released.has("action") || input.pressed.has("action"))) {
+      const releaseThrow =
+        input.released.has("action") ||
+        (input.clickMode && input.pressed.has("action"));
+      if (carryingAtStart && releaseThrow) {
         if (p.grounded && input.held.has("down")) {
           this.usedBarrels.delete(p.carry);
           p.carry = -1;
@@ -497,7 +611,7 @@ export class Game {
           p.carry = -1;
           this.onEvent("throw");
         }
-      } else if (!wasCarrying && input.pressed.has("action")) {
+      } else if (!carryingAtStart && input.pressed.has("action")) {
         const barrel = this.level.barrels.findIndex(
           (b, i) =>
             b.kind === "throw" &&
@@ -595,13 +709,26 @@ export class Game {
     const oldY = p.y,
       oldX = p.x;
     p.x = clamp(p.x + p.vx * dt, -2, this.level.length + 1);
+    if (this.level.breakableWalls?.length) this.resolveBreakableWalls(p, oldX);
+    if (this.originalRoute) {
+      const minX = (this.level.start?.x ?? 4) - 0.35;
+      if (p.x < minX) {
+        p.x = minX;
+        p.vx = Math.max(0, p.vx);
+      }
+    }
     p.y += p.vy * dt;
     p.grounded = false;
-    if (water && p.y > 6) {
+    if (water && p.y > 6 && this.level.originalTerrain !== "coral") {
       p.y = 6;
       p.vy = Math.min(0, p.vy);
     }
-    if(this.level.originalTerrain === "jungle") {
+    if (this.level.originalTerrain === "jungle") {
+      const dir = p.x > oldX ? 1 : p.x < oldX ? -1 : 0;
+      if (dir && blocksHorizontalWorld(oldX, p.y, dir, ORIGINAL_JUNGLE_ORIGIN)) {
+        p.x = oldX;
+        p.vx = 0;
+      }
       const hit=originalTerrain(p.x,oldY+0.45,ORIGINAL_JUNGLE_ORIGIN);
       if(hit && p.vy<=0 && p.y<=hit.floorY && hit.floorY<=oldY+(wasGrounded?0.45:0.12)) {
         p.y=hit.floorY; p.vy=0; p.grounded=true;
@@ -609,6 +736,34 @@ export class Game {
       if (p.vy > 0) {
         const head = 1.35;
         const ceiling = ceilingWorld(p.x, p.y + head, ORIGINAL_JUNGLE_ORIGIN);
+        if (ceiling !== null && p.y + head >= ceiling - 0.05) {
+          p.y = ceiling - head;
+          p.vy = 0;
+        }
+      }
+    } else if (this.level.originalTerrain === "coral") {
+      const dir = p.x > oldX ? 1 : p.x < oldX ? -1 : 0;
+      if (dir && blocksCoralHorizontal(oldX, p.y, dir, ORIGINAL_CORAL_ORIGIN)) {
+        p.x = oldX;
+        p.vx = 0;
+      }
+      const hit = queryCoral(p.x, oldY + 0.35, ORIGINAL_CORAL_ORIGIN);
+      if (
+        hit &&
+        p.vy <= 0 &&
+        p.y <= hit.floorY &&
+        hit.floorY <= oldY + (wasGrounded ? 0.45 : 0.12)
+      ) {
+        p.y = hit.floorY;
+        p.vy = 0;
+        p.grounded = true;
+      } else if (hit && wasGrounded && hit.floorY > oldY + 0.45) {
+        p.x = oldX;
+        p.vx = 0;
+      }
+      if (p.vy > 0) {
+        const head = 1.35;
+        const ceiling = ceilingCoralWorld(p.x, p.y + head, ORIGINAL_CORAL_ORIGIN);
         if (ceiling !== null && p.y + head >= ceiling - 0.05) {
           p.y = ceiling - head;
           p.vy = 0;
@@ -657,6 +812,8 @@ export class Game {
         x: Math.abs(trail.x - p.x) < 1.25 ? p.x - trail.facing * 1.25 : trail.x,
       };
     }
+    this.updateItemCaches(p, input);
+    this.maybeSignHint(p);
     this.level.pickups.forEach((item, i) => {
       if (
         this.collected.has(i) ||
@@ -723,6 +880,7 @@ export class Game {
         this.message(b.autoFire ? "Canon automatique !" : "Sauter ou Action pour décoller. Observe la direction du canon.");
       }
     });
+    this.breakWallsWithThrown();
     this.thrown.forEach((b) => {
       if (!b.active) return;
       b.x += b.vx * dt;

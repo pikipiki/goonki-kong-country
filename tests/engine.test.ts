@@ -146,6 +146,24 @@ describe("team, barrels, collectibles, progression", () => {
     expect(game.player.hp).toBe(2);
     expect(game.usedBarrels.has(0)).toBe(true);
   });
+  it("throws a carried barrel on action tap in click mode", () => {
+    const game = new Game();
+    game.start();
+    game.player.x = 19;
+    const input = emptyInput();
+    input.clickMode = true;
+    input.held.add("action");
+    input.pressed.add("action");
+    game.update(input);
+    expect(game.player.carry).toBe(1);
+    input.pressed.clear();
+    input.held.delete("action");
+    input.pressed.add("action");
+    input.held.add("action");
+    game.update(input);
+    expect(game.player.carry).toBe(-1);
+    expect(game.thrown).toHaveLength(1);
+  });
   it("picks up and throws a nearby barrel", () => {
     const game = new Game();
     game.start();

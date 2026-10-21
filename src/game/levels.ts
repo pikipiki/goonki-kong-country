@@ -24,6 +24,23 @@ export interface EnemySpec {
   max: number;
   kind: "beetle" | "croc" | "bee" | "armored" | "boss";
 }
+export interface ItemCacheSpec {
+  x: number;
+  y: number;
+  reward: Pickup;
+}
+export interface BreakableWallSpec {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+export interface LevelDecor {
+  x: number;
+  y: number;
+  kind: "butterfly" | "sign" | "token" | "sparkle";
+  text?: string;
+}
 export interface BarrelSpec {
   x: number;
   y: number;
@@ -50,7 +67,10 @@ export interface Level {
   barrels: BarrelSpec[];
   tip: string;
   animals?: AnimalSpawn[];
-  originalTerrain?: "jungle";
+  itemCaches?: ItemCacheSpec[];
+  breakableWalls?: BreakableWallSpec[];
+  decors?: LevelDecor[];
+  originalTerrain?: "jungle" | "coral";
   start?: {x:number; y:number};
   letterWord?: string;
 }

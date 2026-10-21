@@ -154,13 +154,14 @@ def main():
     shape_samples=[[min(31,eval_shape(u16(shape+i*2),x)) for x in range(16)] for i in range(63)]
     assert shape_samples[1]==[31]*16 and shape_samples[2]==[27]*16 and shape_samples[5]==[15]*16
     jungle_base=u24(env)&0x3fffff
+    underwater_base=u24(env+5*3)&0x3fffff
     # Collision table has 0xEA entries (verified by adjacent type-count table).
     count_table=env+0x9a
     assert u16(count_table)==0xea
     def jungle_surfaces(x):
         surfaces=[]
         for row in range(16):
-            p=jungle_base+(x&0xffe0)+row*2; tile=u16(p);tile_id=tile&0x3fff
+            col=x//32; p=jungle_base+col*32+row*2; tile=u16(p);tile_id=tile&0x3fff
             if tile_id==0 or tile_id>=0xea:continue
             local=x&31
             if tile&0x4000:local^=31
@@ -189,6 +190,7 @@ def main():
       'levels':levels,'collisionShapeSamples':shape_samples,
       'jungleCollisionAttributePairs':[[rom[collision+i*2],rom[collision+i*2+1]] for i in range(0xea)],
       'jungleMetatiles':{'fileOffset':hx(jungle_base),'tileSizePixels':32,'rowsPerColumn':16,'storageOrder':'column-major, row0 top, row15 bottom','columns':[[u16(jungle_base+x*32+y*2) for y in range(16)] for x in range(169)]},
+      'underwaterMetatiles':{'fileOffset':hx(underwater_base),'tileSizePixels':32,'rowsPerColumn':16,'marineLevelOriginY':17960,'storageOrder':'column-major, row0 top, row15 bottom','columns':[[u16(underwater_base+x*32+y*2) for y in range(16)] for x in range(200)]},
       'jungleCollisionSurfaceSamples':{'sampleSpacingPixels':8,'xEndExclusive':0x1520,'coordinateSystem':'SNES sprite world X right; Y up from the 512px-high horizontal level floor. Per-metatile candidate tops, including interior solid tiles; NOT a single flattened walkable ground height.','samples':surfaces},
       'limitations':['Not a full decompilation or an emulator. No runtime/frame-parity validation.',
        'Spawn type1/2/15 scripts decoded only for initial assignments/calls/known opcodes. Native callbacks and grouped scripts are not executed.',

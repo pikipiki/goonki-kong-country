@@ -13,8 +13,8 @@ header='''/** Original Jungle Hijinxs collision metadata, extracted read-only fr
 '''
 compact=lambda v:json.dumps(v,separators=(',',':'))
 s=header+'const tiles: readonly (readonly number[])[] = '+compact(r['jungleMetatiles']['columns'])+';\n'
-s+='const attributes: readonly (readonly number[])[] = '+compact(r['jungleCollisionAttributePairs'])+';\n'
-s+='const profiles: readonly (readonly number[])[] = '+compact(r['collisionShapeSamples'])+';\n'
+s+='export const attributes: readonly (readonly number[])[] = '+compact(r['jungleCollisionAttributePairs'])+';\n'
+s+='export const profiles: readonly (readonly number[])[] = '+compact(r['collisionShapeSamples'])+';\n'
 s+='''
 export const ORIGINAL_TERRAIN = Object.freeze({
   tileSizePixels: 32, heightPixels: 512, widthPixels: tiles.length * 32,
@@ -101,6 +101,39 @@ export function nearestCandidateBelowSNES(px: number, py: number): TerrainContac
     if (candidate && candidate.floorY <= py && (!best || candidate.floorY > best.floorY)) best = candidate;
   }
   return best ? { ...best, referenceRowFromTop: 15 - Math.floor(Math.max(0, Math.min(511, py)) / 32) } : null;
+}
+export function ceilingSNES(px: number, py: number): number | null {
+  if (!Number.isFinite(px) || !Number.isFinite(py)) return null;
+  let ceiling: number | null = null;
+  for (let row = 0; row < 16; row++) {
+    const cell = terrainCellSNES(px, row);
+    if (!cell || cell.localHeight < 0) continue;
+    if (cell.floorY > py && (ceiling === null || cell.floorY < ceiling)) ceiling = cell.floorY;
+  }
+  return ceiling;
+}
+export function ceilingWorld(xWorld: number, headWorld: number, origin: TerrainOrigin = { x: 0, y: 0 }) {
+  const scale = ORIGINAL_TERRAIN.pixelsPerWorldUnit;
+  const hit = ceilingSNES(xWorld * scale + origin.x, headWorld * scale + origin.y);
+  return hit === null ? null : (hit - origin.y) / scale;
+}
+export function blocksHorizontalWorld(
+  xWorld: number,
+  footWorld: number,
+  dir: -1 | 1,
+  origin: TerrainOrigin = { x: 0, y: 0 },
+) {
+  const scale = ORIGINAL_TERRAIN.pixelsPerWorldUnit;
+  const here = probeSNES(xWorld * scale + origin.x, (footWorld + 0.2) * scale + origin.y);
+  if (!here) return false;
+  const edgePx = (xWorld + dir * 0.4) * scale + origin.x;
+  const feetPy = (footWorld + 0.2) * scale + origin.y;
+  const torsoPy = (footWorld + 1) * scale + origin.y;
+  const aheadFeet = probeSNES(edgePx, feetPy);
+  if (aheadFeet && aheadFeet.floorY > here.floorY + 10) return true;
+  const aheadTorso = probeSNES(edgePx, torsoPy);
+  if (aheadTorso && aheadTorso.floorY > feetPy + 6) return true;
+  return false;
 }
 '''
 (base/'src/game/originalTerrain.ts').write_text(s)

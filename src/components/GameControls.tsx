@@ -101,7 +101,8 @@ export function GameControls({
     try {
       localStorage.setItem("goonk-input-mode", clickMode ? "click" : "touch");
     } catch {}
-  }, [clickMode]);
+    controls.setClickMode(clickMode);
+  }, [clickMode, controls]);
   const clear = () => {
     for (const key of ["left", "right", "run", "up", "down"] as Key[])
       controls.set(`virtual-${key}`, key, false);
