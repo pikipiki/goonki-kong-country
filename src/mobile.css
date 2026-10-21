@@ -17,6 +17,13 @@ body,
 body {
   touch-action: manipulation;
 }
+@media (pointer: coarse) {
+  html,
+  body,
+  .app {
+    touch-action: none;
+  }
+}
 .app {
   height: 100dvh;
   min-height: 0;
@@ -220,6 +227,15 @@ h1 > span {
   pointer-events: auto;
   touch-action: none;
   -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.game-button,
+.direction-button,
+.stop-button,
+.swim-direction,
+.input-mode {
+  touch-action: none;
 }
 .controller-toolbar {
   display: flex;
