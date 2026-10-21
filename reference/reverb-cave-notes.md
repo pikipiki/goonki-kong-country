@@ -1,3 +1,5 @@
+> Mise à jour prioritaire du 21 octobre 2026 : les anciens repères et noms ci-dessous peuvent être obsolètes. Lire `decor-import-fixes.md` et le haut de `CLAUDE_HANDOFF.md` : pointeurs d’attributs explicites, Canyon Jungle, Minecart Madness Walkway et véritable carte marine à échelle uniforme.
+
 # Reverb Cave — métadonnées Rev 2
 
 Entrée `$17` (23), checkpoint `$19` (25), `levelId` **6**, **120** placements, **43** formations bananes. Musique : vérifier le dispatcher (l’extracteur peut encore lire `DKIslandSwing` sur cette entrée — à corriger).

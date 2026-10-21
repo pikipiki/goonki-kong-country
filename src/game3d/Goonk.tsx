@@ -31,8 +31,9 @@ export function Goonk({
     if (!root.current || !body.current) return;
     const p = game?.player,
       t = clock.elapsedTime;
-    const cart = game?.level.biome === "mine";
+    const cart = (game?.level.originalTerrain === "mineCart" || (game?.level.biome === "mine" && game?.level.originalTerrain !== "cave"));
     const mount = !companion && game?.mount;
+    const swimming = !preview && game?.level.biome === "lagoon" && !mount;
     const riding = !!mount;
     const walking = preview || cart || riding ? 0 : Math.abs(p?.vx ?? 0);
     const grounded = p?.grounded ?? true;
@@ -68,7 +69,7 @@ export function Goonk({
     } else if (pose) {
       root.current.position.set(pose.x, pose.y, companion ? -0.28 : 0.3);
     }
-    root.current.scale.setScalar((pink ? 2.2 : 2.05) * (cart ? 0.83 : riding ? 0.78 : 1));
+    root.current.scale.setScalar((pink ? 2.2 : 2.05) * (cart ? 0.83 : riding ? 0.78 : swimming ? 0.85 : 1));
     if (mount && p) root.current.position.set(p.x - p.facing * 0.12,
       p.y + ANIMAL_DESIGNS[mount.kind].seat - 0.03, 0.2);
     if (cart && p)
@@ -91,11 +92,11 @@ export function Goonk({
         ? t * 14 * (p?.facing ?? 1)
         : swapping
           ? (companion ? -1 : 1) * swapHop * (pink ? 0.35 : 0.85)
-          : Math.sin(t * 2.1) * 0.025;
+          : swimming ? -(pose?.facing ?? 1) * (Math.PI/2 + Math.sin(t*4)*.035) : Math.sin(t * 2.1) * 0.025;
     body.current.rotation.y =
       (pose?.facing ?? 1) * (walking > 0.3 ? 0.65 : 0.2);
     body.current.position.y =
-      (roll ? 0.3 : 0.4) +
+      (roll ? 0.3 : swimming ? 0.26 : 0.4) +
       (grounded
         ? Math.abs(Math.sin(t * walking * 2.1)) *
           Math.min(0.045, walking * 0.01)

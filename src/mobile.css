@@ -1174,3 +1174,16 @@ h1 > span {
 .map-enter { margin: 0 auto 10px; }
 .level-card.map-selected { outline: 2px solid #e9c461; outline-offset: 2px; }
 @media (max-width: 450px) { .island-map {height: 260px;} }
+
+/* Share the available width rather than overflowing small portrait phones
+ * with two fixed-width control clusters (158 + 184px on a 320px screen). */
+@media (orientation: portrait) and (max-width: 900px) {
+  .controller-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px;
+  }
+  .dpad, .action-cluster { width: 100%; min-width: 0; }
+  .dpad-ring { left: calc(50% - 66px); }
+  .stick { left: calc(50% - 29px); }
+}

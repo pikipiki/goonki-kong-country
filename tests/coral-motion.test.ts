@@ -47,9 +47,11 @@ describe("ROM Coral Capers swim", () => {
     for (let i = 0; i < 40; i++) game.update(rise);
     expect(game.player.y).toBeGreaterThan(2.85);
     const idle = emptyInput();
-    for (let i = 0; i < 45; i++) game.update(idle);
+    let peak=game.player.y;
+    for (let i = 0; i < 90; i++) {game.update(idle);peak=Math.max(peak,game.player.y);}
     expect(game.player.y).toBeGreaterThan(1.2);
-    expect(game.player.y).toBeLessThan(5.02);
+    expect(game.player.y).toBeLessThan(peak-.1);
+    expect(game.player.vy).toBeLessThan(0);
     expect(game.player.grounded).toBe(false);
   });
 });

@@ -486,7 +486,7 @@ function ForestChunk({
         for (let n = 0; n < 7; n++)
           foliage.push({
             position: [tx + 0.4, h - 1, z],
-            scale: [scale * (0.85 + random(seed + n) * 0.3), scale, scale],
+            scale: [scale * (layer === 0 ? 0.72 : 1) * (0.85 + random(seed + n) * 0.3), scale * (layer === 0 ? 0.8 : 1), scale * (layer === 0 ? 0.72 : 1)],
             rotation: [
               0.1 + r * 0.3,
               (n * Math.PI * 2) / 7,
@@ -498,7 +498,7 @@ function ForestChunk({
         if (i % 2 === 0)
           vines.push({
             position: [tx + 1, h - 1, z + 0.6],
-            scale: [1, h * 1.5, 1],
+            scale: [1, Math.max(0.5,(h-1.1)/1.8), 1],
             color: "#476b2b",
           });
         for (let n = 0; n < 5; n++)
@@ -551,7 +551,7 @@ function ForestChunk({
     return { trunks, foliage, ferns, corals, roots, stones, vines, extras };
   }, [x, biome]);
   return (
-    <group ref={root}>
+    <group ref={root} name="background-decor" position={[0,0,-4]}>
       <Batch
         geometry={cylinder}
         items={data.trunks}
@@ -624,7 +624,7 @@ function Ground({ platform, game }: { platform: Platform; game: Game }) {
     for (let i = 0; i < Math.ceil(platform.w / 2); i++)
       for (let n = 0; n < 4; n++)
         plants.push({
-          position: [-platform.w / 2 + i * 2, -0.02, -1.1],
+          position: [-platform.w / 2 + i * 2, -0.02, -2.5],
           scale: [0.2, 0.26, 0.32],
           rotation: [0, n * 1.5, -0.2],
           color: "#5c8a27",
@@ -729,7 +729,7 @@ function CoralScatter({ length }: { length: number }) {
     () =>
       Array.from({ length: Math.ceil(length / 6) + 2 }, (_, i) => ({
         x: i * 6 + random(i) * 4,
-        z: -4 + random(i + 11) * 7,
+        z: -7 - random(i + 11) * 6,
         scale: 0.35 + random(i + 23) * 0.9,
         rot: random(i + 37) * Math.PI * 2,
         tone: 0.42 + random(i + 51) * 0.35,
@@ -849,44 +849,19 @@ export const World = memo(function World({
       {chunks.map((x) => (
         <ForestChunk key={x} x={x} biome={level.biome} game={game} />
       ))}
-      <mesh
-        geometry={box}
-        position={[level.length / 2, -4.8, -5]}
-        scale={[level.length + 70, 0.12, 50]}
-      >
-        <meshStandardMaterial
-          color={level.biome === "ship" ? "#284e67" : "#286d62"}
-          metalness={0.3}
-          roughness={0.28}
-        />
-      </mesh>
-      {level.originalTerrain === "coral" && (
-        <CoralScatter length={level.length} />
+      {(level.biome === "ship" || level.biome === "lagoon") && (
+        <mesh geometry={box} name="background-water" position={[level.length/2,-4.8,-18]} scale={[level.length+70,0.12,20]}>
+          <meshStandardMaterial color={level.biome === "ship" ? "#284e67" : "#286d62"} metalness={0.3} roughness={0.28}/>
+        </mesh>
       )}
-      {(level.originalTerrain === "jungle" || level.originalTerrain === "cave") &&
-        level.breakableWalls?.map((wall, i) =>
-          game.brokenWalls.has(i) ? null : (
-        <group key={`facade-${i}`} position={[wall.x, wall.y + wall.h * 0.55, -0.4]}>
-          <mesh geometry={box} scale={[wall.w, wall.h, 0.12]}>
-            <meshStandardMaterial
-              color={level.originalTerrain === "cave" ? "#4a4038" : "#3d5a44"}
-              map={texture(level.originalTerrain === "cave" ? "soil" : "bark")}
-              transparent
-              opacity={0.92}
-            />
+      {level.originalTerrain === "coral" && (
+        <>
+          <CoralScatter length={level.length} />
+          <mesh geometry={box} position={[level.length/2, -0.9-0.4, 0]} scale={[level.length+4, 0.8, 3.2]}>
+            <meshStandardMaterial color="#637b64" roughness={0.95} map={texture("soil")} />
           </mesh>
-          <mesh geometry={box} position={[0, wall.h * 0.15, 0.08]} scale={[wall.w * 0.85, wall.h * 0.35, 0.04]}>
-            <meshStandardMaterial
-              color="#9cc4a8"
-              transparent
-              opacity={0.55}
-              emissive="#4a7a62"
-              emissiveIntensity={0.2}
-            />
-          </mesh>
-        </group>
-          ),
-        )}
+        </>
+      )}
       {level.biome === "jungle" && !level.originalTerrain && (
         <group position={[21, 2, -23]}>
           <mesh geometry={rock} scale={[4, 8, 3]} position={[-3, -1, -2]}>

@@ -3,6 +3,7 @@ import { useFrame } from "@react-three/fiber";
 import {
   CanvasTexture,
   Group,
+  Mesh,
   Sprite,
   SpriteMaterial,
   SphereGeometry,
@@ -186,58 +187,62 @@ function Pickups({ game }: { game: Game }) {
   );
 }
 
-function BonusPickups({ game }: { game: Game }) {
-  const rooms = game.level.bonusRooms;
-  if (!rooms?.length) return null;
-  return (
-    <group>
-      {rooms.map((room, roomIndex) => {
-        if (!game.brokenWalls.has(room.wallIndex)) return null;
-        return (
-          <group key={roomIndex}>
-            <mesh
-              position={[
-                room.bounds.x + room.bounds.w / 2,
-                room.bounds.y,
-                -0.45,
-              ]}
-              scale={[room.bounds.w, 0.06, room.bounds.h]}
-            >
-              <meshStandardMaterial
-                color="#c9a83a"
-                transparent
-                opacity={0.28}
-                emissive="#8a7030"
-                emissiveIntensity={0.15}
-              />
-            </mesh>
-            {room.pickups.map((item, pickupIndex) => {
-              const key = `${roomIndex}-${pickupIndex}`;
-              if (game.collectedBonus.has(key)) return null;
-              return (
-                <group
-                  key={key}
-                  position={[item.x, item.y, 0.25]}
-                  visible={Math.abs(item.x - game.player.x) < 24}
-                >
-                  {item.kind === "banana" ? (
-                    <BananaModel />
-                  ) : item.kind === "balloon" ? (
-                    <>
-                      <mesh geometry={sphere} scale={[0.35, 0.44, 0.26]}>
-                        <meshStandardMaterial color="#ef91ad" roughness={0.28} />
-                      </mesh>
-                      <Label text="1" position={[0, 0, 0.3]} scale={0.35} />
-                    </>
-                  ) : null}
-                </group>
-              );
-            })}
-          </group>
-        );
-      })}
-    </group>
-  );
+function BonusRoom({game,index}:{game:Game;index:number}) {
+  const root=useRef<Group>(null),room=game.level.bonusRooms![index];
+  useFrame(()=>{
+    if(!root.current)return;
+    root.current.visible=game.brokenWalls.has(room.wallIndex);
+    root.current.children.forEach((object,i)=>{
+      object.visible=!game.collectedBonus.has(`${index}-${i}`) && Math.abs(room.pickups[i].x-game.player.x)<24;
+    });
+  });
+  return <group ref={root} name="bonus-room">
+    {room.pickups.map((item,i)=><group key={i} position={[item.x,item.y,.25]}>
+      {item.kind === "banana" ? <BananaModel/> : item.kind === "balloon" ? <>
+        <mesh geometry={sphere} scale={[.35,.44,.26]}><meshStandardMaterial color="#ef91ad" roughness={.28}/></mesh>
+        <Label text="1" position={[0,0,.3]} scale={.35}/>
+      </> : null}
+    </group>)}
+  </group>;
+}
+function BonusPickups({game}:{game:Game}) {
+  return <>{game.level.bonusRooms?.map((_,i)=><BonusRoom key={i} game={game} index={i}/>)}</>;
+}
+function HiddenCache({game,index}:{game:Game;index:number}) {
+  const root=useRef<Group>(null),cache=game.level.itemCaches![index];
+  useFrame(()=>{if(root.current)root.current.visible=game.revealedCaches.has(index)&&!game.collectedCaches.has(index)&&Math.abs(cache.x-game.player.x)<24;});
+  return <group ref={root} name="hidden-cache" position={[cache.x,cache.y,.2]}>
+    <mesh geometry={box} scale={[.4,.3,.25]}><meshStandardMaterial color="#c9a227"/></mesh>
+    <Label text="!" position={[0,.35,.15]} scale={.28}/>
+  </group>;
+}
+
+function BreakableWall({ game, index }: {game:Game; index:number}) {
+  const root=useRef<Mesh>(null), wall=game.level.breakableWalls![index];
+  useFrame(()=>{
+    if(root.current) root.current.visible=!game.brokenWalls.has(index) && Math.abs(wall.x-game.player.x)<28;
+  });
+  return <mesh ref={root} name="breakable-wall" userData={{wallIndex:index}} geometry={box}
+    position={[wall.x,wall.y+wall.h/2,0]} scale={[wall.w,wall.h,0.35]}>
+    <meshStandardMaterial color={game.level.biome === "jungle" ? "#5e4931" : "#4a4038"} roughness={0.95}/>
+  </mesh>;
+}
+
+function Butterfly({game,worldX}:{game:Game;worldX:number}) {
+  const root=useRef<Group>(null),wings=useRef<Group>(null);
+  useFrame(({clock})=>{
+    const t=clock.elapsedTime;
+    if(root.current){root.current.visible=Math.abs(worldX-game.player.x)<24;root.current.position.y=Math.sin(t*2+worldX)*.12;}
+    wings.current?.children.forEach((wing,i)=>{wing.rotation.y=(i?1:-1)*(.5+Math.sin(t*15)*.65);});
+  });
+  return <group ref={root} position={[0,0,-2.4]} name="background-butterfly">
+    <mesh geometry={sphere} scale={[.025,.1,.025]}><meshStandardMaterial color="#59415a"/></mesh>
+    <group ref={wings}>{[-1,1].map(side=><group key={side}>
+      <mesh geometry={sphere} position={[side*.11,.015,0]} rotation={[0,0,-side*.4]} scale={[.12,.16,.018]}>
+        <meshStandardMaterial color="#e4a6c2" roughness={.85}/>
+      </mesh>
+    </group>)}</group>
+  </group>;
 }
 
 function OriginalLevelProps({ game }: { game: Game }) {
@@ -246,42 +251,16 @@ function OriginalLevelProps({ game }: { game: Game }) {
   useEffect(() => () => sparkle.dispose(), [sparkle]);
   const caches = level.itemCaches;
   const walls = level.breakableWalls;
-  const decors = level.decors;
+  const decors = useMemo(()=>level.decors?.filter((d,i,all)=>all.findIndex(other=>other.kind===d.kind&&other.x===d.x&&other.y===d.y&&other.text===d.text)===i),[level]);
   if (!caches?.length && !walls?.length && !decors?.length) return null;
   return (
     <group>
-      {walls?.map((wall, i) =>
-        game.brokenWalls.has(i) ? null : (
-          <mesh
-            key={`wall-${i}`}
-            geometry={box}
-            position={[wall.x, wall.y + wall.h / 2, 0]}
-            scale={[wall.w, wall.h, 0.35]}
-          >
-            <meshStandardMaterial color="#4a4038" roughness={0.95} />
-          </mesh>
-        ),
-      )}
-      {caches?.map((cache, i) => {
-        if (game.collectedCaches.has(i)) return null;
-        const revealed = game.revealedCaches.has(i);
-        return (
-          <group key={`cache-${i}`} position={[cache.x, cache.y, 0.2]}>
-            <mesh geometry={box} scale={[0.55, 0.45, 0.25]}>
-              <meshStandardMaterial color={revealed ? "#c9a227" : "#3d2817"} />
-            </mesh>
-            {revealed ? (
-              <Label text="!" position={[0, 0.35, 0.15]} scale={0.28} />
-            ) : null}
-          </group>
-        );
-      })}
+      {walls?.map((_,i)=><BreakableWall key={`wall-${i}`} game={game} index={i}/>)}
+      {caches?.map((_,i)=><HiddenCache key={i} game={game} index={i}/>)}
       {decors?.map((decor, i) => (
         <group key={`decor-${i}`} position={[decor.x, decor.y, 0.15]}>
           {decor.kind === "butterfly" ? (
-            <mesh geometry={sphere} scale={[0.14, 0.09, 0.05]}>
-              <meshStandardMaterial color="#ffb6c8" emissive="#331122" />
-            </mesh>
+            <Butterfly game={game} worldX={decor.x}/>
           ) : null}
           {decor.kind === "token" ? (
             <mesh
@@ -346,7 +325,7 @@ export const Actors = memo(function Actors({ game }: { game: Game }) {
       carried.current.position.set(game.player.x, game.player.y + 1.9, 0.2);
     }
     if (cart.current) {
-      cart.current.visible = game.level.biome === "mine";
+      cart.current.visible = (game.level.originalTerrain === "mineCart" || (game.level.biome === "mine" && game.level.originalTerrain !== "cave"));
       cart.current.position.set(game.player.x, game.player.y + 0.55, 0);
     }
     projectiles.current?.children.forEach((obj, i) => {
@@ -418,7 +397,7 @@ export const Actors = memo(function Actors({ game }: { game: Game }) {
           </mesh>
         ))}
       </group>
-      <group ref={cart}>
+      <group ref={cart} name="mine-cart">
         <mesh
           geometry={box}
           scale={[1.9, 0.55, 1.25]}

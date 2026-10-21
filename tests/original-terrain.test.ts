@@ -73,7 +73,7 @@ it('expands original bitmap bananas instead of inventing regular spacing', () =>
 
 import { ROM_CORAL, ORIGINAL_CORAL_PROVENANCE } from '../src/game/originalCoral';
 import { Game, emptyInput } from '../src/game/engine';
-import { queryCoral, marineBandLocal, coralRomYFromWeb } from '../src/game/originalCoralTerrain';
+import { queryCoral, marineBandLocal, coralRomYFromWeb, coralWebYFromRom } from '../src/game/originalCoralTerrain';
 import { ORIGINAL_CORAL_ORIGIN } from '../src/game/originalCoral';
 
 describe('original Coral Capers placements', () => {
@@ -83,11 +83,11 @@ describe('original Coral Capers placements', () => {
     expect(ORIGINAL_CORAL_PROVENANCE.imported.length).toBe(37);
     expect(ORIGINAL_CORAL_PROVENANCE.omitted.length).toBe(0);
     expect(ROM_CORAL.originalTerrain).toBe('coral');
-    expect(ROM_CORAL.pickups.every(p=>p.y>=0 && p.y<=6)).toBe(true);
+    expect(ROM_CORAL.pickups.every(p=>p.y>=-1 && p.y<=54)).toBe(true);
   });
   it('probes underwater metatile floors at verified spawn columns', () => {
     const start = queryCoral(13, 5.45, ORIGINAL_CORAL_ORIGIN);
-    expect(start?.floorY).toBeGreaterThan(4);
+    expect(start?.floorY).toBe(4);
     expect(start?.floorY).toBeLessThan(6);
   });
   it('maps high ROM Y through 512px marine bands', () => {
@@ -95,11 +95,11 @@ describe('original Coral Capers placements', () => {
     const { band, local } = marineBandLocal(exitRom);
     expect(band).toBeGreaterThan(0);
     expect(local).toBeLessThan(512);
-    const webY = 0.55;
+    const webY = coralWebYFromRom(exitRom);
     const rom = coralRomYFromWeb(webY);
     expect(marineBandLocal(rom).band).toBe(band);
     const nearExit = queryCoral(63, webY, ORIGINAL_CORAL_ORIGIN);
-    expect(nearExit === null || nearExit.floorY <= 6).toBe(true);
+    expect(nearExit === null || nearExit.floorY <= webY+.1).toBe(true);
   });
   it('imports coral decor signs and buddy token', () => {
     expect(ROM_CORAL.decors?.filter(d => d.kind === 'sign')).toHaveLength(2);
@@ -114,7 +114,7 @@ describe('original Coral Capers placements', () => {
   });
   it('exposes UnderwaterExitDoor finish zone from ROM', () => {
     expect(ROM_CORAL.finishZone?.x).toBeCloseTo(2024 / 32, 3);
-    expect(ROM_CORAL.finishZone?.y).toBeCloseTo(0.93, 2);
+    expect(ROM_CORAL.finishZone?.y).toBeCloseTo((19488-17952)/32, 2);
   });
   it('does not block horizontal swim at the coral start column', () => {
     const game = new Game();

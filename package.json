@@ -37,7 +37,10 @@
     "generate:coral-parity": "python3 scripts/generate_coral_parity.py",
     "attempt:necky-bridge": "python3 scripts/attempt_jungle_necky_bridge.py",
     "analyze:audio-fidelity": "python3 scripts/analyze_audio_fidelity.py",
-    "analyze:jungle-bonus": "python3 scripts/analyze_jungle_bonus_walls.py"
+    "analyze:jungle-bonus": "python3 scripts/analyze_jungle_bonus_walls.py",
+    "test:stages": "node scripts/stage-regressions-browser.mjs",
+    "test:decor": "node scripts/visual-layers-browser.mjs",
+    "analyze:coral-terrain": "python3 scripts/analyze_coral_terrain.py"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

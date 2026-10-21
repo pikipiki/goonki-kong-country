@@ -10,7 +10,7 @@
     "diveSpeedWorld": 4.2,
     "limitation": "Not yet traced from underwater player state; Enguarde uses buddy-analysis stab/walk.",
     "snesProbe": {
-      "stateNote": "jungle.state proxy \u2014 capture coral-swim.state for Rev 2 fidelity",
+      "stateNote": "jungle.state proxy — capture coral-swim.state for Rev 2 fidelity",
       "upMaxVyRaw": 1792,
       "downMinVyRaw": -2048,
       "rightLastVyRaw": -768
@@ -18,9 +18,9 @@
     "note": "Horizontal cruise from dk-walk cap; vertical block updated from probe:coral when available."
   },
   "depthBandWeb": {
-    "surfaceY": 5.48,
-    "floorY": 0.35,
-    "floorNote": "Mapping endpoint only; gameplay floor comes from coral terrain probe per column, not a flat global clamp.",
-    "yMapping": "ROM marine Y 17960..19632 linear to web 5.5..0.5 (generate_original_coral.py)"
+    "surfaceY": 53.9,
+    "floorY": -0.9,
+    "floorNote": "Marine map bounds, with rendered seabed. Interior contacts use the correct row-major marine grid.",
+    "yMapping": "worldY=(romY-17952)/32; uniform scale, original Y-up preserved."
   }
 }

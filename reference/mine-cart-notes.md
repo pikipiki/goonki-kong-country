@@ -1,3 +1,5 @@
+> Mise à jour prioritaire du 21 octobre 2026 : les anciens repères et noms ci-dessous peuvent être obsolètes. Lire `decor-import-fixes.md` et le haut de `CLAUDE_HANDOFF.md` : pointeurs d’attributs explicites, Canyon Jungle, Minecart Madness Walkway et véritable carte marine à échelle uniforme.
+
 # Mine Cart Carnage — extraction ROM (début portage)
 
 Régénérer : `python3 scripts/analyze_level_tables.py` → `reference/level-tables.json`.

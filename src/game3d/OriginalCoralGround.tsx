@@ -12,12 +12,11 @@ import {
 import type { Game } from "../game/engine";
 import {
   ORIGINAL_CORAL_TERRAIN,
-  coralTerrainCellSNES,
-  coralWebYFromRom,
+  coralSolidSpansWorld,
 } from "../game/originalCoralTerrain";
 
 const CHUNK_COLUMNS = 16,
-  STRIP_PIXELS = 2,
+  STRIP_PIXELS = 1,
   FRONT = 1.6,
   BACK = -1.6;
 
@@ -33,7 +32,6 @@ export function createCoralGroundGeometry(
   const positions: number[] = [],
     uvs: number[] = [],
     colors: number[] = [];
-  const originY = ORIGINAL_CORAL_TERRAIN.marineOriginY;
   function quad(points: number[][], tint: string, seed: number) {
     const shade = new Color(tint).multiplyScalar(0.85 + noise(seed) * 0.3);
     for (const i of [0, 1, 2, 0, 2, 3]) {
@@ -48,37 +46,14 @@ export function createCoralGroundGeometry(
     (firstColumn + columnCount) * 32,
   );
   for (let px = firstColumn * 32; px < max; px += STRIP_PIXELS) {
-    const intervals: { bottom: number; left: number; right: number }[] = [];
-    for (let row = 15; row >= 0; row--) {
-      const left = coralTerrainCellSNES(px, row),
-        right = coralTerrainCellSNES(px + STRIP_PIXELS - 1, row);
-      if (!left && !right) continue;
-      const bottom = (15 - row) * 32,
-        l = left?.floorY ?? bottom,
-        r = right?.floorY ?? bottom,
-        previous = intervals[intervals.length - 1];
-      if (previous && bottom <= Math.min(previous.left, previous.right) + 1) {
-        previous.left = Math.max(previous.left, l);
-        previous.right = Math.max(previous.right, r);
-      } else intervals.push({ bottom, left: l, right: r });
-    }
     const x0 = px / 32,
       x1 = (px + STRIP_PIXELS) / 32;
-    intervals.forEach((span, i) => {
-      const y0 = coralWebYFromRom(originY + span.bottom),
-        yl = coralWebYFromRom(originY + span.left),
-        yr = coralWebYFromRom(originY + span.right),
-        seed = Math.floor(px / 12) + i * 19;
-      quad(
-        [[x0, y0, FRONT], [x1, y0, FRONT], [x1, yr, FRONT], [x0, yl, FRONT]],
-        "#5a7a72",
-        seed,
-      );
-      quad(
-        [[x1, y0, BACK], [x0, y0, BACK], [x0, yl, BACK], [x1, yr, BACK]],
-        "#3d524c",
-        seed,
-      );
+    coralSolidSpansWorld(x0+0.00001).forEach((span,i)=>{
+      const y0=span.bottom, yl=span.top, yr=span.top, seed=Math.floor(px/12)+i*19;
+      quad([[x0,y0,FRONT],[x1,y0,FRONT],[x1,yr,FRONT],[x0,yl,FRONT]], "#687d70", seed);
+      quad([[x1,y0,BACK],[x0,y0,BACK],[x0,yl,BACK],[x1,yr,BACK]], "#455a55", seed);
+      quad([[x0,yl,FRONT],[x1,yr,FRONT],[x1,yr,BACK],[x0,yl,BACK]], "#7f936b", seed);
+      quad([[x0,y0,BACK],[x1,y0,BACK],[x1,y0,FRONT],[x0,y0,FRONT]], "#3e534d", seed);
     });
   }
   const geometry = new BufferGeometry();
@@ -153,7 +128,7 @@ export const OriginalCoralGround = memo(function OriginalCoralGround({
 }) {
   const map = useMemo(reefTexture, []);
   useEffect(() => () => map.dispose(), [map]);
-  const chunks = Math.ceil(200 / CHUNK_COLUMNS);
+  const chunks = Math.ceil(ORIGINAL_CORAL_TERRAIN.widthPixels / 32 / CHUNK_COLUMNS);
   return (
     <>
       {Array.from({ length: chunks }, (_, i) => (

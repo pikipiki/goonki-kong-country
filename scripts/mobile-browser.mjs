@@ -120,7 +120,7 @@ for (const size of [
       .toJSON(),
   }));
   assert(metrics.scroll <= metrics.width);
-  assert(metrics.button.x >= 0 && metrics.button.right <= metrics.width + 1);
+  assert(metrics.button.x >= 0 && metrics.button.right <= metrics.width + 1, JSON.stringify({size, metrics}));
   assert(metrics.button.y >= 0 && metrics.button.bottom <= size.height + 1);
 }
 await page.setViewportSize({ width: 844, height: 390 });
@@ -128,8 +128,9 @@ for (const id of [1, 2, 3, 4, 5, 6, 0]) {
   await page.evaluate((id) => window.goonk.load(id), id);
   await page.waitForTimeout(380);
 }
+await page.waitForFunction(() => window.goonkDiagnostics?.sceneRevision === window.goonk.sceneRevision, null, {timeout:5000});
 const diagnostics = await page.evaluate(() => window.goonkDiagnostics);
-assert(diagnostics.drawCalls < 300);
+assert(diagnostics.drawCalls < 300, JSON.stringify(diagnostics));
 assert(diagnostics.dpr <= 1.35);
 await page.evaluate(() => window.goonk.load(0, "title"));
 await page.waitForTimeout(300);

@@ -1,8 +1,9 @@
 {
   "romWorldX": 293,
   "yAnchor": 175,
-  "startFloorRomY": 179,
-  "startYWorld": 0.125,
+  "startFloorRomY": 178,
+  "startXWorld": 12.6875,
+  "startYWorld": 0.09375,
   "exitRomX": 14820,
   "exitRomY": 205
 }

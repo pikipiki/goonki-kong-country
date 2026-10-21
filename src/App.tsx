@@ -12,6 +12,7 @@ import { ANIMAL_DESIGNS } from "./game/animals";
 import { ROM_JUNGLE } from "./game/originalJungle";
 import { ROM_CORAL } from "./game/originalCoral";
 import { ROM_REVERB } from "./game/originalReverb";
+import { ROM_MINE_CART } from "./game/originalMineCart";
 import { LEVELS } from "./game/levels";
 import { Controls, KEYBOARD } from "./game/input";
 import { AudioSystem } from "./game/audio";
@@ -20,6 +21,7 @@ import { Scene } from "./Scene";
 import { GameControls } from "./components/GameControls";
 
 const STORAGE = "goonk-country-v1";
+const MAP_LEVELS = [ROM_JUNGLE, ROM_REVERB, ROM_MINE_CART, ROM_CORAL, ...LEVELS.slice(4)];
 function Icon({
   name,
 }: {
@@ -258,7 +260,7 @@ export function App() {
     const coral =
       play === "coral" || play === "lagoon" || play === "3";
     const jungle = play === "jungle" || play === "0";
-    const reverb = play === "reverb" || play === "cave" || play === "1";
+    const reverb = play === "reverb" || play === "canyon" || play === "cave" || play === "1";
     const minecart =
       play === "minecart" || play === "mine-cart" || play === "cart" || play === "2";
     if (!coral && !jungle && !reverb && !minecart) return;
@@ -572,19 +574,17 @@ export function App() {
             <p className="panel-description">
               De la première feuille au dernier tonneau. Ensemble.
             </p>
-            <IslandMap selected={mapLevel} initial={game.levelId} unlocked={game.save.unlocked} onSelect={setMapLevel}/>
+            <IslandMap selected={mapLevel} initial={game.levelId} unlocked={LEVELS.length - 1} onSelect={setMapLevel}/>
             <button className="primary map-enter" onClick={() => start(mapLevel)}>
-              Entrer · {mapLevel === 0 ? ROM_JUNGLE.name : mapLevel === 1 ? ROM_REVERB.name : mapLevel === 3 ? ROM_CORAL.name : LEVELS[mapLevel].name}
+              Entrer · {MAP_LEVELS[mapLevel].name}
             </button>
-            <p className="save-note">Choisis une étape ouverte : Rose et Violette la rejoignent sur la carte.</p>
+            <p className="save-note">Toutes les étapes sont accessibles : Rose et Violette la rejoignent sur la carte.</p>
             <div className="level-grid">
-              {LEVELS.map((level, i) => {
-                const unlocked = i <= game.save.unlocked,
-                  best = game.save.best[i];
+              {MAP_LEVELS.map((level, i) => {
+                const best = game.save.best[i];
                 return (
                   <button
                     key={i}
-                    disabled={!unlocked}
                     className={`level-card biome-${level.biome} ${best ? "completed" : ""} ${mapLevel === i ? "map-selected" : ""}`}
                     aria-pressed={mapLevel === i}
                     onClick={() => setMapLevel(i)}
@@ -597,18 +597,16 @@ export function App() {
                         {["❋", "♧", "◇", "≈", "❄", "⌘", "♜"][i]}
                       </span>
                       <span className="level-lock">
-                        {!unlocked
-                          ? "Verrouillé"
-                          : best
+                        {best
                             ? "✓ Exploré"
                             : "À découvrir"}
                       </span>
                     </div>
                     <span className="level-region">{level.subtitle}</span>
-                    <strong>{i===0?ROM_JUNGLE.name:i===1?ROM_REVERB.name:i===3?ROM_CORAL.name:level.name}</strong>
+                    <strong>{level.name}</strong>
                     <small>
                       {best
-                        ? `${best.letters}/${i===0?4:5} lettres · ${Math.floor(best.time)} s`
+                        ? `${best.letters}/${level.letterWord?.length ?? 5} lettres · ${Math.floor(best.time)} s`
                         : "Le voyage vous attend"}
                     </small>
                   </button>
@@ -666,7 +664,7 @@ export function App() {
                 <div>
                   <strong>
                     {game.letters.size}
-                    <small>/5</small>
+                    <small>/{game.letterWord.length}</small>
                   </strong>
                   <span>LETTRES</span>
                 </div>

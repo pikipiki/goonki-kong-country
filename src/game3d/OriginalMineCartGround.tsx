@@ -14,7 +14,7 @@ import { ORIGINAL_MINE_CART_TERRAIN, terrainCellSNES } from "../game/originalMin
 import { ORIGINAL_MINE_CART_ORIGIN } from "../game/originalMineCart";
 
 const CHUNK_COLUMNS = 16;
-const STRIP_PIXELS = 2;
+const STRIP_PIXELS = 1;
 const FRONT = 1.6;
 const BACK = -1.6;
 const COLUMN_COUNT = Math.ceil(ORIGINAL_MINE_CART_TERRAIN.widthPixels / 32);
@@ -46,7 +46,7 @@ export function createMineCartGroundGeometry(firstColumn: number, columnCount = 
     for (let row = 15; row >= 0; row--) {
       const left = terrainCellSNES(px, row);
       const right = terrainCellSNES(px + STRIP_PIXELS - 1, row);
-      if (!left && !right) continue;
+      if ((left?.localHeight ?? 0) <= 0 && (right?.localHeight ?? 0) <= 0) continue;
       const bottom = (15 - row) * 32;
       const l = left?.floorY ?? bottom;
       const r = right?.floorY ?? bottom;
@@ -61,6 +61,14 @@ export function createMineCartGroundGeometry(firstColumn: number, columnCount = 
       const y0 = (span.bottom - oy) / scale;
       const yl = (span.left - oy) / scale;
       const yr = (span.right - oy) / scale;
+      const x0 = wx-STRIP_PIXELS/scale/2, x1 = wx+STRIP_PIXELS/scale/2;
+      for(const railZ of [-0.8,0.8]) {
+        quad([[x0,yl+.035,railZ+.045],[x1,yr+.035,railZ+.045],[x1,yr+.035,railZ-.045],[x0,yl+.035,railZ-.045]], "#9b9e93", 0);
+      }
+
+      quad([[x0,yl,FRONT],[x1,yr,FRONT],[x1,yr,BACK],[x0,yl,BACK]], "#795a36", px);
+      quad([[x0,y0,BACK],[x1,y0,BACK],[x1,y0,FRONT],[x0,y0,FRONT]], "#302b27", px);
+
       quad(
         [
           [wx - STRIP_PIXELS / scale / 2, y0, FRONT],

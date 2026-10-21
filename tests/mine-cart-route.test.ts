@@ -15,7 +15,7 @@ describe("ROM Mine Cart Carnage route", () => {
     const game = new Game();
     game.start(2, true);
     game.enemies = [];
-    expect(game.player.x).toBe(0);
+    expect(game.player.x).toBe(startMeta.startXWorld);
     expect(game.player.y).toBeCloseTo(startMeta.startYWorld, 3);
     const input = emptyInput();
     input.held.add("right");

@@ -1,10 +1,9 @@
 {
   "romWorldX": 25472,
   "yAnchor": 175,
-  "startFloorRomY": 119,
-  "startYWorld": -1.75,
-  "flatWalkRomX": 25648,
+  "startFloorRomY": 230,
+  "startYWorld": 1.71875,
+  "flatWalkRomX": 25936,
   "flatWalkFloorRomY": 175,
-  "flatWalkWorldX": 5.5,
-  "note": "World x=0 aligns SNES x=25472 (first spawn band). startYWorld from caveCollisionSurfaceSamples, not DK intro y=175."
+  "flatWalkWorldX": 14.5
 }

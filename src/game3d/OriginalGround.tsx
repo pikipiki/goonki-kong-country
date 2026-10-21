@@ -4,11 +4,11 @@ import { BufferGeometry, CanvasTexture, Color, Float32BufferAttribute, Group, Re
 import type { Game } from '../game/engine';
 import { ORIGINAL_TERRAIN, terrainCellSNES } from '../game/originalTerrain';
 import { ORIGINAL_JUNGLE_ORIGIN } from '../game/originalJungle';
-const CHUNK_COLUMNS = 16, STRIP_PIXELS = 2, FRONT = 1.6, BACK = -1.6;
+const CHUNK_COLUMNS = 16, STRIP_PIXELS = 1, FRONT = 1.6, BACK = -1.6;
 function noise(seed:number) { const n=Math.sin(seed*127.1+311.7)*43758.5453; return n-Math.floor(n); }
 /** Render the union of every solid metatile segment, keeping stacked shelves,
  * overhangs and tunnels. Never reduce a column to its maximum floor height.
- * Two original pixels per visual strip; physics retains the 1px profiles.
+ * One original pixel per strip, matching the collision profiles.
  */
 export function createOriginalGroundGeometry(firstColumn:number,columnCount=CHUNK_COLUMNS) {
   const positions:number[]=[], uvs:number[]=[], colors:number[]=[];
@@ -24,7 +24,7 @@ export function createOriginalGroundGeometry(firstColumn:number,columnCount=CHUN
     const intervals:{bottom:number;left:number;right:number}[]=[];
     for(let row=15;row>=0;row--) {
       const left=terrainCellSNES(px,row), right=terrainCellSNES(px+STRIP_PIXELS-1,row);
-      if(!left&&!right)continue;
+      if((left?.localHeight??0)<=0 && (right?.localHeight??0)<=0)continue;
       const bottom=(15-row)*32, l=left?.floorY??bottom, r=right?.floorY??bottom,
         previous=intervals[intervals.length-1];
       if(previous && bottom<=Math.min(previous.left,previous.right)+1) {
@@ -37,11 +37,29 @@ export function createOriginalGroundGeometry(firstColumn:number,columnCount=CHUN
         yl=(span.left-ORIGINAL_JUNGLE_ORIGIN.y)/32,
         yr=(span.right-ORIGINAL_JUNGLE_ORIGIN.y)/32,
         seed=Math.floor(px/12)+i*19;
-      // Per-strip tint is stable and earthy; the top remains readable moss.
-      quad([[x0,y0,FRONT],[x1,y0,FRONT],[x1,yr,FRONT],[x0,yl,FRONT]],'#776046',seed);
-      quad([[x1,y0,BACK],[x0,y0,BACK],[x0,yl,BACK],[x1,yr,BACK]],'#504733',seed);
-      quad([[x0,yl,FRONT],[x1,yr,FRONT],[x1,yr,BACK],[x0,yl,BACK]],'#657c32',seed+3);
+      // The lowest shelf is backed by a recessed cliff, so cropped ROM
+      // collision cells do not look like unrelated cubes hanging in space.
+      // This backing is behind the playable slab, never in the actor corridor.
+      if(i===0 && y0>-10) {
+        const cliffZ=-1.8, base=-12;
+        quad([[x0,base,cliffZ],[x1,base,cliffZ],[x1,y0,cliffZ],[x0,y0,cliffZ]],'#3f382b',Math.floor(px/96));
+        quad([[x0,y0,cliffZ],[x1,y0,cliffZ],[x1,y0,BACK],[x0,y0,BACK]],'#4a3f2b',Math.floor(px/96));
+      }
+      const branch=y0>1 && yl>3;
+      quad([[x0,y0,FRONT],[x1,y0,FRONT],[x1,yr,FRONT],[x0,yl,FRONT]],branch?'#674b2e':yl<-.5?'#473d30':'#776046',Math.floor(px/96)+i*19);
+      quad([[x1,y0,BACK],[x0,y0,BACK],[x0,yl,BACK],[x1,yr,BACK]],branch?'#493923':'#504733',Math.floor(px/96)+i*19);
+      quad([[x0,yl,FRONT],[x1,yr,FRONT],[x1,yr,BACK],[x0,yl,BACK]],branch?'#8b7842':yl<-.5?'#544732':'#657c32',Math.floor(px/96)+i*19+3);
       quad([[x0,y0,BACK],[x1,y0,BACK],[x1,y0,FRONT],[x0,y0,FRONT]],'#392e23',seed);
+      if(branch && px%128===0) {
+        const lower=i>0?(intervals[i-1].left-ORIGINAL_JUNGLE_ORIGIN.y)/32:-1;
+        const trunkZ=-1.85, radius=.24;
+        for(let side=0;side<8;side++) {
+          const a=side*Math.PI/4,b=(side+1)*Math.PI/4;
+          const xa=x0+Math.cos(a)*radius,za=trunkZ+Math.sin(a)*radius;
+          const xb=x0+Math.cos(b)*radius,zb=trunkZ+Math.sin(b)*radius;
+          quad([[xa,lower,za],[xb,lower,zb],[xb,y0+.08,zb],[xa,y0+.08,za]],'#5d472d',side);
+        }
+      }
       // End caps retain finite ledge silhouettes at each depth interval. The
       // neighbouring strips share edges; extra interior caps are avoided.
       if(px===firstColumn*32)quad([[x0,y0,BACK],[x0,y0,FRONT],[x0,yl,FRONT],[x0,yl,BACK]],'#564531',seed);
