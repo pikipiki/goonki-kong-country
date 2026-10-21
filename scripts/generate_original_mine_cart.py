@@ -217,11 +217,11 @@ export const ROM_MINE_CART: Level & {
   originalTerrain: "mineCart"; start: {x:number;y:number}; letterWord: "KONG";
 } = {
   id: 2,
-  name: "Mine Cart Carnage",
-  subtitle: "MONKEY MINES · CART · USA REV 2",
+  name: "Mine Cart Madness",
+  subtitle: "LES MINES · WAGONS",
   biome: "mine",
   originalTerrain: "mineCart",
-  start: {x:0,y:@@START_Y@@},
+  start: {x:@@START_X@@,y:@@START_Y@@},
   letterWord: "KONG",
   length: ORIGINAL_MINE_CART_EXIT.x + 2,
   platforms: presentationPlatforms(),
@@ -231,7 +231,7 @@ export const ROM_MINE_CART: Level & {
   animals: ANIMALS,
   decors,
   finishZone,
-  tip: "Tracé wagon issu du ROM. Maintiens la direction pour rester sur les rails. Les quatre lettres sont K O N G.",
+  tip: "Saute pour franchir les trous. Surveille les rails et les ennemis.",
 };
 export const ORIGINAL_MINE_CART_PROVENANCE = __PROVENANCE__ as const;
 '''
@@ -255,6 +255,7 @@ for key, value in [
 s = (
     s.replace("CART_COLUMN_COUNT", str(CART_COLUMNS))
     .replace("@@START_Y@@", str(START_Y_WORLD))
+    .replace("@@START_X@@", str(_start["startXWorld"]))
     .replace("@@ROM_X@@", str(ROM_WORLD_X))
     .replace("@@Y_ANCHOR@@", str(Y_ANCHOR))
     .replace("@@EXIT_X@@", str(EXIT_X))

@@ -26,10 +26,11 @@ export function ContactShadows({ game }: { game: Game }) {
     const list = [game.player, game.companion, ...enemies];
     for (let i = 0; i < count; i++) {
       const actor = list[i];
-      let floor = -9;
+      let floor = game.level.originalTerrain ? game.supportAt(actor.x,actor.y,.2) ?? -9 : -9;
       for (const platform of game.level.platforms) {
         const top = game.surface(platform);
         if (
+          !game.level.originalTerrain &&
           Math.abs(actor.x - platform.x) < platform.w / 2 &&
           top <= actor.y + 0.2
         )

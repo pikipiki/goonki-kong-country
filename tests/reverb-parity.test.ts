@@ -26,6 +26,10 @@ describe("Reverb Cave walk parity", () => {
     const input = emptyInput();
     input.held.add("right");
     for (let i = 0; i < 18; i++) game.update(input);
+    // The mesh has a 0.75-unit ledge at the entry: jump over it rather
+    // than silently teleporting up through its face.
+    input.held.add("jump"); input.pressed.add("jump");
+    for (let i = 0; i < 25; i++) game.update(input);
     expect(game.player.x).toBeGreaterThan(0.4);
   });
 

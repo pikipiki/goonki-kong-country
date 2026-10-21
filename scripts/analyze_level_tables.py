@@ -177,11 +177,11 @@ def main():
                              'collisionClass':attr,'rowFromTop':row})
         return surfaces
     jungle_surfaces=lambda x: env_surfaces(x,jungle_base,collision,jungle_tile_max)
-    cave_attr_base=collision+jungle_tile_max*2
+    cave_attr_base=u24(env+0x70+3)&0x3fffff
     cave_surfaces=lambda x: env_surfaces(x,cave_base,cave_attr_base,cave_tile_max)
-    mine_cart_base=u24(env+9*3)&0x3fffff
-    mine_cart_tile_max=u16(count_table+9*2)
-    mine_cart_attr_base=collision+sum(u16(count_table+j*2) for j in range(9))*2
+    mine_cart_base=u24(env+2*3)&0x3fffff
+    mine_cart_tile_max=u16(count_table+2*2)
+    mine_cart_attr_base=u24(env+0x70+2*3)&0x3fffff
     mine_cart_surfaces=lambda x: env_surfaces(x,mine_cart_base,mine_cart_attr_base,mine_cart_tile_max)
     selected={'JungleHijinxs':0x16,'JungleCheckpoint':0x25,'ReverbCave':0x17,'ReverbCheckpoint':0x19,'CoralCapers':0xbf,'CoralCheckpoint':0xc0,
               'MineCartCarnage':0x27,'MineCartCheckpoint':0x3b}
@@ -200,19 +200,29 @@ def main():
     cart_x_end=((max(cart_xs)//32)+8)*32
     cart_columns=[[u16(mine_cart_base+x*32+y*2) for y in range(16)] for x in range(cart_x_end//32)]
     cart_surface_samples=[{'x':x,'surfaces':mine_cart_surfaces(x)} for x in range(0,cart_x_end,8)]
+    canyon_columns=[[u16(jungle_base+x*32+y*2) for y in range(16)] for x in range(cave_x_end//32)]
+    canyon_samples=[{'x':x,'surfaces':jungle_surfaces(x)} for x in range(0,cave_x_end,8)]
+    route_envs={}
+    for label,entry,expected in [('BarrelCannonCanyon',0x17,0),('MinecartMadness',0x27,2),('CoralCapers',0xbf,5)]:
+        routine=(dispatcher&0xff0000)+u16(dispatcher+0x1e+entry*2)
+        target=(routine&0xff0000)+u16(routine+1) if rom[routine]==0x20 else routine
+        pattern=bytes([0xa9,expected,0,0x22,0x66,0x8c,0x81])
+        offset=rom.find(pattern,target,target+80)
+        assert offset>=0, (label,hx(target))
+        route_envs[label]={'entranceId':entry,'environmentId':expected,'entryRoutine':hx(routine),'setEnvironment':evidence(offset,len(pattern))}
     output={'romSha256':sha,'method':'Unique table signatures in actual Rev2 bytes, bounded typed record decoding and arithmetic-only collision height routine evaluation.',
       'navigationSource':'https://github.com/Yoshifanatic1/Donkey-Kong-Country-1-Disassembly',
       'evidence':{'environmentPointers':evidence(env,42),'entranceLevelIds':evidence(entrance,24),'bananaRelativePointers':evidence(bananas,20),'bananaShapeRelativePointers':evidence(formation_shapes,16),'bananaShapePointerLoader':evidence(shape_loader,19),'entranceSpawnPointers':evidence(spawns,18),'environmentDispatcher':evidence(dispatcher,30),'collisionFunctionPointers':evidence(shape,18),'jungleCollisionAttributes':evidence(collision,24),'horizontalCollisionAddressing':evidence(collision_logic,26)},
-      'environmentData':[{'environmentId':i,'name':name,'dataPointer':f'${u24(env+i*3):06X}','collisionTileCount':u16(count_table+i*2)} for i,name in enumerate(ENVIRONMENTS)],
+      'environmentData':[{'environmentId':i,'name':name,'dataPointer':f'${u24(env+i*3):06X}','collisionTileCount':u16(count_table+i*2),'collisionAttributePointer':f'${u24(env+0x70+i*3):06X}'} for i,name in enumerate(ENVIRONMENTS)],
       'entranceToLevelId':list(rom[entrance:entrance+230]),
-      'levels':levels,'collisionShapeSamples':shape_samples,
+      'levels':levels,'routeEnvironmentEvidence':route_envs,'canyonMetatiles':{'fileOffset':hx(jungle_base),'columns':canyon_columns},'canyonCollisionSurfaceSamples':{'samples':canyon_samples},'collisionShapeSamples':shape_samples,
       'jungleCollisionAttributePairs':[[rom[collision+i*2],rom[collision+i*2+1]] for i in range(jungle_tile_max)],
       'caveCollisionAttributePairs':[[rom[cave_attr_base+i*2],rom[cave_attr_base+i*2+1]] for i in range(cave_tile_max)],
       'jungleMetatiles':{'fileOffset':hx(jungle_base),'tileSizePixels':32,'rowsPerColumn':16,'storageOrder':'column-major, row0 top, row15 bottom','columns':[[u16(jungle_base+x*32+y*2) for y in range(16)] for x in range(169)]},
       'caveMetatiles':{'fileOffset':hx(cave_base),'tileSizePixels':32,'rowsPerColumn':16,'storageOrder':'column-major, row0 top, row15 bottom','columns':cave_columns},
-      'mineCartMetatiles':{'fileOffset':hx(mine_cart_base),'environmentId':9,'tileSizePixels':32,'rowsPerColumn':16,'storageOrder':'column-major, row0 top, row15 bottom','columns':cart_columns},
+      'mineCartMetatiles':{'fileOffset':hx(mine_cart_base),'environmentId':2,'tileSizePixels':32,'rowsPerColumn':16,'storageOrder':'column-major, row0 top, row15 bottom','columns':cart_columns},
       'mineCartCollisionAttributePairs':[[rom[mine_cart_attr_base+i*2],rom[mine_cart_attr_base+i*2+1]] for i in range(mine_cart_tile_max)],
-      'mineCartCollisionSurfaceSamples':{'sampleSpacingPixels':8,'xEndExclusive':cart_x_end,'coordinateSystem':'SNES sprite world X right; Y up from the 512px-high horizontal level floor. Mine cart environment ($E60D88) with mine-cart collision slice.','samples':cart_surface_samples},
+      'mineCartCollisionSurfaceSamples':{'sampleSpacingPixels':8,'xEndExclusive':cart_x_end,'coordinateSystem':'SNES sprite world X right; Y up from the 512px-high horizontal level floor. Walkway environment ($CB0000) with its explicit $F00000 collision attributes (entrance $27).','samples':cart_surface_samples},
       'underwaterMetatiles':{'fileOffset':hx(underwater_base),'tileSizePixels':32,'rowsPerColumn':16,'marineLevelOriginY':17960,'storageOrder':'column-major, row0 top, row15 bottom','columns':[[u16(underwater_base+x*32+y*2) for y in range(16)] for x in range(200)]},
       'jungleCollisionSurfaceSamples':{'sampleSpacingPixels':8,'xEndExclusive':0x1520,'coordinateSystem':'SNES sprite world X right; Y up from the 512px-high horizontal level floor. Per-metatile candidate tops, including interior solid tiles; NOT a single flattened walkable ground height.','samples':surfaces},
       'caveCollisionSurfaceSamples':{'sampleSpacingPixels':8,'xEndExclusive':cave_x_end,'coordinateSystem':'SNES sprite world X right; Y up from the 512px-high horizontal level floor. Cave environment ($DA0000) with cave collision attribute slice.','samples':cave_surface_samples},

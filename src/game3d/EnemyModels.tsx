@@ -15,7 +15,7 @@ import {
   DoubleSide,
 } from "three";
 import { ENEMY_DESIGNS } from "../game/enemies";
-import { enemyVisibleToCamera, type Enemy, type Game } from "../game/engine";
+import { enemyRenderVisible, type Enemy, type Game } from "../game/engine";
 
 const shapes = {
   round: new SphereGeometry(1, 18, 12),
@@ -429,9 +429,7 @@ export function EnemyModel({
     const t = clock.elapsedTime;
     if (root.current) {
       if (!preview) root.current.position.set(enemy.x, enemy.y, 0);
-      root.current.visible =
-        preview || (!game ? enemy.alive : enemyVisibleToCamera(game, enemy));
-      if (enemy.hurt > 0) root.current.visible = Math.sin(t * 32) > -0.25;
+      root.current.visible = enemyRenderVisible(enemy, t, game, preview);
     }
     if (body.current) {
       body.current.rotation.y = enemy.vx < 0 ? Math.PI - 0.18 : 0.18;
@@ -448,7 +446,7 @@ export function EnemyModel({
     });
   });
   return (
-    <group ref={root} dispose={null}>
+    <group ref={root} dispose={null} name="enemy" userData={{ enemy }}>
       <group ref={body}>
         {enemy.kind === "bee" ? (
           <Zinger wings={wings} />

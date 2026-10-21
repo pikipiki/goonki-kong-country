@@ -1,3 +1,5 @@
+> Mise à jour prioritaire du 21 octobre 2026 : les anciens repères et noms ci-dessous peuvent être obsolètes. Lire `decor-import-fixes.md` et le haut de `CLAUDE_HANDOFF.md` : pointeurs d’attributs explicites, Canyon Jungle, Minecart Madness Walkway et véritable carte marine à échelle uniforme.
+
 # Données de niveaux originales — USA Rev 2
 
 Murs bonus Jungle : champs `$1375` / `$13E9` exportés dans `reference/jungle-bonus-walls.json` (`npm run analyze:jungle-bonus`). Capture NutThrowingNecky : voir `reference/jungle-necky-probe.md`. Fosse / rebord SNES x≈454 (métatuiles plates mais chute en jeu) : `reference/jungle-walk-pit.md`.

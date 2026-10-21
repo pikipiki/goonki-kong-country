@@ -9,7 +9,7 @@ Y_ANCHOR = 175
 def main() -> dict:
     base = Path(__file__).resolve().parents[1]
     tables = json.loads((base / "reference/level-tables.json").read_text())
-    samples = tables["caveCollisionSurfaceSamples"]["samples"]
+    samples = tables["canyonCollisionSurfaceSamples"]["samples"]
     by_x = {s["x"]: s["surfaces"] for s in samples}
     px = ROM_WORLD_X
     surfaces = by_x.get(px) or by_x.get(px - 8) or by_x.get(px + 8)

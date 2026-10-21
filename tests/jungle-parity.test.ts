@@ -44,21 +44,16 @@ describe("jungle ROM walk parity fixture", () => {
     }
   });
 
-  it("blocks then drops at the upper walkway lip (SNES x≈454)", () => {
+  it("walks across the rendered lip instead of falling through a synthetic hole", () => {
     const game = isolatedJungleGame();
     const lip = jungleOmitted.runtimePit.webLedgeEndX;
-    game.player.x = lip - 0.02;
-    game.player.y = 0;
-    game.player.grounded = true;
-    game.player.vy = 0;
-    const input = emptyInput();
-    input.held.add("right");
-    for (let i = 0; i < 50; i++) game.update(input);
-    expect(game.player.x).toBeLessThanOrEqual(lip + 0.02);
-    expect(game.junglePitLedgeHold).toBeGreaterThanOrEqual(44);
-    for (let i = 0; i < 90; i++) game.update(input);
-    expect(game.player.y).toBeLessThan(jungleOmitted.runtimePit.webUpperBandY - 0.08);
-    expect(game.player.x).toBeGreaterThan(4);
+    game.player.x = lip - 0.02; game.player.y = 0;
+    game.player.grounded = true; game.player.vy = 0;
+    const input = emptyInput(); input.held.add("right");
+    for(let i=0;i<50;i++) game.update(input);
+    expect(game.player.x).toBeGreaterThan(lip+1);
+    expect(game.player.y).toBeGreaterThan(-0.5);
+    expect(game.lives).toBe(5);
   });
 
   it("maps original jungle floor height to SNES ground samples along the walk", () => {

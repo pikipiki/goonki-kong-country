@@ -5,10 +5,10 @@ from pathlib import Path
 base = Path(__file__).resolve().parents[1]
 r = json.loads((base / "reference/level-tables.json").read_text())
 compact = lambda v: json.dumps(v, separators=(",", ":"))
-header = """/** Original Mine Cart Carnage collision metadata, extracted read-only from USA Rev2.
+header = """/** Mine Cart Madness collision metadata, extracted read-only from USA Rev2.
  * SHA256: 628147468c3539283197f58f03b94df49758a332831857481ea9cc31645f0527
  * Reproduce: python3 scripts/analyze_level_tables.py && python3 scripts/generate_original_mine_cart_terrain.py
- * Mine cart environment $E60D88; collision attributes are the mine-cart slice (78 classes).
+ * Walkway environment $CB0000; 121 attributes at $F00000. Entrance $27 sets environment 2.
  */
 """
 jungle_ts = (base / "src/game/originalTerrain.ts").read_text()
@@ -28,6 +28,7 @@ out = (
     + ";\n"
     + body
 )
+out = out.replace("pixelsPerWorldUnit: 32,", "pixelsPerWorldUnit: 32, environmentId: 2,")
 out = out.replace(
     "  const torsoPy = (footWorld + 1) * scale + origin.y;\n"
     "  const aheadFeet = probeSNES(edgePx, feetPy);\n"

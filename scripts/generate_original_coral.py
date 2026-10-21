@@ -19,8 +19,7 @@ CORAL_FISH = {
 
 
 def scale_y(y: int) -> float:
-    t = (y - Y_MIN) / Y_SPAN
-    return 5.5 - t * 5
+    return (y - 17952) / 32
 
 
 def point(x: int, y: int) -> dict:
@@ -149,8 +148,8 @@ s = """import type { Level, Pickup, Platform, LevelDecor } from "./levels";
 export const ORIGINAL_CORAL_ORIGIN = Object.freeze({ x: 0, y: Y_ANCHOR });
 export const ORIGINAL_CORAL_EXIT = Object.freeze({ x: EXIT_X / 32, y: @@EXIT_Y_WEB@@ });
 /** Depth band limits: keep in sync with reference/underwater-motion.json */
-export const CORAL_WATER_SURFACE_Y = 5.48;
-export const CORAL_WATER_FLOOR_Y = 0.35;
+export const CORAL_WATER_SURFACE_Y = 53.9;
+export const CORAL_WATER_FLOOR_Y = -0.9;
 
 type OriginalPickup = Pickup & { amount?: number };
 
@@ -165,7 +164,7 @@ export const ROM_CORAL: Level & {
 } = {
   id: 3,
   name: "Coral Capers",
-  subtitle: "KONGO JUNGLE · AQUATIC REV 2",
+  subtitle: "KONGO JUNGLE · LAGON",
   biome: "lagoon",
   originalTerrain: "coral",
   start: { x: START_X, y: START_Y },
@@ -178,7 +177,7 @@ export const ROM_CORAL: Level & {
   animals: ANIMALS,
   decors: DECORS,
   finishZone,
-  tip: "Placements issus du ROM. Nage avec Espace, Action pour le rostre d'Enguarde. Sortie UnderwaterExitDoor @ x=2024.",
+  tip: "Nage dans toutes les directions. Libère Enguarde et utilise Action pour son rostre.",
 };
 
 export const ORIGINAL_CORAL_PROVENANCE = __PROVENANCE__ as const;
@@ -187,7 +186,7 @@ export const ORIGINAL_CORAL_PROVENANCE = __PROVENANCE__ as const;
 
 start_x, start_y = 416 / 32, scale_y(17976)
 replacements = {
-    "Y_ANCHOR": str(Y_MIN),
+    "Y_ANCHOR": "17952",
     "Y_MIN": str(Y_MIN),
     "Y_SPAN": str(Y_SPAN),
     "EXIT_X": str(EXIT_X),
@@ -207,8 +206,8 @@ replacements = {
             "romSha256": r["romSha256"],
             "imported": imported,
             "omitted": omissions,
-            "yMapping": "Linear map from verified spawn Y 17960..19632 to web depth 5.5..0.5; not full marine collision decode.",
-            "platforms": "Collision via originalCoralTerrain ROM metatiles; marine origin Y 17960.",
+            "yMapping": "32 ROM pixels per unit on both axes; positive ROM Y is up; origin 17952.",
+            "platforms": "Collision via originalCoralTerrain ROM metatiles; marine origin Y 17952, row-major marine grid.",
         }
     ),
 }

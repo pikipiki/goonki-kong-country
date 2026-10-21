@@ -46,14 +46,15 @@ function Director({
     const cam = camera as OrthographicCamera;
     cam.zoom = layout.zoom;
     const depthFollow =
-      game.level.originalTerrain === "jungle" ||
-      game.level.originalTerrain === "coral";
+      Boolean(game.level.originalTerrain);
     const followY =
       depthFollow && Math.abs(game.player.y) > 1.2
         ? game.player.y - Math.sign(game.player.y) * 1.5
         : 0;
     const lookY=layout.lookY+followY;
     const cameraY = lookY + 2.25;
+    game.cameraBounds = { x:focus.current, y:lookY,
+      halfX:layout.worldWidth/2, halfY:layout.worldHeight/2+0.5 };
     cam.position.set(focus.current, cameraY, 22);
     cam.lookAt(focus.current, lookY, 0);
     cam.updateProjectionMatrix();
@@ -116,7 +117,7 @@ function ContextNotice() {
   }, [lost]);
   return null;
 }
-function RenderBudget() {
+function RenderBudget({ game }: { game: Game }) {
   const { gl, setDpr } = useThree(),
     samples = useRef({ count: 0, seconds: 0, window: 0 });
   useFrame((_, delta) => {
@@ -130,6 +131,8 @@ function RenderBudget() {
       Object.defineProperty(window, "goonkDiagnostics", {
         configurable: true,
         value: {
+          stageId: game.levelId,
+          sceneRevision: game.sceneRevision,
           fps: Math.round(fps),
           drawCalls: gl.info.render.calls,
           triangles: gl.info.render.triangles,
@@ -154,6 +157,7 @@ export function Scene({
 }) {
   return (
     <Canvas
+      onCreated={({ scene }) => Object.defineProperty(window, "goonkScene", { configurable: true, value: scene })}
       orthographic
       frameloop={
         game.phase === "playing" || game.phase === "title" ? "always" : "demand"
@@ -174,10 +178,10 @@ export function Scene({
     >
       <Director game={game} input={input} onTick={onTick} />
       <ContextNotice />
-      <RenderBudget />
-      <World key={`world-${game.levelId}-${game.originalRoute}`} game={game} level={game.level} />
+      <RenderBudget game={game} />
+      <World key={`world-${game.sceneRevision}`} game={game} level={game.level} />
       {game.phase !== "title" && (
-        <group key={`actors-${game.levelId}-${game.originalRoute}`}>
+        <group key={`actors-${game.sceneRevision}`}>
           <Actors game={game} />
           <Animals game={game} />
         </group>

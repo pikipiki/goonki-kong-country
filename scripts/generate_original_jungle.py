@@ -243,7 +243,7 @@ export const ROM_JUNGLE: Level & {
 } = {
   id: 0,
   name: "Jungle Hijinxs",
-  subtitle: "KONGO JUNGLE · USA REV 2",
+  subtitle: "KONGO JUNGLE",
   biome: "jungle",
   originalTerrain: "jungle",
   start: {x:156/32,y:0},
@@ -259,7 +259,7 @@ export const ROM_JUNGLE: Level & {
   bonusRooms,
   decors,
   finishZone,
-  tip: "Tracé et placements issus du ROM. Roule ou frappe les murs et caches. Les quatre lettres originales sont K O N G.",
+  tip: "Saute sur les ennemis, roule dans les caches et explore les passages secrets.",
 };
 export const ORIGINAL_JUNGLE_PROVENANCE = __PROVENANCE__ as const;
 '''

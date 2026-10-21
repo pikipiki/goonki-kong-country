@@ -3,30 +3,22 @@ import { ROM_JUNGLE, ORIGINAL_JUNGLE_ORIGIN } from "./originalJungle";
 import { ROM_CORAL } from "./originalCoral";
 import { ROM_REVERB, ORIGINAL_REVERB_ORIGIN } from "./originalReverb";
 import { ROM_MINE_CART, ORIGINAL_MINE_CART_ORIGIN } from "./originalMineCart";
-import { blocksHorizontalWorld, ceilingWorld, query as originalTerrain } from "./originalTerrain";
+import { query as originalTerrain } from "./originalTerrain";
 import {
-  blocksHorizontalWorld as blocksCaveHorizontalWorld,
-  ceilingWorld as ceilingCaveWorld,
   query as originalCaveTerrain,
 } from "./originalCaveTerrain";
 import {
-  blocksHorizontalWorld as blocksMineCartHorizontalWorld,
-  ceilingWorld as ceilingMineCartWorld,
   query as originalMineCartTerrain,
 } from "./originalMineCartTerrain";
 import { ORIGINAL_CORAL_ORIGIN } from "./originalCoral";
-import {
-  blocksCoralHorizontal,
-  ceilingCoralWorld,
-  queryCoral,
-} from "./originalCoralTerrain";
+import { queryCoral } from "./originalCoralTerrain";
+import { terrainSolidSpans, resolveCoralMotion, resolveLandMotion, nearestCoralOpenY } from "./terrainSolids";
 import { ENEMY_DESIGNS } from "./enemies";
 import { LEVELS, type EnemySpec, type Platform } from "./levels";
 import evidence from "../../reference/rom-analysis.json";
 import playerEvidence from "../../reference/player-states.json";
 import neckyEvidence from "../../reference/necky-ballistics.json";
 import underwaterMotion from "../../reference/underwater-motion.json";
-import jungleOmitted from "../../reference/jungle-omitted-spawns.json";
 
 export const STEP = 1 / 60;
 /** ROM tag swap: state 17 / anim 80 lasts ~25 frames at 60 Hz. */
@@ -66,8 +58,6 @@ const ROM_SWIM_RISE = underwaterMotion.verticalSwim.riseSpeedWorld;
 const ROM_SWIM_DIVE = underwaterMotion.verticalSwim.diveSpeedWorld;
 const CORAL_WATER_SURFACE_Y = underwaterMotion.depthBandWeb.surfaceY;
 const CORAL_WATER_FLOOR_Y = underwaterMotion.depthBandWeb.floorY;
-const JUNGLE_LEDGE_END_X = jungleOmitted.runtimePit.webLedgeEndX;
-const JUNGLE_UPPER_BAND_Y = jungleOmitted.runtimePit.webUpperBandY;
 const THROW_TARGET_VX = rawSpeed(THROW.horizontalTargetMagnitudeRaw);
 const rawAcceleration = (raw: number) => rawSpeed(raw) * 60;
 export type Key =
@@ -187,44 +177,32 @@ export const emptyInput = (): Input => ({
   released: new Set(),
 });
 
-/** Camera culling bands — lagoon uses a tight depth slice (side-view water column). */
-export function enemyViewportBand(game: Game) {
-  const lagoon = game.level.biome === "lagoon";
-  return {
-    halfX: lagoon ? 5.5 : 10.5,
-    halfY: lagoon ? 1.12 : 5.5,
-    simHalfX: lagoon ? 7.5 : 13,
-    simHalfY: lagoon ? 1.55 : 6.5,
-  };
-}
-
-function lagoonIntroBlocksEnemy(game: Game, enemy: Enemy) {
-  const start = game.level.start;
-  if (!start || game.level.biome !== "lagoon") return false;
-  const traveled = game.player.x - start.x;
-  if (traveled >= 3.5) return false;
-  if (Math.hypot(enemy.x - start.x, enemy.y - start.y) < 1) return true;
-  if (enemy.x > game.player.x + 0.6 && enemy.x < start.x + 10) return true;
-  if (traveled < 2 && Math.abs(enemy.y - start.y) > 0.45) return true;
-  return false;
+/** Padded for portrait, landscape, camera look-ahead and enemy body size.
+ * Activate before rendering, never hide an enemy already inside the play area. */
+export function enemyViewportBand(_game: Game) {
+  return { halfX: 28, halfY: 24, simHalfX: 36, simHalfY: 30 };
 }
 
 export function enemyVisibleToCamera(game: Game, enemy: Enemy, margin = 1) {
-  if (!enemy.alive || lagoonIntroBlocksEnemy(game, enemy)) return false;
-  const { halfX, halfY } = enemyViewportBand(game);
-  return (
-    Math.abs(enemy.x - game.player.x) <= halfX * margin &&
-    Math.abs(enemy.y - game.player.y) <= halfY * margin
-  );
+  if (!enemy.alive) return false;
+  const band = enemyViewportBand(game), bounds = game.cameraBounds;
+  const x = bounds?.x ?? game.player.x, y = bounds?.y ?? game.player.y;
+  return Math.abs(enemy.x-x) <= (bounds?.halfX ?? band.halfX)*margin+2 &&
+    Math.abs(enemy.y-y) <= (bounds?.halfY ?? band.halfY)*margin+3;
 }
 
 export function enemySimulationActive(game: Game, enemy: Enemy) {
-  if (!enemy.alive || lagoonIntroBlocksEnemy(game, enemy)) return false;
-  const { simHalfX, simHalfY } = enemyViewportBand(game);
-  return (
-    Math.abs(enemy.x - game.player.x) <= simHalfX &&
-    Math.abs(enemy.y - game.player.y) <= simHalfY
-  );
+  if (!enemy.alive) return false;
+  const band = enemyViewportBand(game), bounds = game.cameraBounds;
+  // Include the player too while the camera catches up after a respawn.
+  return enemyVisibleToCamera(game,enemy) ||
+    (Math.abs(enemy.x-game.player.x) <= (bounds?.halfX ?? band.simHalfX)+8 &&
+     Math.abs(enemy.y-game.player.y) <= (bounds?.halfY ?? band.simHalfY)+8);
+}
+/** Damage flashing must never override death or camera visibility. */
+export function enemyRenderVisible(enemy: Enemy, time: number, game?: Game, preview = false) {
+  return preview || (enemy.alive && (!game || enemyVisibleToCamera(game, enemy)) &&
+    (enemy.hurt <= 0 || Math.sin(time * 32) > -0.25));
 }
 const defaultSave = (): Save => ({ unlocked: 0, best: {} });
 export function readSave(text: string | null): Save {
@@ -253,6 +231,8 @@ export function readSave(text: string | null): Save {
 export class Game {
   phase: Phase = "title";
   levelId = 0;
+  sceneRevision = 0;
+  cameraBounds: { x:number; y:number; halfX:number; halfY:number } | null = null;
   originalRoute = false;
   lives = 5;
   bananas = 0;
@@ -278,9 +258,6 @@ export class Game {
   swap: TeamSwap | null = null;
   toast = "";
   toastTimer = 0;
-  /** Frames DK held against the x≈454 upper-walkway lip (SNES dk-walk-terrain 156–199). */
-  junglePitLedgeHold = 0;
-  junglePitFalling = false;
   save: Save;
   onEvent: (name: string) => void = () => {};
   onSave: (save: Save) => void = () => {};
@@ -313,7 +290,36 @@ export class Game {
     }
     return top;
   }
+  supportAt(x: number, feet: number, rise = 0.3) {
+    const surfaces = this.level.originalTerrain
+      ? terrainSolidSpans(this.level.originalTerrain, x).map(s => s.top)
+      : this.level.platforms.filter(p => Math.abs(x-p.x) < p.w/2).map(p => this.surface(p));
+    const below = surfaces.filter(y => y <= feet + rise);
+    return below.length ? Math.max(...below) : null;
+  }
+  private groundEnemy(enemy: Enemy, dt: number) {
+    const oldX = enemy.x, oldY = enemy.y;
+    const support = this.supportAt(oldX, oldY);
+    const onGround = support !== null && Math.abs(support-oldY) < 0.32;
+    const nextX = clamp(oldX + enemy.vx*dt, enemy.min, enemy.max);
+    const dir = Math.sign(enemy.vx);
+    const ahead = this.supportAt(nextX + dir * 0.45, oldY);
+    const wall = this.level.originalTerrain && terrainSolidSpans(this.level.originalTerrain, nextX + dir*0.45)
+      .some(s => s.bottom < oldY+0.65 && s.top > oldY+0.35);
+    if (nextX === enemy.min || nextX === enemy.max || (onGround && (ahead === null || ahead < oldY-0.45 || wall))) {
+      enemy.vx *= -1;
+    } else enemy.x = nextX;
+    const floor = this.supportAt(enemy.x, oldY);
+    enemy.vy = Math.max(-15, enemy.vy - 30*dt);
+    enemy.y += enemy.vy*dt;
+    if (floor !== null && enemy.y <= floor && (onGround || oldY >= floor-0.05)) {
+      enemy.y = floor; enemy.vy = 0;
+    }
+    if(enemy.y < -8) enemy.alive = false;
+  }
   load(id: number, phase: Phase = "playing") {
+    this.sceneRevision++;
+    this.cameraBounds = null;
     this.levelId = clamp(id, 0, LEVELS.length - 1);
     this.phase = phase;
     this.time = 0;
@@ -328,8 +334,9 @@ export class Game {
     this.particles = [];
     this.thrown = [];
     this.trail = [];
-    const floor = this.level.start?.y ?? this.level.platforms[0].y;
+    const sourceFloor = this.level.start?.y ?? this.level.platforms[0].y;
     const startX = this.level.start?.x ?? 3;
+    const floor = this.level.originalTerrain === "coral" ? nearestCoralOpenY(startX,sourceFloor) : sourceFloor;
     this.checkpoint = { x: startX, y: floor };
     this.player = {
       x: startX,
@@ -337,7 +344,7 @@ export class Game {
       vx: 0,
       vy: 0,
       facing: 1,
-      grounded: true,
+      grounded: this.level.biome !== "lagoon",
       active: 0,
       hp: 2,
       invincible: 0,
@@ -384,6 +391,22 @@ export class Game {
         : 0,
     };
     });
+    if(this.level.biome !== "lagoon") for(const enemy of this.enemies) {
+      if(enemy.kind === "bee" || enemy.kind === "boss" || enemy.pattern === "necky") continue;
+      const floor = this.supportAt(enemy.x, enemy.y, 0.5);
+      if(floor !== null) { enemy.y = floor; enemy.originY = floor; }
+    }
+    if(this.level.originalTerrain === "coral") {
+      for(const enemy of this.enemies) {
+        enemy.y = nearestCoralOpenY(enemy.x, enemy.y, ENEMY_DESIGNS[enemy.kind].height);
+        if(Math.abs(enemy.x-startX)<2 && Math.abs(enemy.y-floor)<1.6) {
+          enemy.x = clamp(startX+4, enemy.min, enemy.max);
+          enemy.y = nearestCoralOpenY(enemy.x,enemy.y,ENEMY_DESIGNS[enemy.kind].height);
+        }
+        enemy.originY = enemy.y;
+      }
+      for(const animal of this.animals) animal.y = nearestCoralOpenY(animal.x,animal.y,1.4);
+    }
     this.enemyShots = [];
     this.message(this.level.tip, 6);
   }
@@ -564,6 +587,7 @@ export class Game {
     buddy.vx = flee ? p.facing * 6 : 0; buddy.vy = flee ? 4 : 0;
     buddy.timer = 0;
     p.y += ANIMAL_DESIGNS[buddy.kind].seat;
+    if(this.level.originalTerrain === "coral") p.y=nearestCoralOpenY(p.x,p.y);
     p.vy = this.level.biome === "lagoon" ? 0 : 9;
     p.grounded = false; p.coyote = 0; p.buffer = 0;
     p.mount = -1; p.mountAttack = 0; p.mountCooldown = 0.55;
@@ -597,7 +621,9 @@ export class Game {
     }
     Object.assign(p, {
       x: this.checkpoint.x,
-      y: this.checkpoint.y,
+      y: this.level.originalTerrain === "coral" ? nearestCoralOpenY(this.checkpoint.x,this.checkpoint.y) : this.checkpoint.y,
+      grounded: this.level.biome !== "lagoon",
+      buffer: 0, coyote: 0,
       vx: 0,
       vy: 0,
       hp: 1,
@@ -636,17 +662,29 @@ export class Game {
         a.x = p.x; a.y = p.y; a.facing = p.facing; a.vx = p.vx;
         return;
       }
-      if (a.state === "fleeing") {
-        const lastY = a.y;
-        a.x += a.vx * dt;
-        if (!water) { a.vy -= 28 * dt; a.y += a.vy * dt; }
-        else a.y += Math.sin(a.timer * 5) * dt;
-        for (const platform of this.level.platforms) {
-          const top = this.surface(platform);
-          if (a.x > platform.x - platform.w / 2 && a.x < platform.x + platform.w / 2 &&
-            a.vy <= 0 && lastY >= top - 0.2 && a.y <= top) { a.y = top; a.vy = 0; }
+      if (a.state === "fleeing" || a.state === "idle") {
+        const lastX=a.x, lastY=a.y;
+        if(a.state === "fleeing") a.x += a.vx*dt;
+        if(!water) {
+          a.vy-=28*dt; a.y+=a.vy*dt;
+          if(this.level.originalTerrain) {
+            const floor=this.supportAt(lastX,lastY,.2);
+            const contact=resolveLandMotion(this.level.originalTerrain,lastX,lastY,a.x,a.y,floor!==null&&Math.abs(floor-lastY)<.2,a.vy);
+            a.x=contact.x;a.y=contact.y;
+            if(contact.blockedY)a.vy=0;
+            if(contact.blockedX)a.vx*=-1;
+          } else {
+            const floor=this.supportAt(a.x,lastY,.2);
+            if(floor!==null && a.vy<=0 && a.y<=floor && lastY>=floor-.2) {a.y=floor;a.vy=0;}
+          }
+        } else if(a.state === "fleeing") {
+          a.y+=Math.sin(a.timer*5)*dt;
+          if(this.level.originalTerrain === "coral") {
+            const contact=resolveCoralMotion(lastX,lastY,a.x,a.y);
+            a.x=contact.x;a.y=contact.y;
+          }
         }
-        if (a.timer > 1.25) { a.state = "idle"; a.vx = 0; }
+        if(a.state === "fleeing" && a.timer>1.25) {a.state="idle";a.vx=0;}
       }
       if (a.state === "crate") {
         if (Math.abs(p.x - a.x) < 0.9 && Math.abs(p.y - a.y) < 1.35 &&
@@ -659,7 +697,9 @@ export class Game {
       if (Math.abs(p.x - a.x) < ANIMAL_DESIGNS[a.kind].width &&
         (water ? Math.abs(p.y - a.y) < 1.2 : descending)) {
         a.state = "ridden"; a.timer = 0;
-        p.mount = i; p.y = a.y; p.vy = 0; p.grounded = !water;
+        p.mount = i;
+        p.y = this.level.originalTerrain === "coral" ? nearestCoralOpenY(a.x,a.y,seat+1.3) : a.y;
+        a.y=p.y; p.vy = 0; p.grounded = !water;
         p.roll = 0; p.rollJump = false; p.carry = -1; p.coyote = 0;
         this.onEvent("mount");
         this.message(`${ANIMAL_DESIGNS[a.kind].name} ! ${a.kind === "winky" ? "Sauter pour bondir très haut." : a.kind === "expresso" ? "Maintiens le saut en l’air pour planer." : a.kind === "enguarde" ? "Action : coup de rostre. Joystick : nager." : "Course et corne pour repousser les ennemis."}`, 5);
@@ -946,7 +986,7 @@ export class Game {
     p.x = clamp(p.x + p.vx * dt, -2, this.level.length + 1);
     if (this.level.breakableWalls?.length) this.resolveBreakableWalls(p, oldX);
     if (this.originalRoute) {
-      const minX = (this.level.start?.x ?? 4) - 0.35;
+      const minX = 0;
       if (p.x < minX) {
         p.x = minX;
         p.vx = Math.max(0, p.vx);
@@ -963,202 +1003,20 @@ export class Game {
       p.y = 6;
       p.vy = Math.min(0, p.vy);
     }
-    if (this.level.originalTerrain === "jungle") {
-      const dir = p.x > oldX ? 1 : p.x < oldX ? -1 : 0;
-      if (dir && blocksHorizontalWorld(oldX, p.y, dir, ORIGINAL_JUNGLE_ORIGIN)) {
-        p.x = oldX;
-        p.vx = 0;
-      }
-      const onUpperWalk = p.y <= JUNGLE_UPPER_BAND_Y + 0.05;
-      const pitApproach =
-        onUpperWalk &&
-        input.held.has("right") &&
-        p.x >= JUNGLE_LEDGE_END_X - 0.025;
-      if (pitApproach) {
-        p.x = Math.min(p.x, JUNGLE_LEDGE_END_X);
-        p.vx = 0;
-      }
-      if (pitApproach) {
-        this.junglePitLedgeHold++;
-        if (this.junglePitLedgeHold >= 44) this.junglePitFalling = true;
-      } else if (!this.junglePitFalling) {
-        this.junglePitLedgeHold = 0;
-      }
-      let hit=originalTerrain(p.x,oldY+0.45,ORIGINAL_JUNGLE_ORIGIN);
-      if (
-        hit &&
-        this.junglePitFalling &&
-        p.y <= JUNGLE_UPPER_BAND_Y &&
-        p.x >= JUNGLE_LEDGE_END_X - 0.02
-      ) {
-        hit = null;
-      }
-      if (
-        this.junglePitFalling &&
-        hit &&
-        hit.floorY < JUNGLE_UPPER_BAND_Y - 0.42
-      ) {
-        this.junglePitFalling = false;
-        this.junglePitLedgeHold = 0;
-      }
-      if(hit && p.vy<=0 && p.y<=hit.floorY && hit.floorY<=oldY+(wasGrounded?0.45:0.12)) {
-        p.y=hit.floorY; p.vy=0; p.grounded=true;
-      } else if(hit && wasGrounded && hit.floorY>oldY+0.45) {p.x=oldX;p.vx=0;}
-      if (p.vy > 0) {
-        const head = 1.35;
-        const ceiling = ceilingWorld(p.x, p.y + head, ORIGINAL_JUNGLE_ORIGIN);
-        if (ceiling !== null && p.y + head >= ceiling - 0.05) {
-          p.y = ceiling - head;
-          p.vy = 0;
-        }
-      }
-    } else if (this.level.originalTerrain === "cave") {
-      const dir = p.x > oldX ? 1 : p.x < oldX ? -1 : 0;
-      if (dir && blocksCaveHorizontalWorld(oldX, p.y, dir, ORIGINAL_REVERB_ORIGIN)) {
-        p.x = oldX;
-        p.vx = 0;
-      }
-      const hit = originalCaveTerrain(p.x, oldY + 0.45, ORIGINAL_REVERB_ORIGIN);
-      if (
-        hit &&
-        p.vy <= 0 &&
-        p.y <= hit.floorY &&
-        hit.floorY <= oldY + (wasGrounded ? 0.45 : 0.12)
-      ) {
-        p.y = hit.floorY;
-        p.vy = 0;
-        p.grounded = true;
-      } else if (hit && wasGrounded && hit.floorY > oldY + 0.45) {
-        const ramp =
-          dir !== 0 &&
-          hit.floorY <= oldY + 1.35 &&
-          ((dir === 1 && p.vx > 0) || (dir === -1 && p.vx < 0));
-        if (ramp) {
-          p.y = hit.floorY;
-          p.vy = 0;
-          p.grounded = true;
-        } else {
-          p.x = oldX;
-          p.vx = 0;
-        }
-      }
-      if (p.vy > 0) {
-        const head = 1.35;
-        const ceiling = ceilingCaveWorld(p.x, p.y + head, ORIGINAL_REVERB_ORIGIN);
-        if (ceiling !== null && p.y + head >= ceiling - 0.05) {
-          p.y = ceiling - head;
-          p.vy = 0;
-        }
-      }
-    } else if (this.level.originalTerrain === "mineCart") {
-      const dir = p.x > oldX ? 1 : p.x < oldX ? -1 : 0;
-      if (
-        dir &&
-        blocksMineCartHorizontalWorld(oldX, p.y, dir, ORIGINAL_MINE_CART_ORIGIN)
-      ) {
-        p.x = oldX;
-        p.vx = 0;
-      }
-      const hit = originalMineCartTerrain(p.x, oldY + 0.45, ORIGINAL_MINE_CART_ORIGIN);
-      if (
-        hit &&
-        p.vy <= 0 &&
-        p.y <= hit.floorY &&
-        hit.floorY <= oldY + (wasGrounded ? 0.45 : 0.12)
-      ) {
-        p.y = hit.floorY;
-        p.vy = 0;
-        p.grounded = true;
-      } else if (hit && wasGrounded && hit.floorY > oldY + 0.45) {
-        const ramp =
-          dir !== 0 &&
-          hit.floorY <= oldY + 1.35 &&
-          ((dir === 1 && p.vx > 0) || (dir === -1 && p.vx < 0));
-        if (ramp) {
-          p.y = hit.floorY;
-          p.vy = 0;
-          p.grounded = true;
-        } else {
-          p.x = oldX;
-          p.vx = 0;
-        }
-      }
-      if (p.vy > 0) {
-        const head = 1.35;
-        const ceiling = ceilingMineCartWorld(
-          p.x,
-          p.y + head,
-          ORIGINAL_MINE_CART_ORIGIN,
-        );
-        if (ceiling !== null && p.y + head >= ceiling - 0.05) {
-          p.y = ceiling - head;
-          p.vy = 0;
-        }
-      }
+    if (this.level.originalTerrain && this.level.originalTerrain !== "coral") {
+      const contact = resolveLandMotion(this.level.originalTerrain, oldX, oldY, p.x, p.y, wasGrounded, p.vy);
+      p.x = contact.x; p.y = contact.y; p.grounded = contact.grounded;
+      if(contact.blockedX) p.vx = 0;
+      if(contact.blockedY) p.vy = 0;
     } else if (this.level.originalTerrain === "coral") {
-      const dir = p.x > oldX ? 1 : p.x < oldX ? -1 : 0;
-      if (
-        dir &&
-        blocksCoralHorizontal(oldX, p.y, dir, ORIGINAL_CORAL_ORIGIN, {
-          swim: water,
-        })
-      ) {
-        p.x = oldX;
-        p.vx = 0;
-      }
-      const hit = queryCoral(p.x, oldY + 0.08, ORIGINAL_CORAL_ORIGIN);
-      const floorY = hit?.floorY;
-      const floorBelowFeet =
-        floorY === undefined || floorY <= p.y + (water ? 0.06 : 0.12);
-      const feetClear =
-        floorY === undefined ||
-        p.y > floorY + 0.24 ||
-        p.vy > 0.12 ||
-        (water && !floorBelowFeet);
-      if (
-        water &&
-        hit &&
-        floorY !== undefined &&
-        floorBelowFeet &&
-        !feetClear &&
-        p.vy <= 0 &&
-        p.y <= floorY + 0.06
-      ) {
-        p.y = floorY;
-        p.vy = 0;
-      } else if (
-        !water &&
-        hit &&
-        floorY !== undefined &&
-        p.y < floorY - 0.02
-      ) {
-        p.y = floorY;
-        p.vy = Math.max(0, p.vy);
-      } else if (hit && wasGrounded && floorY !== undefined && floorY > oldY + 0.45) {
-        p.x = oldX;
-        p.vx = 0;
-      }
-      if (p.vy > 0) {
-        const head = 1.35;
-        const ceiling = ceilingCoralWorld(p.x, p.y + head, ORIGINAL_CORAL_ORIGIN);
-        const openWaterCeiling =
-          water && ceiling !== null && ceiling >= CORAL_WATER_SURFACE_Y - 0.2;
-        const headY = p.y + head;
-        const roofGap = ceiling === null ? Infinity : ceiling - headY;
-        const roofInLane =
-          ceiling !== null &&
-          (!water || ceiling <= p.y + 1.12);
-        const touchRoof =
-          roofInLane &&
-          !openWaterCeiling &&
-          roofGap < (water ? 0.22 : 0.05) &&
-          roofGap > -0.15;
-        if (touchRoof && p.y + head >= ceiling! - 0.05) {
-          p.y = ceiling! - head;
-          p.vy = 0;
-        }
-      }
-      if (water) p.grounded = false;
+      const swimBody = this.mount ? {radius:ANIMAL_DESIGNS[this.mount.kind].width*.7,height:ANIMAL_DESIGNS[this.mount.kind].seat+1.3} : undefined;
+      const motion = resolveCoralMotion(oldX, oldY, p.x, p.y, swimBody);
+      if(Math.abs(motion.x - p.x) > 0.00001) p.vx = 0;
+      if(Math.abs(motion.y - p.y) > 0.00001) p.vy = 0;
+      p.x = clamp(motion.x,.3,63.7);
+      p.y = clamp(motion.y, CORAL_WATER_FLOOR_Y, CORAL_WATER_SURFACE_Y);
+      if(p.y === CORAL_WATER_FLOOR_Y && p.vy < 0) p.vy = 0;
+      p.grounded = false;
     } else for (const platform of this.level.platforms) {
       const top = this.surface(platform),
         left = platform.x - platform.w / 2,
@@ -1279,6 +1137,7 @@ export class Game {
     this.breakWallsWithThrown();
     this.thrown.forEach((b) => {
       if (!b.active) return;
+      const oldBarrelX=b.x, oldBarrelY=b.y, rolling=b.vy===0;
       const targetVx = Math.sign(b.vx || p.facing) * THROW_TARGET_VX;
       b.vx = approach(
         b.vx,
@@ -1288,25 +1147,15 @@ export class Game {
       b.x += b.vx * dt;
       b.y += b.vy * dt;
       b.vy -= 12 * dt;
-      const floor =
-        this.level.originalTerrain != null
-          ? this.floorAt(b.x, b.y)
-          : null;
-      if (floor !== null && b.vy < 0 && b.y <= floor + 0.55 && b.y - b.vy * dt >= floor - 0.15) {
-        b.y = floor + 0.55;
-        b.vy = 0;
+      if(this.level.originalTerrain && this.level.originalTerrain !== "coral") {
+        const contact=resolveLandMotion(this.level.originalTerrain,oldBarrelX,oldBarrelY-.5,b.x,b.y-.5,rolling,b.vy,{radius:.45,height:.9});
+        b.x=contact.x;b.y=contact.y+.5;
+        if(contact.blockedY) b.vy=0;
+        if(contact.blockedX) b.active=false;
       } else {
-        for (const platform of this.level.platforms) {
-          const top = this.surface(platform) + 0.5;
-          if (
-            Math.abs(b.x - platform.x) < platform.w / 2 &&
-            b.vy < 0 &&
-            b.y <= top &&
-            b.y - b.vy * dt >= top - 0.2
-          ) {
-            b.y = top;
-            b.vy = 0;
-          }
+        const floor=this.supportAt(b.x,oldBarrelY-.5,.2);
+        if(floor!==null && b.vy<0 && b.y<=floor+.5 && oldBarrelY>=floor+.3) {
+          b.y=floor+.5;b.vy=0;
         }
       }
       if (b.y < -6 || Math.abs(b.x - p.x) > 30) b.active = false;
@@ -1343,6 +1192,7 @@ export class Game {
     for (const enemy of this.enemies) {
       if (!enemy.alive) continue;
       if (!enemySimulationActive(this, enemy)) continue;
+      const previousEnemyY = enemy.y, previousEnemyX = enemy.x;
       enemy.timer += dt;
       enemy.hurt = Math.max(0, enemy.hurt - dt);
       if (enemy.kind === "boss") {
@@ -1383,15 +1233,22 @@ export class Game {
             this.onEvent("necky-shot");
           }
         }
-      } else {
+      } else if (enemy.kind === "bee" || water) {
         enemy.x += enemy.vx * dt;
-        if (enemy.x < enemy.min || enemy.x > enemy.max) {
-          enemy.x = clamp(enemy.x, enemy.min, enemy.max);
-          enemy.vx *= -1;
+        if(enemy.x < enemy.min || enemy.x > enemy.max) {
+          enemy.x = clamp(enemy.x, enemy.min, enemy.max); enemy.vx *= -1;
         }
-        if (enemy.kind === "bee" || (water && enemy.kind === "croc"))
-          enemy.y = enemy.originY + Math.sin(enemy.timer * 2) * 0.6;
-      }
+        enemy.y = enemy.originY + Math.sin(enemy.timer * 2) * 0.6;
+        if(water) {
+          enemy.y = clamp(enemy.y, CORAL_WATER_FLOOR_Y, CORAL_WATER_SURFACE_Y - ENEMY_DESIGNS[enemy.kind].height * 0.5);
+          if(this.level.originalTerrain === "coral") {
+            const contact = resolveCoralMotion(previousEnemyX,previousEnemyY,enemy.x,enemy.y, { radius: ENEMY_DESIGNS[enemy.kind].width*0.6, height: ENEMY_DESIGNS[enemy.kind].height });
+            if(Math.abs(contact.x-enemy.x)>0.00001) enemy.vx *= -1;
+            enemy.x=contact.x; enemy.y=contact.y;
+          }
+        }
+      } else this.groundEnemy(enemy, dt);
+      if(!enemy.alive) continue;
       const boss = enemy.kind === "boss",
         height = ENEMY_DESIGNS[enemy.kind].height,
         width = ENEMY_DESIGNS[enemy.kind].width;
@@ -1409,7 +1266,7 @@ export class Game {
       }
       if (
         Math.abs(p.x - enemy.x) < width + (this.mount ? ANIMAL_DESIGNS[this.mount.kind].width : 0.3) &&
-        p.y < enemy.y + height &&
+        p.y <= enemy.y + height &&
         p.y + 1.4 + (this.mount ? ANIMAL_DESIGNS[this.mount.kind].seat : 0) > enemy.y
       ) {
         const mount = this.mount;
@@ -1419,7 +1276,8 @@ export class Game {
           (mount.kind === "winky" && p.vy < -0.5 && oldY >= enemy.y + height - 0.4)
         );
         const strideOver = mount?.kind === "expresso" && enemy.kind === "beetle" && enemy.y <= p.y + 0.1;
-        const stomp = !mount && !water && p.vy < -0.5 && oldY >= enemy.y + height - 0.35;
+        const stomp = !mount && !water && p.vy < -0.5 &&
+          oldY >= previousEnemyY + height - 0.18;
         const roll =
           p.roll > 0 &&
           enemy.kind !== "bee" &&
@@ -1431,10 +1289,13 @@ export class Game {
         else if (
           stomp &&
           enemy.kind !== "bee" &&
-          (enemy.kind !== "armored" || p.active === 0) &&
-          (!boss || enemy.vulnerable)
+          (enemy.kind !== "armored" || p.active === 0)
         ) {
-          hit = true;
+          // A protected head still bounces the player safely; only an exposed
+          // boss loses health. Side/underside contact retains normal damage.
+          hit = !boss || enemy.vulnerable;
+          p.y = enemy.y + height;
+          p.grounded = false;
           p.vy = rawSpeed(ROM.bounce[p.active]);
           this.onEvent("bounce");
         } else if (roll) {
@@ -1443,7 +1304,7 @@ export class Game {
           p.rollSpeed = Math.min(BUDDY_PHYSICS.chainCap, p.rollSpeed + BUDDY_PHYSICS.chainIncrement);
           p.roll = Math.max(p.roll, 0.32);
         }
-        else if (enemy.hurt <= 0) this.damage();
+        else if (!hit && enemy.hurt <= 0) this.damage();
       }
       if (hit && enemy.hurt <= 0) {
         enemy.hp--;

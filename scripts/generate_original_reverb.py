@@ -272,9 +272,9 @@ export const ROM_REVERB: Level & {
   originalTerrain: "cave"; start: {x:number;y:number}; letterWord: "KONG";
 } = {
   id: 1,
-  name: "Reverb Cave",
-  subtitle: "KONGO JUNGLE · CAVE · USA REV 2",
-  biome: "mine",
+  name: "Barrel Cannon Canyon",
+  subtitle: "KONGO JUNGLE · CANYON",
+  biome: "jungle",
   originalTerrain: "cave",
   start: {x:0,y:@@START_Y@@},
   letterWord: "KONG",
@@ -289,7 +289,7 @@ export const ROM_REVERB: Level & {
   bonusRooms,
   decors,
   finishZone,
-  tip: "Tracé et placements issus du ROM. Roule ou frappe les murs et caches. Les quatre lettres originales sont K O N G.",
+  tip: "Saute dans les tonneaux-canons, puis appuie sur Sauter pour décoller.",
 };
 export const ORIGINAL_REVERB_PROVENANCE = __PROVENANCE__ as const;
 '''

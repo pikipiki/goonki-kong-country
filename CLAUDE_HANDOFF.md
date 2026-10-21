@@ -1,28 +1,43 @@
-# État prioritaire de reprise — 0.4.0
+# État prioritaire de reprise — 0.4.0 — corrections du 21 octobre 2026
 
-**Cette section prévaut sur tous les rapports historiques conservés plus bas.** Lire `reference/rom-deep-analysis.md`, puis `runtime-player-analysis.json`, `level-tables.md`, `audio-rom-analysis.md` et `audio-playback-notes.md`.
+Cette section prévaut sur les rapports historiques ci-dessous. Passe : collisions/visibilité, carte débloquée, décor superposé, **imports ROM canyon/wagon/coral** (environnements Rev 2 corrigés), `terrainSolids`, tests `test:stages` / `test:decor`.
 
-**Dépôt :** `Documents/git/goonk-country` (remote GitHub `pikipiki/goonki-kong-country`). Avant chaque commit : mettre à jour cette section et suivre `.cursor/skills/handoff-before-commit/SKILL.md` (règle `.cursor/rules/handoff-before-commit.mdc`).
+**Dépôt :** `Documents/git/goonk-country`. Avant chaque commit : `.cursor/skills/handoff-before-commit/SKILL.md`.
 
-**Route ROM :** Jungle (**0**), **Reverb Cave** (**1**), **Mine Cart Carnage** (**2**, `ROM_MINE_CART`), Coral (**3**). `App` : `start(id, original)` pour `id` 0–3. Dev : `/?play=jungle`, `/?play=reverb`, `/?play=minecart`, `/?play=coral`. Quatre autres étapes prototype.
+## Corrections critiques des imports : ne pas rétablir les anciennes approximations
 
-**Reverb Cave (120 placements) :** terrain grotte `originalCaveTerrain.ts`, `generate:reverb` / `generate:cave-terrain`, **36** `BarrelCannon` (sprite 56) dans `ROM_REVERB.barrels` (`reverb-cannons.test.ts`). Départ sondé `reverb-start.json` ; parité marche bande y=175 (`reverb-parity-walk.json`, `reverb-parity.test.ts`). Carte étape **1**, `/?play=reverb`.
+- L’entrée **$17** était appelée « Reverb Cave », mais c’est **Barrel Cannon Canyon**, niveau $06. Ses 120 placements (36 canons) étaient superposés à la carte **Cave $DA0000**, étrangère au parcours. La routine Rev 2 sélectionne **l’environnement 0, Jungle $D90000**. L’étape 1 utilise désormais les colonnes Jungle à X=25472..36112, et porte le bon nom/biome. `ROM_REVERB`, `originalTerrain="cave"`, `originalCaveTerrain.ts` et `/?play=reverb` restent des **alias techniques de compatibilité**, pas des preuves que cette route est une grotte. `/?play=canyon` fonctionne aussi. Les données de grotte véritable sont conservées dans `level-tables.json`, mais ce parcours n’en est pas une.
+- L’entrée **$27** correspond à **Minecart Madness**, pas Carnage. Elle sélectionne **Walkway $CB0000, environnement 2**, avec attributs **$F00000**. Les placements étaient confrontés au terrain Carnage $E60D88. Carte et nom corrigés ; départ du mode wagon sur le premier wagon importé **x=699, y=178** (coordonnées web x=12.6875, y=0.09375), au lieu d’un point sous les rails. `ROM_MINE_CART` et les noms de fichiers existants restent compatibles.
+- Les attributs des environnements ne sont **pas des tranches concaténées après Jungle** : ils viennent de la table de pointeurs à `environmentPointers+0x70`. Ancien calcul cave/cart lisait notamment des données de sprites inutilisées. `analyze_level_tables.py` lit maintenant les vrais pointeurs.
+- Coral : ancienne lecture **column-major 16 rangées avec attributs Jungle** incorrecte. Le code marin Rev 2 à **0x018187** calcule une carte **row-major, 64 tuiles / 128 octets par rangée** ; attributs **0x29C380**, 197 classes, profils marins **0x01844B** (distincts de la table horizontale). `scripts/analyze_coral_terrain.py` reproduit l’extraction en lecture seule, SHA-256 Rev 2 vérifié ; `reference/coral-terrain-v2.json` conserve les octets de preuve et les tables numériques.
+- Coral conserve maintenant **32 pixels par unité sur les deux axes**, avec Y montant et origine **17952** : fini l’écrasement de ~52 unités en 5 et la superposition de trois bandes/ennemis. Sortie à y=48, limites web -0.9..53.9. Pose de nage horizontale et corps de collision de 0.95 unité pour les passages étroits. Un test explore un chemin de nage continu entrée → volume de sortie. Cela ne remplace pas une capture du vrai point d’entrée SNES, encore inféré dans cette adaptation.
 
-**Jungle (63/66 placements ROM) :** bonus rooms avec **`romRam1375`/`romRam13E9`** + **`entranceLevelId`** via table `entranceToLevelId` (`jungle-bonus-walls.json`, `npm run analyze:jungle-bonus`), Necky (`necky-ballistics.json`), `finishZone`. Parité : **120** frames vx, **241** échantillons sol, **155** frames position dynamique (`dynamicParity` dans `jungle-parity-walk.json`). Rebord x≈454 : lip moteur (~44 frames puis chute), spawns cmd **5/8** dans `jungle-omitted-spawns.json` ; `npm run attempt:necky-bridge` + save state (`jungle-necky-probe.md`). Capture noix → `necky-runtime-capture.json` + `npm run probe:jungle --necky-state`.
+Preuves : `reference/level-tables.json` → `routeEnvironmentEvidence`, `environmentData[].collisionAttributePointer`, `canyonMetatiles` et `mineCartMetatiles.environmentId`; `reference/coral-terrain-v2.json`. Le désassemblage USA 1.0 sert seulement de nomenclature ; les constantes et signatures ci-dessus sont vérifiées dans **la Rev 2 fournie**. REA ne fournit pas de désassemblage 65C816 adapté ici ; extraction ciblée Python, pas une nouvelle exécution de l’émulateur.
 
-**Coral (37 placements) :** terrain bandes 512 px, nage (`underwater-motion.json`, idle sink, plafonds/sols fantômes corrigés — `coral-collision-notes.md`), **`probe:coral`** + **`generate:coral-parity`**, culling ennemis caméra + intro, `finishZone` **UnderwaterExitDoor** @ x=2024 (`tests/coral-finish.test.ts`). Pas de textures chip.
+## Physique, visibilité et décor
 
-**Audio :** 27 M4A + 119 WAV ; SFX Rev 2 via `audio.ts` ; saut en lagon → **$75/$76** (`inWater` dans `App` → `audio.effect`). Inventaire wiring : **`npm run analyze:audio-fidelity`** → `audio-fidelity-report.json`. **Écoute comparative** SNES vs `public/audio/` — procédure dans `audio-playback-notes.md` (non automatisée).
+- Toutes les 7 étapes accessibles depuis la carte avec sauvegarde neuve. `save.unlocked` conserve le rôle de progression pour Continuer, sans verrouiller la sélection.
+- `terrainSolids.ts` : surfaces visibles, balayage murs/plafonds/sols, sol réel des tonneaux et animaux. Rebord Jungle artificiel « 44 frames puis chute » retiré : il faisait tomber dans un sol dessiné. Le rendu conserve les vrais sols de collision ; les plafonds et couches superposées ont une géométrie distincte.
+- Ennemis terrestres : gravité, suivi des pentes, demi-tour aux rebords/murs. Mort prioritaire sur le clignotement. Culling sur les bornes réelles de caméra avec marge ; simulation avant affichage. `sceneRevision` remonte les acteurs à chaque chargement, même pour la même étape. Caméra verticale suit les quatre routes importées.
+- Boss : rebond sûr sur la tête pendant une descente, même protégée. Perte de HP du boss seulement en récupération ; côtés/dessous restent dangereux. Saut normal depuis le pont testé.
+- Décor : suppression des façades de murs en double et du plan d’eau dans les environnements terrestres. Végétation/coraux derrière le plan des personnages ; lianes moins étirées. Socle de falaise en retrait derrière la jungle et appuis des plateformes hautes. Les couches de sol jouables ne sont pas masquées pour cacher les défauts.
+- Un seul propriétaire visuel des murs cassables ; disparition immédiate après destruction. Caches invisibles avant révélation ; salles bonus suivent les ensembles mutables en temps réel, sans ancien rectangle doré de repérage. Doublons de décor supprimés. Papillons avec ailes animées, au lieu de points roses statiques.
+- Le wagon ne s’affiche que dans le parcours wagon. Commandes portrait en colonnes flexibles : bouton de saut dans le viewport à 320 px. Conseils de jeu débarrassés des coordonnées/adresses/notes d’extraction ROM.
 
-**Joueur / canons :** portage maintien Action, lancer/poser, projectile vers **896 raw**, échange d’équipe animé ; canons avec compteurs **gravité/contrôle** par pas de simu (test `bonus-cannon.test.ts`), rotation visuelle en vol (`launched`).
+## Validation et commandes
 
-**110 tests, 24 fichiers** (`npm test`). Mine cart : 46 spawns importés, terrain 471 colonnes, wagon + collision `mineCart`. Scripts : `generate:reverb-parity`, `generate:mine-cart`, `generate:mine-cart-terrain`, `analyze:audio-fidelity`, `probe:coral`, `generate:coral-parity`. Feuille de route : `rom-port-roadmap.md`, `mine-cart-notes.md`, `reverb-cave-notes.md`.
+**143 tests unitaires / 26 fichiers passent**, TypeScript et build Vite passent. Suites : `test:browser`, `test:map`, `test:mobile`, `test:stages` (7 étapes × portrait/paysage), et **`test:decor`** (9 positions dans les 7 étapes + portrait ; profondeur des décors, un seul mur, absence de wagon hors mine, caches cachées, captures). Détails : `reference/bugfix-validation.md` et `reference/decor-import-fixes.md`.
 
-**Limites honnêtes :** loot bonus **authored** ; Reverb = autres sprites/objets encore omis, murs bonus non relinkés, musique entrée `$17` à vérifier ; rebord jungle lip approximatif ; `coral-swim.state` / save Necky manquants ; pas de textures ROM.
+`npm run analyze:levels`, `npm run analyze:coral-terrain`, `npm run generate:coral-terrain` (tables marines), puis générateurs de placements/terrain existants. Ne pas relancer un ancien générateur qui reconstituerait les tableaux contigus erronés ou la compression verticale du lagon.
 
-**Priorité suivante :** hazards pneus / décors wagon ROM omis, `coral-swim.state`, rebord jungle cmd 5/8, relier Reverb/mine cart à la carte si besoin.
+## Limites de reprise
 
-**Désassemblage Yoshifanatic1 :** cible officielle **USA V1.0** (MD5 `30c5f292ff4cbbfcc00fd8fa96c2de3b`) — **pas** la Rev 2 (`revision` 2, SHA-256 dans `rom-analysis.json`). Utilisable pour **noms de routines / tables / logique**, avec relocalisation d’octets obligatoire (`analyze_level_tables.py`, `player-states.json`). Voir `reference/disassembly-rev2.md` après vérif MD5.
+- Les modèles et habillages restent une adaptation 3D ; pas d’extraction de textures ROM. Les profils numériques ne sont pas une reconstruction intégrale des graphismes d’origine.
+- Ennemis aquatiques et certains oiseaux utilisent encore des familles de modèles provisoires. Tous les comportements des objets/bonus/ennemis/boss du jeu complet ne sont pas portés.
+- Le départ exact des routes doit encore être confronté à des captures natives. La recherche de chemin marin prouve un corridor géométrique ; elle ne vaut pas parcours humain complet contre l’IA.
+- Tests Chrome sur macOS avec émulation tactile, pas Safari iOS/Android physiques. Les scripts préparent certains états pour isoler une régression.
+- Audio existant préservé : 27 M4A + 119 WAV et routage Rev 2 ; contrôle d’écoute comparée restant dans `audio-playback-notes.md`.
+
 
 ---
 
