@@ -15,7 +15,7 @@ import {
   DoubleSide,
 } from "three";
 import { ENEMY_DESIGNS } from "../game/enemies";
-import type { Enemy, Game } from "../game/engine";
+import { enemyVisibleToCamera, type Enemy, type Game } from "../game/engine";
 
 const shapes = {
   round: new SphereGeometry(1, 18, 12),
@@ -429,15 +429,8 @@ export function EnemyModel({
     const t = clock.elapsedTime;
     if (root.current) {
       if (!preview) root.current.position.set(enemy.x, enemy.y, 0);
-      const depthOk =
-        !game ||
-        game.level.biome !== "lagoon" ||
-        Math.abs(enemy.y - game.player.y) < 3.6;
       root.current.visible =
-        preview ||
-        (enemy.alive &&
-          depthOk &&
-          Math.abs(enemy.x - (game?.player.x ?? enemy.x)) < 24);
+        preview || (!game ? enemy.alive : enemyVisibleToCamera(game, enemy));
       if (enemy.hurt > 0) root.current.visible = Math.sin(t * 32) > -0.25;
     }
     if (body.current) {

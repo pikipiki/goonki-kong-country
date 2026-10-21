@@ -16,6 +16,7 @@ from probe_player_motion import (
 
 REPORT = Path(__file__).resolve().parents[1] / "reference/runtime-player-analysis.json"
 NECKY_STATE = DEFAULT_WORK / "runtime-rom/jungle-necky/necky-approach.state"
+PIT_BEST_STATE = DEFAULT_WORK / "runtime-rom/jungle-necky/pit-best-attempt.state"
 
 
 def scan_sprites(probe: SnesProbe) -> list[dict]:
@@ -111,7 +112,14 @@ def main() -> None:
         out,
         False,
     )
-    necky_state = args.necky_state if args.necky_state.is_file() else DEFAULT_GROUND
+    if args.necky_state.is_file():
+        necky_state = args.necky_state
+    elif PIT_BEST_STATE.is_file():
+        necky_state = PIT_BEST_STATE
+    elif NECKY_STATE.is_file():
+        necky_state = NECKY_STATE
+    else:
+        necky_state = DEFAULT_GROUND
     scenarios["dk-necky-watch"] = run_necky_watch(probe, necky_state, out)
     scenarios["dk-necky-watch"]["neckyStatePath"] = str(necky_state)
     report["scenarios"] = scenarios

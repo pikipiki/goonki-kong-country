@@ -1,7 +1,19 @@
 import { BUDDY_PHYSICS, ANIMAL_DESIGNS, type Animal } from "./animals";
 import { ROM_JUNGLE, ORIGINAL_JUNGLE_ORIGIN } from "./originalJungle";
 import { ROM_CORAL } from "./originalCoral";
+import { ROM_REVERB, ORIGINAL_REVERB_ORIGIN } from "./originalReverb";
+import { ROM_MINE_CART, ORIGINAL_MINE_CART_ORIGIN } from "./originalMineCart";
 import { blocksHorizontalWorld, ceilingWorld, query as originalTerrain } from "./originalTerrain";
+import {
+  blocksHorizontalWorld as blocksCaveHorizontalWorld,
+  ceilingWorld as ceilingCaveWorld,
+  query as originalCaveTerrain,
+} from "./originalCaveTerrain";
+import {
+  blocksHorizontalWorld as blocksMineCartHorizontalWorld,
+  ceilingWorld as ceilingMineCartWorld,
+  query as originalMineCartTerrain,
+} from "./originalMineCartTerrain";
 import { ORIGINAL_CORAL_ORIGIN } from "./originalCoral";
 import {
   blocksCoralHorizontal,
@@ -14,6 +26,7 @@ import evidence from "../../reference/rom-analysis.json";
 import playerEvidence from "../../reference/player-states.json";
 import neckyEvidence from "../../reference/necky-ballistics.json";
 import underwaterMotion from "../../reference/underwater-motion.json";
+import jungleOmitted from "../../reference/jungle-omitted-spawns.json";
 
 export const STEP = 1 / 60;
 /** ROM tag swap: state 17 / anim 80 lasts ~25 frames at 60 Hz. */
@@ -47,10 +60,14 @@ const WORLD_PIXELS = 32;
 const rawSpeed = (raw: number) => ((raw / 256) * 60) / WORLD_PIXELS;
 const ROM_SWIM_HORIZONTAL = rawSpeed(underwaterMotion.horizontalCruiseVxRaw);
 const ROM_SWIM_SINK = underwaterMotion.verticalSwim.sinkAccelerationWorldPerSecond;
+const ROM_SWIM_IDLE_SINK =
+  underwaterMotion.verticalSwim.idleSinkSpeedWorld ?? 0.85;
 const ROM_SWIM_RISE = underwaterMotion.verticalSwim.riseSpeedWorld;
 const ROM_SWIM_DIVE = underwaterMotion.verticalSwim.diveSpeedWorld;
 const CORAL_WATER_SURFACE_Y = underwaterMotion.depthBandWeb.surfaceY;
 const CORAL_WATER_FLOOR_Y = underwaterMotion.depthBandWeb.floorY;
+const JUNGLE_LEDGE_END_X = jungleOmitted.runtimePit.webLedgeEndX;
+const JUNGLE_UPPER_BAND_Y = jungleOmitted.runtimePit.webUpperBandY;
 const THROW_TARGET_VX = rawSpeed(THROW.horizontalTargetMagnitudeRaw);
 const rawAcceleration = (raw: number) => rawSpeed(raw) * 60;
 export type Key =
@@ -169,6 +186,46 @@ export const emptyInput = (): Input => ({
   pressed: new Set(),
   released: new Set(),
 });
+
+/** Camera culling bands — lagoon uses a tight depth slice (side-view water column). */
+export function enemyViewportBand(game: Game) {
+  const lagoon = game.level.biome === "lagoon";
+  return {
+    halfX: lagoon ? 5.5 : 10.5,
+    halfY: lagoon ? 1.12 : 5.5,
+    simHalfX: lagoon ? 7.5 : 13,
+    simHalfY: lagoon ? 1.55 : 6.5,
+  };
+}
+
+function lagoonIntroBlocksEnemy(game: Game, enemy: Enemy) {
+  const start = game.level.start;
+  if (!start || game.level.biome !== "lagoon") return false;
+  const traveled = game.player.x - start.x;
+  if (traveled >= 3.5) return false;
+  if (Math.hypot(enemy.x - start.x, enemy.y - start.y) < 1) return true;
+  if (enemy.x > game.player.x + 0.6 && enemy.x < start.x + 10) return true;
+  if (traveled < 2 && Math.abs(enemy.y - start.y) > 0.45) return true;
+  return false;
+}
+
+export function enemyVisibleToCamera(game: Game, enemy: Enemy, margin = 1) {
+  if (!enemy.alive || lagoonIntroBlocksEnemy(game, enemy)) return false;
+  const { halfX, halfY } = enemyViewportBand(game);
+  return (
+    Math.abs(enemy.x - game.player.x) <= halfX * margin &&
+    Math.abs(enemy.y - game.player.y) <= halfY * margin
+  );
+}
+
+export function enemySimulationActive(game: Game, enemy: Enemy) {
+  if (!enemy.alive || lagoonIntroBlocksEnemy(game, enemy)) return false;
+  const { simHalfX, simHalfY } = enemyViewportBand(game);
+  return (
+    Math.abs(enemy.x - game.player.x) <= simHalfX &&
+    Math.abs(enemy.y - game.player.y) <= simHalfY
+  );
+}
 const defaultSave = (): Save => ({ unlocked: 0, best: {} });
 export function readSave(text: string | null): Save {
   try {
@@ -221,6 +278,9 @@ export class Game {
   swap: TeamSwap | null = null;
   toast = "";
   toastTimer = 0;
+  /** Frames DK held against the x≈454 upper-walkway lip (SNES dk-walk-terrain 156–199). */
+  junglePitLedgeHold = 0;
+  junglePitFalling = false;
   save: Save;
   onEvent: (name: string) => void = () => {};
   onSave: (save: Save) => void = () => {};
@@ -231,6 +291,8 @@ export class Game {
   get level() {
     if (!this.originalRoute) return LEVELS[this.levelId];
     if (this.levelId === 0) return ROM_JUNGLE;
+    if (this.levelId === 1) return ROM_REVERB;
+    if (this.levelId === 2) return ROM_MINE_CART;
     if (this.levelId === 3) return ROM_CORAL;
     return LEVELS[this.levelId];
   }
@@ -238,6 +300,10 @@ export class Game {
   floorAt(x:number,y:number) {
     if (this.level.originalTerrain === "jungle")
       return originalTerrain(x, y, ORIGINAL_JUNGLE_ORIGIN)?.floorY ?? null;
+    if (this.level.originalTerrain === "cave")
+      return originalCaveTerrain(x, y, ORIGINAL_REVERB_ORIGIN)?.floorY ?? null;
+    if (this.level.originalTerrain === "mineCart")
+      return originalMineCartTerrain(x, y, ORIGINAL_MINE_CART_ORIGIN)?.floorY ?? null;
     if (this.level.originalTerrain === "coral")
       return queryCoral(x, y, ORIGINAL_CORAL_ORIGIN)?.floorY ?? null;
     let top:number|null=null;
@@ -289,8 +355,19 @@ export class Game {
     }));
     this.companion = { x: startX - 1.8, y: floor, facing: 1 };
     this.swap = null;
-    this.enemies = this.level.enemies.map((spec, i) => ({
+    const spawnStart = this.level.start;
+    this.enemies = this.level.enemies.map((spec, i) => {
+      let x = spec.x;
+      if (
+        this.level.originalTerrain === "coral" &&
+        spawnStart &&
+        Math.hypot(spec.x - spawnStart.x, spec.y - spawnStart.y) < 0.85
+      ) {
+        x = Math.min(spec.max - 0.4, spec.x + 4);
+      }
+      return {
       ...spec,
+      x,
       originY: spec.y,
       vx:
         (i % 2 ? 1 : -1) *
@@ -305,7 +382,8 @@ export class Game {
       shootCooldown: spec.throwsNuts
         ? NECKY_SHOOT_PERIOD * (0.85 + (i % 3) * 0.05)
         : 0,
-    }));
+    };
+    });
     this.enemyShots = [];
     this.message(this.level.tip, 6);
   }
@@ -614,7 +692,9 @@ export class Game {
     this.particles = this.particles.filter((p) => p.age < 1.3);
     const p = this.player,
       water = this.level.biome === "lagoon",
-      cart = this.level.biome === "mine";
+      cart =
+        this.level.originalTerrain === "mineCart" ||
+        (this.level.biome === "mine" && this.level.originalTerrain !== "cave");
     p.invincible = Math.max(0, p.invincible - dt);
     p.launched = Math.max(0, p.launched - dt);
     if (p.cannonLock >= 0) {
@@ -803,13 +883,22 @@ export class Game {
         const vertical = Number(input.held.has("up")) - Number(input.held.has("down"));
         p.vy = approach(p.vy, vertical * 5, 24 * dt);
       } else {
-      const sink = this.level.originalTerrain === "coral" ? ROM_SWIM_SINK : 7;
-      const rise = this.level.originalTerrain === "coral" ? ROM_SWIM_RISE : 4.3;
-      const dive = this.level.originalTerrain === "coral" ? ROM_SWIM_DIVE : 4;
-      p.vy -= sink * dt;
-      if (input.held.has("jump") || input.held.has("up"))
-        p.vy = approach(p.vy, rise, 23 * dt);
-      if (input.held.has("down")) p.vy = -dive;
+      const coralSwim = this.level.originalTerrain === "coral";
+      const sink = coralSwim ? ROM_SWIM_SINK : 7;
+      const rise = coralSwim ? ROM_SWIM_RISE : 4.3;
+      const dive = coralSwim ? ROM_SWIM_DIVE : 4;
+      const idleSink = coralSwim ? ROM_SWIM_IDLE_SINK : 1.2;
+      if (input.held.has("down")) {
+        p.vy = -dive;
+      } else if (input.held.has("jump") || input.held.has("up")) {
+        p.vy = approach(p.vy, rise, 32 * dt);
+        if (coralSwim) p.vy -= sink * 0.22 * dt;
+        else p.vy -= sink * dt;
+      } else if (coralSwim) {
+        p.vy = approach(p.vy, -idleSink, 16 * dt);
+      } else {
+        p.vy -= sink * dt;
+      }
       p.vy = clamp(p.vy, -dive, rise);
       }
     } else {
@@ -870,10 +959,6 @@ export class Game {
         p.y = CORAL_WATER_SURFACE_Y;
         p.vy = Math.min(0, p.vy);
       }
-      if (p.y < CORAL_WATER_FLOOR_Y) {
-        p.y = CORAL_WATER_FLOOR_Y;
-        p.vy = Math.max(0, p.vy);
-      }
     } else if (water && p.y > 6) {
       p.y = 6;
       p.vy = Math.min(0, p.vy);
@@ -884,7 +969,38 @@ export class Game {
         p.x = oldX;
         p.vx = 0;
       }
-      const hit=originalTerrain(p.x,oldY+0.45,ORIGINAL_JUNGLE_ORIGIN);
+      const onUpperWalk = p.y <= JUNGLE_UPPER_BAND_Y + 0.05;
+      const pitApproach =
+        onUpperWalk &&
+        input.held.has("right") &&
+        p.x >= JUNGLE_LEDGE_END_X - 0.025;
+      if (pitApproach) {
+        p.x = Math.min(p.x, JUNGLE_LEDGE_END_X);
+        p.vx = 0;
+      }
+      if (pitApproach) {
+        this.junglePitLedgeHold++;
+        if (this.junglePitLedgeHold >= 44) this.junglePitFalling = true;
+      } else if (!this.junglePitFalling) {
+        this.junglePitLedgeHold = 0;
+      }
+      let hit=originalTerrain(p.x,oldY+0.45,ORIGINAL_JUNGLE_ORIGIN);
+      if (
+        hit &&
+        this.junglePitFalling &&
+        p.y <= JUNGLE_UPPER_BAND_Y &&
+        p.x >= JUNGLE_LEDGE_END_X - 0.02
+      ) {
+        hit = null;
+      }
+      if (
+        this.junglePitFalling &&
+        hit &&
+        hit.floorY < JUNGLE_UPPER_BAND_Y - 0.42
+      ) {
+        this.junglePitFalling = false;
+        this.junglePitLedgeHold = 0;
+      }
       if(hit && p.vy<=0 && p.y<=hit.floorY && hit.floorY<=oldY+(wasGrounded?0.45:0.12)) {
         p.y=hit.floorY; p.vy=0; p.grounded=true;
       } else if(hit && wasGrounded && hit.floorY>oldY+0.45) {p.x=oldX;p.vx=0;}
@@ -896,20 +1012,15 @@ export class Game {
           p.vy = 0;
         }
       }
-    } else if (this.level.originalTerrain === "coral") {
+    } else if (this.level.originalTerrain === "cave") {
       const dir = p.x > oldX ? 1 : p.x < oldX ? -1 : 0;
-      if (dir && blocksCoralHorizontal(oldX, p.y, dir, ORIGINAL_CORAL_ORIGIN)) {
+      if (dir && blocksCaveHorizontalWorld(oldX, p.y, dir, ORIGINAL_REVERB_ORIGIN)) {
         p.x = oldX;
         p.vx = 0;
       }
-      const hit = queryCoral(p.x, oldY + 0.35, ORIGINAL_CORAL_ORIGIN);
-      const footGap = hit ? p.y - hit.floorY : Infinity;
-      const swimFloor =
-        water &&
-        (!hit || footGap > 0.28 || p.vy > 0.35);
+      const hit = originalCaveTerrain(p.x, oldY + 0.45, ORIGINAL_REVERB_ORIGIN);
       if (
         hit &&
-        !swimFloor &&
         p.vy <= 0 &&
         p.y <= hit.floorY &&
         hit.floorY <= oldY + (wasGrounded ? 0.45 : 0.12)
@@ -918,6 +1029,112 @@ export class Game {
         p.vy = 0;
         p.grounded = true;
       } else if (hit && wasGrounded && hit.floorY > oldY + 0.45) {
+        const ramp =
+          dir !== 0 &&
+          hit.floorY <= oldY + 1.35 &&
+          ((dir === 1 && p.vx > 0) || (dir === -1 && p.vx < 0));
+        if (ramp) {
+          p.y = hit.floorY;
+          p.vy = 0;
+          p.grounded = true;
+        } else {
+          p.x = oldX;
+          p.vx = 0;
+        }
+      }
+      if (p.vy > 0) {
+        const head = 1.35;
+        const ceiling = ceilingCaveWorld(p.x, p.y + head, ORIGINAL_REVERB_ORIGIN);
+        if (ceiling !== null && p.y + head >= ceiling - 0.05) {
+          p.y = ceiling - head;
+          p.vy = 0;
+        }
+      }
+    } else if (this.level.originalTerrain === "mineCart") {
+      const dir = p.x > oldX ? 1 : p.x < oldX ? -1 : 0;
+      if (
+        dir &&
+        blocksMineCartHorizontalWorld(oldX, p.y, dir, ORIGINAL_MINE_CART_ORIGIN)
+      ) {
+        p.x = oldX;
+        p.vx = 0;
+      }
+      const hit = originalMineCartTerrain(p.x, oldY + 0.45, ORIGINAL_MINE_CART_ORIGIN);
+      if (
+        hit &&
+        p.vy <= 0 &&
+        p.y <= hit.floorY &&
+        hit.floorY <= oldY + (wasGrounded ? 0.45 : 0.12)
+      ) {
+        p.y = hit.floorY;
+        p.vy = 0;
+        p.grounded = true;
+      } else if (hit && wasGrounded && hit.floorY > oldY + 0.45) {
+        const ramp =
+          dir !== 0 &&
+          hit.floorY <= oldY + 1.35 &&
+          ((dir === 1 && p.vx > 0) || (dir === -1 && p.vx < 0));
+        if (ramp) {
+          p.y = hit.floorY;
+          p.vy = 0;
+          p.grounded = true;
+        } else {
+          p.x = oldX;
+          p.vx = 0;
+        }
+      }
+      if (p.vy > 0) {
+        const head = 1.35;
+        const ceiling = ceilingMineCartWorld(
+          p.x,
+          p.y + head,
+          ORIGINAL_MINE_CART_ORIGIN,
+        );
+        if (ceiling !== null && p.y + head >= ceiling - 0.05) {
+          p.y = ceiling - head;
+          p.vy = 0;
+        }
+      }
+    } else if (this.level.originalTerrain === "coral") {
+      const dir = p.x > oldX ? 1 : p.x < oldX ? -1 : 0;
+      if (
+        dir &&
+        blocksCoralHorizontal(oldX, p.y, dir, ORIGINAL_CORAL_ORIGIN, {
+          swim: water,
+        })
+      ) {
+        p.x = oldX;
+        p.vx = 0;
+      }
+      const hit = queryCoral(p.x, oldY + 0.08, ORIGINAL_CORAL_ORIGIN);
+      const floorY = hit?.floorY;
+      const floorBelowFeet =
+        floorY === undefined || floorY <= p.y + (water ? 0.06 : 0.12);
+      const feetClear =
+        floorY === undefined ||
+        p.y > floorY + 0.24 ||
+        p.vy > 0.12 ||
+        (water && !floorBelowFeet);
+      if (
+        water &&
+        hit &&
+        floorY !== undefined &&
+        floorBelowFeet &&
+        !feetClear &&
+        p.vy <= 0 &&
+        p.y <= floorY + 0.06
+      ) {
+        p.y = floorY;
+        p.vy = 0;
+      } else if (
+        !water &&
+        hit &&
+        floorY !== undefined &&
+        p.y < floorY - 0.02
+      ) {
+        p.y = floorY;
+        p.vy = Math.max(0, p.vy);
+      } else if (hit && wasGrounded && floorY !== undefined && floorY > oldY + 0.45) {
         p.x = oldX;
         p.vx = 0;
       }
@@ -926,16 +1143,22 @@ export class Game {
         const ceiling = ceilingCoralWorld(p.x, p.y + head, ORIGINAL_CORAL_ORIGIN);
         const openWaterCeiling =
           water && ceiling !== null && ceiling >= CORAL_WATER_SURFACE_Y - 0.2;
-        if (
+        const headY = p.y + head;
+        const roofGap = ceiling === null ? Infinity : ceiling - headY;
+        const roofInLane =
           ceiling !== null &&
+          (!water || ceiling <= p.y + 1.12);
+        const touchRoof =
+          roofInLane &&
           !openWaterCeiling &&
-          p.y + head >= ceiling - 0.05
-        ) {
-          p.y = ceiling - head;
+          roofGap < (water ? 0.22 : 0.05) &&
+          roofGap > -0.15;
+        if (touchRoof && p.y + head >= ceiling! - 0.05) {
+          p.y = ceiling! - head;
           p.vy = 0;
         }
       }
-      if (water && !p.grounded) p.grounded = false;
+      if (water) p.grounded = false;
     } else for (const platform of this.level.platforms) {
       const top = this.surface(platform),
         left = platform.x - platform.w / 2,
@@ -1119,6 +1342,7 @@ export class Game {
     this.enemyShots = this.enemyShots.filter((s) => s.active);
     for (const enemy of this.enemies) {
       if (!enemy.alive) continue;
+      if (!enemySimulationActive(this, enemy)) continue;
       enemy.timer += dt;
       enemy.hurt = Math.max(0, enemy.hurt - dt);
       if (enemy.kind === "boss") {

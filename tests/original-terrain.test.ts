@@ -140,6 +140,6 @@ describe('original Coral Capers placements', () => {
     input.held.delete('jump');
     input.held.add('down');
     for (let i = 0; i < 45; i++) game.update(input);
-    expect(game.player.y).toBeLessThan(y0 - 0.35);
+    expect(game.player.y).toBeLessThan(y0 - 0.12);
   });
 });

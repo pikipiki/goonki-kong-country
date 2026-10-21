@@ -130,20 +130,27 @@ export function ceilingCoralWorld(xWorld: number, headWorld: number, origin: Ter
   return ceiling === null ? null : coralWebYFromRom(ceiling);
 }
 
-/** Step/cliff check in web depth coordinates (mirrors jungle blocksHorizontalWorld). */
+/** Step/cliff check using ROM marine probes (see generate_original_coral_terrain.py). */
 export function blocksCoralHorizontal(
   xWorld: number,
   footWorld: number,
   dir: -1 | 1,
   origin: TerrainOrigin,
+  options?: { swim?: boolean },
 ) {
-  const here = queryCoral(xWorld, footWorld + 0.2, origin);
+  const scale = ORIGINAL_CORAL_TERRAIN.pixelsPerWorldUnit;
+  const px = xWorld * scale + origin.x;
+  const romFoot = coralRomYFromWeb(footWorld);
+  const here = probeCoralAtRom(px, romFoot + 6);
   if (!here) return false;
-  const edgeX = xWorld + dir * 0.4;
-  const aheadFeet = queryCoral(edgeX, footWorld + 0.2, origin);
-  if (aheadFeet && aheadFeet.floorY > here.floorY + 0.32) return true;
-  const torsoWorld = footWorld + 1.0;
-  const aheadTorso = queryCoral(edgeX, torsoWorld, origin);
-  if (aheadTorso && aheadTorso.floorY > torsoWorld + 0.18) return true;
+  const edgePx = (xWorld + dir * 0.4) * scale + origin.x;
+  const aheadFeet = probeCoralAtRom(edgePx, romFoot + 6);
+  const stepRomPx = options?.swim ? 44 : 10;
+  if (aheadFeet && aheadFeet.absRomFloor > here.absRomFloor + stepRomPx) {
+    return true;
+  }
+  if (options?.swim) return false;
+  const aheadTorso = probeCoralAtRom(edgePx, romFoot + 38);
+  if (aheadTorso && aheadTorso.absRomFloor > romFoot + 12) return true;
   return false;
 }

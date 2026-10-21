@@ -11,6 +11,7 @@ import { Game, readSave, type Key, type Phase } from "./game/engine";
 import { ANIMAL_DESIGNS } from "./game/animals";
 import { ROM_JUNGLE } from "./game/originalJungle";
 import { ROM_CORAL } from "./game/originalCoral";
+import { ROM_REVERB } from "./game/originalReverb";
 import { LEVELS } from "./game/levels";
 import { Controls, KEYBOARD } from "./game/input";
 import { AudioSystem } from "./game/audio";
@@ -128,7 +129,7 @@ export function App() {
   const start = useCallback(
     (id = 0) => {
       audio.boot();
-      change(() => game.start(id, id === 0 || id === 3));
+      change(() => game.start(id, id === 0 || id === 1 || id === 2 || id === 3));
     },
     [audio, change, game],
   );
@@ -140,7 +141,13 @@ export function App() {
     });
   const phase = game.phase;
   useEffect(() => {
-    game.onEvent = (name) => audio.effect(name,{character:game.player.active,animal:game.mount?.kind,letterIndex:game.letters.size-1});
+    game.onEvent = (name) =>
+      audio.effect(name, {
+        character: game.player.active,
+        animal: game.mount?.kind,
+        letterIndex: game.letters.size - 1,
+        inWater: game.level.biome === "lagoon",
+      });
     audio.onError = message => game.message(message);
     game.onSave = (save) => {
       try {
@@ -151,7 +158,11 @@ export function App() {
     };
   }, [game, audio]);
   useEffect(() => {
-    if (phase === "playing") audio.play(game.level.biome);
+    if (phase === "playing") {
+      const scene =
+        game.level.originalTerrain === "cave" ? "cave" : game.level.biome;
+      audio.play(scene);
+    }
     else if (["title","map","clear","victory","gameover"].includes(phase)) audio.play(phase);
     else audio.stop();
     return () => audio.stop();
@@ -241,6 +252,48 @@ export function App() {
       document.removeEventListener("touchend", onTouchEnd);
     };
   }, []);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const play = params.get("play") ?? params.get("level");
+    const coral =
+      play === "coral" || play === "lagoon" || play === "3";
+    const jungle = play === "jungle" || play === "0";
+    const reverb = play === "reverb" || play === "cave" || play === "1";
+    const minecart =
+      play === "minecart" || play === "mine-cart" || play === "cart" || play === "2";
+    if (!coral && !jungle && !reverb && !minecart) return;
+    audio.boot();
+    change(() => {
+      if (reverb) {
+        game.start(1, true);
+        return;
+      }
+      if (minecart) {
+        game.start(2, true);
+        return;
+      }
+      if (jungle) {
+        game.start(0, true);
+        return;
+      }
+      game.start(3, true);
+      const depth = params.get("depth") ?? "mid";
+      if (depth === "start") {
+        return;
+      }
+      game.player.x = Number(params.get("x") ?? 20);
+      const yParam = params.get("y");
+      if (yParam !== null && yParam !== "") game.player.y = Number(yParam);
+      else if (depth === "deep") game.player.y = 1.1;
+      else if (depth === "shallow") game.player.y = 4.8;
+      else game.player.y = 3.2;
+      game.player.vx = 0;
+      game.player.vy = 0;
+      game.player.grounded = false;
+      game.checkpoint = { x: game.player.x, y: game.player.y };
+    });
+  }, [audio, change, game]);
+
   // A small inspection surface supports reproducible browser smoke checks.
   useEffect(() => {
     Object.defineProperty(window, "goonk", { value: game, configurable: true });
@@ -521,7 +574,7 @@ export function App() {
             </p>
             <IslandMap selected={mapLevel} initial={game.levelId} unlocked={game.save.unlocked} onSelect={setMapLevel}/>
             <button className="primary map-enter" onClick={() => start(mapLevel)}>
-              Entrer · {mapLevel === 0 ? ROM_JUNGLE.name : mapLevel === 3 ? ROM_CORAL.name : LEVELS[mapLevel].name}
+              Entrer · {mapLevel === 0 ? ROM_JUNGLE.name : mapLevel === 1 ? ROM_REVERB.name : mapLevel === 3 ? ROM_CORAL.name : LEVELS[mapLevel].name}
             </button>
             <p className="save-note">Choisis une étape ouverte : Rose et Violette la rejoignent sur la carte.</p>
             <div className="level-grid">
@@ -552,7 +605,7 @@ export function App() {
                       </span>
                     </div>
                     <span className="level-region">{level.subtitle}</span>
-                    <strong>{i===0?ROM_JUNGLE.name:i===3?ROM_CORAL.name:level.name}</strong>
+                    <strong>{i===0?ROM_JUNGLE.name:i===1?ROM_REVERB.name:i===3?ROM_CORAL.name:level.name}</strong>
                     <small>
                       {best
                         ? `${best.letters}/${i===0?4:5} lettres · ${Math.floor(best.time)} s`

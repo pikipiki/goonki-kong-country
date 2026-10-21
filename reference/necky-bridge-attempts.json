@@ -1,0 +1,239 @@
+{
+  "romSha256": null,
+  "attempts": [
+    {
+      "walkFrames": 170,
+      "mid": [
+        [
+          15,
+          [
+            "B",
+            "Right"
+          ]
+        ]
+      ],
+      "end": {
+        "frame": 185,
+        "buttons": [],
+        "currentKong": 1,
+        "spriteSlotByteOffset": 2,
+        "spriteId": 1,
+        "x": 454,
+        "y": 175,
+        "xFractionRaw": 12544,
+        "yFractionRaw": 0,
+        "vxRaw": -200,
+        "vyRaw": 2048,
+        "targetVxRaw": -200,
+        "state": 17,
+        "animationId": 16,
+        "animationSpeedRaw": 256,
+        "animationTimerRaw": 0,
+        "groundDistance": 0,
+        "jumpFlags": 0,
+        "heldGravityRaw": -112,
+        "carrySlot": 0,
+        "mountSlot": 0
+      },
+      "maxX": 454
+    },
+    {
+      "walkFrames": 175,
+      "mid": [
+        [
+          25,
+          [
+            "B",
+            "Right"
+          ]
+        ]
+      ],
+      "end": {
+        "frame": 200,
+        "buttons": [],
+        "currentKong": 1,
+        "spriteSlotByteOffset": 2,
+        "spriteId": 1,
+        "x": 453,
+        "y": 182,
+        "xFractionRaw": 26880,
+        "yFractionRaw": 36864,
+        "vxRaw": -200,
+        "vyRaw": 1936,
+        "targetVxRaw": -200,
+        "state": 11,
+        "animationId": 16,
+        "animationSpeedRaw": 256,
+        "animationTimerRaw": 1024,
+        "groundDistance": -7,
+        "jumpFlags": 0,
+        "heldGravityRaw": -112,
+        "carrySlot": 0,
+        "mountSlot": 0
+      },
+      "maxX": 454
+    },
+    {
+      "walkFrames": 178,
+      "mid": [
+        [
+          40,
+          [
+            "B",
+            "Right"
+          ]
+        ]
+      ],
+      "end": {
+        "frame": 218,
+        "buttons": [],
+        "currentKong": 1,
+        "spriteSlotByteOffset": 2,
+        "spriteId": 1,
+        "x": 439,
+        "y": 243,
+        "xFractionRaw": 22784,
+        "yFractionRaw": 57344,
+        "vxRaw": -200,
+        "vyRaw": -80,
+        "targetVxRaw": -200,
+        "state": 11,
+        "animationId": 16,
+        "animationSpeedRaw": 256,
+        "animationTimerRaw": 256,
+        "groundDistance": -68,
+        "jumpFlags": 0,
+        "heldGravityRaw": -112,
+        "carrySlot": 0,
+        "mountSlot": 0
+      },
+      "maxX": 454
+    },
+    {
+      "walkFrames": 170,
+      "mid": [
+        [
+          10,
+          [
+            "B"
+          ]
+        ],
+        [
+          60,
+          [
+            "Right"
+          ]
+        ]
+      ],
+      "end": {
+        "frame": 240,
+        "buttons": [],
+        "currentKong": 1,
+        "spriteSlotByteOffset": 2,
+        "spriteId": 1,
+        "x": 422,
+        "y": 193,
+        "xFractionRaw": 10496,
+        "yFractionRaw": 28672,
+        "vxRaw": -200,
+        "vyRaw": 720,
+        "targetVxRaw": -200,
+        "state": 11,
+        "animationId": 16,
+        "animationSpeedRaw": 256,
+        "animationTimerRaw": 1024,
+        "groundDistance": -18,
+        "jumpFlags": 0,
+        "heldGravityRaw": -112,
+        "carrySlot": 0,
+        "mountSlot": 0
+      },
+      "maxX": 454
+    },
+    {
+      "walkFrames": 165,
+      "mid": [
+        [
+          5,
+          [
+            "B"
+          ]
+        ],
+        [
+          5,
+          []
+        ],
+        [
+          30,
+          [
+            "Right",
+            "B"
+          ]
+        ]
+      ],
+      "end": {
+        "frame": 205,
+        "buttons": [],
+        "currentKong": 1,
+        "spriteSlotByteOffset": 2,
+        "spriteId": 1,
+        "x": 449,
+        "y": 213,
+        "xFractionRaw": 33024,
+        "yFractionRaw": 53248,
+        "vxRaw": -200,
+        "vyRaw": 1376,
+        "targetVxRaw": -200,
+        "state": 11,
+        "animationId": 16,
+        "animationSpeedRaw": 256,
+        "animationTimerRaw": 1024,
+        "groundDistance": -38,
+        "jumpFlags": 0,
+        "heldGravityRaw": -112,
+        "carrySlot": 0,
+        "mountSlot": 0
+      },
+      "maxX": 454
+    }
+  ],
+  "best": {
+    "walkFrames": 170,
+    "mid": [
+      [
+        15,
+        [
+          "B",
+          "Right"
+        ]
+      ]
+    ],
+    "end": {
+      "frame": 185,
+      "buttons": [],
+      "currentKong": 1,
+      "spriteSlotByteOffset": 2,
+      "spriteId": 1,
+      "x": 454,
+      "y": 175,
+      "xFractionRaw": 12544,
+      "yFractionRaw": 0,
+      "vxRaw": -200,
+      "vyRaw": 2048,
+      "targetVxRaw": -200,
+      "state": 17,
+      "animationId": 16,
+      "animationSpeedRaw": 256,
+      "animationTimerRaw": 0,
+      "groundDistance": 0,
+      "jumpFlags": 0,
+      "heldGravityRaw": -112,
+      "carrySlot": 0,
+      "mountSlot": 0
+    },
+    "maxX": 454
+  },
+  "savedState": "/Users/sevenone./Documents/Codex/2026-10-21/cre/work/runtime-rom/jungle-necky/pit-best-attempt.state",
+  "neckyTargetX": 2560,
+  "note": "No pattern reached Necky in automated search; use pit-best-attempt.state or manual save past pit."
+}

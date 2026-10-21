@@ -4,21 +4,23 @@
 
 **Dépôt :** `Documents/git/goonk-country` (remote GitHub `pikipiki/goonki-kong-country`). Avant chaque commit : mettre à jour cette section et suivre `.cursor/skills/handoff-before-commit/SKILL.md` (règle `.cursor/rules/handoff-before-commit.mdc`).
 
-**Route ROM :** Jungle Hijinxs (`ROM_JUNGLE`, étape 0) et Coral Capers (`ROM_CORAL`, étape 3, `levelId` 3). `App` active la route originale pour 0 et 3. Cinq autres étapes restent le prototype.
+**Route ROM :** Jungle (**0**), **Reverb Cave** (**1**), **Mine Cart Carnage** (**2**, `ROM_MINE_CART`), Coral (**3**). `App` : `start(id, original)` pour `id` 0–3. Dev : `/?play=jungle`, `/?play=reverb`, `/?play=minecart`, `/?play=coral`. Quatre autres étapes prototype.
 
-**Jungle (63/66 placements ROM) :** bonus rooms avec **`romRam1375`/`romRam13E9`** + **`entranceLevelId`** via table `entranceToLevelId` (`jungle-bonus-walls.json`, `npm run analyze:jungle-bonus`), Necky (`necky-ballistics.json`), `finishZone`. Parité : **120** frames vx, **241** échantillons sol, **155** frames position dynamique (`dynamicParity` dans `jungle-parity-walk.json`). Fosse SNES x≈454 documentée (`jungle-walk-pit.md`) — métatuiles plates, chute côté objet/état. Capture noix → `necky-runtime-capture.json` + `npm run probe:jungle --necky-state`.
+**Reverb Cave (120 placements) :** terrain grotte `originalCaveTerrain.ts`, `generate:reverb` / `generate:cave-terrain`, **36** `BarrelCannon` (sprite 56) dans `ROM_REVERB.barrels` (`reverb-cannons.test.ts`). Départ sondé `reverb-start.json` ; parité marche bande y=175 (`reverb-parity-walk.json`, `reverb-parity.test.ts`). Carte étape **1**, `/?play=reverb`.
 
-**Coral (37 placements) :** terrain bandes 512 px, nage horizontale **vxRaw 512** (`underwater-motion.json`), collision swim corrigée (`blocksCoralHorizontal`), `finishZone` **UnderwaterExitDoor** @ x=2024, ennemis tagués `romSpriteId`/`patrolSpeed` (`coral-rom-notes.md`). Pas de textures chip.
+**Jungle (63/66 placements ROM) :** bonus rooms avec **`romRam1375`/`romRam13E9`** + **`entranceLevelId`** via table `entranceToLevelId` (`jungle-bonus-walls.json`, `npm run analyze:jungle-bonus`), Necky (`necky-ballistics.json`), `finishZone`. Parité : **120** frames vx, **241** échantillons sol, **155** frames position dynamique (`dynamicParity` dans `jungle-parity-walk.json`). Rebord x≈454 : lip moteur (~44 frames puis chute), spawns cmd **5/8** dans `jungle-omitted-spawns.json` ; `npm run attempt:necky-bridge` + save state (`jungle-necky-probe.md`). Capture noix → `necky-runtime-capture.json` + `npm run probe:jungle --necky-state`.
 
-**Audio :** 27 M4A + 119 WAV ; SFX `place`/`throw`/`pickup`/etc. mappés sur IDs Rev 2. **Écoute comparative** et **téléphones réels** non automatisées — voir `reference/audio-playback-notes.md`.
+**Coral (37 placements) :** terrain bandes 512 px, nage (`underwater-motion.json`, idle sink, plafonds/sols fantômes corrigés — `coral-collision-notes.md`), **`probe:coral`** + **`generate:coral-parity`**, culling ennemis caméra + intro, `finishZone` **UnderwaterExitDoor** @ x=2024 (`tests/coral-finish.test.ts`). Pas de textures chip.
+
+**Audio :** 27 M4A + 119 WAV ; SFX Rev 2 via `audio.ts` ; saut en lagon → **$75/$76** (`inWater` dans `App` → `audio.effect`). Inventaire wiring : **`npm run analyze:audio-fidelity`** → `audio-fidelity-report.json`. **Écoute comparative** SNES vs `public/audio/` — procédure dans `audio-playback-notes.md` (non automatisée).
 
 **Joueur / canons :** portage maintien Action, lancer/poser, projectile vers **896 raw**, échange d’équipe animé ; canons avec compteurs **gravité/contrôle** par pas de simu (test `bonus-cannon.test.ts`), rotation visuelle en vol (`launched`).
 
-**83 tests, 11 fichiers** (`npm test`). `probe:jungle`, `analyze:jungle-bonus`, `generate:jungle-parity`, `generate:coral`.
+**110 tests, 24 fichiers** (`npm test`). Mine cart : 46 spawns importés, terrain 471 colonnes, wagon + collision `mineCart`. Scripts : `generate:reverb-parity`, `generate:mine-cart`, `generate:mine-cart-terrain`, `analyze:audio-fidelity`, `probe:coral`, `generate:coral-parity`. Feuille de route : `rom-port-roadmap.md`, `mine-cart-notes.md`, `reverb-cave-notes.md`.
 
-**Limites honnêtes :** loot bonus **authored** (cibles `entranceLevelId` décodées, pas la géométrie ROM) ; rebord x≈454 non simulé (sol statique continu) ; Necky SNES = save state ; pas de textures ROM.
+**Limites honnêtes :** loot bonus **authored** ; Reverb = autres sprites/objets encore omis, murs bonus non relinkés, musique entrée `$17` à vérifier ; rebord jungle lip approximatif ; `coral-swim.state` / save Necky manquants ; pas de textures ROM.
 
-**Priorité suivante :** collision objet/cmd 5–8 au rebord, save state Necky, parité sur pentes après frame 155, audio/mobile.
+**Priorité suivante :** hazards pneus / décors wagon ROM omis, `coral-swim.state`, rebord jungle cmd 5/8, relier Reverb/mine cart à la carte si besoin.
 
 **Désassemblage Yoshifanatic1 :** cible officielle **USA V1.0** (MD5 `30c5f292ff4cbbfcc00fd8fa96c2de3b`) — **pas** la Rev 2 (`revision` 2, SHA-256 dans `rom-analysis.json`). Utilisable pour **noms de routines / tables / logique**, avec relocalisation d’octets obligatoire (`analyze_level_tables.py`, `player-states.json`). Voir `reference/disassembly-rev2.md` après vérif MD5.
 
