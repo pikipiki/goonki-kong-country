@@ -87,4 +87,32 @@ describe('requested animal attacks and boss balance',()=>{
   expect(speeds[0]).toBe(speeds[1]*1.125);
  });
 
+ it('never locks Rambi against an invisible wall after consecutive charges in ROM Jungle',()=>{
+  const g=new Game();g.start(0,true);g.enemies=[];
+  g.completedBonus=new Set([0,1,2,3]);
+  const a=g.animals[0];a.state='ridden';
+  Object.assign(g.player,{mount:0,x:a.x,y:a.y,vx:0,vy:0,grounded:true,facing:1});
+  for(let charge=0;charge<11;charge++) {
+   frame(g,['action'],['action']);
+   for(let f=0;f<9;f++)frame(g,['action']);
+   frame(g,[],[],['action']);
+   for(let f=0;f<24;f++)frame(g);
+   const x0=g.player.x;
+   frame(g,['right']);frame(g,['right']);frame(g,['right']);
+   const movedRight=g.player.x>x0+0.02;
+   frame(g,['left']);frame(g,['left']);frame(g,['left']);frame(g,['left']);frame(g,['left']);frame(g,['left']);
+   const movedLeft=g.player.x<x0;
+   expect(movedRight||movedLeft,`stuck at charge ${charge} x=${x0} y=${g.player.y}`).toBe(true);
+   g.player.facing=1;
+  }
+  expect(g.player.x).toBeGreaterThan(134);
+  // Also verify Rambi can steer left and right even while action remains held/latched
+  const xHeld=g.player.x;
+  for(let f=0;f<20;f++)frame(g,['action','right']);
+  expect(g.player.x).toBeGreaterThan(xHeld+0.5);
+  const xRight=g.player.x;
+  for(let f=0;f<25;f++)frame(g,['action','left']);
+  expect(g.player.x).toBeLessThan(xRight-0.5);
+ });
+
 });

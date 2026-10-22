@@ -529,17 +529,19 @@ export class Game {
         p.x + 0.35 > left &&
         p.x - 0.35 < right &&
         p.y + 1.1 > bottom &&
-        p.y < top + 0.2;
+        p.y < top - 0.65;
       if (!overlap) continue;
-      if (p.roll > 0.12 || (this.mount?.kind === "rambi" && (p.mountAttack > 0 || Math.abs(p.vx) >= ANIMAL_DESIGNS.rambi.run - .1))) {
+      if (p.roll > 0.12 || (this.mount?.kind === "rambi" && (p.mountAttack > 0 || Math.abs(p.vx) > 0.1))) {
         this.brokenWalls.add(i);
         this.onEvent("barrel-break");
         this.openBonusRoom(i);
         this.pop(wall.x, wall.y + wall.h * 0.5, tr("game.bonusBanner"), "#f5c98a");
         continue;
       }
-      p.x = oldX;
-      p.vx = 0;
+      if ((p.x - oldX) * (wall.x - oldX) > 0) {
+        p.x = oldX;
+        p.vx = 0;
+      }
     }
   }
   private breakWallsWithThrown() {
@@ -990,7 +992,7 @@ export class Game {
         if (Math.abs(p.rollJumpMomentum) <= speed) p.rollJumpMomentum = 0;
       }
     }
-    else if (chargeable && p.mountCharge > .18) p.vx = approach(p.vx,0,60*dt);
+    else if (chargeable && p.mountCharge > .18 && !direction) p.vx = approach(p.vx,0,60*dt);
     else if (p.roll > 0) p.vx = p.rollFacing * p.rollSpeed;
     else if (buddy?.kind === "enguarde" && p.mountAttack > 0) p.vx = p.facing * (p.mountCharged ? 18 : BUDDY_PHYSICS.stabSpeed);
     else if (buddy?.kind === "rambi" && p.mountAttack > 0) p.vx = p.facing * (p.mountCharged ? 16 : 9);
@@ -1105,7 +1107,7 @@ export class Game {
     if (this.level.originalTerrain && this.level.originalTerrain !== "coral") {
       const contact = resolveLandMotion(this.level.originalTerrain, oldX, oldY, p.x, p.y, wasGrounded, p.vy);
       p.x = contact.x; p.y = contact.y; p.grounded = contact.grounded;
-      if(contact.blockedX) { p.vx = 0; p.rollJumpMomentum = 0; }
+      if(contact.blockedX) { p.vx = 0; p.rollJumpMomentum = 0; p.mountAttack = 0; p.mountCharged = false; }
       if(contact.blockedY) p.vy = 0;
     } else if (this.level.originalTerrain === "coral") {
       const swimBody = this.mount ? ENGUARDE_SWIM_BODY : undefined;

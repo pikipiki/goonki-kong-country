@@ -59,23 +59,32 @@ export function resolveCoralMotion(oldX: number, oldY: number, x: number, y: num
 export function resolveLandMotion(kind: string, oldX: number, oldY: number, x: number, y: number, grounded: boolean, vy: number, body = { radius:0.3, height:1.35 }) {
   const { radius, height } = body, stepHeight = grounded ? 0.45 : 0.02;
   const steps = Math.max(1, Math.ceil(Math.abs(x-oldX)/0.04));
-  let nx = oldX, ny = y, landed = false, blockedX = false, blockedY = false;
+  const dir = Math.sign(x-oldX);
+  let nx = oldX, ny = y, curY = oldY, landed = false, blockedX = false, blockedY = false;
   for(let i=1; i<=steps; i++) {
     const next = oldX + (x-oldX)*i/steps;
-    const edge = next + Math.sign(x-oldX)*radius;
+    if(grounded && dir !== 0) {
+      for(const offset of [0, 0.08, 0.16, radius-0.04]) {
+        const stepTops = terrainSolidSpans(kind, next + dir*offset)
+          .filter(s => s.top > curY && s.top <= curY + stepHeight).map(s => s.top);
+        if(stepTops.length) curY = Math.max(...stepTops);
+      }
+    }
+    const edge = next + dir*radius;
     const walls = terrainSolidSpans(kind, edge);
-    if(walls.some(s => s.top > oldY+stepHeight && s.bottom < oldY+height-0.03 && s.top > Math.min(oldY,y)+0.1)) {
+    const maxBottom = grounded ? curY + 0.5 : curY + height - 0.03;
+    if(walls.some(s => s.top > curY+stepHeight && s.bottom < maxBottom && s.top > Math.min(curY,y)+0.1)) {
       blockedX = true; break;
     }
     nx = next;
   }
   const spans = [nx-radius+0.04,nx,nx+radius-0.04].flatMap(px => terrainSolidSpans(kind, px));
   if(vy <= 0) {
-    const tops = spans.filter(s => s.top <= oldY + (grounded ? 0.45 : 0.12) && s.top >= y-0.001).map(s => s.top);
+    const tops = spans.filter(s => s.top <= curY + (grounded ? 0.45 : 0.12) && s.top >= Math.min(y, curY)-0.001).map(s => s.top);
     if(tops.length) { ny = Math.max(...tops); landed = true; blockedY = true; }
     // Follow small downward slopes without a frame suspended above the mesh.
     else if(grounded) {
-      const below = spans.filter(s => s.top <= oldY && s.top >= oldY-0.3).map(s => s.top);
+      const below = spans.filter(s => s.top <= curY && s.top >= curY-0.45).map(s => s.top);
       if(below.length) { ny = Math.max(...below); landed = true; blockedY = true; }
     }
   } else {

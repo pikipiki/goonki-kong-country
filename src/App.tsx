@@ -621,14 +621,16 @@ export function App() {
           <div className="map-shell">
             <button
               className="back-link"
+              aria-label={t("home")}
               onClick={() =>
                 change(() => {
-                  game.phase = mapBack.current;
+                  setDemo2D(false);
+                  game.load(0, "title");
                 })
               }
             >
               <Icon name="back" />
-              {t("mapBack")}
+              {t("home")}
             </button>
             <div className="map-heading">
               <p className="eyebrow">{t("eyebrowIsland")}</p>
