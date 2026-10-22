@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { r3fClock } from '../game3d/r3fClock'
 import type { Group } from 'three'
 import {
   animateTravelerCelebrate,
@@ -22,7 +23,8 @@ export function useTravelersMotion(
   const celebrateTimer = useRef(0)
   const [animState, setAnimState] = useState<TravelerAnim>('idle')
   const prevAnimState = useRef<TravelerAnim>('idle')
-  useFrame(({ clock }, delta) => {
+  useFrame((state, delta) => {
+    const clock = r3fClock(state)
     const group = root.current
     if (!group) {
       return

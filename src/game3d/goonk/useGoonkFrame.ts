@@ -1,4 +1,5 @@
 import { useFrame } from '@react-three/fiber'
+import { r3fClock } from '../r3fClock'
 import type { RefObject } from 'react'
 import type { Group } from 'three'
 import type { Game } from '../../game/engine'
@@ -25,7 +26,8 @@ export function useGoonkFrame(
 ) {
   const { pink, game, companion, preview, mapWalk, mapCelebrate } = opts
 
-  useFrame(({ clock }) => {
+  useFrame((state) => {
+    const clock = r3fClock(state)
     const rootNode = root.current
 
     const bodyNode = body.current

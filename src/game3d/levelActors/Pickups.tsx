@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { r3fClock } from '../r3fClock'
 import type { Group } from 'three'
 import type { Game } from '../../game/engine'
 import { BananaModel } from '../BananaModel'
@@ -47,7 +48,8 @@ function PickupItem({ item }: { item: Game['level']['pickups'][number] }) {
 export function Pickups({ game }: { game: Game }) {
   const items = game.level.pickups
   const root = useRef<Group>(null)
-  useFrame(({ clock }) => {
+  useFrame((state) => {
+    const clock = r3fClock(state)
     const group = root.current
     if (!group) {
       return

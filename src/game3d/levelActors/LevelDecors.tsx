@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { r3fClock } from '../r3fClock'
 import type { Group } from 'three'
 import type { Game } from '../../game/engine'
 import { actorCylinder, actorSphere } from './geometries'
@@ -9,7 +10,8 @@ export function Butterfly({ game, worldX }: { game: Game; worldX: number }) {
 
   const wings = useRef<Group>(null)
 
-  useFrame(({ clock }) => {
+  useFrame((state) => {
+    const clock = r3fClock(state)
     const elapsed = clock.elapsedTime
 
     if (root.current) {

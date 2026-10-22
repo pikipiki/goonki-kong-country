@@ -1,4 +1,5 @@
 import { useFrame } from '@react-three/fiber'
+import { r3fClock } from '../r3fClock'
 import { useMemo, useRef } from 'react'
 import { InstancedMesh, Object3D } from 'three'
 import type { Game } from '../../game/engine'
@@ -17,7 +18,8 @@ export function WorldMotes({ game }: { game: Game }) {
 
   const dummy = useMemo(() => new Object3D(), [])
 
-  useFrame(({ clock }) => {
+  useFrame((state) => {
+    const clock = r3fClock(state)
     const mesh = ref.current
 
     if (!mesh) {

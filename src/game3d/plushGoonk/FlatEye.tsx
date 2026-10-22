@@ -1,5 +1,6 @@
 import { themeColors, WHITE } from '@game3d/theme'
 import { useFrame } from '@react-three/fiber'
+import { r3fClock } from '../r3fClock'
 
 const plush = themeColors.plush
 
@@ -17,7 +18,8 @@ export function FlatEye({
 }) {
   const eye = useRef<Group>(null)
 
-  useFrame(({ clock }) => {
+  useFrame((state) => {
+    const clock = r3fClock(state)
     const blinkPhase = (clock.elapsedTime + seed * 0.67) % (3.8 + seed * 0.13)
 
     if (eye.current) {

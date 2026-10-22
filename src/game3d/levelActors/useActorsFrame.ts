@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { r3fClock } from '../r3fClock'
 import type { Group } from 'three'
 import { Sprite, SpriteMaterial } from 'three'
 import type { Game } from '../../game/engine'
@@ -21,7 +22,8 @@ export function useActorsFrame(game: Game, level: Game['level']) {
       texture.dispose()
     }
   }, [texture])
-  useFrame(({ clock }) => {
+  useFrame((state) => {
+    const clock = r3fClock(state)
     syncBarrels(game, level, barrels.current)
     syncCarried(game, carried.current)
     syncCart(game, cart.current)

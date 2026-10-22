@@ -1,5 +1,6 @@
 import { useRef, type RefObject } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { r3fClock } from '../r3fClock'
 import { Group } from 'three'
 import { enemyRenderVisible, type Enemy, type Game } from '../../game/engine'
 import { KingBossModel } from '../BossBattle3D'
@@ -26,7 +27,8 @@ export function EnemyModel({
 
   const wings = useRef<Group>(null)
 
-  useFrame(({ clock }) => {
+  useFrame((state) => {
+    const clock = r3fClock(state)
     const tick = clock.elapsedTime
 
     if (root.current) {

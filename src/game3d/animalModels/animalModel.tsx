@@ -1,6 +1,7 @@
 import { mountAction } from '../../config/gameplay.json'
 import { useLayoutEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { r3fClock } from '../r3fClock'
 import { Group, type Object3D } from 'three'
 import { animateAnimalGroups } from './animateAnimalGroups'
 import { AnimalChargeWindup } from './animalPart'
@@ -42,7 +43,8 @@ export function AnimalModel({
     })
   }, [kind])
 
-  useFrame(({ clock }) => {
+  useFrame((frame) => {
+    const clock = r3fClock(frame)
     let tick
     if (time > 0) {
       tick = time
