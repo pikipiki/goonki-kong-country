@@ -32,39 +32,45 @@ function loadAssets(): Promise<BossAssets> {
                 throw new Error("Missing boss atlas"); return r.json(); }), image("boss-background.png").catch(() => null), image("sprites.png"), fetch(url("manifest.json")).then(r => {if(!r.ok)throw new Error("Missing object atlas");return r.json();})]).then(([image, manifest, background, objects, objectManifest]) => ({ image, manifest, background, objects, objectManifest })).catch(e => { assetsPromise = null; throw e; });
     return assetsPromise;
 }
-/** Keep the original 256×224 room undistorted. Extend its own sky, rigging
- * and edge deck strips where a phone viewport exposes additional space. */
+/** The captured room occupies the central twelve world units. Its own edge
+ * strips extend the ship. All scenery shares the actors' camera transform. */
 function drawShipRoom(ctx: CanvasRenderingContext2D, background: HTMLImageElement,
-    width: number, height: number, floor: number) {
-    const left = Math.round((width - 256) / 2), top = Math.round(floor - 190);
-    const sky = ctx.createLinearGradient(0, 0, 0, Math.max(1, top));
-    sky.addColorStop(0, "#808fb2"); sky.addColorStop(1, "#6a71a4");
-    ctx.fillStyle = sky; ctx.fillRect(0, 0, width, Math.max(0, top));
+    width: number, height: number, floor: number, left: number, scale: number) {
+    const top = floor - 190 * scale;
+    const xMin = -left / scale, xMax = (width - left) / scale;
+    const yMin = -top / scale, yMax = (height - top) / scale;
+    ctx.save();
+    ctx.translate(left, top);
+    ctx.scale(scale, scale);
+    if (yMin < 0) {
+        const sky = ctx.createLinearGradient(0, yMin, 0, 0);
+        sky.addColorStop(0, "#808fb2"); sky.addColorStop(1, "#6a71a4");
+        ctx.fillStyle = sky; ctx.fillRect(xMin, yMin, xMax - xMin, -yMin);
+    }
     ctx.save(); ctx.globalAlpha = .22;
-    for (let y = top - 80; y > -80; y -= 80) {
-        for (let x = 0; x < width; x += 48) {
+    for (let y = -80; y > yMin - 80; y -= 80) {
+        for (let x = Math.floor(xMin / 48) * 48; x < xMax; x += 48) {
             ctx.drawImage(background, 112, 0, 48, 80, x, y, 48, 80);
         }
     }
     ctx.restore();
-    // Side strips extend the deck in wide viewports without widening barrels.
-    for (let x = left - 80; x > -80; x -= 80) {
-        ctx.drawImage(background, 0, 0, 80, 224, x, top, 80, 224);
+    for (let x = -80; x > xMin - 80; x -= 80) {
+        ctx.drawImage(background, 0, 0, 80, 224, x, 0, 80, 224);
     }
-    for (let x = left + 256; x < width; x += 80) {
-        ctx.drawImage(background, 176, 0, 80, 224, x, top, 80, 224);
+    for (let x = 256; x < xMax; x += 80) {
+        ctx.drawImage(background, 176, 0, 80, 224, x, 0, 80, 224);
     }
-    ctx.drawImage(background, left, top);
-    for (let y = top - 16; y > -16; y -= 16) {
-        ctx.drawImage(background, 0, 0, 101, 16, left, y, 101, 16);
-        ctx.drawImage(background, 200, 0, 56, 16, left + 200, y, 56, 16);
+    ctx.drawImage(background, 0, 0);
+    for (let y = -16; y > yMin - 16; y -= 16) {
+        ctx.drawImage(background, 0, 0, 101, 16, 0, y, 101, 16);
+        ctx.drawImage(background, 200, 0, 56, 16, 200, y, 56, 16);
     }
-    // Extra portrait space below the contact plane is made from deck planks.
-    for (let y = top + 224; y < height; y += 24) {
-        for (let x = 0; x < width; x += 256) {
+    for (let y = 224; y < yMax; y += 24) {
+        for (let x = Math.floor(xMin / 256) * 256; x < xMax; x += 256) {
             ctx.drawImage(background, 0, 196, 256, 24, x, y, 256, 24);
         }
     }
+    ctx.restore();
 }
 /** Shared gameplay clock and boss state; the pixel renderer never runs a separate fight. */
 export function BossScene2D({ game, input, onTick }: {
@@ -132,48 +138,21 @@ export function BossScene2D({ game, input, onTick }: {
             sky.addColorStop(1, "#b7bfcb");
             ctx.fillStyle = sky;
             ctx.fillRect(0, 0, w, h);
+            const roomScale = scale * 12 / 256;
+            const roomCentre = px(game.level.length / 2);
             if (assets?.background)
-                drawShipRoom(ctx, assets.background, w, h, floor);
+                drawShipRoom(ctx, assets.background, w, h, floor, roomCentre - 128 * roomScale, roomScale);
             else {
-                ctx.fillStyle = "#627b9c";
-                ctx.fillRect(0, 119, w, 48);
                 ctx.fillStyle = "#99afc1";
-                for (let i = 0; i < 24; i++)
-                    ctx.fillRect((i * 41 + Math.floor(game.time * 3)) % w, 128 + i % 6 * 5, 22, 1);
-                ctx.fillStyle = "#253929";
-                ctx.beginPath();
-                ctx.moveTo(w * .42, 121);
-                ctx.lineTo(w * .47, 104);
-                ctx.lineTo(w * .50, 70);
-                ctx.lineTo(w * .54, 111);
-                ctx.lineTo(w * .59, 122);
-                ctx.fill();
-                ctx.fillStyle = "#c6ad78";
-                ctx.fillRect(0, 160, w, 64);
-                for (let x = 0; x < w; x += 16) {
-                    ctx.fillStyle = x % 32 ? "#92582c" : "#c18b47";
-                    ctx.fillRect(x, 164, 15, 60);
+                ctx.fillRect(0, floor - 60, w, 60);
+                ctx.fillStyle = "#4d301e";
+                ctx.fillRect(0, floor, w, h - floor);
+                for (let x = -2; x < game.level.length + 2; x += .6) {
+                    const sx = px(x), plankWidth = .6 * scale;
+                    ctx.fillStyle = "#c18b47";
+                    ctx.fillRect(sx, floor, plankWidth - 1, h - floor);
                     ctx.fillStyle = "#e3bb73";
-                    ctx.fillRect(x, 164, 2, 60);
-                    ctx.fillStyle = "#4d301e";
-                    ctx.fillRect(x + 10, 171, 2, 2);
-                    ctx.fillRect(x + 10, 210, 2, 2);
-                }
-                for (const x of [w * .10, w * .90]) {
-                    ctx.strokeStyle = "#362b23";
-                    ctx.lineWidth = 2;
-                    for (let i = -2; i <= 2; i++) {
-                        ctx.beginPath();
-                        ctx.moveTo(x + i * 10, 0);
-                        ctx.lineTo(x + i * 12, 99);
-                        ctx.stroke();
-                    }
-                    for (let y = 4; y < 100; y += 15) {
-                        ctx.beginPath();
-                        ctx.moveTo(x - 25, y);
-                        ctx.lineTo(x + 25, y);
-                        ctx.stroke();
-                    }
+                    ctx.fillRect(sx, floor, 1, h - floor);
                 }
             }
             // Adapt the captured ship room to each viewport, keeping the deck contact
@@ -196,7 +175,7 @@ export function BossScene2D({ game, input, onTick }: {
                 ctx.restore();
                 return true;
             };
-            draw("island", 0, w * .5, floor - 190 + 96, false, 40);
+            draw("island", 0, roomCentre, floor - 94 * roomScale, false, 40 * roomScale);
             const bounds = bossArenaBounds(game.level.length);
             // End masts are real arena limits, projected with the same camera
             // as the player. No invisible clamp partway along a continuous deck.

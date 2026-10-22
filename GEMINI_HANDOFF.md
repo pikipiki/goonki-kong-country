@@ -1,5 +1,13 @@
 # Reprise Gemini — Goonk Country — 22 octobre 2026
 
+## Dernière correction — défilement du décor du boss 2D (22 octobre 2026)
+
+Priorité sur les historiques. Base Git `27884e0` ; cette correction est locale, non committée. `BossScene2D.tsx` dessinait le bateau et l'île en coordonnées écran fixes, alors que les acteurs suivaient `cameraLeft`. Le décor est maintenant ancré au centre du monde : salle ROM de 12 unités, échelle uniforme préservant son ratio, extensions latérales/hautes/basses et île sous la même projection que les personnages. Le plan du pont reste aligné sur le sol physique. Le décor de secours défile également. Aucun changement de physique.
+
+Vérification : `scripts/boss-scenery-browser.mjs`, 390×844 et 844×390. Déplacement réel avec les boutons directionnels de x=3 à ~10,6, puis retour ~2,6 ; aucune écriture dans le jeu. Le bateau défile dans les deux sens exactement avec le déplacement de caméra ; échelle et hauteur du sol stables, 2PV/5vies conservés, aucune erreur JS. Captures `reference/boss-scenery-{portrait,landscape}-{left,right}.png`, mesures `reference/boss-scenery-browser.json`. Les 257 tests/40 fichiers et la compilation TypeScript/Vite passent. Les précédents tests de combat restent documentés ; pas de nouveau combat complet pour cette correction visuelle seule.
+
+---
+
 ## Priorité de reprise — objets du boss, limites visibles, douleur et boulets (22 octobre 2026)
 
 Cette section prévaut sur les historiques ci-dessous. Base Git : `7d63ea2 Improve 2D camera, tokens, audio, and mobile framing.` Corrections locales non committées dans `/Users/sevenone./Documents/git/goonk-country` ; serveur utilisateur `5174` conservé.

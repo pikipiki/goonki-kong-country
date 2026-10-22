@@ -1,5 +1,13 @@
 # État prioritaire de reprise — 0.4.0 (22 octobre 2026)
 
+## Dernière correction — défilement du décor du boss 2D (22 octobre 2026)
+
+Priorité sur les historiques. **Commité** : `BossScene2D` ancre le décor boss au monde (salle ROM 12 u, même projection que la caméra/acteurs) ; script `boss-scenery-browser.mjs`, preuves `reference/boss-scenery-*`. Physique inchangée. **257 tests / 40 fichiers**.
+
+Vérification : `scripts/boss-scenery-browser.mjs`, 390×844 et 844×390. Déplacement réel avec les boutons directionnels de x=3 à ~10,6, puis retour ~2,6 ; aucune écriture dans le jeu. Le bateau défile dans les deux sens exactement avec le déplacement de caméra ; échelle et hauteur du sol stables, 2PV/5vies conservés, aucune erreur JS. Captures `reference/boss-scenery-{portrait,landscape}-{left,right}.png`, mesures `reference/boss-scenery-browser.json`. Les 257 tests/40 fichiers et la compilation TypeScript/Vite passent. Les précédents tests de combat restent documentés ; pas de nouveau combat complet pour cette correction visuelle seule.
+
+---
+
 ## Priorité de reprise — objets du boss, limites visibles, douleur et boulets (22 octobre 2026)
 
 Cette section prévaut sur les historiques ci-dessous. Livré en commit : objets boss ROM 2D, `bossArena.ts`, SFX douleur/boulets, boulets 3D, preuves `boss-feedback-*`. **257 tests / 40 fichiers**.
@@ -99,7 +107,7 @@ ROM fournie SHA256 `628147468c3539283197f58f03b94df49758a332831857481ea9cc31645f
 
 Cette section prévaut sur l’historique ci-dessous. Dépôt : `Documents/git/goonk-country`. Handoff avant commit : `.cursor/skills/handoff-before-commit/SKILL.md`.
 
-**Dernier commit** : boss — sprites tonneaux 2D, limites `bossArena`, SFX hurt/impact, boulets 3D, `boss-feedback-browser.mjs` ; parcours boss rejoué (~88 s). Commit précédent `7d63ea2` : cadrage mobile + jetons/audio 2D. **257 tests / 40 fichiers**.
+**Dernier commit** : décor boss 2D défile avec la caméra (`BossScene2D`, `boss-scenery-browser.mjs`). Précédent `27884e0` : tonneaux/limites/SFX boss. **257 tests / 40 fichiers**.
 
 ## Reprise Gemini et rebonds du wagon — dernière passe
 
