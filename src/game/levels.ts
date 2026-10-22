@@ -177,7 +177,9 @@ function make(
     biome,
     length,
     platforms,
-    pickups: pickups(platforms, length, biome === "lagoon"),
+    // A single broad boss deck must not generate five overlapping letters
+    // and invisible banana rewards behind the battle renderer.
+    pickups: biome === "ship" ? [] : pickups(platforms, length, biome === "lagoon"),
     enemies,
     barrels,
     tip,

@@ -2,22 +2,24 @@
  * Durations and world velocities are adapted to plush-sized mobile play. */
 export type BossPhase = 'intro'|'throw'|'catch'|'run'|'jump'|'rain'|'hurt'|'fakeDeath'|'getUp'|'dead';
 export interface BossActor {x:number;y:number;vx:number;vy:number;min:number;max:number;hp:number;vulnerable:boolean;bossState?:BossPhase;bossFacing?:number;bossCrowned?:boolean}
-export interface BossProjectile {kind:'crown'|'cannonball';x:number;y:number;vx:number;vy:number;active:boolean;width:number;height:number;age:number;warning:number;returning:boolean;rotation:number}
-export interface BossBattle {phase:BossPhase;phaseTime:number;hits:number;maxHits:number;crowned:boolean;facing:number;left:number;right:number;passes:number;jumps:number;hopTime:number;rainCount:number;spawned:number;ballClock:number;afterJumps:'rain'|'throw';totalTime:number}
+export interface BossProjectile {kind:'crown'|'cannonball';x:number;y:number;vx:number;vy:number;active:boolean;width:number;height:number;age:number;warning:number;returning:boolean;rotation:number;motionClock?:number;bounces?:number;impact?:number}
+export interface BossBattle {phase:BossPhase;phaseTime:number;hits:number;maxHits:number;crowned:boolean;facing:number;left:number;right:number;passes:number;jumps:number;hopTime:number;rainCount:number;spawned:number;ballClock:number;afterJumps:'rain'|'throw';totalTime:number;hurtSoundPlayed?:boolean}
 export const BOSS_MAX_HITS = 10;
 export function createBossBattle(b:BossActor):BossBattle {
- return {phase:'intro',phaseTime:0,hits:0,maxHits:BOSS_MAX_HITS,crowned:true,facing:-1,left:b.min-1,right:b.max+1,passes:0,jumps:0,hopTime:0,rainCount:0,spawned:0,ballClock:0,afterJumps:'throw',totalTime:0};
+ return {phase:'intro',phaseTime:0,hits:0,maxHits:BOSS_MAX_HITS,crowned:true,facing:-1,left:b.min-1,right:b.max+1,passes:0,jumps:0,hopTime:0,rainCount:0,spawned:0,ballClock:0,afterJumps:'throw',totalTime:0,hurtSoundPlayed:true};
 }
 function phase(s:BossBattle,next:BossPhase){s.phase=next;s.phaseTime=0;}
 function jumping(s:BossBattle,count:number,after:'rain'|'throw'){s.jumps=count;s.hopTime=0;s.afterJumps=after;phase(s,'jump');}
 export function registerBossHit(s:BossBattle,b:BossActor,shots:BossProjectile[]) {
- s.hits=Math.max(s.hits+1,s.maxHits-b.hp);s.crowned=true;b.vulnerable=false;b.vx=0;b.vy=0;b.y=0;
+ s.hits=Math.max(s.hits+1,s.maxHits-b.hp);s.hurtSoundPlayed=false;s.crowned=true;b.vulnerable=false;b.vx=0;b.vy=0;b.y=0;
  shots.forEach(p=>p.active=false);
  phase(s,b.hp<=0?'dead':'hurt');
 }
 export function bossAcceptsHit(s:BossBattle){return !['hurt','fakeDeath','getUp','dead'].includes(s.phase);}
 export function updateBossBattle(s:BossBattle,b:BossActor,shots:BossProjectile[],dt:number,onEvent:(name:string)=>void=()=>{}) {
  s.phaseTime+=dt;s.totalTime+=dt;b.vx=0;b.vy=0;
+ // Rev2 hurt animation $1A8: three 2-frame poses, then sound command8F53.
+ if((s.phase==='hurt'||s.phase==='dead')&&!s.hurtSoundPlayed&&s.phaseTime>=6/60-1e-6){s.hurtSoundPlayed=true;onEvent('boss-hurt');}
  const low=s.left+1,high=s.right-1;
  if(s.phase==='intro'){
   b.y=Math.abs(Math.sin(Math.min(1,s.phaseTime/1.8)*Math.PI*3))*.7;
@@ -72,7 +74,20 @@ export function updateBossBattle(s:BossBattle,b:BossActor,shots:BossProjectile[]
    p.x+=p.vx*dt;p.y=1.35+Math.sin(p.age*5)*.08;
    if(p.returning&&Math.abs(p.x-b.x)<.7)p.active=false;
   }else if(p.warning>0)p.warning=Math.max(0,p.warning-dt);
-  else {p.vy-=21*dt;p.y+=p.vy*dt;if(p.y<-.55)p.active=false;}
+  else {
+   // Fixed poses: hold each position for two simulation frames. Rendering and
+   // hit tests share these positions, with no subframe interpolation.
+   if((p.impact??0)>0){p.impact=Math.max(0,p.impact!-dt);continue;}
+   p.motionClock=(p.motionClock??0)+dt;
+   while(p.motionClock>=1/30&&p.active){
+    p.motionClock-=1/30;p.vy-=21/30;p.y+=p.vy/30;
+    if(p.y<=p.height/2&&p.vy<0){
+     p.y=p.height/2;
+     if(!p.bounces){p.bounces=1;p.vy=6;p.impact=.10;p.motionClock=0;onEvent('boss-ball-impact');break;}
+     p.active=false;
+    }
+   }
+  }
  }
  b.x=Math.max(low,Math.min(high,b.x));b.vulnerable=s.phase==='catch'&&!s.crowned;
  b.bossState=s.phase;b.bossFacing=s.facing;b.bossCrowned=s.crowned;

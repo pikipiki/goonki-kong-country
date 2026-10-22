@@ -1,3 +1,4 @@
+import {bossArenaBounds} from "../game/bossArena";
 import {useMemo,useRef,useEffect} from 'react';
 import {useFrame} from '@react-three/fiber';
 import {Group,BoxGeometry,SphereGeometry,ConeGeometry,CylinderGeometry,TorusGeometry,MeshStandardMaterial,DoubleSide,CanvasTexture,SpriteMaterial} from 'three';
@@ -46,7 +47,11 @@ export function KingBossModel({enemy,game}:{enemy:Enemy;game?:Game}){
 }
 export function BossProjectiles3D({game}:{game:Game}){
  const root=useRef<Group>(null);
- useFrame(()=>root.current?.children.forEach((g,i)=>{const p=game.bossProjectiles?.[i];g.visible=!!p?.active;if(!p)return;g.position.set(p.x,p.warning>0?.03:p.y,.2);g.rotation.z=p.kind==='crown'?p.rotation:0;g.children[0].visible=p.kind==='crown';g.children[1].visible=p.kind==='cannonball'&&p.warning<=0;g.children[2].visible=p.kind==='cannonball'&&p.warning>0;g.children[2].scale.setScalar(.6+Math.sin(game.time*18)*.12);}));
+ useFrame(()=>root.current?.children.forEach((g,i)=>{const p=game.bossProjectiles?.[i];g.visible=!!p?.active;if(!p)return;g.position.set(p.x,p.warning>0?.03:p.y,.2);g.rotation.z=p.kind==='crown'?p.rotation:0;g.children[0].visible=p.kind==='crown';g.children[1].visible=p.kind==='cannonball'&&p.warning<=0;
+ const hit=(p.impact??0)>0;
+ g.children[1].scale.set(hit?.43:.34,hit?.21:.34,hit?.40:.34);
+ g.children[1].rotation.z=Math.floor(p.age*12)*Math.PI/8;
+ g.children[2].visible=p.kind==='cannonball'&&p.warning>0;g.children[2].scale.setScalar(.6+Math.sin(game.time*18)*.12);}));
  return <group ref={root} name="boss-projectiles">{Array.from({length:32},(_,i)=><group key={i} visible={false}>
   <group scale={.85}><Crown/></group><mesh geometry={sphere} scale={.34} material={mat('#293039')} castShadow/>
   <mesh geometry={ring} rotation={[-Math.PI/2,0,0]}><meshBasicMaterial color="#ffd56d" transparent opacity={.75}/></mesh>
@@ -62,7 +67,9 @@ function FakeCredits({game}:{game:Game}){
 /** The ROM scene frames a gold deck with hanging rigging, port cannons,
  * stacked barrels and the distant island; keep these silhouettes in 3D. */
 export function ShipArena({game}:{game:Game}){
+ const bounds=bossArenaBounds(game.level.length);
  return <group name="gangplank-galleon-arena">
+  {[bounds.left,bounds.right].map(x=><Part key={`edge-${x}`} at={[x,4.4,.1]} size={[.18,9,.2]} color="#6d4b2b" shape="box"/>)}
   <mesh geometry={box} position={[11,-.65,0]} scale={[25,1.2,4.6]} material={mat('#694528')}/>
   {Array.from({length:50},(_,i)=><mesh key={i} geometry={box} position={[-1.25+i*.5,-.045,0]} scale={[.475,.1,4.5]} material={mat(i%3?'#c69a50':'#ae7a36')}/>)}
   <Part at={[11,.65,-2.2]} size={[25,.18,.25]} color="#8d572b" shape="box"/>

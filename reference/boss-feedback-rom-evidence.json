@@ -1,0 +1,13 @@
+{
+  "romSha256": "628147468c3539283197f58f03b94df49758a332831857481ea9cc31645f0527",
+  "method": "REA ZIP identity; exact local Rev2 bytes + existing disassembly navigation. No native65816 decompilation.",
+  "hurtAnimationId": "0x1A8",
+  "pointerTablePC": "0x3E88C2",
+  "hurtScriptPC": "0x3eebda",
+  "scriptBytes": "024416024816024c168f53105016",
+  "soundCommand": "8f53",
+  "soundId": 83,
+  "delayFrames": 6,
+  "cannonballSource": "CODE_B6F06C/F0A3: accelerates per frame, hits deck, upward impulse $0600, then exits after rebound. Mobile velocities/cadence remain adapted.",
+  "animationAdaptation": "Cannonball poses update at 30 Hz, hold impact for 100 ms and rebound. This cadence, squash and world velocities are deliberate mobile adaptations; not verified SNES timings."
+}

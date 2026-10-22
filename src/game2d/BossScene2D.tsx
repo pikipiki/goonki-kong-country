@@ -1,3 +1,4 @@
+import {bossArenaBounds, BOSS_BARREL_HEIGHT, BOSS_CARRY} from "../game/bossArena";
 import { useEffect, useRef } from "react";
 import { STEP, type Game, type Input } from "../game/engine";
 import { ENEMY_DESIGNS } from "../game/enemies";
@@ -19,6 +20,8 @@ interface BossAssets {
         groups: Record<string, number[]>;
     };
     background: HTMLImageElement | null;
+    objects: HTMLImageElement;
+    objectManifest: {frames: Frame[]; groups: Record<string, number[]>};
 }
 function url(path: string) { return `${import.meta.env.BASE_URL.replace(/\/?$/, "/")}rom2d/${path}`; }
 function image(src: string): Promise<HTMLImageElement> { return new Promise((resolve, reject) => { const img = new Image(); img.onload = () => resolve(img); img.onerror = reject; img.src = url(src); }); }
@@ -26,7 +29,7 @@ let assetsPromise: Promise<BossAssets> | null = null;
 function loadAssets(): Promise<BossAssets> {
     if (!assetsPromise)
         assetsPromise = Promise.all([image("boss-sprites.png"), fetch(url("boss.json")).then(r => { if (!r.ok)
-                throw new Error("Missing boss atlas"); return r.json(); }), image("boss-background.png").catch(() => null)]).then(([image, manifest, background]) => ({ image, manifest, background })).catch(e => { assetsPromise = null; throw e; });
+                throw new Error("Missing boss atlas"); return r.json(); }), image("boss-background.png").catch(() => null), image("sprites.png"), fetch(url("manifest.json")).then(r => {if(!r.ok)throw new Error("Missing object atlas");return r.json();})]).then(([image, manifest, background, objects, objectManifest]) => ({ image, manifest, background, objects, objectManifest })).catch(e => { assetsPromise = null; throw e; });
     return assetsPromise;
 }
 /** Keep the original 256×224 room undistorted. Extend its own sky, rigging
@@ -194,17 +197,35 @@ export function BossScene2D({ game, input, onTick }: {
                 return true;
             };
             draw("island", 0, w * .5, floor - 190 + 96, false, 40);
-            for (const b of game.level.barrels) {
-                if (b.kind === "cannon" || game.usedBarrels.has(game.level.barrels.indexOf(b)))
-                    continue;
-                const x = px(b.x), y = py(b.y);
-                ctx.fillStyle = "#91552a";
-                ctx.fillRect(x - 4, y - 8, 8, 8);
-                ctx.fillStyle = "#c2a263";
-                ctx.fillRect(x - 4, y - 7, 8, 1);
-                ctx.fillRect(x - 4, y - 2, 8, 1);
-                if (b.kind === "rescue") { ctx.fillStyle = "#f3ca69"; ctx.font = "bold 5px monospace"; ctx.textAlign = "center"; ctx.fillText("g", x, y - 2); }
+            const bounds = bossArenaBounds(game.level.length);
+            // End masts are real arena limits, projected with the same camera
+            // as the player. No invisible clamp partway along a continuous deck.
+            for(const edge of [bounds.left,bounds.right]) {
+                const x=px(edge), pole=Math.max(3,scale*.18);
+                ctx.fillStyle="#49321f";ctx.fillRect(x-pole/2,0,pole,floor+scale*.3);
+                ctx.fillStyle="#bd8c48";ctx.fillRect(x-pole/2,0,Math.max(1,pole*.3),floor+scale*.3);
+                ctx.strokeStyle="#aa844a";ctx.lineWidth=Math.max(1,scale*.07);
+                for(const y of [1,2.15]){ctx.beginPath();ctx.moveTo(x,py(y));ctx.lineTo(x+(edge===bounds.left?-1:1)*scale,py(y)+scale*.12);ctx.stroke();}
             }
+            ctx.strokeStyle="#e2ad5c";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(px(bounds.left),floor);ctx.lineTo(px(bounds.right),floor);ctx.stroke();
+            const objectFrame=(group:string,time:number)=>{
+                const list=assets?.objectManifest.groups[group];
+                return list?.length?assets!.objectManifest.frames[list[Math.floor(time*12)%list.length]]:undefined;
+            };
+            const barrel=(kind:string,x:number,y:number,anchor:'feet'|'centre',time:number)=>{
+                const f=objectFrame(kind==='rescue'?'dk_barrel':kind==='checkpoint'?'checkpoint_barrel':kind==='rolling'?'barrel_roll':'barrel_idle',time);
+                // Fixed WORLD height in every state; never fixed canvas pixels.
+                const s=BOSS_BARREL_HEIGHT*scale/40;
+                if(!f||!assets){ctx.fillStyle="#9b622f";ctx.fillRect(x-.4*scale,y-(anchor==='feet'?1:.5)*BOSS_BARREL_HEIGHT*scale,.8*scale,BOSS_BARREL_HEIGHT*scale);return;}
+                const ax=x-(f.ox+f.w/2)*s, ay=y-(f.oy+f.h*(anchor==='feet'?1:.5))*s;
+                const drawFrame=(frame:Frame)=>ctx.drawImage(assets!.objects,frame.x,frame.y,frame.w,frame.h,ax+frame.ox*s,ay+frame.oy*s,frame.w*s,frame.h*s);
+                drawFrame(f);
+                if(kind==='rescue'){const letters=objectFrame('dk_letters',time);if(letters)drawFrame(letters);}
+            };
+            game.level.barrels.forEach((b,i)=>{
+                if(b.kind==='cannon'||game.usedBarrels.has(i))return;
+                barrel(b.kind,px(b.x),py(b.y),'feet',game.time);
+            });
             if (boss) {
                 const phase = fight?.phase ?? "intro", group = phase === "intro" ? "jump" : phase === "run" ? "run" : phase === "throw" ? "throw" : phase === "jump" ? "jump" : phase === "hurt" ? "hurt" : phase === "fakeDeath" || phase === "dead" ? "fall" : phase === "getUp" ? "getUp" : phase === "rain" ? "rain" : fight?.crowned === false ? "wait" : "idle";
                 const x = px(boss.x), y = py(boss.y), bossHeight = ENEMY_DESIGNS.boss.height * scale;
@@ -234,25 +255,19 @@ export function BossScene2D({ game, input, onTick }: {
                         ctx.fillRect(x - 5, y - 4, 10, 7);
                     }
                 }
-                else if (!draw("cannonball", 0, x, y, false, Math.max(8, shot.height * scale), true, undefined, true)) {
-                    ctx.fillStyle = "#252326";
-                    ctx.beginPath();
-                    ctx.arc(x, y, Math.max(4, shot.width * scale / 2), 0, Math.PI * 2);
-                    ctx.fill();
+                else {
+                    ctx.save();ctx.translate(x,y);
+                    if((shot.impact??0)>0)ctx.scale(1.25,.65);
+                    if(!draw("cannonball",0,0,0,false,shot.height*scale,true,undefined,true)){
+                        ctx.fillStyle="#252326";ctx.beginPath();ctx.arc(0,0,shot.width*scale,0,Math.PI*2);ctx.fill();
+                    }
+                    ctx.restore();
                 }
             }
             for (const t of game.thrown) {
                 if (!t.active)
                     continue;
-                ctx.save();
-                ctx.translate(px(t.x), py(t.y));
-                ctx.rotate(game.time * 9);
-                ctx.fillStyle = "#a16b36";
-                ctx.fillRect(-4, -4, 8, 8);
-                ctx.fillStyle = "#d4b46d";
-                ctx.fillRect(-4, -3, 8, 1);
-                ctx.fillRect(-4, 2, 8, 1);
-                ctx.restore();
+                barrel('rolling',px(t.x),py(t.y),'centre',game.time);
             }
             if (boss?.alive && (px(boss.x) < 0 || px(boss.x) > w)) {
                 const right = px(boss.x) > w;
@@ -267,9 +282,7 @@ export function BossScene2D({ game, input, onTick }: {
             if (!(p.invincible > 0 && Math.sin(game.time * 34) < -.45))
                 plush.draw(ctx, px(p.x), py(p.y), pose(p.active === 0, p.facing, false), plushScale);
             if (p.carry >= 0) {
-                const x = px(p.x + p.facing * .5), y = py(p.y + 1.0);
-                ctx.fillStyle = "#a16b36"; ctx.fillRect(x - 4, y - 4, 8, 8);
-                ctx.fillStyle = "#d4b46d"; ctx.fillRect(x - 4, y - 3, 8, 1); ctx.fillRect(x - 4, y + 2, 8, 1);
+                barrel(game.level.barrels[p.carry]?.kind??'throw',px(p.x+p.facing*BOSS_CARRY.x),py(p.y+BOSS_CARRY.y),'centre',game.time);
             }
             ui += dt;
             if (ui > .09) {

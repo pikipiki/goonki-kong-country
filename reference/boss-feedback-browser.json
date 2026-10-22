@@ -1,0 +1,245 @@
+{
+  "report": [
+    {
+      "format": "portrait",
+      "mode": "2d",
+      "jumps": [
+        {
+          "active": 0,
+          "hp": 2,
+          "lives": 5,
+          "bossHP": 9,
+          "sounds": [
+            {
+              "id": 83,
+              "peak": 0.3583918809890747,
+              "state": "running",
+              "time": 3.2833333333333266
+            }
+          ]
+        },
+        {
+          "active": 1,
+          "hp": 2,
+          "lives": 5,
+          "bossHP": 9,
+          "sounds": [
+            {
+              "id": 83,
+              "peak": 0.3583918809890747,
+              "state": "running",
+              "time": 3.299999999999993
+            }
+          ]
+        }
+      ],
+      "objects": {
+        "ground": {
+          "kind": "barrel_idle",
+          "ratio": 0.6355555555555557,
+          "carry": -1,
+          "thrown": 0
+        },
+        "carried": {
+          "kind": "barrel_idle",
+          "ratio": 0.6355555555555557,
+          "carry": 1,
+          "thrown": 0
+        },
+        "thrown": {
+          "kind": "barrel_roll",
+          "ratio": 0.6355555555555557,
+          "carry": -1,
+          "thrown": 1
+        },
+        "barrelBossHP": 9,
+        "limits": [
+          {
+            "side": "left",
+            "x": 0.75,
+            "y": 0,
+            "vx": 0,
+            "hp": 2
+          },
+          {
+            "side": "right",
+            "x": 21.25,
+            "y": 0,
+            "vx": 0,
+            "hp": 2
+          }
+        ]
+      }
+    },
+    {
+      "format": "portrait",
+      "mode": "3d",
+      "jumps": [
+        {
+          "active": 0,
+          "hp": 2,
+          "lives": 5,
+          "bossHP": 9,
+          "sounds": [
+            {
+              "id": 83,
+              "peak": 0.3583918809890747,
+              "state": "running",
+              "time": 3.2833333333333266
+            }
+          ]
+        },
+        {
+          "active": 1,
+          "hp": 2,
+          "lives": 5,
+          "bossHP": 9,
+          "sounds": [
+            {
+              "id": 83,
+              "peak": 0.3583918809890747,
+              "state": "running",
+              "time": 3.299999999999993
+            }
+          ]
+        }
+      ],
+      "balls": {
+        "poseCount": 126,
+        "heldFallingPoses": true,
+        "impact": {
+          "y": 0.34,
+          "warning": 0,
+          "impact": 0.1,
+          "bounces": 1,
+          "renderY": 0.34,
+          "scaleX": 0.43,
+          "scaleY": 0.21
+        },
+        "reboundPeak": 1.1
+      }
+    },
+    {
+      "format": "landscape",
+      "mode": "2d",
+      "jumps": [
+        {
+          "active": 0,
+          "hp": 2,
+          "lives": 5,
+          "bossHP": 9,
+          "sounds": [
+            {
+              "id": 83,
+              "peak": 0.3583918809890747,
+              "state": "running",
+              "time": 3.2833333333333266
+            }
+          ]
+        },
+        {
+          "active": 1,
+          "hp": 2,
+          "lives": 5,
+          "bossHP": 9,
+          "sounds": [
+            {
+              "id": 83,
+              "peak": 0.3583918809890747,
+              "state": "running",
+              "time": 3.299999999999993
+            }
+          ]
+        }
+      ],
+      "objects": {
+        "ground": {
+          "kind": "barrel_idle",
+          "ratio": 0.5866666666666667,
+          "carry": -1,
+          "thrown": 0
+        },
+        "carried": {
+          "kind": "barrel_idle",
+          "ratio": 0.5866666666666667,
+          "carry": 1,
+          "thrown": 0
+        },
+        "thrown": {
+          "kind": "barrel_roll",
+          "ratio": 0.5866666666666667,
+          "carry": -1,
+          "thrown": 1
+        },
+        "barrelBossHP": 9,
+        "limits": [
+          {
+            "side": "left",
+            "x": 0.75,
+            "y": 0,
+            "vx": 0,
+            "hp": 2
+          },
+          {
+            "side": "right",
+            "x": 21.25,
+            "y": 0,
+            "vx": 0,
+            "hp": 2
+          }
+        ]
+      }
+    },
+    {
+      "format": "landscape",
+      "mode": "3d",
+      "jumps": [
+        {
+          "active": 0,
+          "hp": 2,
+          "lives": 5,
+          "bossHP": 9,
+          "sounds": [
+            {
+              "id": 83,
+              "peak": 0.3583918809890747,
+              "state": "running",
+              "time": 3.2833333333333266
+            }
+          ]
+        },
+        {
+          "active": 1,
+          "hp": 2,
+          "lives": 5,
+          "bossHP": 9,
+          "sounds": [
+            {
+              "id": 83,
+              "peak": 0.3583918809890747,
+              "state": "running",
+              "time": 3.299999999999993
+            }
+          ]
+        }
+      ],
+      "balls": {
+        "poseCount": 126,
+        "heldFallingPoses": true,
+        "impact": {
+          "y": 0.34,
+          "warning": 0,
+          "impact": 0.1,
+          "bounces": 1,
+          "renderY": 0.34,
+          "scaleX": 0.43,
+          "scaleY": 0.21
+        },
+        "reboundPeak": 1.1
+      }
+    }
+  ],
+  "errors": [],
+  "stagedReproductions": true,
+  "damageEnabled": true
+}
