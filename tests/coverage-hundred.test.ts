@@ -75,18 +75,18 @@ it('covers dead enemies, missing bonus rooms, and a zero cannon vector', () => {
   enemy.alive = false
   expect(enemyVisibleToCamera(game, enemy)).toBe(false)
   expect(enemySimulationActive(game, enemy)).toBe(false)
-    enemy.alive = true
-    enemy.hurt = 1
-    enemy.x = game.player.x
-    enemy.y = game.player.y
-    expect(enemyRenderVisible(enemy, 0, game)).toBe(true)
-    const bonusRooms = game.level.bonusRooms
-    try {
-      game.level.bonusRooms = undefined
-      expect(isBonusCompleted(game, 0)).toBe(false)
-    } finally {
-      game.level.bonusRooms = bonusRooms
-    }
+  enemy.alive = true
+  enemy.hurt = 1
+  enemy.x = game.player.x
+  enemy.y = game.player.y
+  expect(enemyRenderVisible(enemy, 0, game)).toBe(true)
+  const bonusRooms = game.level.bonusRooms
+  try {
+    game.level.bonusRooms = undefined
+    expect(isBonusCompleted(game, 0)).toBe(false)
+  } finally {
+    game.level.bonusRooms = bonusRooms
+  }
   const savedVectors = CANNON_VECTORS.map((vector) => ({
     velocityXRaw: vector.velocityXRaw,
     velocityYRaw: vector.velocityYRaw,
@@ -162,19 +162,19 @@ it('covers coral dismount, boss creation, and thrown culls', () => {
 
 it('covers platform floors, cannon lock, roll jump, and inactive shots', () => {
   const game = new Game()
-    game.start(4, false)
-    const platforms = game.level.platforms
-    try {
-      game.level.platforms = [
-        { x: 0, y: 5, w: 2, h: 1 },
-        { x: 0, y: 1, w: 2, h: 1 },
-        { x: 30, y: 1, w: 2, h: 1 },
-      ]
-      expect(floorAtWorld(game, 0, -100)).toBeNull()
-      expect(floorAtWorld(game, 0, 20)).toBe(5)
-    } finally {
-      game.level.platforms = platforms
-    }
+  game.start(4, false)
+  const platforms = game.level.platforms
+  try {
+    game.level.platforms = [
+      { x: 0, y: 5, w: 2, h: 1 },
+      { x: 0, y: 1, w: 2, h: 1 },
+      { x: 30, y: 1, w: 2, h: 1 },
+    ]
+    expect(floorAtWorld(game, 0, -100)).toBeNull()
+    expect(floorAtWorld(game, 0, 20)).toBe(5)
+  } finally {
+    game.level.platforms = platforms
+  }
   game.player.cannonLock = 99
   tickPlayerCannonLock(game)
   expect(game.player.cannonLock).toBe(-1)
@@ -183,14 +183,14 @@ it('covers platform floors, cannon lock, roll jump, and inactive shots', () => {
   expect(game.player.rollJumpMomentum).toBe(0)
   game.enemyShots = [{ x: 1, y: 1, vx: 1, vy: 1, active: false }]
   simulateEnemyShots(game, game.player, 0.016)
-    const walls = game.level.breakableWalls
-    try {
-      game.level.breakableWalls = [{ x: 1, y: 1, w: 1, h: 1 }]
-      game.thrown = [{ x: 1, y: 1, vx: 0, vy: 0, active: false }]
-      game.breakWallsWithThrown()
-    } finally {
-      game.level.breakableWalls = walls
-    }
+  const walls = game.level.breakableWalls
+  try {
+    game.level.breakableWalls = [{ x: 1, y: 1, w: 1, h: 1 }]
+    game.thrown = [{ x: 1, y: 1, vx: 0, vy: 0, active: false }]
+    game.breakWallsWithThrown()
+  } finally {
+    game.level.breakableWalls = walls
+  }
   game.trail = Array.from({ length: 23 }, () => ({
     x: 0,
     y: 0,
@@ -204,16 +204,16 @@ it('covers platform floors, cannon lock, roll jump, and inactive shots', () => {
 it('covers a bonus index whose room disappeared', () => {
   const game = new Game()
   game.start(0, false)
-    game.bonus = null
-    game.bonusDoorCooldown = 0
-    const bonusRooms = game.level.bonusRooms
-    try {
-      game.level.bonusRooms = []
-      vi.spyOn(bonusEnter, 'findEnterableBonusIndex').mockReturnValue(0)
-      expect(tryEnterBonusRoom(game, emptyInput(), game.player.x)).toBe(false)
-    } finally {
-      game.level.bonusRooms = bonusRooms
-    }
+  game.bonus = null
+  game.bonusDoorCooldown = 0
+  const bonusRooms = game.level.bonusRooms
+  try {
+    game.level.bonusRooms = []
+    vi.spyOn(bonusEnter, 'findEnterableBonusIndex').mockReturnValue(0)
+    expect(tryEnterBonusRoom(game, emptyInput(), game.player.x)).toBe(false)
+  } finally {
+    game.level.bonusRooms = bonusRooms
+  }
 })
 
 it('covers manifest rejection and a missing effect buffer', async () => {

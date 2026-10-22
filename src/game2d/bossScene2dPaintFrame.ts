@@ -160,9 +160,7 @@ function paintBossKing(paint: BossPaintContext) {
     ctx,
     (bossBattle?.facing ?? -1) < 0,
     undefined,
-    !(['throw', 'hurt', 'fall', 'getUp'] as readonly string[]).includes(
-      group,
-    ),
+    !(['throw', 'hurt', 'fall', 'getUp'] as readonly string[]).includes(group),
     bossScale,
   )
 

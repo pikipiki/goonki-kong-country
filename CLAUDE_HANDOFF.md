@@ -29,7 +29,8 @@ et `SECURITY.md` pour l’organisation actuelle et les preuves de validation.
   alias dans `tsconfig.app.json`).
 - Carte île 3D : zoom caméra via `useMapIslandProjection` (plus de `@react-three/drei`
   sur la scène map). Installs : `.npmrc` + `NPM_FLAGS=--legacy-peer-deps` (Netlify).
-- **ESLint** : `npx eslint . --max-warnings 0` vert (e2e + tests coverage-hundred) ;
+- **ESLint / Prettier** : `npx eslint . --max-warnings 0` et `npm run format:check` verts
+  (e2e + tests coverage-hundred) ;
   assouplissements Sonar ciblés
   (`function-return-type` global, règles test) ; util partagé `src/lib/viteAssetPath.ts` ;
   corrections R3F (`renderer`, `r3fClock`), save/ROM query/HUD ; 3 `eslint-disable-next-line`

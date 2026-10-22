@@ -22,7 +22,9 @@ export function useMapIslandProjection(
     activeCamera.updateMatrixWorld()
     onProject(
       nodes.map(([nodeX, nodeZ]) => {
-        const point = new Vector3(nodeX, 0.1, nodeZ + 1.35).project(activeCamera)
+        const point = new Vector3(nodeX, 0.1, nodeZ + 1.35).project(
+          activeCamera,
+        )
         return {
           x: ((point.x + 1) * width) / 2,
           y: ((1 - point.y) * height) / 2,

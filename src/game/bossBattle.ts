@@ -56,12 +56,7 @@ export function registerBossHit(
   setBossPhase(state, actor.hp <= 0 ? 'dead' : 'hurt')
 }
 
-const BOSS_HIT_BLOCKED_PHASES = new Set([
-  'hurt',
-  'fakeDeath',
-  'getUp',
-  'dead',
-])
+const BOSS_HIT_BLOCKED_PHASES = new Set(['hurt', 'fakeDeath', 'getUp', 'dead'])
 
 export function bossAcceptsHit(state: BossBattle): boolean {
   return !BOSS_HIT_BLOCKED_PHASES.has(state.phase)

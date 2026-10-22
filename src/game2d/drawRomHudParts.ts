@@ -117,7 +117,9 @@ export function drawRomHudBananas(
   }
 
   if (digits.length === 10) {
-    const bananaDigits = String(clamp(game.bananas, 0, 999)).padStart(2, '0').split('')
+    const bananaDigits = String(clamp(game.bananas, 0, 999))
+      .padStart(2, '0')
+      .split('')
 
     for (let index = 0; index < bananaDigits.length; index++) {
       const digit = Number(bananaDigits[index] ?? '0') || 0
@@ -171,7 +173,9 @@ export function drawRomHudLives(
   }
 
   if (digits.length === 10) {
-    const livesDigits = String(clamp(game.lives, 0, 99)).padStart(2, '0').split('')
+    const livesDigits = String(clamp(game.lives, 0, 99))
+      .padStart(2, '0')
+      .split('')
 
     for (let index = 0; index < livesDigits.length; index++) {
       const digit = Number(livesDigits[index] ?? '0') || 0
