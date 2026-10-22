@@ -59,14 +59,14 @@ describe('requested animal attacks and boss balance',()=>{
  for(const timer of [.1,2.8]) it(`a thrown barrel damages the boss at cycle ${timer}`,()=>{
   const g=new Game();g.start(6);const b=g.enemies[0];b.timer=timer;g.player.x=b.x-5;
   g.thrown.push({x:b.x-.2,y:1,vx:1,vy:0,active:true});frame(g);
-  expect(b.hp).toBe(4);expect(g.thrown.some(t=>t.active)).toBe(false);expect(g.player.hp).toBe(2);
+  expect(b.hp).toBe(9);expect(g.thrown.some(t=>t.active)).toBe(false);expect(g.player.hp).toBe(2);
  });
  it('picks up the actual arena barrel and throws it all the way into the boss',()=>{
   const g=new Game();g.start(6);const boss=g.enemies[0];g.player.x=10;
   frame(g,['action'],['action']);expect(g.player.carry).toBe(1);
   frame(g,[],[],['action']);expect(g.player.carry).toBe(-1);expect(g.thrown.length).toBe(1);
-  for(let n=0;n<300 && boss.hp===5;n++)frame(g);
-  expect(boss.hp).toBe(4);expect(g.player.hp).toBe(2);
+  for(let n=0;n<300 && boss.hp===10;n++)frame(g);
+  expect(boss.hp).toBe(9);expect(g.player.hp).toBe(2);
  });
  for(const timer of [0,.6,1.2,2.6]) it(`can jump past the boss safely from its approach at cycle ${timer}`,()=>{
   const g=new Game();g.start(6);const b=g.enemies[0];b.timer=timer;g.player.x=b.x-4;let hurt={};g.onEvent=e=>{if(e==='hurt')hurt={player:{...g.player},boss:{...b}};};

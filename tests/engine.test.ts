@@ -236,11 +236,12 @@ describe("team, barrels, collectibles, progression", () => {
     game.update(emptyInput());
     expect(game.phase).toBe("playing");
   });
-  it("allows five vulnerable boss hits to complete the campaign", () => {
+  it("allows ten vulnerable boss hits to complete the campaign", () => {
     const game = new Game();
     game.start(6);
     const boss = game.enemies[0];
-    for (let n = 0; n < 5; n++) {
+    for (let n = 0; n < 10; n++) {
+      Object.assign(game.bossBattle!,{phase:"catch",phaseTime:.05,crowned:false});
       boss.timer = 2.8;
       boss.hurt = 0;
       boss.y = 0;
@@ -250,6 +251,8 @@ describe("team, barrels, collectibles, progression", () => {
       game.update(emptyInput());
     }
     expect(boss.hp).toBe(0);
+    game.player.x=1;
+    for(let n=0;n<100;n++)game.update(emptyInput());
     expect(game.phase).toBe("victory");
     expect(game.save.unlocked).toBe(6);
   });
@@ -261,7 +264,7 @@ describe("team, barrels, collectibles, progression", () => {
     game.player.y = ENEMY_DESIGNS.boss.height - .09;
     game.player.vy = -1;
     game.update(emptyInput());
-    expect(boss.hp).toBe(5);
+    expect(boss.hp).toBe(10);
   });
   it("pauses the simulation including timers and movement", () => {
     const game = new Game();

@@ -44,6 +44,12 @@ export const en = {
   mapInstructions:
     "Pick a stage on the map. Arrow keys to move, Enter to play.",
   mapEnter: "Enter stage",
+  mapView: "Play in",
+  map2DAvailable: "Choose 2D or 3D",
+  map2DUnavailable: "2D: Jungle & final boss only",
+  demo2DIncludes: "2D demo · Jungle + final boss",
+  demo2DJungle: "Jungle · 2D",
+  demo2DBoss: "Final boss · 2D",
   panelPauseEyebrow: "A BREATH",
   panelGameoverEyebrow: "WE DON'T GIVE UP",
   panelVictoryEyebrow: "THE ISLAND THANKS YOU",
@@ -198,7 +204,7 @@ export const en = {
     p6: {
       name: "King of Thieves",
       subtitle: "GANGPLANK GALLEON",
-      tip: "Dodge the king's leaps. When he pauses, jump on his head!",
+      tip: "Dodge the crown. Jump on his bare head. Watch the falling cannonballs!",
     },
   },
   decor: {
@@ -281,6 +287,12 @@ export const fr: typeof en = {
   mapInstructions:
     "Choisis une étape sur la carte. Flèches pour te déplacer, Entrée pour jouer.",
   mapEnter: "Entrer dans l’étape",
+  mapView: "Jouer en",
+  map2DAvailable: "Choisis 2D ou 3D",
+  map2DUnavailable: "2D : jungle et boss final uniquement",
+  demo2DIncludes: "Démo 2D · Jungle + boss final",
+  demo2DJungle: "Jungle · 2D",
+  demo2DBoss: "Boss final · 2D",
   panelPauseEyebrow: "UN PETIT INSTANT",
   panelGameoverEyebrow: "ON NE BAISSE PAS LES BRAS",
   panelVictoryEyebrow: "L’ÎLE VOUS DIT MERCI",
@@ -434,7 +446,7 @@ export const fr: typeof en = {
     p6: {
       name: "Le roi des voleurs",
       subtitle: "GANGPLANK GALLEON",
-      tip: "Évite les bonds du roi. Quand il reprend son souffle, saute sur sa tête !",
+      tip: "Évite la couronne. Saute sur sa tête découverte. Attention aux boulets !",
     },
   },
   decor: {

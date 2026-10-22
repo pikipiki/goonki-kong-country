@@ -19,6 +19,7 @@ import { AudioSystem } from "./game/audio";
 import { IslandMap } from "./IslandMap";
 import { Scene } from "./Scene";
 import { Scene2D } from "./game2d/Scene2D";
+import { BossScene2D } from "./game2d/BossScene2D";
 import { GameControls } from "./components/GameControls";
 import i18n from "./i18n";
 import { L } from "./i18n/keys";
@@ -119,6 +120,7 @@ export function App() {
   const [mapLevel, setMapLevel] = useState(0);
   const [clearTargetLevel, setClearTargetLevel] = useState(0);
   const [demo2D, setDemo2D] = useState(false);
+  const [mapMode2D, setMapMode2D] = useState(false);
   const [controls] = useState(() => new Controls()),
     [audio] = useState(() => new AudioSystem());
   const [, render] = useState(0),
@@ -149,14 +151,23 @@ export function App() {
     },
     [audio, change, game],
   );
-  const startDemo2D = useCallback(() => {
+  const startDemo2D = useCallback((id = 0) => {
     audio.boot();
     setDemo2D(true);
-    change(() => game.start(0, true));
+    change(() => game.start(id === 6 ? 6 : 0, true));
   }, [audio, change, game]);
+  const selectMapLevel = (id: number) => {
+    setMapLevel(id);
+    if (id !== 0 && id !== 6) setMapMode2D(false);
+  };
+  const enterMapStage = () =>
+    mapMode2D && (mapLevel === 0 || mapLevel === 6)
+      ? startDemo2D(mapLevel)
+      : start(mapLevel);
   const openMap = () =>
     change(() => {
       setMapLevel(game.levelId);
+      setMapMode2D(demo2D && (game.levelId === 0 || game.levelId === 6));
       mapBack.current = game.phase === "title" ? "title" : "paused";
       game.phase = "map";
     });
@@ -271,6 +282,9 @@ export function App() {
     document.addEventListener("gestureend", stopGesture, { passive: false });
     let lastTouchEnd = 0;
     const onTouchEnd = (event: TouchEvent) => {
+      // Native buttons must keep every tap: choosing a mode and entering the
+      // stage are distinct actions even when the second tap is immediate.
+      if (event.target instanceof Element && event.target.closest("button,input,select,a,[role='button']")) return;
       const now = Date.now();
       if (now - lastTouchEnd < 320) event.preventDefault();
       lastTouchEnd = now;
@@ -293,7 +307,7 @@ export function App() {
       audio.boot();
       setDemo2D(true);
       change(() => {
-        game.start(0, true);
+        game.start(params.get("stage") === "boss" || params.get("stage") === "6" ? 6 : 0, true);
         const xParam = params.get("x");
         const yParam = params.get("y");
         if (xParam !== null && xParam !== "") game.player.x = Number(xParam);
@@ -370,7 +384,9 @@ export function App() {
       >
         <SceneBoundary>
           {phase === "map" ? null : demo2D && phase !== "title" ? (
-            <Scene2D game={game} input={controls.input} onTick={tick} />
+            game.levelId === 6
+              ? <BossScene2D game={game} input={controls.input} onTick={tick} />
+              : <Scene2D game={game} input={controls.input} onTick={tick} />
           ) : phase === "clear" ? null : (
             <Scene game={game} input={controls.input} onTick={tick} />
           )}
@@ -488,9 +504,13 @@ export function App() {
               <button className="secondary" onClick={() => start(game.save.unlocked)}>
                 {t(game.save.unlocked ? "continue" : "play")}
               </button>
-              <button className="secondary demo-2d-button" onClick={startDemo2D}>
-                try 2D demo (1 stage only)
-              </button>
+              <div className="demo-2d-choices">
+                <p>{t("demo2DIncludes")}</p>
+                <div>
+                  <button className="secondary demo-2d-button" onClick={() => startDemo2D(0)}>{t("demo2DJungle")}</button>
+                  <button className="secondary demo-2d-button" onClick={() => startDemo2D(6)}>{t("demo2DBoss")}</button>
+                </div>
+              </div>
             </div>
             <div className="duo-note">
               <div className="portraits">
@@ -583,13 +603,13 @@ export function App() {
             </div>
           )}
           {game.levelId === 6 && (
-            <div className="boss-health">
+            <div className="boss-health" role="progressbar" aria-label={t("bossName")} aria-valuemin={0} aria-valuemax={game.bossBattle?.maxHits ?? 10} aria-valuenow={game.enemies.find(e => e.kind === "boss")?.hp ?? 0}>
               <span>{t("bossName")}</span>
               <div>
-                {Array.from({ length: 5 }, (_, n) => (
+                {Array.from({ length: game.bossBattle?.maxHits ?? 10 }, (_, n) => (
                   <i
                     key={n}
-                    className={n < (game.enemies[0]?.hp ?? 0) ? "alive" : ""}
+                    className={n < (game.enemies.find(e => e.kind === "boss")?.hp ?? 0) ? "alive" : ""}
                   />
                 ))}
               </div>
@@ -641,10 +661,8 @@ export function App() {
               selected={mapLevel}
               initial={game.levelId}
               unlocked={LEVELS.length - 1}
-              onSelect={setMapLevel}
-              onConfirm={() =>
-                demo2D && mapLevel === 0 ? startDemo2D() : start(mapLevel)
-              }
+              onSelect={selectMapLevel}
+              onConfirm={enterMapStage}
               stages={MAP_LEVELS}
               mode2D={demo2D}
               onSound={(name) => audio.effect(name)}
@@ -654,11 +672,17 @@ export function App() {
                 <span>{tx(MAP_LEVELS[mapLevel].subtitle)}</span>
                 <strong>{tx(MAP_LEVELS[mapLevel].name)}</strong>
               </p>
+              <fieldset className="map-render-mode">
+                <legend>{t("mapView")}</legend>
+                <div className="map-mode-buttons">
+                  <button type="button" aria-pressed={!mapMode2D} onClick={() => setMapMode2D(false)}>3D</button>
+                  <button type="button" aria-pressed={mapMode2D} disabled={mapLevel !== 0 && mapLevel !== 6} onClick={() => setMapMode2D(true)}>2D</button>
+                </div>
+                <span>{t(mapLevel === 0 || mapLevel === 6 ? "map2DAvailable" : "map2DUnavailable")}</span>
+              </fieldset>
               <button
                 className="primary map-enter"
-                onClick={() =>
-                  demo2D && mapLevel === 0 ? startDemo2D() : start(mapLevel)
-                }
+                onClick={enterMapStage}
               >
                 {t("mapEnter")} <Icon name="arrow" />
               </button>
@@ -709,16 +733,13 @@ export function App() {
                 <IslandMap
                   selected={clearTargetLevel}
                   initial={game.levelId}
-                  unlocked={Math.max(
-                    game.save.unlocked,
-                    Math.min(MAP_LEVELS.length - 1, game.levelId + 1),
-                  )}
+                  unlocked={MAP_LEVELS.length - 1}
                   onSelect={setClearTargetLevel}
-                  onConfirm={() =>
-                    demo2D
-                      ? startDemo2D()
-                      : change(() => game.load(clearTargetLevel))
-                  }
+                  onConfirm={() => change(() => {
+                    setMapLevel(clearTargetLevel);
+                    setMapMode2D(demo2D && (clearTargetLevel === 0 || clearTargetLevel === 6));
+                    game.phase = "map";
+                  })}
                   stages={MAP_LEVELS}
                   mode2D={demo2D}
                   onSound={(name) => audio.effect(name)}
@@ -752,15 +773,10 @@ export function App() {
               onClick={() =>
                 phase === "paused"
                   ? change(() => game.pause())
-                  : demo2D
-                    ? phase === "clear"
-                      ? change(() => {
-                          setDemo2D(false);
-                          game.load(0, "title");
-                        })
-                      : startDemo2D()
+                  : demo2D && phase !== "clear"
+                    ? startDemo2D(game.levelId)
                     : phase === "clear"
-                      ? change(() => game.load(game.levelId + 1))
+                      ? start(Math.min(MAP_LEVELS.length - 1, game.levelId + 1))
                       : start(phase === "gameover" ? game.levelId : 0)
               }
             >

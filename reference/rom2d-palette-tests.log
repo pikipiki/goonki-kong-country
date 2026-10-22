@@ -1,0 +1,12 @@
+test_4bpp_color_one_is_first_stored_color (__main__.SpritePaletteDecoder.test_4bpp_color_one_is_first_stored_color) ... ok
+test_fifteen_words_do_not_read_into_next_record (__main__.SpritePaletteDecoder.test_fifteen_words_do_not_read_into_next_record) ... ok
+test_night_conversion_preserves_index_alignment (__main__.SpritePaletteDecoder.test_night_conversion_preserves_index_alignment) ... ok
+test_exact_supplied_rom_identity (__main__.SuppliedRomAtlas.test_exact_supplied_rom_identity) ... ok
+test_generated_visible_pixels_belong_to_each_rom_palette (__main__.SuppliedRomAtlas.test_generated_visible_pixels_belong_to_each_rom_palette) ... ok
+test_kritter_and_sign_keep_original_shadow_and_highlight (__main__.SuppliedRomAtlas.test_kritter_and_sign_keep_original_shadow_and_highlight) ... ok
+test_rev2_sprite_palette_dma_upload_is_thirty_bytes (__main__.SuppliedRomAtlas.test_rev2_sprite_palette_dma_upload_is_thirty_bytes) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.025s
+
+OK

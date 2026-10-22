@@ -1,3 +1,4 @@
+import { createBossBattle, updateBossBattle, registerBossHit, bossAcceptsHit, BOSS_MAX_HITS, type BossBattle, type BossProjectile, type BossPhase } from "./bossBattle";
 import { cannonWorldPosition } from './cannonMotion';
 import { BUDDY_PHYSICS, ANIMAL_DESIGNS, ENGUARDE_SWIM_BODY, type Animal } from "./animals";
 import { ROM_JUNGLE, ORIGINAL_JUNGLE_ORIGIN } from "./originalJungle";
@@ -78,6 +79,9 @@ export interface Input {
   tapAction?: boolean;
 }
 export interface Enemy extends EnemySpec {
+  bossState?: BossPhase;
+  bossFacing?: number;
+  bossCrowned?: boolean;
   originY: number;
   vx: number;
   alive: boolean;
@@ -268,6 +272,8 @@ export class Game {
   particles: Particle[] = [];
   thrown: Thrown[] = [];
   enemyShots: EnemyShot[] = [];
+  bossBattle: BossBattle | null = null;
+  bossProjectiles: BossProjectile[] = [];
   player!: Player;
   time = 0;
   checkpoint = { x: 3, y: 0 };
@@ -338,6 +344,7 @@ export class Game {
   }
   load(id: number, phase: Phase = "playing") {
     this.bonus = null; this.bonusDoorCooldown = 0;
+    this.bossBattle = null; this.bossProjectiles = [];
     this.sceneRevision++;
     this.cameraBounds = null;
     this.mineRecoveryLayout = 1;
@@ -405,7 +412,7 @@ export class Game {
         (spec.patrolSpeed ??
           (spec.kind === "croc" ? 1.8 : spec.kind === "bee" ? 1.25 : 1.25)),
       alive: true,
-      hp: spec.kind === "boss" ? 5 : 1,
+      hp: spec.kind === "boss" ? BOSS_MAX_HITS : 1,
       vy: 0,
       timer: 0,
       hurt: 0,
@@ -415,6 +422,8 @@ export class Game {
         : 0,
     };
     });
+    const boss=this.enemies.find(e=>e.kind==='boss');
+    if(boss)this.bossBattle=createBossBattle(boss);
     if(this.level.biome !== "lagoon") for(const enemy of this.enemies) {
       if(enemy.kind === "bee" || enemy.kind === "boss" || enemy.pattern === "necky") continue;
       const floor = this.level.originalTerrain
@@ -1300,18 +1309,10 @@ export class Game {
       enemy.timer += dt;
       enemy.hurt = Math.max(0, enemy.hurt - dt);
       if (enemy.kind === "boss") {
-        const cycle = enemy.timer % 3.7;
-        enemy.vulnerable = cycle > 2.55;
-        if (cycle > .5 && cycle < 2.4) {
-          enemy.x = approach(
-            enemy.x,
-            clamp(p.x, enemy.min, enemy.max),
-            (3.2 + (5 - enemy.hp) * 0.25) * dt,
-          );
-          enemy.y =
-            Math.abs(Math.sin((cycle / 0.8) * Math.PI)) *
-            (.7 + (5 - enemy.hp) * 0.08);
-        } else enemy.y = approach(enemy.y, 0, 12 * dt);
+        this.bossBattle ??= createBossBattle(enemy);
+        this.bossProjectiles ??= [];
+        updateBossBattle(this.bossBattle,enemy,this.bossProjectiles,dt,name=>this.onEvent(name));
+        if(this.bossBattle.phase==='dead'&&this.bossBattle.phaseTime>1.5){enemy.alive=false;this.finish();continue;}
       } else if (enemy.pattern === "necky") {
         enemy.x = enemy.min;
         enemy.vx = 0;
@@ -1357,6 +1358,7 @@ export class Game {
         height = ENEMY_DESIGNS[enemy.kind].height,
         width = ENEMY_DESIGNS[enemy.kind].width;
       let hit = false;
+      if(boss && this.bossBattle && !bossAcceptsHit(this.bossBattle))continue;
       for (const barrel of this.thrown) {
         if (
           barrel.active &&
@@ -1418,12 +1420,17 @@ export class Game {
         enemy.hp--;
         enemy.hurt = 1;
         this.onEvent("stomp");
-        this.pop(enemy.x, enemy.y + height, boss ? `${5 - enemy.hp} / 5` : "★");
-        if (enemy.hp <= 0) {
-          enemy.alive = false;
-          if (boss) this.finish();
-        }
+        this.pop(enemy.x, enemy.y + height, boss ? `${BOSS_MAX_HITS - enemy.hp} / ${BOSS_MAX_HITS}` : "★");
+        if(boss && this.bossBattle)registerBossHit(this.bossBattle,enemy,this.bossProjectiles);
+        else if (enemy.hp <= 0) enemy.alive = false;
       }
+    }
+    if(this.bossBattle){
+      p.x=clamp(p.x,1,this.level.length-1);
+      for(const shot of this.bossProjectiles){
+        if(shot.active&&shot.warning<=0&&Math.abs(p.x-shot.x)<shot.width+.3&&p.y<shot.y+shot.height/2&&p.y+1.35>shot.y-shot.height/2){this.damage();}
+      }
+      this.bossProjectiles=this.bossProjectiles.filter(shot=>shot.active);
     }
     const zone = this.level.finishZone;
     if (this.bonus && p.x >= this.level.length - 2) {

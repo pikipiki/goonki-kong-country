@@ -1,0 +1,48 @@
+{
+  "romSha256": "628147468c3539283197f58f03b94df49758a332831857481ea9cc31645f0527",
+  "coreSha256": "fcd68e24de690b15aec70d8f898b604717f1c4151cdf8426384c4d9ee742fb83",
+  "mapStateSha256": "f61cdace0c8e3a7c4944cb02d85a8ad1f4ce6739efe0b07dd725ad082c2fac18",
+  "method": "Load supplied analysis map state, force entrance0x68, pressB2frames+wait180. Then filterOBJ viaSettings.BG_Forced bit0x10 for1frame. Controlledentry/renderfilter, not ordinary play.",
+  "settingsBgForcedOffset": 76,
+  "settingsBefore": 0,
+  "settingsAfter": 16,
+  "patches": [
+    {
+      "frame": 0,
+      "wramAddress": "0x3e",
+      "old": 22,
+      "new": 104,
+      "reason": "Controlled direct boss-stage entry for evidence; not normal play."
+    }
+  ],
+  "state": {
+    "frame": 183,
+    "held": [],
+    "sprite0": {
+      "x": 80,
+      "y": 0,
+      "vxRaw": 768,
+      "vyRaw": 0,
+      "state": 0
+    },
+    "sprite2": {
+      "x": 22,
+      "y": 295,
+      "vxRaw": 82,
+      "vyRaw": -768,
+      "state": 0
+    },
+    "musicId": 24,
+    "inputHeldRaw": 0,
+    "inputPressedRaw": 0,
+    "spriteIds": [
+      0,
+      1,
+      2,
+      105
+    ],
+    "currentKong": 1,
+    "lives": 5,
+    "bananas": 0
+  }
+}

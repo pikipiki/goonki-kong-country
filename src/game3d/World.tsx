@@ -1,3 +1,4 @@
+import { ShipArena } from "./BossBattle3D";
 import { CORAL_WATER_FLOOR_Y } from "../game/marineScale";
 import { OriginalGround } from "./OriginalGround";
 import { OriginalCaveGround } from "./OriginalCaveGround";
@@ -88,8 +89,8 @@ export const PALETTES: Record<
     grass: "#6c772d",
   },
   ship: {
-    sky: "#182837",
-    mist: "#344c59",
+    sky: "#7885a8",
+    mist: "#a6b0c8",
     leaf: "#385641",
     light: "#f4c98b",
     ground: "#674a2a",
@@ -843,16 +844,17 @@ export const World = memo(function World({
       ) : level.originalTerrain === "coral" ? (
         <OriginalCoralGround game={game} />
       ) : (
-        level.platforms.map((platform, i) => (
+        (level.biome === "ship" ? [] : level.platforms).map((platform, i) => (
           <Ground key={i} platform={platform} game={game} />
         ))
       )}
-      {chunks.map((x) => (
+      {level.biome==='ship' && <ShipArena game={game}/>}
+      {(level.biome==='ship'?[]:chunks).map((x) => (
         <ForestChunk key={x} x={x} biome={level.biome} game={game} />
       ))}
-      {(level.biome === "ship" || level.biome === "lagoon") && (
+      {level.biome === "lagoon" && (
         <mesh geometry={box} name="background-water" position={[level.length/2,-4.8,-18]} scale={[level.length+70,0.12,20]}>
-          <meshStandardMaterial color={level.biome === "ship" ? "#284e67" : "#286d62"} metalness={0.3} roughness={0.28}/>
+          <meshStandardMaterial color="#286d62" metalness={0.3} roughness={0.28}/>
         </mesh>
       )}
       {level.originalTerrain === "coral" && (
