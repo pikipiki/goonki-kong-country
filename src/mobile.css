@@ -1452,3 +1452,21 @@ h1 > span {
 /* Ten boss hits remain readable on narrow phones. */
 .boss-health > div { width: min(280px, 72vw); }
 .boss-health i { flex: 1; min-width: 0; }
+
+/* Broad directional targets for the final fight, with independent jump input. */
+.boss-controls .dpad { width: 224px; height: 138px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-content: start; padding-top: 10px; border-radius: 18px; }
+.boss-controls .dpad-ring, .boss-controls .stick { display: none; }
+.boss-controls .direction-button { position: static; width: 100%; min-width: 0; height: 96px; min-height: 96px; border-radius: 22px; font-size: 32px; border-width: 2px; }
+.boss-controls .stop-button { left: calc(50% - 18px); top: 110px; width: 36px; height: 28px; }
+@media (orientation: portrait) and (max-width: 900px) {
+  .boss-controls .controller-layout { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 8px; }
+  .boss-controls .dpad { width: 100%; }
+  .boss-controls .action-button { right: 82px; top: 76px; width: 62px; min-width: 62px; height: 62px; min-height: 62px; }
+  .boss-controls .swap-button { right: 82px; top: 9px; width: 56px; min-width: 56px; height: 56px; min-height: 56px; }
+  .boss-controls .jump-button { top: 38px; width: 82px; min-width: 82px; height: 92px; min-height: 92px; }
+}
+@media (orientation: landscape) and (max-height: 560px) {
+  .boss-controls .dpad { width: 224px; height: 138px; }
+  .boss-controls .direction-button { height: 96px; min-height: 96px; }
+  .boss-controls .action-button { top: 62px; }
+}

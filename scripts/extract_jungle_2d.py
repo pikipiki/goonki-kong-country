@@ -516,7 +516,7 @@ def main():
         "barrel_roll": (["Barrel_Thrown" + str(i) for i in range(1, 9)], "barrel"),
         "barrel_break": (["Barrel_FallsApart" + str(i) for i in range(1, 9)], "barrel"),
         "dk_barrel": (["DKBarrel_Barrel" + str(i) for i in range(1, 7)], "barrel"),
-        "dk_letters": (["DKBarrel_Letters" + str(i) for i in range(1, 8)], "barrel"),
+        "dk_letters": (["DKBarrel_Letters" + str(i) for i in range(1, 8)], "global"),
         "checkpoint_barrel": (["CheckpointBarrel_Pose" + str(i) for i in range(1, 9)], "barrel"),
         "checkpoint_stars": (["CheckpointStars_Pose" + str(i) for i in range(1, 16)], "stars"),
         "cannon_normal": (["BarrelCannon_Base" + str(i) for i in range(1, 17)], "barrel"),

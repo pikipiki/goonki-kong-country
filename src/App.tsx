@@ -118,11 +118,16 @@ export function App() {
       Object.setPrototypeOf(game, Game.prototype);
   }, [game, Game]);
   const [mapLevel, setMapLevel] = useState(0);
-  const [clearTargetLevel, setClearTargetLevel] = useState(0);
   const [demo2D, setDemo2D] = useState(false);
   const [mapMode2D, setMapMode2D] = useState(false);
   const [controls] = useState(() => new Controls()),
     [audio] = useState(() => new AudioSystem());
+  useEffect(() => {
+    // Fast Refresh retains audio as well as Game; new recovery methods must
+    // become available to a tab that was already open before this fix.
+    if (Object.getPrototypeOf(audio) !== AudioSystem.prototype)
+      Object.setPrototypeOf(audio, AudioSystem.prototype);
+  }, [audio, AudioSystem]);
   const [, render] = useState(0),
     [muted, setMuted] = useState(false),
     [help, setHelp] = useState(false),
@@ -171,7 +176,25 @@ export function App() {
       mapBack.current = game.phase === "title" ? "title" : "paused";
       game.phase = "map";
     });
+  const showClearedMap = useCallback(() => change(() => {
+    const next = Math.min(MAP_LEVELS.length - 1, game.levelId + 1);
+    setMapLevel(next);
+    setMapMode2D(demo2D && (next === 0 || next === 6));
+    mapBack.current = "title";
+    game.phase = "map";
+  }), [change, demo2D, game]);
   const phase = game.phase;
+  const audioScene = game.bonus ? "bonus"
+    : game.level.originalTerrain === "cave" ? "cave" : game.level.biome;
+  useEffect(() => {
+    const wake = () => audio.wake();
+    window.addEventListener("pointerdown", wake, true);
+    window.addEventListener("keydown", wake, true);
+    return () => {
+      window.removeEventListener("pointerdown", wake, true);
+      window.removeEventListener("keydown", wake, true);
+    };
+  }, [audio]);
   useEffect(() => {
     game.onEvent = (name) =>
       audio.effect(name, {
@@ -191,23 +214,19 @@ export function App() {
   }, [game, audio, t]);
   useEffect(() => {
     if (phase === "playing") {
-      const scene =
-        game.level.originalTerrain === "cave" ? "cave" : game.level.biome;
-      audio.play(scene);
+      audio.play(audioScene);
     }
     else if (["title","map","clear","victory","gameover"].includes(phase)) audio.play(phase);
     else audio.stop();
     return () => audio.stop();
-  }, [phase, audio, game.levelId]);
+  }, [phase, audio, game.levelId, audioScene]);
   useEffect(() => {
     if (phase !== "clear") return;
-    setClearTargetLevel(game.levelId);
-    const nextId = Math.min(MAP_LEVELS.length - 1, game.levelId + 1);
-    const timer = window.setTimeout(() => {
-      setClearTargetLevel(nextId);
-    }, 380);
+    // BeatLevel lasts 6.89s. Let the fanfare finish even when muted, then
+    // mount the full map at the completed node and walk to the next one.
+    const timer = window.setTimeout(showClearedMap, 7200);
     return () => window.clearTimeout(timer);
-  }, [phase, game.levelId]);
+  }, [phase, game.levelId, showClearedMap]);
   useEffect(() => {
     const keydown = (e: KeyboardEvent) => {
       if (e.code === "Escape" || e.code === "KeyP") {
@@ -728,24 +747,6 @@ export function App() {
                     ? t("panelGameoverDesc")
                     : t("panelClearDesc")}
             </p>
-            {phase === "clear" && (
-              <div className="clear-map-preview">
-                <IslandMap
-                  selected={clearTargetLevel}
-                  initial={game.levelId}
-                  unlocked={MAP_LEVELS.length - 1}
-                  onSelect={setClearTargetLevel}
-                  onConfirm={() => change(() => {
-                    setMapLevel(clearTargetLevel);
-                    setMapMode2D(demo2D && (clearTargetLevel === 0 || clearTargetLevel === 6));
-                    game.phase = "map";
-                  })}
-                  stages={MAP_LEVELS}
-                  mode2D={demo2D}
-                  onSound={(name) => audio.effect(name)}
-                />
-              </div>
-            )}
             {phase !== "paused" && (
               <div className="results">
                 <div>
@@ -776,7 +777,7 @@ export function App() {
                   : demo2D && phase !== "clear"
                     ? startDemo2D(game.levelId)
                     : phase === "clear"
-                      ? start(Math.min(MAP_LEVELS.length - 1, game.levelId + 1))
+                      ? showClearedMap()
                       : start(phase === "gameover" ? game.levelId : 0)
               }
             >
@@ -784,7 +785,7 @@ export function App() {
                 phase === "paused"
                   ? "resume"
                   : phase === "clear"
-                    ? "next"
+                    ? "continueOnMap"
                     : phase === "gameover"
                       ? "retry"
                       : "play",

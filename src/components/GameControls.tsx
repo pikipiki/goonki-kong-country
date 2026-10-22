@@ -208,7 +208,7 @@ export function GameControls({
   );
   return (
     <section
-      className={`controller-deck ${clickMode ? "click-mode" : ""}`}
+      className={`controller-deck ${game.levelId === 6 ? "boss-controls" : ""} ${clickMode ? "click-mode" : ""}`}
       aria-label={t("virtualController")}
     >
       <div className="controller-toolbar">

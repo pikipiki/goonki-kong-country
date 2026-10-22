@@ -1,6 +1,6 @@
 /** Fullscreen 2D map framing. Keep the original island and seven ROM nodes
  * intact, with readable callouts outside its crowded paths on narrow screens. */
-export function romMapLayout(width: number, height: number, fullscreen = true) {
+export function romMapLayout(width: number, height: number, fullscreen = true, focus: readonly number[] = [128, 132]) {
   const portrait = height > width;
   const top = fullscreen ? (portrait ? 88 : 66) : 8;
   const bottom = fullscreen ? (portrait ? 190 : 90) : 8;
@@ -17,5 +17,14 @@ export function romMapLayout(width: number, height: number, fullscreen = true) {
     ? [[left, .04], [right, .19], [left, .36], [left, .55], [right, .53], [left, .79], [right, .91]]
     : [[left, .04], [right, .04], [left, .35], [left, .66], [right, .39], [left, .97], [right, .84]];
   const labels = rows.map(([x, ratio]) => ({ x, y: contentTop + 22 + ratio * (contentHeight - 44) }));
+  if (fullscreen) {
+    // Cover the complete display with the actual ROM map. The viewport pans
+    // with the travelers instead of shrinking the island into an ocean frame.
+    const cover = Math.max(width / 256, height / 224);
+    const centreY = (top + height - bottom) / 2;
+    return {scale: cover,
+      offsetX: Math.max(width - 256 * cover, Math.min(0, width / 2 - focus[0] * cover)),
+      offsetY: Math.max(height - 224 * cover, Math.min(0, centreY - focus[1] * cover)), labels};
+  }
   return { scale: safeScale, offsetX, offsetY, labels };
 }

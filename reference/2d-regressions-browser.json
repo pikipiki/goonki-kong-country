@@ -1,0 +1,156 @@
+{
+  "report": [
+    {
+      "name": "portrait",
+      "framing": {
+        "width": 192,
+        "height": 303,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 390,
+          "height": 616,
+          "top": 0,
+          "right": 390,
+          "bottom": 616,
+          "left": 0
+        }
+      },
+      "token": {
+        "count": 1,
+        "hidden": true,
+        "event": true,
+        "pcm": true
+      },
+      "afterBonus": {
+        "audio": {
+          "trackId": 0,
+          "trackName": "DKIslandSwing",
+          "currentTime": 0.082527,
+          "playing": true,
+          "loadedEffects": 7,
+          "effectsState": "running",
+          "activeVoices": 1,
+          "muted": false,
+          "manifestLoaded": true
+        },
+        "context": "running",
+        "actualPickupSound": true
+      },
+      "clear": {
+        "trackId": 26,
+        "trackName": "BeatLevel",
+        "currentTime": 0.463684,
+        "playing": true,
+        "loadedEffects": 7,
+        "effectsState": "running",
+        "activeVoices": 1,
+        "muted": false,
+        "manifestLoaded": true
+      },
+      "map": {
+        "track": {
+          "trackId": 12,
+          "trackName": "SimianSegue",
+          "currentTime": 0.565044,
+          "playing": true,
+          "loadedEffects": 8,
+          "effectsState": "running",
+          "activeVoices": 1,
+          "muted": false,
+          "manifestLoaded": true
+        },
+        "steps": 3,
+        "arrived": true,
+        "travel": 104
+      },
+      "boss": {
+        "camera": {
+          "x": 13.22,
+          "y": 5.689903846153846,
+          "halfX": 5.5,
+          "halfY": 9.199519230769232
+        },
+        "hp": 2,
+        "canvas": 240
+      }
+    },
+    {
+      "name": "landscape",
+      "framing": {
+        "width": 390,
+        "height": 180,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 844,
+          "height": 390,
+          "top": 0,
+          "right": 844,
+          "bottom": 390,
+          "left": 0
+        }
+      },
+      "token": {
+        "count": 1,
+        "hidden": true,
+        "event": true,
+        "pcm": true
+      },
+      "afterBonus": {
+        "audio": {
+          "trackId": 0,
+          "trackName": "DKIslandSwing",
+          "currentTime": 0.101945,
+          "playing": true,
+          "loadedEffects": 7,
+          "effectsState": "running",
+          "activeVoices": 1,
+          "muted": false,
+          "manifestLoaded": true
+        },
+        "context": "running",
+        "actualPickupSound": true
+      },
+      "clear": {
+        "trackId": 26,
+        "trackName": "BeatLevel",
+        "currentTime": 0.47308,
+        "playing": true,
+        "loadedEffects": 7,
+        "effectsState": "running",
+        "activeVoices": 1,
+        "muted": false,
+        "manifestLoaded": true
+      },
+      "map": {
+        "track": {
+          "trackId": 12,
+          "trackName": "SimianSegue",
+          "currentTime": 0.567435,
+          "playing": true,
+          "loadedEffects": 8,
+          "effectsState": "running",
+          "activeVoices": 1,
+          "muted": false,
+          "manifestLoaded": true
+        },
+        "steps": 3,
+        "arrived": true,
+        "travel": 86
+      },
+      "boss": {
+        "camera": {
+          "x": 13.940000000000001,
+          "y": 1.359375,
+          "halfX": 10,
+          "halfY": 5.5
+        },
+        "hp": 2,
+        "canvas": 416
+      }
+    }
+  ],
+  "errors": [],
+  "scope": "Targeted staged reproductions; not a complete jungle playthrough"
+}

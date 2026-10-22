@@ -467,7 +467,7 @@ export function EnemyModel({
   return (
     <group ref={root} dispose={null} name="enemy" userData={{ enemy }}>
       <group ref={body}>
-        {enemy.kind === 'boss' ? <KingBossModel enemy={enemy} game={game}/> : enemy.pattern === "necky" ? (
+        {enemy.kind === 'boss' ? <group scale={ENEMY_DESIGNS.boss.height / 1.72}><KingBossModel enemy={enemy} game={game}/></group> : enemy.pattern === "necky" ? (
           <Necky wings={wings}/>
         ) : enemy.kind === "bee" ? (
           <Zinger wings={wings} />
