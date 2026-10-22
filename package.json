@@ -49,9 +49,9 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@mui/material": "^9.5.0",
+    "@mui/material": "^10.0.0-alpha.0",
     "@react-three/drei": "^10.7.9",
-    "@react-three/fiber": "^9.8.2",
+    "@react-three/fiber": "^10.0.0-canary.58acabc",
     "i18next": "^26.5.5",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
@@ -59,15 +59,15 @@
     "three": "^0.186.1"
   },
   "devDependencies": {
-    "@types/node": "^24.19.2",
+    "@types/node": "^26.6.5",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@types/three": "^0.186.0",
     "@vitejs/plugin-react": "^6.1.2",
-    "typescript": "~6.0.3",
+    "typescript": "~7.1.0-dev.20261022.1",
     "vite": "^8.3.5",
     "vitest": "^5.0.5",
-    "playwright": "1.64.1"
+    "playwright": "1.65.0-alpha-2026-10-22"
   },
   "engines": {
     "node": ">=22.12.0"
