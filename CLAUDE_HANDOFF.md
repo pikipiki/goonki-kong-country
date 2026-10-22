@@ -2,9 +2,8 @@
 # Reprise prioritaire — architecture, 22 octobre 2026
 
 Dépôt canonique : `/Users/sevenone./Documents/git/goonk-country`.
-Commit local sur `chore/one-shot-deps-2026-10-22` après `8f9d97e` (pas de push
-sauf demande). Les anciens chemins des sections historiques ci-dessous peuvent
-avoir été regroupés.
+Branche **`main`**, poussée sur `origin`. Les anciens chemins des sections
+historiques ci-dessous peuvent avoir été regroupés.
 
 Lire `docs/architecture.md`, `docs/architecture-review.md`, `CONTRIBUTING.md`
 et `SECURITY.md` pour l’organisation actuelle et les preuves de validation.
@@ -23,6 +22,8 @@ et `SECURITY.md` pour l’organisation actuelle et les preuves de validation.
 - Couche React : `src/containers/`, `src/hooks/`, `src/lib/` (plus de `src/app/`) ;
   UI présentationnelle dans `src/components/` ; imports `@containers`, `@hooks`,
   `@lib`, `@components` (voir `docs/architecture.md`).
+- **TypeScript `~5.9.3`** (stable, dans la plage `typescript-eslint` ; `baseUrl` +
+  alias dans `tsconfig.app.json`).
 
 Validation finale terminée : chaîne demandée, 465 tests / 85 fichiers,
 3 E2E, build, architecture, 11 fonctionnels et 12 cas mobiles de production
@@ -35,7 +36,7 @@ Preuves : `artifacts/review/summary.json`, journaux voisins et
 `artifacts/browser/` ; ces sorties sont ignorées par Git. Lire le rapport de
 revue pour les réglages, corrections et limites de validation. Aucun problème
 identifié ne reste à corriger dans le périmètre vérifié.
-Aucun déploiement ni push n’a été effectué.
+Déploiement Pages : via CI GitHub sur `main` si configuré.
 <!-- architecture-review-2026-10-22:end -->
 
 ---
@@ -415,7 +416,7 @@ Les scripts navigateur utilisent Playwright et Chrome sur macOS. `BROWSER_EXECUT
 
 ## Choix technique déjà argumenté
 
-React 19, TypeScript 6, Vite 8, Three.js 0.186, React Three Fiber 9, MUI, i18next et react-i18next. La simulation est indépendante du rendu, à pas fixe de **60 Hz**.
+React 19, TypeScript 5.9, Vite 8, Three.js 0.186, React Three Fiber 9, MUI, i18next et react-i18next. La simulation est indépendante du rendu, à pas fixe de **60 Hz**.
 
 Three.js/R3F ont été conservés pour les vrais volumes, les éclairages, les matières et les modèles Goonk réutilisés. Phaser 3 est principalement conçu pour la 2D et demanderait un rendu 3D supplémentaire pour ce besoin. React Spring anime des valeurs et peut accompagner R3F ; il ne remplace pas un moteur de rendu. Il n’a pas été ajouté, les animations présentes utilisant le temps de simulation, l’amortissement de caméra et du CSS.
 
