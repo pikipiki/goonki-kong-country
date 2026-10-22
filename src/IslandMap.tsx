@@ -153,7 +153,7 @@ function Island({
     c.updateMatrixWorld();
     onProject(
       nodes.map(([x, z]) => {
-        const point = new Vector3(x, 0.1, z - 1.55).project(c);
+        const point = new Vector3(x, 0.1, z + 1.35).project(c);
         return {
           x: ((point.x + 1) * size.width) / 2,
           y: ((1 - point.y) * size.height) / 2,
@@ -318,12 +318,19 @@ function RomMap2D({
       const cw = Math.max(256, Math.round(rect.width || window.innerWidth));
       const ch = Math.max(224, Math.round(rect.height || window.innerHeight));
 
-      // Compute map viewport placement inside canvas
-      const mapScale = Math.min(cw / 256, ch / 224);
+      // Compute map viewport placement inside canvas.
+      // On tall mobile portrait viewports, crop horizontal ocean margins slightly
+      // so the Kongo Jungle island and walking plushies fill the view clearly.
+      const isPortraitCanvas = cw < ch * 0.88;
+      const effectiveMapW = isPortraitCanvas ? 204 : 256;
+      const effectiveMapH = isPortraitCanvas ? 184 : 224;
+      const mapScale = Math.min(cw / effectiveMapW, ch / effectiveMapH);
       const drawW = Math.round(256 * mapScale);
       const drawH = Math.round(224 * mapScale);
-      const offsetX = Math.round((cw - drawW) * 0.5);
-      const offsetY = Math.round((ch - drawH) * 0.5);
+      const centerRomX = isPortraitCanvas ? 134 : 128;
+      const centerRomY = isPortraitCanvas ? 130 : 112;
+      const offsetX = Math.round(cw * 0.5 - centerRomX * mapScale);
+      const offsetY = Math.round(ch * 0.5 - centerRomY * mapScale);
 
       if (cw !== lastW || ch !== lastH) {
         lastW = cw;
@@ -331,9 +338,9 @@ function RomMap2D({
         canvas.width = cw;
         canvas.height = ch;
         onProjectRef.current(
-          romMapNodes.map(([nx, ny], idx) => ({
+          romMapNodes.map(([nx, ny]) => ({
             x: offsetX + nx * mapScale,
-            y: offsetY + (ny + (idx % 2 === 0 ? 16 : -26)) * mapScale,
+            y: offsetY + (ny + 14) * mapScale,
           })),
         );
       }
@@ -514,9 +521,14 @@ function RomMap2D({
         const rect = canvas.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
-        const mapScale = Math.min(rect.width / 256, rect.height / 224);
-        const offsetX = (rect.width - 256 * mapScale) * 0.5;
-        const offsetY = (rect.height - 224 * mapScale) * 0.5;
+        const isPortraitCanvas = rect.width < rect.height * 0.88;
+        const effectiveMapW = isPortraitCanvas ? 204 : 256;
+        const effectiveMapH = isPortraitCanvas ? 184 : 224;
+        const mapScale = Math.min(rect.width / effectiveMapW, rect.height / effectiveMapH);
+        const centerRomX = isPortraitCanvas ? 134 : 128;
+        const centerRomY = isPortraitCanvas ? 130 : 112;
+        const offsetX = rect.width * 0.5 - centerRomX * mapScale;
+        const offsetY = rect.height * 0.5 - centerRomY * mapScale;
         for (let i = 0; i < romMapNodes.length; i++) {
           if (i > unlocked) continue;
           const nx = offsetX + romMapNodes[i][0] * mapScale;
@@ -611,7 +623,7 @@ export function IslandMap(props: MapProps) {
               <span className="map-stage-number" aria-hidden="true">
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <span>{tx(props.stages[i].name)}</span>
+              <span className="map-stage-name">{tx(props.stages[i].name)}</span>
             </button>
           </div>
         ))}

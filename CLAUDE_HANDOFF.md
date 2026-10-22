@@ -2,7 +2,7 @@
 
 Cette section prévaut sur l’historique ci-dessous. Dépôt : `Documents/git/goonk-country`. Handoff avant commit : `.cursor/skills/handoff-before-commit/SKILL.md`.
 
-**Dernier commit (`6b037ac`)** : wagon mine — rebonds oiseau→abeille (x106/404), `routeSafety` + `mine-bird-browser.mjs` ; carte `IslandMap` + assets `rom2d` (carte/plush, calques découpés) ; **`GEMINI_HANDOFF.md`**. **208 tests / 35 fichiers**, build OK. Traversée wagon complète encore ouverte.
+**Dernier commit** : carte ROM mobile (cadrage portrait, pins numérotés), retour carte → accueil ; `resolveLandMotion` marches/pentes + Rambi (charge sans blocage murs invisibles, steer sous action) ; murs cassables (overlap vertical, sortie latérale) ; **209 tests / 35 fichiers**, build OK. Wagon : voir `GEMINI_HANDOFF.md`.
 
 ## Reprise Gemini et rebonds du wagon — dernière passe
 
