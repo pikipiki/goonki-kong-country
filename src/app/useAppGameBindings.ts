@@ -33,5 +33,10 @@ export function useAppGameBindings(game: Game, audio: AudioSystem) {
         engine.message(t('saveUnavailable'))
       }
     }
+    return () => {
+      engine.onEvent = () => {}
+      engine.onSave = () => {}
+      sound.onError = () => {}
+    }
   }, [game, audio, t])
 }

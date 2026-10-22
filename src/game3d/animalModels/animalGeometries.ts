@@ -8,9 +8,9 @@ import {
   TorusGeometry,
   TubeGeometry,
   Vector3,
+  MeshStandardMaterial,
 } from 'three'
-import type { V3 } from './types'
-
+import { type V3 } from './types'
 export const animalSphere = new SphereGeometry(1, 20, 14)
 export const animalCone = new ConeGeometry(1, 1, 12)
 export const animalBox = new BoxGeometry(1, 1, 1)
@@ -111,3 +111,18 @@ export const mainHorn = (() => {
   geometry.computeVertexNormals()
   return geometry
 })()
+
+const palette = new Map<string, MeshStandardMaterial>()
+export function animalMat(color: string) {
+  const cached = palette.get(color)
+  if (cached) {
+    return cached
+  }
+  const created = new MeshStandardMaterial({
+    color,
+    roughness: 0.69,
+    metalness: 0,
+  })
+  palette.set(color, created)
+  return created
+}

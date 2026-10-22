@@ -7,7 +7,6 @@ import { paintBossPlush } from './bossScene2dPaintPlush'
 import { paintBossProjectiles } from './bossScene2dPaintShots'
 import type { BossPaintContext } from './bossScene2dPaintTypes'
 import { createBossAtlasDrawer } from './bossScene2dSprite'
-import { pick } from '../utils/pick'
 
 export type { BossPaintContext } from './bossScene2dPaintTypes'
 
@@ -83,7 +82,7 @@ function paintBossArenaRails(paint: BossPaintContext) {
       ctx.beginPath()
       ctx.moveTo(screenX, toCanvasY(ropeY))
       ctx.lineTo(
-        screenX + pick(edge === bounds.left, -1, 1) * scale,
+        screenX + (edge === bounds.left ? -1 : 1) * scale,
         toCanvasY(ropeY) + scale * 0.12,
       )
       ctx.stroke()
@@ -231,8 +230,8 @@ export function paintBossScene2dFrame(paint: BossPaintContext) {
       ctx.textAlign = 'left'
     }
     ctx.fillText(
-      pick(offRight, '♛ ▶', '◀ ♛'),
-      pick(offRight, width - 7, 7),
+      offRight ? '♛ ▶' : '◀ ♛',
+      offRight ? width - 7 : 7,
       floor - 3 * paint.scale,
     )
   }

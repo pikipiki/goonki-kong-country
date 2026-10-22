@@ -5,7 +5,6 @@ import { IslandStageNode } from './IslandStageNode'
 import { IslandTrailDots } from './IslandTrailDots'
 import { Travelers } from './Travelers'
 import type { MapProps } from './types'
-import { pick } from '../utils/pick'
 import { useMapIslandProjection } from './useMapIslandProjection'
 import { MapIsland3dEnvironment } from './MapIsland3dEnvironment'
 
@@ -21,14 +20,14 @@ export function MapIsland3d({
 }) {
   const { camera, size } = useThree()
   const portrait = size.width < 600 && size.height > size.width * 0.8
-  const nodes = pick(portrait, tallNodes, wideNodes)
+  const nodes = portrait ? tallNodes : wideNodes
   const zoom = useMemo(() => {
     if (portrait) {
       return Math.min(size.width / 18, size.height / 23)
     }
     return Math.min(size.width / 27, size.height / 10.5)
   }, [portrait, size.width, size.height])
-  const lookTarget = pick(portrait, 1, 0)
+  const lookTarget = portrait ? 1 : 0
 
   useMapIslandProjection(
     camera,

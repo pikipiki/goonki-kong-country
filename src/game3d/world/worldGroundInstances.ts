@@ -1,7 +1,6 @@
 import type { Platform } from '../../game/levels'
 import { worldRandom } from './worldPalettes'
 import type { WorldInstance } from './worldTypes'
-import { pick } from '../../utils/pick'
 
 function rockEdgeColor(edgeIdx: number) {
   if (edgeIdx % 3 === 0) {
@@ -45,7 +44,7 @@ export function buildGroundInstances(
       position: [localX, -0.15 - rand * 0.04, 1.6],
       scale: [0.42 + rand * 0.2, 0.14 + rand * 0.1, 0.3],
       rotation: [0, rand * 2, rand * 0.1],
-      color: pick(edgeIdx % 3 === 0, '#718b2a', '#4d6e23'),
+      color: edgeIdx % 3 === 0 ? '#718b2a' : '#4d6e23',
     })
     rocks.push({
       position: [localX, -0.55 - rand * 0.7, 1.47],
@@ -77,7 +76,7 @@ export function buildGroundInstances(
     planks.push({
       position: [-platform.w / 2 + plankIdx * 0.7, -0.04, 0],
       scale: [0.64, 0.16, 3.4],
-      color: pick(plankIdx % 2, '#8b6537', '#aa8145'),
+      color: plankIdx % 2 ? '#8b6537' : '#aa8145',
     })
   }
 

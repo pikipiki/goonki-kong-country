@@ -4,7 +4,7 @@ import type { CanvasTexture } from 'three'
 import type { Group } from 'three'
 import type { Game } from '../game/engine'
 import { createOriginalGroundGeometry } from './original/jungleGroundGeometry'
-import { createJungleSoilTexture } from './original/jungleSoilTexture'
+import { createSoilTexture } from './original/soilTexture'
 const CHUNK_COLUMNS = 16
 const JUNGLE_COLUMN_COUNT = 169
 function JungleGroundChunk({
@@ -56,7 +56,7 @@ export const OriginalGround = memo(function OriginalGround({
 }: {
   game: Game
 }) {
-  const map = useMemo(() => createJungleSoilTexture(), [])
+  const map = useMemo(() => createSoilTexture(), [])
   useEffect(
     () => () => {
       map.dispose()

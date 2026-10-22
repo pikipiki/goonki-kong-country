@@ -1,4 +1,3 @@
-import { pick } from '../utils/pick'
 /** Audio captured from the user's identified Rev 2 ROM through its real SPC driver.
  * Asset provenance and imperfect loop-boundary limits live in /audio/manifest.json.
  * Music streams through HTMLAudio to avoid decoding minutes of PCM into mobile RAM.
@@ -108,11 +107,7 @@ export class AudioSystem {
 
       if (!this.master) {
         this.master = this.context.createGain()
-        if (this.muted) {
-          this.master.gain.value = 0
-        } else {
-          this.master.gain.value = 0.6
-        }
+        this.master.gain.value = this.muted ? 0 : 0.6
         this.master.connect(this.context.destination)
       }
 
@@ -156,11 +151,7 @@ export class AudioSystem {
     }
 
     this.loopEntry = entry
-    if (this.muted) {
-      this.music.volume = 0
-    } else {
-      this.music.volume = 0.48
-    }
+    this.music.volume = this.muted ? 0 : 0.48
 
     if (!this.muted) {
       this.playElement(this.music)
@@ -325,7 +316,7 @@ export class AudioSystem {
 
     if (this.master && this.context) {
       this.master.gain.setTargetAtTime(
-        pick(this.muted, 0, 0.6),
+        this.muted ? 0 : 0.6,
         this.context.currentTime,
         0.03,
       )
@@ -345,6 +336,14 @@ export class AudioSystem {
     }
   }
   inspect() {
-    return audioInspectSnapshot(this)
+    return audioInspectSnapshot({
+      currentId: this.currentId,
+      manifest: this.manifest,
+      music: this.music,
+      buffers: this.buffers,
+      voices: this.voices,
+      muted: this.muted,
+      context: this.context,
+    })
   }
 }

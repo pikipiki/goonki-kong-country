@@ -3,7 +3,6 @@ import { PALETTES } from './worldPalettes'
 import { worldProceduralTexture } from './worldProceduralTexture'
 import type { GroundInstanceBuckets } from './worldGroundInstances'
 import { worldLeaf, worldRock, worldVine } from './worldSharedGeometries'
-import { pick } from '../../utils/pick'
 import { WorldBatch } from './WorldBatch'
 
 export function WorldGroundDecor({
@@ -20,13 +19,13 @@ export function WorldGroundDecor({
       <WorldBatch
         geometry={worldRock}
         items={data.rocks}
-        color={pick(stone, '#9a977e', '#a27a44')}
+        color={stone ? '#9a977e' : '#a27a44'}
         map="soil"
       />
       <WorldBatch
         geometry={worldRock}
         items={data.edge}
-        color={pick(biome === 'snow', '#e7f0df', '#789336')}
+        color={biome === 'snow' ? '#e7f0df' : '#789336'}
       />
       <WorldBatch
         geometry={worldVine}

@@ -1,9 +1,8 @@
-import type { Game } from '../gameSession'
-import type { Input } from '../types'
-import type { PlayingEnv } from './playingEnv'
+import { type Game } from '../gameSession'
+import { type Input } from '../types'
+import { type PlayingEnv } from './playingEnv'
 import { applyPlayerHorizontalMotion } from './playerMotionHorizontal'
 import { applyPlayerVerticalMotion } from './playerMotionVertical'
-
 export function runPlayerMotion(
   game: Game,
   input: Input,

@@ -1,6 +1,5 @@
 import { resolveI18nKey } from '../i18n/resolveText'
 import type { Destination } from './types'
-import { pick } from '../utils/pick'
 
 export function MapLabels({
   positions,
@@ -25,7 +24,7 @@ export function MapLabels({
         >
           <button
             type="button"
-            className={`map-stage${pick(index === selected, ' selected', '')}`}
+            className={`map-stage${index === selected ? ' selected' : ''}`}
             aria-label={`${String(index + 1).padStart(2, '0')}. ${resolveI18nKey(stages[index].name)}`}
             aria-pressed={index === selected}
             disabled={index > unlocked}

@@ -12,7 +12,7 @@ it('bumps into walls, breaks with rambi, and leaves bonus with undefined complet
   const game = new Game()
   game.start(0, true)
   game.enemies = []
-  game.completedBonus = undefined
+  Reflect.deleteProperty(game, 'completedBonus')
   const wall = assertDefined(game.level.breakableWalls)[0]
   const oldX = wall.x - 0.2
   Object.assign(game.player, {

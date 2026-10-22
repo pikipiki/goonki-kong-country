@@ -1,4 +1,4 @@
-import { SCENE2D_PIXELS_PER_WORLD } from '../../src/game2d/scene2dWorldUnits'
+import { SCENE2D_PIXELS_PER_WORLD } from '../../src/game2d/scene2dConstants'
 import {
   SNES_HORIZONTAL_WALL_PROBE_FOOT_LIFT,
   SNES_HORIZONTAL_WALL_PROBE_OFFSET_X,
@@ -6,7 +6,6 @@ import {
   SNES_HORIZONTAL_WALL_STEP_UP_THRESHOLD_PX,
   SNES_HORIZONTAL_WALL_TORSO_BLOCK_THRESHOLD_PX,
 } from '../../src/game/snesHorizontalTerrainCell'
-
 export const SNES_PROBE_SCALE = SCENE2D_PIXELS_PER_WORLD
 
 export function snesProbeFootPixelY(footWorld: number, originY: number) {

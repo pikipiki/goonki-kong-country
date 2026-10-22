@@ -5,7 +5,6 @@ import type { Animal } from '../../game/animals'
 import type { Game } from '../../game/engine'
 import { AnimalModel } from '../AnimalModels'
 import { AnimalBuddyCrate } from './AnimalBuddyCrate'
-import { pick } from '../../utils/pick'
 
 function buddyModelScale(boxed: boolean, kind: Animal['kind']) {
   if (boxed) {
@@ -38,7 +37,7 @@ export function AnimalBuddy({ animal, game }: { animal: Animal; game: Game }) {
 
     crate.current.visible = boxed
     model.current.scale.setScalar(buddyModelScale(boxed, animal.kind))
-    model.current.position.set(0, pick(boxed, 0.36, 0), pick(boxed, 0.62, 0))
+    model.current.position.set(0, boxed ? 0.36 : 0, boxed ? 0.62 : 0)
     if (animal.facing < 0) {
       model.current.rotation.y = Math.PI
     } else {
@@ -55,7 +54,7 @@ export function AnimalBuddy({ animal, game }: { animal: Animal; game: Game }) {
       animal.state === 'ridden' &&
       !game.player.grounded &&
       game.player.vy >= -0.66,
-    charging: pick(animal.state === 'ridden', game.player.mountCharge, 0),
+    charging: animal.state === 'ridden' ? game.player.mountCharge : 0,
   })
 
   return (

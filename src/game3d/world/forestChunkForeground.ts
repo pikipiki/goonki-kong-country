@@ -1,5 +1,4 @@
 import type { Biome } from '../../game/levels'
-import { pick } from '../../utils/pick'
 import type { ForestChunkBuckets } from './forestChunkFill'
 import { worldRandom } from './worldPalettes'
 
@@ -47,7 +46,7 @@ function fillForegroundCave(
   rand: number,
   out: ForestChunkBuckets,
 ) {
-  const stoneColor = pick(biome === 'temple', '#7a7c58', '#61665c')
+  const stoneColor = biome === 'temple' ? '#7a7c58' : '#61665c'
 
   out.stones.push({
     position: [treeX, 1.3 + rand * 2, -8],
@@ -68,7 +67,7 @@ function fillForegroundJungle(
       position: [treeX, -0.9, depthZ],
       scale: [0.58 + rand * 0.25, 0.8, 0.75],
       rotation: [0.15 + rand * 0.2, ringIdx * 1.05, 0.35 + rand * 0.2],
-      color: pick(ringIdx % 3 === 0, '#739e35', '#3f762b'),
+      color: ringIdx % 3 === 0 ? '#739e35' : '#3f762b',
     })
   }
 

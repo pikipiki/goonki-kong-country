@@ -1,13 +1,12 @@
+import { FINAL_BOSS_STAGE_ID } from '../game/stageCatalog'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { Game, Key } from '../game/engine'
-import type { Controls } from '../game/input'
+import { type Game, type Key } from '../game/engine'
+import { type Controls } from '../game/input'
 import { GameControlsActions } from './GameControlsActions'
 import { GameControlsCenter } from './GameControlsCenter'
 import { GameControlsDpad } from './GameControlsDpad'
 import { GameControlsToolbar } from './GameControlsToolbar'
-import { pick } from '../utils/pick'
-
 function readClickMode(): boolean {
   try {
     return localStorage.getItem('goonk-input-mode') === 'click'
@@ -30,10 +29,7 @@ export function GameControls({
 
   useEffect(() => {
     try {
-      localStorage.setItem(
-        'goonk-input-mode',
-        pick(clickMode, 'click', 'touch'),
-      )
+      localStorage.setItem('goonk-input-mode', clickMode ? 'click' : 'touch')
     } catch {
       /* storage unavailable */
     }
@@ -63,8 +59,8 @@ export function GameControls({
 
   const deckClass = [
     'controller-deck',
-    pick(game.levelId === 6, 'boss-controls', ''),
-    pick(clickMode, 'click-mode', ''),
+    game.levelId === FINAL_BOSS_STAGE_ID ? 'boss-controls' : '',
+    clickMode ? 'click-mode' : '',
   ]
     .filter(Boolean)
     .join(' ')

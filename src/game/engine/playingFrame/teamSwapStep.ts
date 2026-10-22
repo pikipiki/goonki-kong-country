@@ -3,7 +3,6 @@ import { resolveI18nKey } from '../../../i18n/resolveText'
 import { TEAM_SWAP_DURATION } from '../romPhysics'
 import type { Game } from '../gameSession'
 import type { Input } from '../types'
-import { pick } from '../../../utils/pick'
 
 export function runTeamSwap(
   game: Game,
@@ -36,9 +35,9 @@ export function runTeamSwap(
       player.x,
       player.y + 2,
       resolveI18nKey(
-        pick(player.active, localeKeys.buddies.violet, localeKeys.buddies.rose),
+        player.active ? localeKeys.buddies.violet : localeKeys.buddies.rose,
       ),
-      pick(player.active, '#c0a2ff', '#f6a4c9'),
+      player.active ? '#c0a2ff' : '#f6a4c9',
     )
   }
 

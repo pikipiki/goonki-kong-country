@@ -1,7 +1,6 @@
 import { setBossPhase } from './bossBattleHelpers'
 import { updateBossPhaseMotion } from './bossBattlePhaseMotion'
 import { stepBossProjectiles } from './bossProjectileStep'
-import { pick } from '../utils/pick'
 import {
   BOSS_MAX_HITS,
   type BossActor,
@@ -54,7 +53,7 @@ export function registerBossHit(
   shots.forEach((shot) => {
     shot.active = false
   })
-  setBossPhase(state, pick(actor.hp <= 0, 'dead', 'hurt'))
+  setBossPhase(state, actor.hp <= 0 ? 'dead' : 'hurt')
 }
 
 export function bossAcceptsHit(state: BossBattle): boolean {

@@ -1,3 +1,7 @@
+import {
+  teamSwapSeconds,
+  jumpImpulseDelayFrames,
+} from '../../config/gameplay.json'
 import evidence from '../../../reference/rom-analysis.json'
 import playerEvidence from '../../../reference/player-states.json'
 import neckyEvidence from '../../../reference/necky-ballistics.json'
@@ -5,7 +9,7 @@ import underwaterMotion from '../../../reference/underwater-motion.json'
 
 export const STEP = 1 / 60
 /** ROM tag swap: state 17 / anim 80 lasts ~25 frames at 60 Hz. */
-export const TEAM_SWAP_DURATION = 0.42
+export const TEAM_SWAP_DURATION = teamSwapSeconds
 export const ROM = {
   gravity: -evidence.findings.gravity.values.accelerationRaw,
   terminal: -evidence.findings.gravity.values.terminalVelocityRaw,
@@ -27,7 +31,7 @@ export const ROM = {
 export const THROW = playerEvidence.findings.thrownObjectVelocity.values
 export const CANNON_TEMPLATE = playerEvidence.findings.cannonBaseTemplate.values
 export const CANNON_VECTORS = playerEvidence.cannonBaseTemplateVectors
-export const JUMP_IMPULSE_DELAY_FRAMES = 2
+export const JUMP_IMPULSE_DELAY_FRAMES = jumpImpulseDelayFrames
 export const NECKY_NUT = neckyEvidence.engine
 export const NECKY_SHOOT_PERIOD = NECKY_NUT.shootPeriodFrames / 60
 export const WORLD_PIXELS = 32

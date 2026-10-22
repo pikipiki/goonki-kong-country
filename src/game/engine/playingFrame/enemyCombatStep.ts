@@ -1,19 +1,16 @@
-import { pick } from '../../../utils/pick'
 import {
   registerBossHit,
   bossAcceptsHit,
   BOSS_MAX_HITS,
 } from '../../bossBattle'
 import { ENEMY_DESIGNS } from '../../enemies'
-import type { Game } from '../gameSession'
-import type { Enemy } from '../types'
-import type { PlayingEnv } from './playingEnv'
+import { type Game } from '../gameSession'
+import { type Enemy } from '../types'
+import { type PlayingEnv } from './playingEnv'
 import {
   playerOverlapsEnemy,
   resolvePlayerEnemyTouch,
 } from './enemyPlayerContact'
-import { enemyHitByThrown } from './enemyThrownHits'
-
 function applyEnemyHit(
   game: Game,
   enemy: Enemy,
@@ -31,11 +28,9 @@ function applyEnemyHit(
   game.pop(
     enemy.x,
     enemy.y + height,
-    pick(
-      boss,
-      `${String(BOSS_MAX_HITS - enemy.hp)} / ${String(BOSS_MAX_HITS)}`,
-      '★',
-    ),
+    boss
+      ? `${String(BOSS_MAX_HITS - enemy.hp)} / ${String(BOSS_MAX_HITS)}`
+      : '★',
   )
 
   if (boss && game.bossBattle) {
@@ -73,4 +68,23 @@ export function resolveEnemyCombat(
 
   hit = resolvePlayerEnemyTouch(game, enemy, env, boss, height, hit)
   applyEnemyHit(game, enemy, hit, boss, height)
+}
+
+export function enemyHitByThrown(
+  game: Game,
+  enemy: Enemy,
+  width: number,
+  height: number,
+): boolean {
+  for (const barrel of game.thrown) {
+    if (
+      barrel.active &&
+      Math.abs(barrel.x - enemy.x) < width + 0.6 &&
+      Math.abs(barrel.y - enemy.y - height / 2) < height / 2 + 0.5
+    ) {
+      barrel.active = false
+      return true
+    }
+  }
+  return false
 }

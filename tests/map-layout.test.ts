@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest'
 import { romMapLayout } from '../src/mapLayout'
-import { pick } from '../src/utils/pick'
 
 const nodes = [
   [54, 76],
@@ -32,9 +31,7 @@ describe('fullscreen ROM map framing', () => {
         expect(label.x - buttonWidth / 2).toBeGreaterThanOrEqual(0)
         expect(label.x + buttonWidth / 2).toBeLessThanOrEqual(width)
         expect(label.y - 24).toBeGreaterThan(50)
-        expect(label.y + 22).toBeLessThan(
-          height - pick(height > width, 130, 82),
-        )
+        expect(label.y + 22).toBeLessThan(height - (height > width ? 130 : 82))
         // Cover mode deliberately pans: only the focused node must stay
         // visible while every named destination remains selectable.
         const focused = romMapLayout(width, height, true, nodes[index])

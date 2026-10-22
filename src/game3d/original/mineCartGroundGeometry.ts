@@ -1,5 +1,4 @@
 import { BufferGeometry, Color, Float32BufferAttribute } from 'three'
-import { pick } from '../../utils/pick'
 import {
   ORIGINAL_MINE_CART_TERRAIN,
   terrainCellSNES,
@@ -61,7 +60,7 @@ function pushQuad(
     positions.push(posX, posY, posZ)
     uvs.push(
       posX * ORIGINAL_GROUND_UV_SCALE,
-      pick(top, posZ, posY) * ORIGINAL_GROUND_UV_SCALE,
+      (top ? posZ : posY) * ORIGINAL_GROUND_UV_SCALE,
     )
     colors.push(shade.r, shade.g, shade.b)
   }

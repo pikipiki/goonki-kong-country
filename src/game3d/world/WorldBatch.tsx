@@ -11,7 +11,6 @@ import {
   worldProceduralTexture,
   type WorldTextureKind,
 } from './worldProceduralTexture'
-import { pick } from '../../utils/pick'
 
 export function WorldBatch({
   geometry,
@@ -72,9 +71,9 @@ export function WorldBatch({
         bumpMap={
           map && map !== 'leaf' ? worldProceduralTexture(map) : undefined
         }
-        bumpScale={pick(map === 'bark', 0.08, 0.045)}
+        bumpScale={map === 'bark' ? 0.08 : 0.045}
         roughness={0.92}
-        side={pick(vertexColors, DoubleSide, undefined)}
+        side={vertexColors ? DoubleSide : undefined}
         vertexColors={vertexColors}
       />
     </instancedMesh>

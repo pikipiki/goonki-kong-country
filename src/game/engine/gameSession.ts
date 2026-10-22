@@ -1,23 +1,20 @@
+import { startingLives } from '../../config/gameplay.json'
 import { type BossBattle, type BossProjectile } from '../bossBattle'
 import { type Animal } from '../animals'
-import { ROM_JUNGLE } from '../originalJungle'
-import { ROM_CORAL } from '../originalCoral'
-import { ROM_REVERB } from '../originalReverb'
-import { ROM_MINE_CART } from '../originalMineCart'
-import { LEVELS, type Platform, type Level } from '../levels'
-
+import { stageAt } from '../stageCatalog'
+import { type Platform, type Level } from '../levels'
 import { STEP } from './romPhysics'
 import { defaultSave } from './save'
-import type {
-  TeamSwap,
-  Phase,
-  Input,
-  Enemy,
-  Particle,
-  Thrown,
-  EnemyShot,
-  Save,
-  Player,
+import {
+  type TeamSwap,
+  type Phase,
+  type Input,
+  type Enemy,
+  type Particle,
+  type Thrown,
+  type EnemyShot,
+  type Save,
+  type Player,
 } from './types'
 import {
   isBonusCompleted,
@@ -47,7 +44,6 @@ import {
   supportAtFeet,
   surfacePlatform,
 } from './gameSessionLevelQuery'
-
 export { readSave } from './save'
 export { cannonLaunchVelocity } from './cannonLaunch'
 export { testApproachFootVelocity } from './math'
@@ -90,7 +86,7 @@ export class Game {
     >
   } | null = null
   bonusDoorCooldown = 0
-  lives = 5
+  lives = startingLives
   bananas = 0
   total = 0
   levelBananas = 0
@@ -132,28 +128,9 @@ export class Game {
       return this.bonus.stage
     }
 
-    if (!this.originalRoute) {
-      return LEVELS[this.levelId]
-    }
-
-    if (this.levelId === 0) {
-      return ROM_JUNGLE
-    }
-
-    if (this.levelId === 1) {
-      return ROM_REVERB
-    }
-
-    if (this.levelId === 2) {
-      return ROM_MINE_CART
-    }
-
-    if (this.levelId === 3) {
-      return ROM_CORAL
-    }
-
-    return LEVELS[this.levelId]
+    return stageAt(this.levelId, this.originalRoute)
   }
+
   get letterWord() {
     return this.level.letterWord ?? 'GOONK'
   }
@@ -180,7 +157,7 @@ export class Game {
   }
   start(levelIndex = 0, original = false) {
     this.originalRoute = original
-    this.lives = 5
+    this.lives = startingLives
     this.bananas = 0
     this.total = 0
     this.animalTokens = {}

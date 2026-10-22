@@ -1,10 +1,9 @@
 import { terrainSolidSpans } from './terrainSolidSpansCore'
-import { pick } from '../utils/pick'
 
 type LandBody = { radius: number; height: number }
 
 function horizontalWallBlocks(
-  walls: { bottom: number; top: number }[],
+  walls: readonly { bottom: number; top: number }[],
   curY: number,
   targetY: number,
   stepHeight: number,
@@ -57,7 +56,7 @@ function sweepLandX(
 
     const walls = terrainSolidSpans(kind, edge)
 
-    const maxBottom = pick(grounded, curY + 0.5, curY + body.height - 0.03)
+    const maxBottom = grounded ? curY + 0.5 : curY + body.height - 0.03
 
     if (horizontalWallBlocks(walls, curY, targetY, stepHeight, maxBottom)) {
       blockedX = true
@@ -71,7 +70,7 @@ function sweepLandX(
 }
 
 function landVerticalFromSpans(
-  spans: { bottom: number; top: number }[],
+  spans: readonly { bottom: number; top: number }[],
   curY: number,
   targetY: number,
   oldY: number,
@@ -89,7 +88,7 @@ function landVerticalFromSpans(
     const tops = spans
       .filter(
         (span) =>
-          span.top <= curY + pick(grounded, 0.45, 0.12) &&
+          span.top <= curY + (grounded ? 0.45 : 0.12) &&
           span.top >= Math.min(targetY, curY) - 0.001,
       )
       .map((span) => span.top)

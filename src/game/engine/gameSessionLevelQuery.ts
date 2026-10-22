@@ -74,22 +74,20 @@ export function supportAtFeet(
   feet: number,
   rise = 0.3,
 ) {
-  let surfaces
+  let highest: number | null = null
+  const maxSupportY = feet + rise
   if (game.level.originalTerrain) {
-    surfaces = terrainSolidSpans(game.level.originalTerrain, posX).map(
-      (span) => span.top,
-    )
+    for (const span of terrainSolidSpans(game.level.originalTerrain, posX)) {
+      if (span.top <= maxSupportY)
+        highest = Math.max(highest ?? -Infinity, span.top)
+    }
   } else {
-    surfaces = game.level.platforms
-      .filter((plat) => Math.abs(posX - plat.x) < plat.w / 2)
-      .map((plat) => surfacePlatform(game, plat))
+    for (const platform of game.level.platforms) {
+      if (Math.abs(posX - platform.x) >= platform.w / 2) continue
+      const surfaceY = surfacePlatform(game, platform)
+      if (surfaceY <= maxSupportY)
+        highest = Math.max(highest ?? -Infinity, surfaceY)
+    }
   }
-
-  const below = surfaces.filter((surfaceY) => surfaceY <= feet + rise)
-
-  if (below.length) {
-    return Math.max(...below)
-  } else {
-    return null
-  }
+  return highest
 }

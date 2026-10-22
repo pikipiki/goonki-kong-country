@@ -10,7 +10,6 @@ import { worldBox } from './worldSharedGeometries'
 import { WorldBatch } from './WorldBatch'
 import { WorldGroundDecor, WorldGroundGrassCap } from './WorldGroundDecor'
 import { WorldGroundRails } from './WorldGroundRails'
-import { pick } from '../../utils/pick'
 
 export function WorldGround({
   platform,
@@ -54,9 +53,9 @@ export function WorldGround({
         scale={[platform.w, depth, 3.2]}
       >
         <meshStandardMaterial
-          color={pick(wood, '#644726', palette.ground)}
-          map={worldProceduralTexture(pick(wood, 'wood', 'soil'))}
-          bumpMap={worldProceduralTexture(pick(wood, 'wood', 'soil'))}
+          color={wood ? '#644726' : palette.ground}
+          map={worldProceduralTexture(wood ? 'wood' : 'soil')}
+          bumpMap={worldProceduralTexture(wood ? 'wood' : 'soil')}
           bumpScale={0.065}
           roughness={1}
         />

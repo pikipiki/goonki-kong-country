@@ -1,16 +1,48 @@
+<!-- architecture-review-2026-10-22:start -->
+# Reprise prioritaire — architecture, 22 octobre 2026
+
+Dépôt canonique : `/Users/sevenone./Documents/git/goonk-country`.
+Commit local sur `chore/one-shot-deps-2026-10-22` après `8f9d97e` (pas de push
+sauf demande). Les anciens chemins des sections historiques ci-dessous peuvent
+avoir été regroupés.
+
+Lire `docs/architecture.md`, `docs/architecture-review.md`, `CONTRIBUTING.md`
+et `SECURITY.md` pour l’organisation actuelle et les preuves de validation.
+
+- `src/` passe de 397 à 340 fichiers ; modules regroupés par responsabilité.
+- Configuration sous `src/config/`, terrain numérique sous `src/game/data/`.
+- Catalogue partagé `src/game/stageCatalog.ts` ; API moteur publique conservée.
+- `npm run check:architecture` : aucun orphelin, aucun cycle runtime.
+- Chargement différé 2D/3D ; silhouette 2D générée depuis le même profil 3D.
+- Cache marin borné/immuable : 100 000 requêtes, 484 → 14 ms, même résultat.
+- Sauvegardes et paramètres URL validés, CSP et CI sécurisées ; audit npm : 0.
+- 465 tests et 3 E2E passent ; les 11 fonctionnels passent, canyon/corail
+  terminés sans mort avec dégâts actifs. Production mobile racine/Pages validée.
+- Correction des indices d’atlas des objets du boss 2D et de l’échelle explicite.
+- Les captures/journaux sont maintenant dans `artifacts/` (ignoré par Git).
+
+Validation finale terminée : chaîne demandée, 465 tests / 85 fichiers,
+3 E2E, build, architecture, 11 fonctionnels et 12 cas mobiles de production
+(racine + préfixe GitHub Pages). Canyon et corail : zéro mort, dégâts actifs.
+Les contrôles supplémentaires du boss, décor, parcours 2D et hot reload passent.
+Le test HMR modifie temporairement le vrai module de classe
+`src/game/engine/gameSession.ts` ; son contenu a été restauré et contrôlé.
+
+Preuves : `artifacts/review/summary.json`, journaux voisins et
+`artifacts/browser/` ; ces sorties sont ignorées par Git. Lire le rapport de
+revue pour les réglages, corrections et limites de validation. Aucun problème
+identifié ne reste à corriger dans le périmètre vérifié.
+Aucun déploiement ni push n’a été effectué.
+<!-- architecture-review-2026-10-22:end -->
+
+---
+
 # État prioritaire de reprise — 0.4.0 (22 octobre 2026)
 
-## Dernière passe — lint, constantes, moteur découpé, tests (22 octobre 2026)
-
-Cette section prévaut sur l'historique.
-
-- **ESLint / Prettier** : règles alignées tontie-re (`id-length` ≥3, `max-lines` 300, `max-lines-per-function` 80) ; `npm run format` sur `src`, `tests`, `e2e`, `.storybook` et configs racine ; `npx eslint . --max-warnings 0` → **0 erreur**.
-- **Architecture** : moteur sous `src/game/engine/` (façade `src/game/engine.ts`), découpages `game2d/`, `game3d/`, `islandMap/`, `app/` ; constantes partagées (`scene2dWorldUnits.ts`, `romMapPalette.ts`, `groundChunkVisibility.ts`, `hurtFlash.ts`, `groundEnemyMotion.ts`, probes tests `tests/helpers/snesHorizontalProbe.ts`).
-- **Tests automatisés** : `npx vitest run` → **418 tests / 80 fichiers** ; `npm test` (projets game+unit) → 414 ; **Playwright e2e 3/3**. Mocks audio : `fetch`/`resume`/`play` en Promises ; imports `pick` et scénarios boss/terrain ajustés.
-- **Scripts navigateur** : `npm run test:functional` enchaîne browser→ground (OK après correctifs locale `fr`, décor lagoon, windup 3D) ; **`test:playthrough:canyon` sort en code 1** si le planner reste `stuck` (~x217) — le script exige `status: clear`.
-- **Build** : `npm run build` (`tsc -b`) **échoue encore** sur quelques fichiers de tests (ex. `marine-import.test.ts`, `playing-frame-direct.test.ts`, types mocks audio). Ne pas annoncer build release vert sans corriger ces diagnostics.
-
-**Repriorité** : faire passer `tsc -b` ; canyon playthrough (planner ou critère CI) ; poursuite ROM selon `reference/rom-deep-analysis.md` si touché.
+Pour la session courante, le bloc **« Reprise prioritaire — architecture »** en
+tête de ce fichier prévaut sur les sections historiques ci-dessous (commit
+`8f9d97e` = lint/moteur découpé ; commit suivant = restructuration
+`src/config`, `src/game/data`, `stageCatalog`, CI `check:architecture`).
 
 ---
 

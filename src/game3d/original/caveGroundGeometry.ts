@@ -2,7 +2,6 @@ import { BufferGeometry, Color, Float32BufferAttribute } from 'three'
 import { terrainCellSNES } from '../../game/canyonTerrain'
 import { ORIGINAL_CAVE_TERRAIN } from '../../game/originalCaveTerrain'
 import { ORIGINAL_REVERB_ORIGIN } from '../../game/originalReverb'
-import { pick } from '../../utils/pick'
 import {
   SNES_HORIZONTAL_LAST_ROW_FROM_TOP,
   SNES_METATILE_SIZE_PX,
@@ -51,7 +50,7 @@ function pushQuad(
     positions.push(posX, posY, posZ)
     uvs.push(
       posX * ORIGINAL_GROUND_UV_SCALE,
-      pick(top, posZ, posY) * ORIGINAL_GROUND_UV_SCALE,
+      (top ? posZ : posY) * ORIGINAL_GROUND_UV_SCALE,
     )
     colors.push(shade.r, shade.g, shade.b)
   }

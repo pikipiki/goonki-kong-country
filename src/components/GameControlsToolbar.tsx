@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next'
 import type { Game } from '../game/engine'
-import { pick } from '../utils/pick'
 import { controllerHint } from './gameControlCopy'
 
 export function GameControlsToolbar({
@@ -23,7 +22,7 @@ export function GameControlsToolbar({
         aria-pressed={clickMode}
         onClick={onToggleMode}
       >
-        {pick(clickMode, t('clickMode'), t('touchMode'))} <span>⇄</span>
+        {clickMode ? t('clickMode') : t('touchMode')} <span>⇄</span>
       </button>
     </div>
   )

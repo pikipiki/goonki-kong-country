@@ -7,7 +7,6 @@ import {
   ISLAND_MAP_SKY,
   ISLAND_MAP_SUN,
 } from './romMapPalette'
-import { pick } from '../utils/pick'
 
 export function MapIsland3dEnvironment({
   zoom,
@@ -33,8 +32,8 @@ export function MapIsland3dEnvironment({
         <meshStandardMaterial color={ISLAND_MAP_SEA} roughness={0.45} />
       </mesh>
       <mesh
-        position={[0, -2.3, pick(portrait, 1, 0)]}
-        scale={pick(portrait, [7, 2.5, 12] as const, [13, 2.5, 6] as const)}
+        position={[0, -2.3, portrait ? 1 : 0]}
+        scale={portrait ? ([7, 2.5, 12] as const) : ([13, 2.5, 6] as const)}
       >
         <icosahedronGeometry args={[1, 2]} />
         <meshStandardMaterial color={ISLAND_MAP_LAND} flatShading />

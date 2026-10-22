@@ -1,3 +1,4 @@
+import { isDemo2DStage } from '../game/stageCatalog'
 import { useTranslation } from 'react-i18next'
 import type { Level } from '../game/levels'
 import { resolveI18nKey } from '../i18n/resolveText'
@@ -18,7 +19,7 @@ export function MapConfirmPanel({
 }) {
   const { t } = useTranslation()
   let map2dHintKey
-  if (mapLevel === 0 || mapLevel === 6) {
+  if (isDemo2DStage(mapLevel)) {
     map2dHintKey = 'map2DAvailable'
   } else {
     map2dHintKey = 'map2DUnavailable'
@@ -45,7 +46,7 @@ export function MapConfirmPanel({
           <button
             type="button"
             aria-pressed={mapMode2D}
-            disabled={mapLevel !== 0 && mapLevel !== 6}
+            disabled={!isDemo2DStage(mapLevel)}
             onClick={() => {
               onMapMode2D(true)
             }}

@@ -1,5 +1,4 @@
 import type { Game } from '../gameSession'
-import { pick } from '../../../utils/pick'
 
 export function updateCompanionTrail(game: Game, swapping: boolean): void {
   const player = game.player
@@ -22,10 +21,9 @@ export function updateCompanionTrail(game: Game, swapping: boolean): void {
 
   game.companion = {
     ...trail,
-    x: pick(
-      Math.abs(trail.x - player.x) < 1.25,
-      player.x - trail.facing * 1.25,
-      trail.x,
-    ),
+    x:
+      Math.abs(trail.x - player.x) < 1.25
+        ? player.x - trail.facing * 1.25
+        : trail.x,
   }
 }

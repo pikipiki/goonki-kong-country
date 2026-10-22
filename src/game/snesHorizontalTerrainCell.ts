@@ -1,4 +1,3 @@
-import { pick } from '../utils/pick'
 import {
   SNES_COLLISION_ATTR_PROFILE_FLAG_MASK,
   SNES_COLLISION_ATTR_VFLIP_BIT,
@@ -83,7 +82,7 @@ export function resolveHorizontalTerrainCell(
   }
 
   const attribute =
-    attributePairs[tileId][pick(local & SNES_METATILE_RIGHT_HALF_BIT, 1, 0)]
+    attributePairs[tileId][local & SNES_METATILE_RIGHT_HALF_BIT ? 1 : 0]
 
   if (attribute & SNES_COLLISION_ATTR_VFLIP_BIT) {
     local ^= SNES_METATILE_LOCAL_Y_MASK
@@ -104,11 +103,7 @@ export function resolveHorizontalTerrainCell(
 
   const correctedAttribute =
     attribute ^
-    pick(
-      !!(tileWord & SNES_METATILE_MAP_HFLIP_BIT),
-      SNES_COLLISION_ATTR_VFLIP_BIT,
-      0,
-    )
+    (tileWord & SNES_METATILE_MAP_HFLIP_BIT ? SNES_COLLISION_ATTR_VFLIP_BIT : 0)
 
   return {
     floorY:

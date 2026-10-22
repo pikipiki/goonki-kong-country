@@ -1,6 +1,6 @@
 import { clamp } from '../game/engine/math'
 import { jungleAtmosphereBlends } from './jungleAtmosphereBlends'
-import type { JungleRenderContext } from './jungleRenderContext'
+import { type JungleRenderContext } from './jungleRenderContext'
 import { drawChunkedLayer } from './drawRom2d'
 import { DEFAULT_CHUNK_W } from './scene2dConstants'
 function rgbLine(red: number, green: number, blue: number) {

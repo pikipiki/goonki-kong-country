@@ -4,6 +4,7 @@ import {
   createBossBattle,
   updateBossBattle,
   type BossActor,
+  type BossProjectile,
 } from '../src/game/bossBattle'
 import { pickPreferredOpenY } from '../src/game/terrainSolids'
 import { CORAL_WATER_FLOOR_Y } from '../src/game/marineScale'
@@ -27,7 +28,7 @@ describe('extracted helpers and boss branches', () => {
       vulnerable: false,
     }
     const state = createBossBattle(boss)
-    const shots = []
+    const shots: BossProjectile[] = []
     state.phase = 'throw'
     state.phaseTime = 0.64
     updateBossBattle(state, boss, shots, 0.02)

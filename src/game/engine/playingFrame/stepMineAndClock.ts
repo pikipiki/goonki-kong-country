@@ -1,10 +1,9 @@
-import type { Game } from '../gameSession'
-import type { Input } from '../types'
-import type { PlayingEnv } from './playingEnv'
+import { type Game } from '../gameSession'
+import { type Input } from '../types'
+import { type PlayingEnv } from './playingEnv'
 import { applyMineBeeRecovery } from './mineRecoveryStep'
 import { tickParticles, tickPlayerTimers } from './playerClockTimers'
 import { runTeamSwap } from './teamSwapStep'
-
 export function runMineAndClock(
   game: Game,
   input: Input,

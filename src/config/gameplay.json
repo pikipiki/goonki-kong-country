@@ -1,0 +1,14 @@
+{
+  "startingLives": 5,
+  "teamSwapSeconds": 0.42,
+  "jumpImpulseDelayFrames": 2,
+  "mountAction": {
+    "quickAttackSeconds": 0.32,
+    "maxChargeSeconds": 0.75,
+    "windupDelaySeconds": 0.18,
+    "readyChargeSeconds": 0.65,
+    "chargedAttackSeconds": 0.85,
+    "crateReachX": 1.65,
+    "crateReachY": 1.8
+  }
+}

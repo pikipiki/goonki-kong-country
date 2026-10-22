@@ -1,12 +1,11 @@
+import { simulation, camera2D } from '../config/presentation.json'
 import { STEP, type Game, type Input } from '../game/engine'
-import type { BossBattle, BossProjectile } from '../game/bossBattle'
+import { type BossBattle, type BossProjectile } from '../game/bossBattle'
 import { bossCameraLeft, bossViewport2D } from './camera2D'
-import type { BossAssets } from './bossScene2dAssets'
+import { type BossAssets } from './bossScene2dAssets'
 import { paintBossScene2dFrame } from './bossScene2dPaintFrame'
-import type { PlushSpriteRenderer } from './plushSprite'
+import { type PlushSpriteRenderer } from './plushSprite'
 import { SCENE2D_VIEWPORT_PAD_PX } from './scene2dConstants'
-import { pick } from '../utils/pick'
-
 export type BossLoopState = {
   last: number
   acc: number
@@ -67,7 +66,10 @@ export function stepBossScene2dFrame(
   state: BossLoopState,
   now: number,
 ) {
-  const delta = Math.min(0.1, (now - state.last) / 1000)
+  const delta = Math.min(
+    simulation.maxFrameDeltaSeconds,
+    (now - state.last) / 1000,
+  )
 
   state.last = now
   tickBossSimulation(game, input, state, delta)
@@ -107,12 +109,12 @@ export function stepBossScene2dFrame(
 
   const scale = (viewWidth - SCENE2D_VIEWPORT_PAD_PX) / viewport.worldWidth
 
-  const targetLift = Math.max(0, player.y - pick(viewport.portrait, 2.2, 1.2))
+  const targetLift = Math.max(0, player.y - (viewport.portrait ? 2.2 : 1.2))
 
   state.cameraLift +=
     (targetLift - state.cameraLift) * (1 - Math.exp(-delta * 10))
   const floor = Math.round(
-    viewHeight * pick(aspect >= 1.14, 0.65, 190 / 224) +
+    viewHeight * (aspect >= camera2D.boss.portraitAspect ? 0.65 : 190 / 224) +
       state.cameraLift * scale,
   )
 
@@ -152,7 +154,7 @@ export function stepBossScene2dFrame(
   })
   state.uiAcc += delta
 
-  if (state.uiAcc > 0.09) {
+  if (state.uiAcc > simulation.hudRefreshSeconds) {
     state.uiAcc = 0
     onTick()
   }

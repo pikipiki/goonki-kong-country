@@ -1,10 +1,14 @@
-import { useRef } from 'react'
+import { useRef, type RefObject } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Group } from 'three'
 import { enemyRenderVisible, type Enemy, type Game } from '../../game/engine'
-import { EnemyBody } from './enemyBody'
+import { KingBossModel } from '../BossBattle3D'
+import { ENEMY_DESIGNS } from '../../game/enemies'
+import { Beaver } from './beaver'
+import { Crocodile } from './crocodile'
+import { Necky } from './necky'
+import { Zinger } from './zinger'
 import { enemyBobOffset, enemyBodyYaw } from './enemyFacing'
-
 export function EnemyModel({
   enemy,
   game,
@@ -59,5 +63,37 @@ export function EnemyModel({
         <EnemyBody enemy={enemy} game={game} gait={gait} wings={wings} />
       </group>
     </group>
+  )
+}
+
+export function EnemyBody({
+  enemy,
+  game,
+  gait,
+  wings,
+}: {
+  enemy: Enemy
+  game?: Game
+  gait: RefObject<Group | null>
+  wings: RefObject<Group | null>
+}) {
+  if (enemy.kind === 'boss') {
+    return (
+      <group scale={ENEMY_DESIGNS.boss.height / 1.72}>
+        <KingBossModel enemy={enemy} game={game} />
+      </group>
+    )
+  }
+  if (enemy.pattern === 'necky') {
+    return <Necky wings={wings} />
+  }
+  if (enemy.kind === 'bee') {
+    return <Zinger wings={wings} />
+  }
+  if (enemy.kind === 'beetle') {
+    return <Beaver gait={gait} />
+  }
+  return (
+    <Crocodile helmet={enemy.kind === 'armored'} king={false} gait={gait} />
   )
 }

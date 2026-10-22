@@ -15,7 +15,6 @@ import {
   expectPlushReachesBossHead,
   simulateBossUntil,
 } from './helpers/bossBattleSim'
-import { pick } from '../src/utils/pick'
 
 describe('final battle crown and run phases', () => {
   it('throws and returns the crown, exposing the head only during its flight', () => {
@@ -146,7 +145,7 @@ describe('final battle fake defeat and hops', () => {
       boss.hp--
       registerBossHit(state, boss, shots)
       expect(state.hits).toBe(hit)
-      expect(state.phase).toBe(pick(hit === 10, 'dead', 'hurt'))
+      expect(state.phase).toBe(hit === 10 ? 'dead' : 'hurt')
       expect(shots.every((shot) => !shot.active)).toBe(true)
     }
     expect(bossAcceptsHit(state)).toBe(false)

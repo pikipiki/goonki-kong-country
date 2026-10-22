@@ -3,7 +3,6 @@ import { useFrame } from '@react-three/fiber'
 import type { Group } from 'three'
 import type { Game } from '../../game/engine'
 import { actorCylinder, actorSphere } from './geometries'
-import { pick } from '../../utils/pick'
 
 export function Butterfly({ game, worldX }: { game: Game; worldX: number }) {
   const root = useRef<Group>(null)
@@ -20,7 +19,7 @@ export function Butterfly({ game, worldX }: { game: Game; worldX: number }) {
 
     wings.current?.children.forEach((wing, wingIdx) => {
       wing.rotation.y =
-        pick(wingIdx, 1, -1) * (0.5 + Math.sin(elapsed * 15) * 0.65)
+        (wingIdx ? 1 : -1) * (0.5 + Math.sin(elapsed * 15) * 0.65)
     })
   })
   return (

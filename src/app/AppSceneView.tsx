@@ -1,7 +1,18 @@
-import { BossScene2D } from '../game2d/BossScene2D'
-import { Scene2D } from '../game2d/Scene2D'
+import { lazy, Suspense } from 'react'
+import { useTranslation } from 'react-i18next'
+import { FINAL_BOSS_STAGE_ID } from '../game/stageCatalog'
 import type { Game, Input, Phase } from '../game/engine'
-import { Scene } from '../Scene'
+const Scene = lazy(() =>
+  import('../Scene').then((module) => ({ default: module.Scene })),
+)
+const Scene2D = lazy(() =>
+  import('../game2d/Scene2D').then((module) => ({ default: module.Scene2D })),
+)
+const BossScene2D = lazy(() =>
+  import('../game2d/BossScene2D').then((module) => ({
+    default: module.BossScene2D,
+  })),
+)
 
 export function AppSceneContent({
   phase,
@@ -16,14 +27,22 @@ export function AppSceneContent({
   input: Input
   onTick: () => void
 }) {
-  if (phase === 'map' || phase === 'clear') {
+  const { t } = useTranslation()
+  if (phase === 'map' || phase === 'clear' || (demo2D && phase === 'title'))
     return null
+  let Renderer = Scene
+  if (demo2D) {
+    Renderer = game.levelId === FINAL_BOSS_STAGE_ID ? BossScene2D : Scene2D
   }
-  if (demo2D && phase !== 'title') {
-    if (game.levelId === 6) {
-      return <BossScene2D game={game} input={input} onTick={onTick} />
-    }
-    return <Scene2D game={game} input={input} onTick={onTick} />
-  }
-  return <Scene game={game} input={input} onTick={onTick} />
+  return (
+    <Suspense
+      fallback={
+        <div className="webgl-fallback" role="status">
+          {t('loadingGame')}
+        </div>
+      }
+    >
+      <Renderer game={game} input={input} onTick={onTick} />
+    </Suspense>
+  )
 }

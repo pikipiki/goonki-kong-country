@@ -4,7 +4,6 @@ import type { Game } from '../../game/engine'
 import { EnemyModel } from '../EnemyModels'
 import { Label } from './Label'
 import { Barrel } from './Barrel'
-import { pick } from '../../utils/pick'
 import { actorBox, actorCylinder, actorSphere } from './geometries'
 
 const SEALED_SLATS = [0, 1, 2, 3, 4, 5, 6]
@@ -26,7 +25,7 @@ export function SealedBonusEntrance() {
           scale={[1.5, 0.43, 0.18]}
         >
           <meshStandardMaterial
-            color={pick(slatIdx % 2, '#70502f', '#88613a')}
+            color={slatIdx % 2 ? '#70502f' : '#88613a'}
             roughness={1}
           />
         </mesh>
@@ -55,7 +54,7 @@ export function LevelBarrels({
       {level.barrels.map((barrel, barrelIdx) => (
         <group
           key={barrelIdx}
-          name={pick(barrel.kind === 'cannon', 'cannon', 'barrel')}
+          name={barrel.kind === 'cannon' ? 'cannon' : 'barrel'}
           userData={{ barrelIndex: barrelIdx }}
           position={[barrel.x, barrel.y, 0]}
         >

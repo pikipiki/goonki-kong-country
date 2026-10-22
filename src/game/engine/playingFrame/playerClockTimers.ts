@@ -1,12 +1,15 @@
-import type { Game } from '../gameSession'
-import type { Input } from '../types'
-import { tickPlayerCannonLock } from './playerCannonLockTimer'
-
+import { particles as settings } from '../../../config/presentation.json'
+import { type Game } from '../gameSession'
+import { type Input } from '../types'
 export function tickParticles(game: Game, deltaTime: number) {
-  game.particles.forEach((particle) => {
+  const particles = game.particles
+  let aliveCount = 0
+  for (const particle of particles) {
     particle.age += deltaTime
-  })
-  game.particles = game.particles.filter((particle) => particle.age < 1.3)
+    if (particle.age < settings.lifetimeSeconds)
+      particles[aliveCount++] = particle
+  }
+  particles.length = aliveCount
 }
 
 export function tickPlayerTimers(
@@ -67,5 +70,21 @@ export function tickPlayerTimers(
     player.coyote = 0.1
   } else {
     player.coyote = Math.max(0, player.coyote - deltaTime)
+  }
+}
+
+export function tickPlayerCannonLock(game: Game) {
+  const player = game.player
+
+  if (player.cannonLock < 0) {
+    return
+  }
+
+  const barrel = game.level.barrels.at(player.cannonLock)
+
+  const source = barrel ? game.cannonPosition(player.cannonLock) : null
+
+  if (!source || Math.hypot(player.x - source.x, player.y - source.y) > 1.7) {
+    player.cannonLock = -1
   }
 }

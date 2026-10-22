@@ -1,5 +1,4 @@
 import type { BossActor, BossBattle, BossProjectile } from './bossBattleTypes'
-import { pick } from '../utils/pick'
 
 function stepCrownProjectile(
   state: BossBattle,
@@ -77,7 +76,7 @@ export function stepBossProjectiles(
     }
 
     shot.age += delta
-    shot.rotation += delta * pick(shot.kind === 'crown', 12, 4)
+    shot.rotation += delta * (shot.kind === 'crown' ? 12 : 4)
 
     if (shot.kind === 'crown') {
       stepCrownProjectile(state, actor, shot, delta)

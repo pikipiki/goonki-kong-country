@@ -1,12 +1,17 @@
+import { FINAL_BOSS_STAGE_ID } from '../game/stageCatalog'
 import { HelpOverlay } from './HelpOverlay'
 import { MAP_LEVELS } from './mapLevels'
-import { MapOverlay } from './MapOverlay'
+import { lazy, Suspense } from 'react'
 import { PhasePanel } from './PhasePanel'
 import { PlayingHud } from './PlayingHud'
 import { TitleIntro } from './TitleIntro'
 import { ContextLostOverlay } from './ContextLostOverlay'
 import { runPhasePrimaryAction } from './phasePrimaryAction'
-import type { AppShell } from './useAppShell'
+import { type AppShell } from './useAppShell'
+const MapOverlay = lazy(() =>
+  import('./MapOverlay').then((module) => ({ default: module.MapOverlay })),
+)
+
 function TitleLayer({ shell }: { shell: AppShell }) {
   if (shell.phase !== 'title') {
     return null
@@ -21,9 +26,9 @@ function TitleLayer({ shell }: { shell: AppShell }) {
         shell.startDemo2D(0)
       }}
       onDemoBoss={() => {
-        shell.startDemo2D(6)
+        shell.startDemo2D(FINAL_BOSS_STAGE_ID)
       }}
-      unlocked={shell.game.save.unlocked}
+      unlocked={shell.game.save.unlocked > 0}
     />
   )
 }
@@ -66,7 +71,9 @@ export function AppOverlays({ shell }: { shell: AppShell }) {
           showControls={shell.showControls}
         />
       )}
-      <MapLayer shell={shell} />
+      <Suspense fallback={null}>
+        <MapLayer shell={shell} />
+      </Suspense>
       <PhasePanel
         phase={shell.phase}
         game={shell.game}

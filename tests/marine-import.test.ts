@@ -1,3 +1,4 @@
+import { assertDefined } from './helpers/assertDefined'
 import { describe, it, expect } from 'vitest'
 import data from '../reference/coral-terrain-v2.json'
 import tables from '../reference/level-tables.json'
@@ -33,7 +34,7 @@ function swimRouteReachable(mounted: boolean) {
   let found = false
   while (head < queue.length) {
     const [posX, posY] = queue[head++]
-    const zone = ROM_CORAL.finishZone
+    const zone = assertDefined(ROM_CORAL.finishZone)
     expect(zone).toBeDefined()
     if (
       Math.abs(posX - zone.x) < zone.w / 2 &&

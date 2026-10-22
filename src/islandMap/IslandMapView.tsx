@@ -1,4 +1,3 @@
-import { pick } from '../utils/pick'
 import {
   useCallback,
   useEffect,
@@ -26,7 +25,7 @@ function handleMapKeyDown(event: KeyboardEvent, props: MapProps) {
   }
   if (event.key === 'Home' || event.key === 'End') {
     event.preventDefault()
-    props.onSelect(pick(event.key === 'Home', 0, props.stages.length - 1))
+    props.onSelect(event.key === 'Home' ? 0 : props.stages.length - 1)
     return
   }
   if (event.key === 'Enter') {
@@ -66,24 +65,20 @@ export function IslandMapView(props: MapProps) {
         handleMapKeyDown(event, props)
       }}
     >
-      {pick(
-        props.mode2D,
-        () => (
-          <RomMap2d {...props} onProject={onProject} />
-        ),
-        () => (
-          <Canvas
-            orthographic
-            dpr={[1, 1.25]}
-            camera={{ position: [0, 26, 13], zoom: 21, near: 0.1, far: 100 }}
-            onCreated={({ camera }) => {
-              camera.lookAt(0, 0, 0)
-              camera.updateProjectionMatrix()
-            }}
-          >
-            <MapIsland3d {...props} onProject={onProject} />
-          </Canvas>
-        ),
+      {props.mode2D ? (
+        <RomMap2d {...props} onProject={onProject} />
+      ) : (
+        <Canvas
+          orthographic
+          dpr={[1, 1.25]}
+          camera={{ position: [0, 26, 13], zoom: 21, near: 0.1, far: 100 }}
+          onCreated={({ camera }) => {
+            camera.lookAt(0, 0, 0)
+            camera.updateProjectionMatrix()
+          }}
+        >
+          <MapIsland3d {...props} onProject={onProject} />
+        </Canvas>
       )}
       <MapLabels
         positions={positions}

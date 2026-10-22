@@ -1,6 +1,5 @@
 import type { Group } from 'three'
 import type { Player } from '../../game/engine'
-import { pick } from '../../utils/pick'
 
 function animateCelebrateLimb(limb: Group, limbIdx: number, animTime: number) {
   if (limbIdx < 2) {
@@ -8,7 +7,7 @@ function animateCelebrateLimb(limb: Group, limbIdx: number, animTime: number) {
   } else {
     limb.rotation.x = Math.sin(animTime * 10 + limbIdx * Math.PI) * 0.45
   }
-  limb.rotation.z = pick(limbIdx % 2, 1, -1) * pick(limbIdx < 2, 0.38, 0.15)
+  limb.rotation.z = (limbIdx % 2 ? 1 : -1) * (limbIdx < 2 ? 0.38 : 0.15)
 }
 
 function animateSwapLimb(
@@ -17,8 +16,8 @@ function animateSwapLimb(
   swapHop: number,
   pink: boolean,
 ) {
-  limb.rotation.x = pick(limbIdx < 2, -1.1, 0.65) * swapHop
-  limb.rotation.z = pick(limbIdx % 2, 1, -1) * swapHop * pick(pink, 0.35, 1.05)
+  limb.rotation.x = (limbIdx < 2 ? -1.1 : 0.65) * swapHop
+  limb.rotation.z = (limbIdx % 2 ? 1 : -1) * swapHop * (pink ? 0.35 : 1.05)
 }
 
 function limbRideZ(limbIdx: number): number {
@@ -87,7 +86,7 @@ function applyRideLimbPose(limb: Group, limbIdx: number) {
 }
 
 function applyRollLimbPose(limb: Group, limbIdx: number, pink: boolean) {
-  limb.rotation.z = pick(limbIdx % 2, 1, -1) * pick(pink, 0.18, 1.05)
+  limb.rotation.z = (limbIdx % 2 ? 1 : -1) * (pink ? 0.18 : 1.05)
   if (pink) {
     limb.rotation.x = -1.4
   } else {

@@ -1,6 +1,5 @@
 import type { Group } from 'three'
 import type { Player } from '../../game/engine'
-import { pick } from '../../utils/pick'
 
 function bodyRollZ(player: Player | undefined, roll: boolean): number {
   if (!roll || !player) {
@@ -32,7 +31,7 @@ function bodySwapZ(
     return 0
   }
 
-  return pick(companion, -1, 1) * swapHop * pick(pink, 0.35, 0.85)
+  return (companion ? -1 : 1) * swapHop * (pink ? 0.35 : 0.85)
 }
 
 function bodySwimZ(
@@ -75,7 +74,7 @@ export function applyGoonkBodyRotation(
   }
 
   body.rotation.z = rotZ
-  body.rotation.y = poseFacing * pick(walking > 0.3, 0.65, 0.2)
+  body.rotation.y = poseFacing * (walking > 0.3 ? 0.65 : 0.2)
   let baseY = 0.4
 
   if (roll) {

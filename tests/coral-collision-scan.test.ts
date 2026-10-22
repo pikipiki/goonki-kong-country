@@ -50,7 +50,7 @@ describe('coral collision ROM scan (diagnostic)', () => {
       for (let posX2 = 2; posX2 <= 62; posX2 += 0.5) {
         const hit = queryCoral(posX2, swimY + 0.08, ORIGINAL_CORAL_ORIGIN)
         if (hit && hit.floorY > swimY + 0.15) {
-          phantomFloors.push({ posX2, swimY, floorY: hit.floorY })
+          phantomFloors.push({ x: posX2, swimY, floorY: hit.floorY })
         }
         const ceiling = ceilingCoralWorld(
           posX2,
@@ -58,7 +58,7 @@ describe('coral collision ROM scan (diagnostic)', () => {
           ORIGINAL_CORAL_ORIGIN,
         )
         if (ceiling < swimY + 1.5) {
-          lowCeilings.push({ posX2, swimY, ceiling })
+          lowCeilings.push({ x: posX2, swimY, ceiling })
         }
       }
     }

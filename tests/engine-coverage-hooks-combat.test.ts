@@ -1,10 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { Game } from '../src/game/engine'
+import { Game, STEP } from '../src/game/engine'
 import { advanceGame } from './helpers/simulation'
 import { assertDefined } from './helpers/assertDefined'
-import { pick } from '../src/utils/pick'
 import {
-  STEP,
   updateBossBattle,
   createBossBattle,
   type BossActor,
@@ -16,7 +14,7 @@ describe('engine coverage hooks — combat and pickups', () => {
     letters.start(0, true)
     letters.enemies = []
     const letterIds = letters.level.pickups
-      .map((pickup2, index) => pick(pickup2.kind === 'letter', index, -1))
+      .map((pickup2, index) => (pickup2.kind === 'letter' ? index : -1))
       .filter((index2) => index2 >= 0)
     letterIds.slice(0, -1).forEach((index3) => letters.letters.add(index3))
     const last = letters.level.pickups[assertDefined(letterIds.at(-1))]

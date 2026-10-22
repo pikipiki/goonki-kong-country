@@ -1,3 +1,4 @@
+import { mountAction } from '../config/gameplay.json'
 import type { TFunction } from 'i18next'
 import type { Game } from '../game/engine'
 import type { Controls } from '../game/input'
@@ -30,7 +31,7 @@ export function primaryActionTitle(game: Game, translate: TFunction): string {
     return translate('fire')
   }
   if (game.mount?.kind === 'enguarde' || game.mount?.kind === 'rambi') {
-    if (game.player.mountCharge >= 0.65) {
+    if (game.player.mountCharge >= mountAction.readyChargeSeconds) {
       return translate('launchCharge')
     }
     return translate('charge')

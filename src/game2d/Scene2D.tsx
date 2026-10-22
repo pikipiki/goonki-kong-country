@@ -1,7 +1,6 @@
 import { useRef } from 'react'
-import type { Game, Input } from '../game/engine'
+import { type Game, type Input } from '../game/engine'
 import { useScene2dLoop } from './useScene2dLoop'
-
 export function Scene2D({
   game,
   input,

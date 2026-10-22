@@ -6,7 +6,6 @@ import {
 import { ROM_MINE_CART } from '../src/game/originalMineCart'
 import { Game, emptyInput } from '../src/game/engine'
 import { assertDefined } from './helpers/assertDefined'
-import { pick } from '../src/utils/pick'
 
 function runCloseMinePair(
   anchor: number,
@@ -90,7 +89,7 @@ it('adapts close mine formations on runtime copies and keeps a real low jump obs
     )
     expect(original.y - lower.y).toBeLessThanOrEqual(0.401)
     expect(
-      runCloseMinePair(anchor, pick(anchor === 269.34375, 8, 7), 0.5, 1, -1, 0),
+      runCloseMinePair(anchor, anchor === 269.34375 ? 8 : 7, 0.5, 1, -1, 0),
     ).toBe(false)
   }
   expect(

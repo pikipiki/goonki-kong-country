@@ -1,4 +1,5 @@
 export const englishResources = {
+  loadingGame: 'Loading the adventure…',
   play: 'Start the adventure',
   continue: 'Continue the adventure',
   resume: 'Resume',

@@ -1,9 +1,10 @@
-import { fishDorsal, fishSideFin, fishTail } from './animalGeometries'
-import { animalMat } from './animalMaterials'
-import { AnimalEyes } from './animalEyes'
-import { AnimalPart } from './animalPart'
-import { pick } from '../../utils/pick'
-
+import {
+  fishDorsal,
+  fishSideFin,
+  fishTail,
+  animalMat,
+} from './animalGeometries'
+import { AnimalEyes, AnimalPart } from './animalPart'
 export function Enguarde() {
   return (
     <group>
@@ -44,7 +45,7 @@ export function Enguarde() {
           key={side}
           name="animal-fin"
           position={[0, 0, side * 0.23]}
-          userData={{ phase: pick(side > 0, 0, Math.PI), axis: 'x' }}
+          userData={{ phase: side > 0 ? 0 : Math.PI, axis: 'x' }}
         >
           <mesh
             geometry={fishSideFin}

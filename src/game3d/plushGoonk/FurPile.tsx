@@ -2,7 +2,6 @@ import { themeColors } from '@game3d/theme'
 import { useEffect, useMemo } from 'react'
 import { BufferGeometry, Float32BufferAttribute } from 'three'
 import { bodyPoint } from '@game3d/plushGoonk/profile'
-import { pick } from '../../utils/pick'
 
 const plush = themeColors.plush
 
@@ -47,7 +46,7 @@ export function FurPile({ pink }: { pink: boolean }) {
   return (
     <lineSegments geometry={geometry}>
       <lineBasicMaterial
-        color={pick(pink, plush.furPink, plush.furPurple)}
+        color={pink ? plush.furPink : plush.furPurple}
         transparent
         opacity={0.23}
         depthWrite={false}

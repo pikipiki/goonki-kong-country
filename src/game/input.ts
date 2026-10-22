@@ -59,7 +59,7 @@ export class Controls {
     this.input.clickMode = mode
   }
   gamepad() {
-    let gamepads
+    let gamepads: (Gamepad | null)[]
     if (typeof navigator.getGamepads === 'function') {
       gamepads = navigator.getGamepads()
     } else {

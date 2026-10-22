@@ -8,6 +8,7 @@ import {
   TorusGeometry,
   TubeGeometry,
   Vector3,
+  MeshStandardMaterial,
 } from 'three'
 export const enemyShapes = {
   round: new SphereGeometry(1, 18, 12),
@@ -30,3 +31,26 @@ export const crocTail = new TubeGeometry(
   8,
   false,
 )
+
+const materials = new Map<string, MeshStandardMaterial>()
+
+export function enemyMaterial(color: string) {
+  const cached = materials.get(color)
+
+  if (cached) {
+    return cached
+  }
+
+  const translucent = color === '#ccded3' || color === '#e4ead1'
+
+  const created = new MeshStandardMaterial({
+    color,
+    roughness: 0.68,
+    transparent: translucent,
+    opacity: translucent ? 0.53 : 1,
+    depthWrite: !translucent,
+  })
+
+  materials.set(color, created)
+  return created
+}

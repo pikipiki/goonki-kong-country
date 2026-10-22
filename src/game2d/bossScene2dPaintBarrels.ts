@@ -2,7 +2,6 @@ import { BOSS_BARREL_HEIGHT } from '../game/bossArena'
 import type { BossAssets, BossFrame } from './bossScene2dAssets'
 import { barrelObjectGroup } from './bossScene2dPhase'
 import { bossObjectFrame } from './bossScene2dSprite'
-import { pick } from '../utils/pick'
 
 function drawObjectFrame(
   ctx: CanvasRenderingContext2D,
@@ -43,7 +42,7 @@ export function drawBossBarrel(
     ctx.fillStyle = '#9b622f'
     ctx.fillRect(
       canvasX - 0.4 * scale,
-      canvasY - pick(anchor === 'feet', 1, 0.5) * BOSS_BARREL_HEIGHT * scale,
+      canvasY - (anchor === 'feet' ? 1 : 0.5) * BOSS_BARREL_HEIGHT * scale,
       0.8 * scale,
       BOSS_BARREL_HEIGHT * scale,
     )
@@ -53,7 +52,7 @@ export function drawBossBarrel(
   const anchorX = canvasX - (frame.ox + frame.w / 2) * drawScale
 
   const anchorY =
-    canvasY - (frame.oy + frame.h * pick(anchor === 'feet', 1, 0.5)) * drawScale
+    canvasY - (frame.oy + frame.h * (anchor === 'feet' ? 1 : 0.5)) * drawScale
 
   drawObjectFrame(ctx, assets, frame, anchorX, anchorY, drawScale)
 

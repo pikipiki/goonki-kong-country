@@ -3,7 +3,6 @@ import type { PlushSpriteRenderer } from '../game2d/plushSprite'
 import type { RomTravelState } from './romMap2dMotion'
 import { romMapNodes } from './mapData'
 import { romNodeFill } from './stageRingColor'
-import { pick } from '../utils/pick'
 import {
   ROM_MAP_ART_HEIGHT,
   ROM_MAP_ART_WIDTH,
@@ -249,7 +248,7 @@ export function drawRomPlushies(
       rollFacing: 1,
       cannonFlight: false,
       swapping: false,
-      swapHop: pick(travel.hopY > 2, 0.5, 0),
+      swapHop: travel.hopY > 2 ? 0.5 : 0,
       companion: true,
       riding: false,
       carrying: false,
@@ -275,7 +274,7 @@ export function drawRomPlushies(
       rollFacing: 1,
       cannonFlight: false,
       swapping: false,
-      swapHop: pick(travel.hopY > 2, 0.5, 0),
+      swapHop: travel.hopY > 2 ? 0.5 : 0,
       companion: false,
       riding: false,
       carrying: false,

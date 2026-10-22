@@ -6,10 +6,10 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "tsc -b && vite build",
-    "format": "eslint --fix src tests e2e .storybook eslint.config.js vite.config.ts playwright.config.ts; prettier --write src tests e2e .storybook package.json eslint.config.js vite.config.ts playwright.config.ts",
+    "format": "eslint --fix scripts src tests e2e .storybook eslint.config.js vite.config.ts playwright.config.ts && prettier --write 'scripts/**/*.mjs' src tests e2e .storybook package.json eslint.config.js vite.config.ts playwright.config.ts",
     "format:engine": "eslint --fix src/game/engine src/islandMap/travelerMotion.ts && prettier --write src/game/engine src/islandMap/travelerMotion.ts",
-    "format:check": "prettier --check src tests e2e .storybook package.json eslint.config.js vite.config.ts playwright.config.ts",
-    "test:all": "vitest run && npm run test:e2e && npm run test:functional",
+    "format:check": "prettier --check 'scripts/**/*.mjs' src tests e2e .storybook package.json eslint.config.js vite.config.ts playwright.config.ts",
+    "test:all": "npm run check:architecture && vitest run && npm run test:e2e && npm run test:production && npm run test:functional",
     "test:functional": "node scripts/run-functional-tests.mjs",
     "lint": "npm run format:check && eslint . --max-warnings 0",
     "storybook": "storybook dev -p 6006",
@@ -58,7 +58,10 @@
     "test:mechanics": "node scripts/mechanics-browser.mjs",
     "test:ground": "node scripts/ground-rendering-browser.mjs",
     "test:playthrough:canyon": "node scripts/playthrough-canyon.mjs",
-    "test:playthrough:coral": "node scripts/playthrough-coral.mjs"
+    "test:playthrough:coral": "node scripts/playthrough-coral.mjs",
+    "test:production": "npm run build && node scripts/verify-production.mjs",
+    "generate:plush-contour": "node scripts/generate-plush-contour.mjs",
+    "check:architecture": "node scripts/check-architecture.mjs"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

@@ -1,10 +1,5 @@
-import { ostrichNeck } from './animalGeometries'
-import { animalMat } from './animalMaterials'
-import { AnimalEyes } from './animalEyes'
-import { AnimalPart } from './animalPart'
-import { ExpressoLeg } from './expressoLegs'
-import { ExpressoWing } from './expressoWings'
-
+import { ostrichNeck, animalMat } from './animalGeometries'
+import { AnimalEyes, AnimalPart } from './animalPart'
 export function Expresso() {
   return (
     <group>
@@ -63,6 +58,75 @@ export function Expresso() {
           <ExpressoWing side={side} />
           <ExpressoLeg side={side} />
         </group>
+      ))}
+    </group>
+  )
+}
+
+export function ExpressoLeg({ side }: { side: number }) {
+  return (
+    <group
+      name="animal-stride"
+      position={[0.05, 1.12, side * 0.19]}
+      userData={{ phase: side > 0 ? 0 : Math.PI, amplitude: 0.75 }}
+    >
+      <AnimalPart
+        color="#cf9984"
+        pos={[-0.04, -0.23, 0]}
+        size={[0.055, 0.3, 0.055]}
+        rotate={[0, 0, -0.15]}
+      />
+      <AnimalPart
+        color="#dbab90"
+        pos={[-0.075, -0.64, 0]}
+        size={[0.045, 0.23, 0.045]}
+        rotate={[0, 0, 0.12]}
+      />
+      <AnimalPart
+        color="#e2e7d5"
+        pos={[0.03, -0.85, 0]}
+        size={[0.1, 0.1, 0.1]}
+      />
+      <AnimalPart
+        color="#ac3441"
+        pos={[0.14, -0.98, 0]}
+        size={[0.28, 0.13, 0.13]}
+      />
+      <AnimalPart
+        color="#f5eacb"
+        pos={[0.16, -1.065, 0.005]}
+        size={[0.29, 0.044, 0.14]}
+      />
+      <AnimalPart
+        color="#e5d8b7"
+        pos={[0.29, -0.965, side * 0.11]}
+        size={[0.085, 0.035, 0.018]}
+      />
+    </group>
+  )
+}
+
+export function ExpressoWing({ side }: { side: number }) {
+  return (
+    <group
+      name="animal-wing"
+      position={[-0.12, 1.4, side * 0.32]}
+      userData={{ phase: side > 0 ? 0 : Math.PI, side }}
+    >
+      <AnimalPart
+        color="#f4f0db"
+        pos={[-0.14, -0.1, side * 0.045]}
+        size={[0.42, 0.19, 0.12]}
+        rotate={[side * 0.1, 0, -0.17]}
+      />
+      {[-1, 0, 1].map((feather) => (
+        <AnimalPart
+          key={feather}
+          color={feather === 0 ? '#fff9e7' : '#e1dfcc'}
+          pos={[-0.35 + feather * 0.07, -0.17 + feather * 0.08, side * 0.08]}
+          size={[0.23, 0.07, 0.065]}
+          rotate={[0, 0, 0.35 + feather * 0.15]}
+        />
       ))}
     </group>
   )

@@ -1,7 +1,7 @@
+import { isDemo2DStage, isOriginalStage } from '../game/stageCatalog'
 import { useCallback } from 'react'
 import { AudioSystem } from '../game/audio'
 import type { Game } from '../game/engine'
-import { pick } from '../utils/pick'
 
 export function useAppPlayActions(
   game: Game,
@@ -14,8 +14,7 @@ export function useAppPlayActions(
       audio.boot()
       setDemo2D(false)
       change(() => {
-        const tutorial =
-          levelId === 0 || levelId === 1 || levelId === 2 || levelId === 3
+        const tutorial = isOriginalStage(levelId)
         game.start(levelId, tutorial)
       })
     },
@@ -27,7 +26,7 @@ export function useAppPlayActions(
       audio.boot()
       setDemo2D(true)
       change(() => {
-        game.start(pick(levelId === 6, 6, 0), true)
+        game.start(isDemo2DStage(levelId) ? levelId : 0, true)
       })
     },
     [audio, change, game, setDemo2D],

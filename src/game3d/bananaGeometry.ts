@@ -1,5 +1,4 @@
 import { BufferGeometry, Color, Float32BufferAttribute } from 'three'
-import { pick } from '../utils/pick'
 
 export function createBananaGeometry() {
   const positions: number[] = []
@@ -40,10 +39,10 @@ export function createBananaGeometry() {
     for (let side = 0; side <= sides; side++) {
       const angle = (side / sides) * Math.PI * 2
 
-      const ringRadius = radius * pick(side % 2 === 0, 1, 0.88)
+      const ringRadius = radius * (side % 2 === 0 ? 1 : 0.88)
 
       const shade =
-        0.38 + Math.cos(angle - 0.6) * 0.23 + pick(side % 2 === 0, 0.1, 0)
+        0.38 + Math.cos(angle - 0.6) * 0.23 + (side % 2 === 0 ? 0.1 : 0)
 
       positions.push(
         posX + normalX * Math.cos(angle) * ringRadius,

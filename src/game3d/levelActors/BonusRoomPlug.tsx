@@ -1,6 +1,5 @@
 import type { RefObject } from 'react'
 import type { Group } from 'three'
-import { pick } from '../../utils/pick'
 import { actorBox } from './geometries'
 
 const PLUG_SLATS = [0, 1, 2, 3, 4]
@@ -20,7 +19,7 @@ export function BonusRoomPlug({
           scale={[1.45, 0.41, 0.2]}
         >
           <meshStandardMaterial
-            color={pick(slatIdx % 2, '#70502f', '#88613a')}
+            color={slatIdx % 2 ? '#70502f' : '#88613a'}
             roughness={1}
           />
         </mesh>

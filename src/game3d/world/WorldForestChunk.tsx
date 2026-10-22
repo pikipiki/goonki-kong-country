@@ -15,7 +15,6 @@ import {
   worldRock,
   worldVine,
 } from './worldSharedGeometries'
-import { pick } from '../../utils/pick'
 import { WorldBatch } from './WorldBatch'
 
 export function WorldForestChunk({
@@ -46,7 +45,7 @@ export function WorldForestChunk({
       <WorldBatch
         geometry={worldCylinder}
         items={data.trunks}
-        color={pick(biome === 'lagoon', '#c5b1a2', '#aaa28a')}
+        color={biome === 'lagoon' ? '#c5b1a2' : '#aaa28a'}
         map="bark"
       />
       <WorldBatch
@@ -72,15 +71,15 @@ export function WorldForestChunk({
       <WorldBatch
         geometry={worldRock}
         items={data.stones}
-        color={pick(biome === 'lagoon', '#a8c6bc', palette.ground)}
+        color={biome === 'lagoon' ? '#a8c6bc' : palette.ground}
         map="soil"
       />
       <WorldBatch geometry={worldVine} items={data.vines} color="#75953e" />
       <WorldBatch
-        geometry={pick(biome === 'ship', worldBox, worldCone)}
+        geometry={biome === 'ship' ? worldBox : worldCone}
         items={data.extras}
         color="#a9a18b"
-        map={pick(biome === 'ship', 'wood' as const, undefined)}
+        map={biome === 'ship' ? ('wood' as const) : undefined}
       />
     </group>
   )

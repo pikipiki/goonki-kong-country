@@ -3,7 +3,6 @@ import { ENEMY_DESIGNS } from '../src/game/enemies'
 import { Game, emptyInput } from '../src/game/engine'
 import { advanceGame } from './helpers/simulation'
 import { assertDefined } from './helpers/assertDefined'
-import { pick } from '../src/utils/pick'
 
 describe('engine coverage hooks — rolls and recovery', () => {
   it('covers roll and run input branches', () => {
@@ -147,7 +146,7 @@ describe('engine coverage hooks — stomps and barrels', () => {
       )
       stomp.enemies = [enemy]
       Object.assign(stomp.player, {
-        active: pick(kind === 'armored', 1, 0),
+        active: kind === 'armored' ? 1 : 0,
         x: enemy.x,
         y: ENEMY_DESIGNS[kind].height + 0.05,
         vy: -4,

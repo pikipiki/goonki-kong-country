@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { resolveAudioEffectId } from '../src/game/audio'
 import { Game, emptyInput } from '../src/game/engine'
-import type { Enemy } from '../src/game/engine/types'
+import { type Enemy } from '../src/game/engine/types'
 import { groundEnemy } from '../src/game/engine/gameGroundEnemy'
 import { updateMountAnimals } from '../src/game/engine/gameMountAnimals'
 import { updateItemCaches } from '../src/game/engine/gameWorldInteract'

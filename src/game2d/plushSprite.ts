@@ -1,6 +1,5 @@
 import { plushAnimationGroup } from './plushAtlasPose'
 import { drawPlushFallback2D } from './plushFallbackDraw'
-import { pick } from '../utils/pick'
 
 export interface PlushPoseState {
   pink: boolean
@@ -102,7 +101,7 @@ export class PlushSpriteRenderer {
       ctx.save()
       ctx.fillStyle = 'rgba(8, 12, 6, 0.38)'
       ctx.beginPath()
-      const shadowRx = pick(state.pink, 11, 10) * scale
+      const shadowRx = (state.pink ? 11 : 10) * scale
 
       const shadowRy = 3.2 * scale
 

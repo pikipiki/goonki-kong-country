@@ -1,6 +1,5 @@
 import { expect, it } from 'vitest'
 import { Game, emptyInput } from '../src/game/engine'
-import { pick } from '../src/utils/pick'
 
 for (const active of [0, 1]) {
   it(`crosses the real canyon high-branch gap with a roll jump as plush ${String(active)}`, () => {
@@ -23,7 +22,7 @@ for (const active of [0, 1]) {
       index.held = new Set([
         'right',
         'run',
-        ...pick(frame >= 18, ['jump' as const], []),
+        ...(frame >= 18 ? ['jump' as const] : []),
       ])
       if (frame === 0) {
         index.pressed.add('action')

@@ -1,5 +1,5 @@
-import type { Game } from '../gameSession'
-import type { Input } from '../types'
+import { type Game } from '../gameSession'
+import { type Input } from '../types'
 import { runMineAndClock } from './stepMineAndClock'
 import { runCannonAndActions } from './stepCannonAndActions'
 import { runPlayerMotion } from './stepPlayerMotion'
@@ -7,7 +7,6 @@ import { runPlayerResolve } from './stepPlayerResolve'
 import { runWorldInteract } from './stepWorldInteract'
 import { runEnemies } from './stepEnemies'
 import { runFinish } from './stepFinish'
-
 export function updatePlayingFrame(
   game: Game,
   input: Input,

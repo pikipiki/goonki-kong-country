@@ -1,4 +1,3 @@
-import { pick } from '../../utils/pick'
 import {
   BoxGeometry,
   BufferGeometry,
@@ -76,7 +75,7 @@ function buildLeafGeometry() {
       const width =
         Math.pow(Math.sin(rowNorm * Math.PI), 0.65) *
         0.59 *
-        pick(row % 3 === 0, 0.92, 1)
+        (row % 3 === 0 ? 0.92 : 1)
 
       vertices.push(
         rowNorm * 3.4,
@@ -86,8 +85,7 @@ function buildLeafGeometry() {
         side * width,
       )
       uvCoords.push(rowNorm, col / columns)
-      const shade =
-        1 - Math.abs(side) * 0.16 + pick(col === columns / 2, 0.12, 0)
+      const shade = 1 - Math.abs(side) * 0.16 + (col === columns / 2 ? 0.12 : 0)
 
       colors.push(shade, shade, shade)
 
@@ -141,7 +139,7 @@ function buildFernGeometry() {
 
       points.forEach((point, pointIdx) => {
         positions.push(...point)
-        const shade = 0.76 + rowNorm * 0.17 + pick(pointIdx === 1, 0.12, 0)
+        const shade = 0.76 + rowNorm * 0.17 + (pointIdx === 1 ? 0.12 : 0)
 
         colors.push(shade, shade, shade)
       })

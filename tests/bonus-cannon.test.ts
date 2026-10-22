@@ -1,3 +1,4 @@
+import { assertDefined } from './helpers/assertDefined'
 import { describe, expect, it } from 'vitest'
 import { Game, emptyInput, STEP } from '../src/game/engine'
 import { ROM_JUNGLE } from '../src/game/originalJungle'
@@ -18,8 +19,8 @@ describe('bonus room entry and collection', () => {
     const game = new Game()
     game.start(0, true)
     game.enemies = []
-    const room = game.level.bonusRooms?.[2]
-    const wall = game.level.breakableWalls?.[room?.wallIndex ?? 0]
+    const room = assertDefined(game.level.bonusRooms?.[2])
+    const wall = assertDefined(game.level.breakableWalls?.[room.wallIndex])
     expect(room).toBeDefined()
     expect(wall).toBeDefined()
     const animal = game.animals[0]
@@ -69,8 +70,8 @@ describe('bonus room entrance seals', () => {
     const game = new Game()
     game.start(0, true)
     game.enemies = []
-    const room = game.level.bonusRooms?.[2]
-    const wall = game.level.breakableWalls?.[room?.wallIndex ?? 0]
+    const room = assertDefined(game.level.bonusRooms?.[2])
+    const wall = assertDefined(game.level.breakableWalls?.[room.wallIndex])
     expect(room).toBeDefined()
     expect(wall).toBeDefined()
     game.brokenWalls.add(room.wallIndex)
@@ -104,8 +105,8 @@ describe('bonus room completion flags', () => {
     game.enemies = []
     game.animals = []
     const index = 2
-    const room = game.level.bonusRooms?.[index]
-    const wall = game.level.breakableWalls?.[room?.wallIndex ?? 0]
+    const room = assertDefined(game.level.bonusRooms?.[index])
+    const wall = assertDefined(game.level.breakableWalls?.[room.wallIndex])
     expect(room).toBeDefined()
     expect(wall).toBeDefined()
     game.brokenWalls.add(room.wallIndex)
@@ -130,8 +131,8 @@ describe('bonus room completion flags', () => {
     game.enemies = []
     game.animals = []
     const index = 2
-    const room = game.level.bonusRooms?.[index]
-    const wall = game.level.breakableWalls?.[room?.wallIndex ?? 0]
+    const room = assertDefined(game.level.bonusRooms?.[index])
+    const wall = assertDefined(game.level.breakableWalls?.[room.wallIndex])
     expect(room).toBeDefined()
     expect(wall).toBeDefined()
     const approach = () => {

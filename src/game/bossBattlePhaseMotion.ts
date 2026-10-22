@@ -1,6 +1,5 @@
 import type { BossActor, BossBattle, BossProjectile } from './bossBattleTypes'
 import { setBossPhase, startBossJumping } from './bossBattleHelpers'
-import { pick } from '../utils/pick'
 
 type BossEvent = (name: string) => void
 
@@ -91,7 +90,7 @@ function updateHurtPhase(
   } else if (state.hits === 7) {
     setBossPhase(state, 'fakeDeath')
   } else {
-    startBossJumping(state, pick(state.hits === 8, 6, 12), 'throw')
+    startBossJumping(state, state.hits === 8 ? 6 : 12, 'throw')
   }
 }
 
@@ -144,7 +143,7 @@ function updateJumpPhase(
     height = 3.1
   }
 
-  actor.vx = state.facing * pick(state.hits >= 7, 7.5, 5)
+  actor.vx = state.facing * (state.hits >= 7 ? 7.5 : 5)
   actor.x += actor.vx * delta
 
   if (actor.x <= low || actor.x >= high) {
@@ -195,7 +194,7 @@ function updateRainPhase(
     const spawnX =
       state.left +
       1 +
-      (pick(row % 2, 8 - col, col) * (state.right - state.left - 2)) / 8
+      ((row % 2 ? 8 - col : col) * (state.right - state.left - 2)) / 8
 
     shots.push({
       kind: 'cannonball',

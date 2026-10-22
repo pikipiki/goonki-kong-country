@@ -5,7 +5,6 @@ import { FlatEye } from '../plushGoonk/FlatEye'
 import { FurPile } from '../plushGoonk/FurPile'
 import { Stitching } from '../plushGoonk/Stitching'
 import { YellowTuft } from '../plushGoonk/YellowTuft'
-import { pick } from '../../utils/pick'
 import { GoonkArms, GoonkFeet } from './GoonkLimbs'
 
 type LimbRefs = { current: (Group | null)[] }
@@ -32,15 +31,15 @@ export function GoonkMesh({
           dispose={null}
         />
         <mesh
-          geometry={pick(pink, PINK_NOSE, VIOLET_NOSE)}
+          geometry={pink ? PINK_NOSE : VIOLET_NOSE}
           material={fabric}
           castShadow
           dispose={null}
         />
         <FurPile pink={pink} />
         <Stitching pink={pink} />
-        <FlatEye side={-1} seed={pick(pink, 1, 2)} />
-        <FlatEye side={1} seed={pick(pink, 1, 2)} />
+        <FlatEye side={-1} seed={pink ? 1 : 2} />
+        <FlatEye side={1} seed={pink ? 1 : 2} />
         {pink && <YellowTuft />}
         <GoonkArms fabric={fabric} limbs={limbs} />
         <GoonkFeet fabric={fabric} limbs={limbs} />

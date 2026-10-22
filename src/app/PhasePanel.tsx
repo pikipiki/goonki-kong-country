@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import type { Game, Phase } from '../game/engine'
 import { Icon } from './chrome'
-import { pick } from '../utils/pick'
 import {
   panelDescriptionKey,
   panelEyebrowText,
@@ -32,8 +31,8 @@ export function PhasePanel({
   }
   const levelLabel = String(game.levelId + 1).padStart(2, '0')
   return (
-    <div className={`overlay ${pick(phase === 'clear', 'clear-overlay', '')}`}>
-      <main className={`panel ${pick(phase === 'clear', 'clear-panel', '')}`}>
+    <div className={`overlay ${phase === 'clear' ? 'clear-overlay' : ''}`}>
+      <main className={`panel ${phase === 'clear' ? 'clear-panel' : ''}`}>
         <span className="panel-flower">{panelFlowerGlyph(phase)}</span>
         <p className="eyebrow">{panelEyebrowText(phase, t, levelLabel)}</p>
         <h2>{t(panelTitleKey(phase))}</h2>

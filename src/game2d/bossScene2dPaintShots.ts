@@ -38,7 +38,7 @@ function paintCannonShot(
   const { ctx, scale } = paint
   ctx.save()
   ctx.translate(screenX, screenY)
-  if (shot.impact > 0) {
+  if ((shot.impact ?? 0) > 0) {
     ctx.scale(1.25, 0.65)
   }
   if (

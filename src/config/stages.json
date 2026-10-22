@@ -1,0 +1,25 @@
+{
+  "romRouteAliases": {
+    "jungle": 0,
+    "0": 0,
+    "reverb": 1,
+    "canyon": 1,
+    "cave": 1,
+    "1": 1,
+    "minecart": 2,
+    "mine-cart": 2,
+    "cart": 2,
+    "2": 2,
+    "coral": 3,
+    "lagoon": 3,
+    "3": 3
+  },
+  "finalBossStageId": 6,
+  "coralPreview": {
+    "x": 20,
+    "midY": 3.2,
+    "deepY": 1.1,
+    "shallowY": 4.8
+  },
+  "demo2DStageIds": [0, 6]
+}

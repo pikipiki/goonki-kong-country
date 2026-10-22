@@ -1,3 +1,4 @@
+import { isDemo2DStage } from '../game/stageCatalog'
 import { useCallback, useRef } from 'react'
 import type { Game, Phase } from '../game/engine'
 import { MAP_LEVELS } from './mapLevels'
@@ -19,7 +20,7 @@ export function useAppMapActions(
   const selectMapLevel = useCallback(
     (levelId: number) => {
       setMapLevel(levelId)
-      if (levelId !== 0 && levelId !== 6) {
+      if (!isDemo2DStage(levelId)) {
         setMapMode2D(false)
       }
     },
@@ -27,7 +28,7 @@ export function useAppMapActions(
   )
 
   const enterMapStage = useCallback(() => {
-    const useDemo = mapMode2D && (mapLevel === 0 || mapLevel === 6)
+    const useDemo = mapMode2D && isDemo2DStage(mapLevel)
     if (useDemo) {
       startDemo2D(mapLevel)
     } else {
@@ -38,7 +39,7 @@ export function useAppMapActions(
   const openMap = useCallback(() => {
     change(() => {
       setMapLevel(game.levelId)
-      setMapMode2D(demo2D && (game.levelId === 0 || game.levelId === 6))
+      setMapMode2D(demo2D && isDemo2DStage(game.levelId))
       if (game.phase === 'title') {
         mapBack.current = 'title'
       } else {
@@ -52,7 +53,7 @@ export function useAppMapActions(
     change(() => {
       const next = Math.min(MAP_LEVELS.length - 1, game.levelId + 1)
       setMapLevel(next)
-      setMapMode2D(demo2D && (next === 0 || next === 6))
+      setMapMode2D(demo2D && isDemo2DStage(next))
       mapBack.current = 'title'
       game.phase = 'map'
     })

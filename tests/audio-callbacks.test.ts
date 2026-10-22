@@ -78,7 +78,7 @@ describe('AudioSystem voice cleanup', () => {
     audio.boot()
     audio.play('jungle')
     await flush()
-    const music = audio.music as {
+    const music = audio.music as unknown as {
       listeners: Record<string, Array<() => void>>
       currentTime: number
     }

@@ -34,7 +34,7 @@ describe('AudioSystem branch completion — voices', () => {
     audio.boot()
     audio.play('jungle')
     await flush()
-    const track = audio.music as {
+    const track = audio.music as unknown as {
       currentTime: number
       listeners: Record<string, Array<() => void>>
     }

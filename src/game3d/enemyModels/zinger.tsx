@@ -1,7 +1,6 @@
-import type { Group } from 'three'
-import type { RefObject } from 'react'
-import { EnemyEye } from './enemyEye'
-import { EnemyPart } from './enemyPart'
+import { type Group } from 'three'
+import { type RefObject } from 'react'
+import { EnemyEye, EnemyPart } from './enemyPart'
 const stripeOffsets = [-0.25, 0, 0.25]
 export function Zinger({ wings }: { wings: RefObject<Group | null> }) {
   return (

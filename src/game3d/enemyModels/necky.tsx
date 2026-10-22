@@ -1,8 +1,6 @@
-import type { Group } from 'three'
-import type { RefObject } from 'react'
-import { EnemyEye } from './enemyEye'
-import { EnemyPart } from './enemyPart'
-
+import { type Group } from 'three'
+import { type RefObject } from 'react'
+import { EnemyEye, EnemyPart } from './enemyPart'
 export function Necky({ wings }: { wings: RefObject<Group | null> }) {
   return (
     <group name="enemy-necky-bird">

@@ -1,5 +1,4 @@
 import type { PlushAtlasManifest, PlushPoseState } from './plushSprite'
-import { pick } from '../utils/pick'
 
 function frameInGroup(
   manifest: PlushAtlasManifest,
@@ -71,11 +70,9 @@ export function plushAnimationGroup(
 
   if (state.carrying) {
     return frameInGroup(manifest, `${charKey}_carry`, (group) =>
-      pick(
-        state.walking > 0.15,
-        Math.floor(state.time * (8 + state.walking * 1.4)) % group.length,
-        0,
-      ),
+      state.walking > 0.15
+        ? Math.floor(state.time * (8 + state.walking * 1.4)) % group.length
+        : 0,
     )
   }
 

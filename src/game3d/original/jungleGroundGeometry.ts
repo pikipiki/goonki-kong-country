@@ -4,7 +4,6 @@ import { SNES_METATILE_SIZE_PX } from '../../game/snesCollisionMetatile'
 import { terrainSolidSpans, type SolidSpan } from '../../game/terrainSolids'
 import { ORIGINAL_JUNGLE_ORIGIN } from '../../game/originalJungle'
 import { themeColors } from '../theme'
-import { pick } from '../../utils/pick'
 import {
   ORIGINAL_GROUND_BACK_Z,
   ORIGINAL_GROUND_CHUNK_COLUMNS,
@@ -53,14 +52,14 @@ function pushQuad(
 
     positions.push(posX, posY, posZ)
     uvs.push(
-      pick(plane === 'side', posZ, posX) * ORIGINAL_GROUND_UV_SCALE,
-      pick(plane === 'top', posZ, posY) * ORIGINAL_GROUND_UV_SCALE,
+      (plane === 'side' ? posZ : posX) * ORIGINAL_GROUND_UV_SCALE,
+      (plane === 'top' ? posZ : posY) * ORIGINAL_GROUND_UV_SCALE,
     )
     colors.push(shade.r, shade.g, shade.b)
   }
 }
 
-function exposedSolidPieces(span: SolidSpan, neighbours: SolidSpan[]) {
+function exposedSolidPieces(span: SolidSpan, neighbours: readonly SolidSpan[]) {
   let pieces = [span]
 
   for (const other of neighbours) {
@@ -97,13 +96,9 @@ function pushJungleBoxQuads(
   seed: number,
   branch: boolean,
 ) {
-  const frontTint = pick(
-    branch,
-    jungleGround.branchFront,
-    jungleGround.trunkFront,
-  )
-  const backTint = pick(branch, jungleGround.branchBack, jungleGround.trunkBack)
-  const topTint = pick(branch, jungleGround.branchTop, jungleGround.trunkTop)
+  const frontTint = branch ? jungleGround.branchFront : jungleGround.trunkFront
+  const backTint = branch ? jungleGround.branchBack : jungleGround.trunkBack
+  const topTint = branch ? jungleGround.branchTop : jungleGround.trunkTop
 
   pushQuad(
     positions,
@@ -168,8 +163,8 @@ function pushJungleExposedSides(
   span: SolidSpan,
   stripMinX: number,
   stripMaxX: number,
-  leftNeighbours: SolidSpan[],
-  rightNeighbours: SolidSpan[],
+  leftNeighbours: readonly SolidSpan[],
+  rightNeighbours: readonly SolidSpan[],
   seed: number,
 ) {
   for (const face of exposedSolidPieces(span, leftNeighbours)) {
@@ -214,8 +209,8 @@ function pushJungleSpan(
   span: SolidSpan,
   stripMinX: number,
   stripMaxX: number,
-  leftNeighbours: SolidSpan[],
-  rightNeighbours: SolidSpan[],
+  leftNeighbours: readonly SolidSpan[],
+  rightNeighbours: readonly SolidSpan[],
   spanIndex: number,
   pixelX: number,
 ) {

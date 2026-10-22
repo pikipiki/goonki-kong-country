@@ -1,5 +1,4 @@
 import type { BossAssets, BossFrame } from './bossScene2dAssets'
-import { pick } from '../utils/pick'
 
 export function createBossAtlasDrawer(assets: BossAssets | null) {
   return (
@@ -28,11 +27,7 @@ export function createBossAtlasDrawer(assets: BossAssets | null) {
 
     const frameIdx =
       list[
-        pick(
-          loop,
-          frameIndex % list.length,
-          Math.min(frameIndex, list.length - 1),
-        )
+        loop ? frameIndex % list.length : Math.min(frameIndex, list.length - 1)
       ]
 
     const frame = assets.manifest.frames.at(frameIdx)
@@ -42,7 +37,7 @@ export function createBossAtlasDrawer(assets: BossAssets | null) {
     }
 
     const drawScale =
-      (fixedScale ?? desiredHeight === undefined) ? 1 : desiredHeight / frame.h
+      fixedScale ?? (desiredHeight === undefined ? 1 : desiredHeight / frame.h)
 
     ctx.save()
     ctx.translate(Math.round(canvasX), Math.round(canvasY))
@@ -65,7 +60,7 @@ export function createBossAtlasDrawer(assets: BossAssets | null) {
       frame.y,
       frame.w,
       frame.h,
-      Math.round(pick(centered, -frame.w / 2, frame.ox) * drawScale),
+      Math.round((centered ? -frame.w / 2 : frame.ox) * drawScale),
       Math.round(offsetY * drawScale),
       Math.ceil(frame.w * drawScale),
       Math.ceil(frame.h * drawScale),
@@ -86,5 +81,6 @@ export function bossObjectFrame(
     return undefined
   }
 
-  return assets.objectManifest.frames[Math.floor(time * 12) % list.length]
+  const frameId = list[Math.floor(Math.max(0, time) * 12) % list.length]
+  return assets.objectManifest.frames.at(frameId)
 }

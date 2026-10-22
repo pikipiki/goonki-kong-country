@@ -1,8 +1,6 @@
-import type { Group } from 'three'
-import type { RefObject } from 'react'
-import { pick } from '../../utils/pick'
+import { type Group } from 'three'
+import { type RefObject } from 'react'
 import { EnemyPart } from './enemyPart'
-
 export function CrocGait({
   gait,
   green,
@@ -17,7 +15,7 @@ export function CrocGait({
       {[-1, 1].map((side) => (
         <group key={side} position={[-0.17, 0.26, side * 0.24]}>
           <EnemyPart
-            color={pick(helmet, '#645386', green)}
+            color={helmet ? '#645386' : green}
             size={[0.22, 0.28, 0.22]}
           />
           <EnemyPart

@@ -49,7 +49,10 @@ function mergeSpanRow(pixels: SolidSpan[], bottom: number, top: number): void {
   pixels.push({ bottom, top })
 }
 /** The same solid metatile intervals as the terrain meshes, without internal seams. */
-export function terrainSolidSpans(kind: string, worldX: number): SolidSpan[] {
+export function terrainSolidSpans(
+  kind: string,
+  worldX: number,
+): readonly Readonly<SolidSpan>[] {
   if (kind === 'coral') {
     return coralSolidSpansWorld(worldX)
   }

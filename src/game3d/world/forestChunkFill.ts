@@ -1,7 +1,6 @@
 import type { Biome } from '../../game/levels'
 import { worldRandom } from './worldPalettes'
 import type { WorldInstance } from './worldTypes'
-import { pick } from '../../utils/pick'
 
 export type ForestChunkBuckets = {
   trunks: WorldInstance[]
@@ -62,8 +61,8 @@ function fillCaveCell(
   out: ForestChunkBuckets,
 ) {
   out.stones.push({
-    position: [treeX, pick(layer === 0, -1, 6), depthZ],
-    scale: [2 + rand * 2, pick(layer === 0, 2 + rand * 3, 7), 2],
+    position: [treeX, layer === 0 ? -1 : 6, depthZ],
+    scale: [2 + rand * 2, layer === 0 ? 2 + rand * 3 : 7, 2],
   })
 
   if (biome === 'temple') {
@@ -97,7 +96,7 @@ function fillSeaCell(
         position: [treeX, -2.5, depthZ],
         scale: [0.8 + rand, 1.1 + rand * 1.1, 0.8],
         rotation: [0, rand * 4, 0],
-        color: pick(cellIdx % 2, '#db8caa', '#d4af76'),
+        color: cellIdx % 2 ? '#db8caa' : '#d4af76',
       })
     }
 
@@ -115,7 +114,7 @@ function fillSnowCell(treeX: number, depthZ: number, out: ForestChunkBuckets) {
     out.extras.push({
       position: [treeX, tier * 1.2 + 1, depthZ],
       scale: [2.1 - tier * 0.4, 2.3, 2.1 - tier * 0.4],
-      color: pick(tier % 2, '#b8d0bf', '#3d6450'),
+      color: tier % 2 ? '#b8d0bf' : '#3d6450',
     })
   }
 }
@@ -143,7 +142,7 @@ function fillJungleCell(
     position: [treeX + 0.25, treeHeight * 0.48 - 1, depthZ],
     scale: [trunkWidth * scale, treeHeight, trunkWidth * scale],
     rotation: [0, 0, -0.07 + rand * 0.1],
-    color: pick(layer === 2, '#50715a', '#b29a64'),
+    color: layer === 2 ? '#50715a' : '#b29a64',
   })
 
   for (let rootIdx = 0; rootIdx < 5; rootIdx++) {
@@ -155,7 +154,7 @@ function fillJungleCell(
         rootIdx * 1.3,
         (rootIdx - 2) * 0.3,
       ],
-      color: pick(layer === 2, '#4e6d4c', '#947948'),
+      color: layer === 2 ? '#4e6d4c' : '#947948',
     })
   }
 
@@ -164,10 +163,10 @@ function fillJungleCell(
       position: [treeX + 0.4, treeHeight - 1, depthZ],
       scale: [
         scale *
-          pick(layer === 0, 0.72, 1) *
+          (layer === 0 ? 0.72 : 1) *
           (0.85 + worldRandom(seed + ringIdx) * 0.3),
-        scale * pick(layer === 0, 0.8, 1),
-        scale * pick(layer === 0, 0.72, 1),
+        scale * (layer === 0 ? 0.8 : 1),
+        scale * (layer === 0 ? 0.72 : 1),
       ],
       rotation: [
         0.1 + rand * 0.3,

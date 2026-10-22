@@ -1,12 +1,9 @@
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import type { Group } from 'three'
-import type { Game } from '../../game/engine'
-import { Crown } from './Crown'
-import { bossRing, bossSphere } from './bossGeometries'
-import { bossMaterial } from './bossMaterials'
-import { pick } from '../../utils/pick'
-
+import { type Group } from 'three'
+import { type Game } from '../../game/engine'
+import { Crown } from './BossPart'
+import { bossRing, bossSphere, bossMaterial } from './bossGeometries'
 const PROJECTILE_POOL = 32
 
 export function BossProjectiles3D({ game }: { game: Game }) {
@@ -24,7 +21,7 @@ export function BossProjectiles3D({ game }: { game: Game }) {
 
       groupNode.position.set(
         projectile.x,
-        pick(projectile.warning > 0, 0.03, projectile.y),
+        projectile.warning > 0 ? 0.03 : projectile.y,
         0.2,
       )
       if (projectile.kind === 'crown') {
@@ -44,9 +41,9 @@ export function BossProjectiles3D({ game }: { game: Game }) {
       const impact = (projectile.impact ?? 0) > 0
 
       ballChild.scale.set(
-        pick(impact, 0.43, 0.34),
-        pick(impact, 0.21, 0.34),
-        pick(impact, 0.4, 0.34),
+        impact ? 0.43 : 0.34,
+        impact ? 0.21 : 0.34,
+        impact ? 0.4 : 0.34,
       )
       ballChild.rotation.z = (Math.floor(projectile.age * 12) * Math.PI) / 8
       warningChild.visible =

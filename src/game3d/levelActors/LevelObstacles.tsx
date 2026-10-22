@@ -2,7 +2,6 @@ import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import type { Group, Mesh } from 'three'
 import type { Game } from '../../game/engine'
-import { pick } from '../../utils/pick'
 import { Label } from './Label'
 import { actorBox } from './geometries'
 
@@ -68,7 +67,7 @@ export function BreakableWall({ game, index }: { game: Game; index: number }) {
       scale={[wall.w, wall.h, 0.35]}
     >
       <meshStandardMaterial
-        color={pick(game.level.biome === 'jungle', '#5e4931', '#4a4038')}
+        color={game.level.biome === 'jungle' ? '#5e4931' : '#4a4038'}
         roughness={0.95}
       />
     </mesh>

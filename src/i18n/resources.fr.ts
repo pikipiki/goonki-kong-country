@@ -1,6 +1,7 @@
 import { englishResources } from './resources.en'
 
 export const frenchResources: typeof englishResources = {
+  loadingGame: 'Chargement de l’aventure…',
   play: 'Commencer l’aventure',
   continue: 'Continuer l’aventure',
   resume: 'Reprendre',

@@ -4,7 +4,6 @@ import { advanceGame, tickGame } from './helpers/simulation'
 import { assertDefined } from './helpers/assertDefined'
 import { Controls } from '../src/game/input'
 import { LEVELS } from '../src/game/levels'
-import { pick } from '../src/utils/pick'
 
 describe('coverage final — swap and rolls', () => {
   it('covers swap colors, mount attacks, and rolls', () => {
@@ -122,7 +121,7 @@ describe('coverage final — mine and victory', () => {
     letters.start(0, true)
     letters.enemies = []
     const ids = letters.level.pickups
-      .map((pickup, index) => pick(pickup.kind === 'letter', index, -1))
+      .map((pickup, index) => (pickup.kind === 'letter' ? index : -1))
       .filter((index2) => index2 >= 0)
     ids.slice(0, -1).forEach((index3) => letters.letters.add(index3))
     const lastLetter = letters.level.pickups[assertDefined(ids.at(-1))]

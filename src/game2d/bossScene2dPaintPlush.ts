@@ -1,8 +1,7 @@
 import { BOSS_CARRY } from '../game/bossArena'
-import { SCENE2D_PIXELS_PER_WORLD } from './scene2dWorldUnits'
-import type { BossPaintContext } from './bossScene2dPaintTypes'
+import { SCENE2D_PIXELS_PER_WORLD } from './scene2dConstants'
+import { type BossPaintContext } from './bossScene2dPaintTypes'
 import { drawBossBarrel } from './bossScene2dPaintBarrels'
-
 export function paintBossPlush(paint: BossPaintContext) {
   const { ctx, game, plush, toCanvasX, toCanvasY, scale } = paint
   const player = game.player

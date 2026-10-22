@@ -1,12 +1,10 @@
-import type { Animal } from '../game/animals'
-import type { Enemy } from '../game/engine/types'
+import { type Animal } from '../game/animals'
+import { type Enemy } from '../game/engine/types'
 import { drawChunkedLayer, drawPlushCast } from './drawRom2d'
-import type { JungleRenderContext } from './jungleRenderContext'
-import type { Scene2dSpriteDrawer } from './scene2dSpriteDraw'
+import { type JungleRenderContext } from './jungleRenderContext'
+import { type Scene2dSpriteDrawer } from './scene2dSpriteDraw'
 import { DEFAULT_CHUNK_W } from './scene2dConstants'
 import { hurtFlashVisible } from '../game/hurtFlash'
-import { pick } from '../utils/pick'
-
 function rambiAnimGroup(animal: Animal, game: JungleRenderContext['game']) {
   const moving =
     animal.state === 'fleeing' ||
@@ -139,7 +137,7 @@ export function renderJungleCombatantsScene2d(render: JungleRenderContext) {
       ctx,
       rambiAnimGroup(animal, game),
       game.time,
-      pick(moving, 16, 8),
+      moving ? 16 : 8,
       px,
       py - 12,
       flipX,

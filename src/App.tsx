@@ -6,8 +6,6 @@ import { AppTopBar } from './app/AppTopBar'
 import { SceneBoundary } from './app/chrome'
 import { sceneAriaLabel } from './app/sceneAriaLabel'
 import { useAppShell } from './app/useAppShell'
-import { pick } from './utils/pick'
-
 export function App() {
   const { t } = useTranslation()
   const root = useRef<HTMLDivElement>(null)
@@ -26,7 +24,7 @@ export function App() {
   return (
     <div
       ref={root}
-      className={`app phase-${shell.phase} ${pick(shell.showControls, 'has-controls', '')} ${pick(shell.demo2D, 'demo-2d', '')}`}
+      className={`app phase-${shell.phase} ${shell.showControls ? 'has-controls' : ''} ${shell.demo2D ? 'demo-2d' : ''}`}
     >
       <div
         className="scene"

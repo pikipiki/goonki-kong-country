@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest'
 import { Game, emptyInput, type Key } from '../src/game/engine'
 import { ENGUARDE_SWIM_BODY } from '../src/game/animals'
 import { coralBodyBlocked } from '../src/game/terrainSolids'
-import { pick } from '../src/utils/pick'
 function frame(
   game: Game,
   keys: Key[] = [],
@@ -17,14 +16,14 @@ function frame(
 }
 function mount(kind: 'rambi' | 'enguarde') {
   const game2 = new Game()
-  game2.start(pick(kind === 'rambi', 0, 3))
+  game2.start(kind === 'rambi' ? 0 : 3)
   game2.enemies = []
   const actor = game2.animals[0]
   actor.state = 'ridden'
   game2.player.mount = 0
   Object.assign(game2.player, {
-    x: pick(kind === 'rambi', 12, 20),
-    y: pick(kind === 'rambi', 0, 1.8),
+    x: kind === 'rambi' ? 12 : 20,
+    y: kind === 'rambi' ? 0 : 1.8,
     vx: 0,
     vy: 0,
     grounded: kind === 'rambi',
@@ -45,7 +44,7 @@ describe('requested animal attacks and boss balance', () => {
       frame(game3, [], [], ['action'])
       expect(game3.player.mountCharged).toBe(true)
       expect(game3.player.mountAttack).toBeGreaterThan(0.8)
-      expect(game3.player.vx).toBe(pick(kind === 'rambi', 16, 18))
+      expect(game3.player.vx).toBe(kind === 'rambi' ? 16 : 18)
       expect(game3.player.x).toBeGreaterThan(posX)
     })
   }
@@ -179,11 +178,9 @@ describe('boss barrel and jump balance', () => {
       for (let count7 = 0; count7 < 75; count7++) {
         frame(
           game11,
-          pick(
-            game11.player.x < barrel2.x + 0.3,
-            ['jump', 'right', 'run'],
-            ['jump'],
-          ),
+          game11.player.x < barrel2.x + 0.3
+            ? ['jump', 'right', 'run']
+            : ['jump'],
         )
       }
       expect(game11.player.hp, JSON.stringify(hurt)).toBe(2)

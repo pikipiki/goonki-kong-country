@@ -1,8 +1,8 @@
 import { useLayoutEffect } from 'react'
-import { Vector3, type PerspectiveCamera } from 'three'
+import { Vector3, type PerspectiveCamera, type OrthographicCamera } from 'three'
 
 export function useMapIslandProjection(
-  camera: PerspectiveCamera,
+  camera: PerspectiveCamera | OrthographicCamera,
   lookTarget: number,
   nodes: [number, number][],
   onProject: (points: { x: number; y: number }[]) => void,

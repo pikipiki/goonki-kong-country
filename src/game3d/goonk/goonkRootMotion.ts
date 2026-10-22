@@ -4,7 +4,6 @@ import type { Game } from '../../game/engine'
 import type { GoonkFrameContext } from './goonkFrameContext'
 import { goonkRootScale } from './goonkFrameContext'
 import { applyGoonkSwapPosition } from './goonkSwapMotion'
-import { pick } from '../../utils/pick'
 
 export function goonkRootVisible(
   companion: boolean,
@@ -44,7 +43,7 @@ export function applyGoonkRootTransform(
   if (game?.swap && player && pose) {
     applyGoonkSwapPosition(root, game, companion, swapU, swapHop)
   } else if (pose) {
-    root.position.set(pose.x, pose.y, pick(companion, -0.28, 0.3))
+    root.position.set(pose.x, pose.y, companion ? -0.28 : 0.3)
   }
 
   root.scale.setScalar(goonkRootScale(pink, cart, riding, swimming))
@@ -59,9 +58,9 @@ export function applyGoonkRootTransform(
 
   if (cart && player) {
     root.position.set(
-      player.x + pick(companion, -0.5, 0.4),
+      player.x + (companion ? -0.5 : 0.4),
       player.y + 0.92,
-      pick(companion, -0.2, 0.3),
+      companion ? -0.2 : 0.3,
     )
   }
 

@@ -7,7 +7,7 @@ import { ORIGINAL_CAVE_TERRAIN } from '../game/originalCaveTerrain'
 import { GROUND_CHUNK_COLUMN_PIXELS } from './original/groundChunkVisibility'
 import { createCaveGroundGeometry } from './original/caveGroundGeometry'
 import { caveGroundChunkVisible } from './original/caveGroundVisibility'
-import { createCaveSoilTexture } from './original/caveSoilTexture'
+import { createSoilTexture } from './original/soilTexture'
 const CHUNK_COLUMNS = 16
 const COLUMN_COUNT = Math.ceil(
   ORIGINAL_CAVE_TERRAIN.widthPixels / GROUND_CHUNK_COLUMN_PIXELS,
@@ -60,7 +60,7 @@ export const OriginalCaveGround = memo(function OriginalCaveGround({
 }: {
   game: Game
 }) {
-  const map = useMemo(() => createCaveSoilTexture(), [])
+  const map = useMemo(() => createSoilTexture(), [])
   useEffect(
     () => () => {
       map.dispose()

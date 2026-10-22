@@ -1,5 +1,5 @@
+import type { Group } from 'three'
 import type { AnimalKind } from './types'
-import { pick } from '../../utils/pick'
 
 export type AnimalMotionInput = {
   moving: boolean
@@ -100,7 +100,7 @@ export function strideRotationZ(
   const { kind, tick, move, charge, ready } = ctx
 
   if (charge > 0 && kind === 'rambi') {
-    return Math.sin(tick * pick(ready, 30, 18) + phase) * 0.22 * charge
+    return Math.sin(tick * (ready ? 30 : 18) + phase) * 0.22 * charge
   }
 
   let speed
@@ -182,4 +182,23 @@ export function wingMotion(
     rotationZ: 0,
     scale: 1,
   }
+}
+
+export function applyAnimalRootMotion(
+  root: Group | null,
+  ctx: AnimalFrameContext,
+) {
+  if (!root) return
+  const { kind, tick, attack, glide, charge, ready, move } = ctx
+  root.position.x = rootOffsetX(charge, ready, tick)
+  root.position.y = rootOffsetY(kind, glide, charge, tick)
+  root.rotation.z = kind === 'enguarde' ? charge * 0.08 : 0
+  root.scale.set(1 + (attack ? 0.08 : charge * 0.03), 1 - charge * 0.06, 1)
+  root.userData.animation = rootAnimationLabel(
+    glide,
+    charge,
+    ready,
+    attack,
+    move,
+  )
 }

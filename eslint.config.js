@@ -16,10 +16,8 @@ export default tseslint.config(
       'public',
       'reference',
       'coverage/**',
-      'scripts/**',
       'storybook-static/**',
       'playwright-report/**',
-      '**/*.monolith.ts',
     ],
   },
   ...storybook.configs['flat/recommended'],
@@ -27,6 +25,10 @@ export default tseslint.config(
   {
     files: ['**/*.{js,mjs}'],
     languageOptions: { globals: globals.node },
+  },
+  {
+    files: ['scripts/**/*.mjs'],
+    languageOptions: { globals: { ...globals.node, ...globals.browser } },
   },
   ...tseslint.configs.strictTypeChecked.map((config) => ({
     ...config,
@@ -123,8 +125,28 @@ export default tseslint.config(
     },
   },
   {
-    files: ['src/game/audioInternal.ts'],
-    rules: { 'max-lines': 'off' },
+    files: ['src/game/engine/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            'react',
+            'react-dom',
+            'three',
+            '@react-three/fiber',
+            '@react-three/drei',
+          ],
+          patterns: [
+            {
+              group: ['**/app/**', '**/game2d/**', '**/game3d/**'],
+              message:
+                'The simulation must stay independent of UI and renderers.',
+            },
+          ],
+        },
+      ],
+    },
   },
   eslintConfigPrettier,
 )

@@ -10,7 +10,6 @@ import {
   coralBodyBlocked,
 } from '../src/game/terrainSolids'
 import { assertDefined } from './helpers/assertDefined'
-import { pick } from '../src/utils/pick'
 
 const inputs = (
   ...keys: Parameters<
@@ -196,7 +195,7 @@ describe('boss fight regressions', () => {
       height = ENEMY_DESIGNS.boss.height
     for (const exposed of [false, true]) {
       Object.assign(assertDefined(game.bossBattle), {
-        phase: pick(exposed, 'catch', 'throw'),
+        phase: exposed ? 'catch' : 'throw',
         phaseTime: 0,
         crowned: !exposed,
       })
@@ -212,7 +211,7 @@ describe('boss fight regressions', () => {
       expect(game.player.hp).toBe(2)
       expect(game.player.vy).toBeGreaterThan(0)
       expect(game.player.y).toBeGreaterThanOrEqual(boss.y + height)
-      expect(boss.hp).toBe(pick(exposed, health - 1, health))
+      expect(boss.hp).toBe(exposed ? health - 1 : health)
     }
   })
   it('can defeat an exposed boss with an ordinary held jump from the deck', () => {

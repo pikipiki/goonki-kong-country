@@ -1,12 +1,12 @@
-import type { Game } from '../game/engine'
+import { type Game } from '../game/engine'
 import { clamp } from '../game/engine/math'
-import { LEVEL_H, LEVEL_W, SCREEN_H } from './scene2dConstants'
 import {
+  LEVEL_H,
+  LEVEL_W,
+  SCREEN_H,
   SCENE2D_JUNGLE_BASE_PY,
   SCENE2D_PIXELS_PER_WORLD,
-} from './scene2dWorldUnits'
-import { pick } from '../utils/pick'
-
+} from './scene2dConstants'
 export type Scene2dCamera = {
   camX: number
   camY: number
@@ -34,7 +34,7 @@ export function updateScene2dCamera(
     }
     camera.camY = 32 - Math.round((screenH - SCREEN_H) * 0.5)
   } else {
-    const lookAhead = game.player.facing * pick(isPortrait, 22, 28)
+    const lookAhead = game.player.facing * (isPortrait ? 22 : 28)
 
     let anchorX
     if (isPortrait) {

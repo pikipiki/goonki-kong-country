@@ -1,12 +1,10 @@
-import type { Group } from 'three'
-import type { RefObject } from 'react'
+import { type Group } from 'three'
+import { type RefObject } from 'react'
 import { ENEMY_DESIGNS } from '../../game/enemies'
-import { crocTail } from './enemyGeometries'
-import { enemyMaterial } from './enemyMaterials'
+import { crocTail, enemyMaterial } from './enemyGeometries'
 import { EnemyPart } from './enemyPart'
-import { CrocHelmet, CrocKingCrown } from './crocArmor'
+import { CrocHelmet, CrocKingCrown, CrocHead } from './crocHead'
 import { CrocGait } from './crocGait'
-import { CrocHead } from './crocHead'
 import {
   crocBelly,
   crocBellyDepth,

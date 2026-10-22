@@ -8,7 +8,6 @@ import {
 } from 'three'
 import type { Game } from '../game/engine'
 import { SNES_HORIZONTAL_WALL_PROBE_FOOT_LIFT } from '../game/snesHorizontalTerrainCell'
-import { pick } from '../utils/pick'
 const disk = new CircleGeometry(1, 20),
   ink = new MeshBasicMaterial({
     color: '#081107',
@@ -62,7 +61,7 @@ export function ContactShadows({ game }: { game: Game }) {
       const height = Math.max(0, actor.y - floor)
       const alive = !('alive' in actor) || (actor as { alive: boolean }).alive
       const valid = height < 7 && alive
-      const scale = pick(valid, Math.max(0.1, 0.55 - height * 0.055), 0)
+      const scale = valid ? Math.max(0.1, 0.55 - height * 0.055) : 0
 
       dummy.position.set(actor.x, floor + 0.015, 0.13)
       dummy.rotation.set(-Math.PI / 2, 0, 0)

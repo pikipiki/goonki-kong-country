@@ -1,12 +1,12 @@
+import { isDemo2DQuery } from './romPlayQuery'
 import { useCallback, useState } from 'react'
-import type { Game, Phase } from '../game/engine'
-import type { Controls } from '../game/input'
+import { type Game, type Phase } from '../game/engine'
+import { type Controls } from '../game/input'
 import { AudioSystem } from '../game/audio'
 import { useAppLifecycle } from './useAppLifecycle'
 import { useAppMapActions } from './useAppMapActions'
 import { useAppPlayActions } from './useAppPlayActions'
 import { useGameSession } from './useGameSession'
-
 export type AppShell = {
   phase: Phase
   game: Game
@@ -32,7 +32,9 @@ export type AppShell = {
 }
 function useAppUiState() {
   const [mapLevel, setMapLevel] = useState(0)
-  const [demo2D, setDemo2D] = useState(false)
+  const [demo2D, setDemo2D] = useState(() =>
+    isDemo2DQuery(new URLSearchParams(window.location.search)),
+  )
   const [mapMode2D, setMapMode2D] = useState(false)
   const [muted, setMuted] = useState(false)
   const [help, setHelp] = useState(false)

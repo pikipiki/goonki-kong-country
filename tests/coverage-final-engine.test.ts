@@ -40,7 +40,7 @@ describe('coverage final — bonus and caches', () => {
     const bonus = new Game()
     bonus.start(0, true)
     bonus.enemies = []
-    bonus.completedBonus = undefined
+    Reflect.deleteProperty(bonus, 'completedBonus')
     bonus.bonus = {
       index: 0,
       stage: { ...bonus.level, platforms: bonus.level.platforms },
@@ -95,7 +95,7 @@ describe('coverage final — bonus and caches', () => {
     const token = new Game()
     token.start(0, true)
     token.enemies = []
-    token.collectedTokens = undefined
+    Reflect.deleteProperty(token, 'collectedTokens')
     const tokenDecor = assertDefined(token.level.decors).find(
       (entry) => entry.kind === 'token',
     )

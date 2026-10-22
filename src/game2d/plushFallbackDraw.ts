@@ -1,5 +1,4 @@
 import type { PlushPoseState } from './plushSprite'
-import { pick } from '../utils/pick'
 import { drawPlushFallbackBody } from './plushFallbackDrawBody'
 
 export function drawPlushFallback2D(
@@ -19,7 +18,7 @@ export function drawPlushFallback2D(
     time: animTime,
   } = state
 
-  const scale = pick(pink, 42, 39) * pick(state.riding, 0.78, 1) * userScale
+  const scale = (pink ? 42 : 39) * (state.riding ? 0.78 : 1) * userScale
 
   let bounce
   if (grounded) {
@@ -42,7 +41,7 @@ export function drawPlushFallback2D(
     ctx.rotate(animTime * 14 * facing)
   }
 
-  ctx.scale(pick(facing < 0, -1, 1), 1)
+  ctx.scale(facing < 0 ? -1 : 1, 1)
 
   drawPlushFallbackBody(ctx, state, scale, animTime, walking, pink)
   ctx.restore()

@@ -1,7 +1,6 @@
 import { tr } from '../../i18n'
 import { nearestCoralOpenY } from '../terrainSolids'
 import type { Game } from './gameSession'
-import { pick } from '../../utils/pick'
 
 export function applyPlayerDamage(game: Game, fall = false) {
   const player = game.player
@@ -48,11 +47,10 @@ export function applyPlayerDamage(game: Game, fall = false) {
 
   Object.assign(player, {
     x: game.checkpoint.x,
-    y: pick(
-      game.level.originalTerrain === 'coral',
-      nearestCoralOpenY(game.checkpoint.x, game.checkpoint.y),
-      game.checkpoint.y,
-    ),
+    y:
+      game.level.originalTerrain === 'coral'
+        ? nearestCoralOpenY(game.checkpoint.x, game.checkpoint.y)
+        : game.checkpoint.y,
     grounded: game.level.biome !== 'lagoon',
     buffer: 0,
     coyote: 0,

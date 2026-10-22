@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import type { Group } from 'three'
 import { Sprite, SpriteMaterial } from 'three'
 import type { Game } from '../../game/engine'
+import { particles as settings } from '../../config/presentation.json'
 import { textTexture } from './textTexture'
 
 export function useActorsFrame(game: Game, level: Game['level']) {
@@ -13,12 +14,13 @@ export function useActorsFrame(game: Game, level: Game['level']) {
   const nuts = useRef<Group>(null)
   const effects = useRef<Group>(null)
   const texture = useMemo(() => textTexture('✦', '#ffe6a5'), [])
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    const effectGroup = effects.current
+    return () => {
+      disposeParticleSprites(effectGroup)
       texture.dispose()
-    },
-    [texture],
-  )
+    }
+  }, [texture])
   useFrame(({ clock }) => {
     syncBarrels(game, level, barrels.current)
     syncCarried(game, carried.current)
@@ -101,9 +103,23 @@ function syncParticles(
     if (!particle) {
       return
     }
-    obj.position.set(particle.x, particle.y + particle.age * 1.8, 1)
-    obj.scale.setScalar(0.8 * (1 - particle.age / 1.3))
+    obj.position.set(
+      particle.x,
+      particle.y + particle.age * settings.risePerSecond,
+      1,
+    )
+    obj.scale.setScalar(
+      settings.startScale * (1 - particle.age / settings.lifetimeSeconds),
+    )
     const sprite = obj as Sprite
-    sprite.material.opacity = 1 - particle.age / 1.3
+    sprite.material.opacity = 1 - particle.age / settings.lifetimeSeconds
   })
+}
+
+/** Imperative sprites are owned here, outside React Three Fiber's tree. */
+export function disposeParticleSprites(group: Group | null) {
+  group?.children.forEach((child) => {
+    if (child instanceof Sprite) child.material.dispose()
+  })
+  group?.clear()
 }

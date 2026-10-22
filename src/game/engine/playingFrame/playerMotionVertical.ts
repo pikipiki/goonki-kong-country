@@ -1,12 +1,20 @@
-import { ANIMAL_DESIGNS } from '../../animals'
+import { ANIMAL_DESIGNS, BUDDY_PHYSICS } from '../../animals'
 import { clamp, approach } from '../math'
-import type { Game } from '../gameSession'
-import type { Input } from '../types'
-import type { PlayingEnv } from './playingEnv'
-import { applyPlayerGravity } from './playerGravityStep'
-import { runBufferedJump } from './playerJumpStep'
-import { swimVerticalRates } from './playerSwimRates'
-
+import { type Game } from '../gameSession'
+import { type Input } from '../types'
+import { type PlayingEnv } from './playingEnv'
+import {
+  ROM,
+  rawSpeed,
+  rawAcceleration,
+  JUMP_IMPULSE_DELAY_FRAMES,
+  ROM_SWIM_SINK,
+  ROM_SWIM_IDLE_SINK,
+  ROM_SWIM_RISE,
+  ROM_SWIM_DIVE,
+} from '../romPhysics'
+import { fireJumpAfterDelay } from '../fireJumpAfterDelay'
+import { groundedJumpImpulse } from '../groundedJumpImpulse'
 function applySwimVertical(
   game: Game,
   input: Input,
@@ -87,4 +95,101 @@ export function applyPlayerVerticalMotion(
   ) {
     player.vy = Math.max(player.vy, -0.65)
   }
+}
+
+export function applyPlayerGravity(
+  game: Game,
+  input: Input,
+  deltaTime: number,
+  cart: boolean,
+  mount: Game['mount'],
+) {
+  const player = game.player
+
+  if (player.cannonGravityDelay > 0) {
+    player.cannonGravityDelay--
+    return
+  }
+
+  let gravity = ROM.gravity
+
+  if (cart && player.cartRebound) {
+    gravity = ROM.held[0]
+  } else if (
+    input.held.has('jump') ||
+    (game.level.biome === 'ship' && player.vy > 0)
+  ) {
+    if (mount) {
+      gravity = BUDDY_PHYSICS.heldGravity
+    } else {
+      gravity = ROM.held[player.active]
+    }
+  }
+
+  player.vy = Math.max(
+    -rawSpeed(ROM.terminal),
+    player.vy - rawAcceleration(gravity) * deltaTime,
+  )
+}
+
+export function runBufferedJump(
+  game: Game,
+  input: Input,
+  swapping: boolean,
+  jumpDesign?: number,
+) {
+  const player = game.player
+
+  if (player.jumpDelay > 0) {
+    player.jumpDelay--
+
+    if (fireJumpAfterDelay(player.jumpDelay, player.coyote, player.rollJump)) {
+      player.vy = groundedJumpImpulse(game, jumpDesign)
+      if (player.rollJump) {
+        player.rollJumpMomentum = player.vx
+      } else {
+        player.rollJumpMomentum = 0
+      }
+      player.rollJump = false
+      player.roll = 0
+      player.grounded = false
+      player.coyote = 0
+      game.onEvent('jump')
+    }
+
+    return
+  }
+
+  if (
+    !swapping &&
+    player.buffer > 0 &&
+    (player.coyote > 0 || player.rollJump)
+  ) {
+    player.buffer = 0
+
+    if (player.rollJump) {
+      player.vy = groundedJumpImpulse(game, jumpDesign)
+      player.rollJumpMomentum = player.vx
+      player.rollJump = false
+      player.roll = 0
+      player.grounded = false
+      player.coyote = 0
+      game.onEvent('jump')
+    } else {
+      player.jumpDelay = JUMP_IMPULSE_DELAY_FRAMES
+    }
+  }
+}
+
+export function swimVerticalRates(coralSwim: boolean) {
+  if (coralSwim) {
+    return {
+      sink: ROM_SWIM_SINK,
+      rise: ROM_SWIM_RISE,
+      dive: ROM_SWIM_DIVE,
+      idleSink: ROM_SWIM_IDLE_SINK,
+    }
+  }
+
+  return { sink: 7, rise: 4.3, dive: 4, idleSink: 1.2 }
 }

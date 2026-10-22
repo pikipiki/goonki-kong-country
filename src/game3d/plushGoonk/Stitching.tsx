@@ -5,7 +5,6 @@ const plush = themeColors.plush
 
 import { BufferGeometry, Float32BufferAttribute } from 'three'
 import { bodyPoint } from '@game3d/plushGoonk/profile'
-import { pick } from '../../utils/pick'
 
 export function Stitching({ pink }: { pink: boolean }) {
   const geometry = useMemo(() => {
@@ -41,7 +40,7 @@ export function Stitching({ pink }: { pink: boolean }) {
   return (
     <lineSegments geometry={geometry}>
       <lineBasicMaterial
-        color={pick(pink, plush.stitchPink, plush.stitchPurple)}
+        color={pink ? plush.stitchPink : plush.stitchPurple}
         transparent
         opacity={0.65}
       />

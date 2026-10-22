@@ -1,8 +1,6 @@
-import type { Game } from '../game/engine'
-import type { Enemy } from '../game/engine/types'
-import type { TransientFx } from './scene2dConstants'
-import { pick } from '../utils/pick'
-
+import { type Game } from '../game/engine'
+import { type Enemy } from '../game/engine/types'
+import { type TransientFx } from './scene2dConstants'
 export type Scene2dFxState = {
   fxList: TransientFx[]
   prevEnemyAlive: Map<number, boolean>
@@ -82,7 +80,7 @@ function syncEnemyDeathFx(game: Game, state: Scene2dFxState, toPixel: ToPixel) {
       state.fxList.push({
         x: px,
         y: py - 8,
-        vx: pick(enemy.vx >= 0, 1, -1) * 35,
+        vx: (enemy.vx >= 0 ? 1 : -1) * 35,
         vy: -130,
         gravity: 380,
         group: enemyDeathFxGroup(enemy),

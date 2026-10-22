@@ -1,0 +1,69 @@
+{
+  "simulation": {
+    "maxFrameDeltaSeconds": 0.1,
+    "hudRefreshSeconds": 0.09
+  },
+  "camera3D": {
+    "portraitAspect": 0.9,
+    "portraitMinWorldWidth": 8.2,
+    "landscapeMinWorldWidth": 15.5,
+    "landscapeWorldHeight": 9.7,
+    "titleWorldHeight": 12.8,
+    "portraitAhead": 1.45,
+    "maxAhead": 3.7,
+    "aheadRatio": 0.2,
+    "titleLookY": 2.7,
+    "minLookY": 1.9,
+    "lookYRatio": 0.19,
+    "followRate": 5,
+    "snapDistance": 18,
+    "bossMinWorldWidth": 24,
+    "bossMinWorldHeight": 9,
+    "bossCenterX": 11
+  },
+  "camera2D": {
+    "jungle": {
+      "portraitAspect": 0.95,
+      "portraitWidthPixels": 192,
+      "landscapeHeightPixels": 180
+    },
+    "boss": {
+      "portraitAspect": 1.14,
+      "portraitWidthPixels": 240,
+      "landscapeHeightPixels": 192,
+      "portraitWorldWidth": 9,
+      "landscapeWorldWidth": 18,
+      "playerAnchorRatio": 0.42
+    }
+  },
+  "render": {
+    "maxDevicePixelRatio": 1.35,
+    "fallbackDevicePixelRatio": 1,
+    "minimumFps": 43,
+    "sampleWindowSeconds": 2.5,
+    "maxSampleDeltaSeconds": 0.2
+  },
+  "particles": {
+    "lifetimeSeconds": 1.3,
+    "risePerSecond": 1.8,
+    "startScale": 0.8
+  },
+  "flow": {
+    "clearMapDelayMilliseconds": 7200
+  },
+  "terrainTexture": {
+    "sizePixels": 128,
+    "jungle": {
+      "brightness": 0.62,
+      "variation": 0.2
+    },
+    "mineCart": {
+      "brightness": 0.38,
+      "variation": 0.28
+    },
+    "layerFrequency": 0.17,
+    "grainFrequency": 0.07,
+    "grainAmplitude": 1.3,
+    "layerAmplitude": 0.065
+  }
+}

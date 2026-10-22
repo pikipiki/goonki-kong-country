@@ -2,7 +2,6 @@ import { expect, it } from 'vitest'
 import { Game, emptyInput } from '../src/game/engine'
 import { bossArenaBounds } from '../src/game/bossArena'
 import { assertDefined } from './helpers/assertDefined'
-import { pick } from '../src/utils/pick'
 
 it('uses coral terrain in floorAt and nudges spawn-blocking enemies', () => {
   const game = new Game()
@@ -105,7 +104,7 @@ it('collects balloon pickups and grants a full-word life bonus', () => {
   wordGame.start(0)
   wordGame.enemies = []
   const letterIndexes = wordGame.level.pickups
-    .map((pickup, index) => pick(pickup.kind === 'letter', index, -1))
+    .map((pickup, index) => (pickup.kind === 'letter' ? index : -1))
     .filter((index) => index >= 0)
   const last = assertDefined(letterIndexes.at(-1))
   letterIndexes.slice(0, -1).forEach((index) => {

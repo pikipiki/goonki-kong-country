@@ -2,9 +2,6 @@ import { useTranslation } from 'react-i18next'
 import { localeKeys } from '../i18n/keys'
 import { resolveI18nKey } from '../i18n/resolveText'
 import { Icon, Portrait } from './chrome'
-import { TitleIntroDemo } from './TitleIntroDemo'
-import { pick } from '../utils/pick'
-
 export function TitleIntro({
   onOpenMap,
   onContinue,
@@ -47,7 +44,7 @@ export function TitleIntro({
               <Icon name="arrow" />
             </button>
             <button className="secondary" onClick={onContinue}>
-              {t(pick(unlocked, 'continue', 'play'))}
+              {t(unlocked ? 'continue' : 'play')}
             </button>
             <TitleIntroDemo
               onDemoJungle={onDemoJungle}
@@ -81,5 +78,28 @@ export function TitleIntro({
         </span>
       </footer>
     </>
+  )
+}
+
+export function TitleIntroDemo({
+  onDemoJungle,
+  onDemoBoss,
+}: {
+  onDemoJungle: () => void
+  onDemoBoss: () => void
+}) {
+  const { t } = useTranslation()
+  return (
+    <div className="demo-2d-choices">
+      <p>{t('demo2DIncludes')}</p>
+      <div>
+        <button className="secondary demo-2d-button" onClick={onDemoJungle}>
+          {t('demo2DJungle')}
+        </button>
+        <button className="secondary demo-2d-button" onClick={onDemoBoss}>
+          {t('demo2DBoss')}
+        </button>
+      </div>
+    </div>
   )
 }

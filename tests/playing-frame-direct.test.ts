@@ -77,6 +77,8 @@ describe('playingFrame enemies', () => {
         hurt: 0,
         timer: 0,
         pattern: 'patrol',
+        vulnerable: false,
+        shootCooldown: 0,
       },
     ]
     Object.assign(winky.player, {

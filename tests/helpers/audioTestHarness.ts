@@ -1,6 +1,14 @@
 import { vi } from 'vitest'
 import { AudioSystem } from '../../src/game/audio'
 
+// Deliberately partial network responses let callers exercise HTTP/decoding failures.
+type FixtureResponse = {
+  ok: boolean
+  status?: number
+  json?: () => unknown
+  arrayBuffer?: () => Promise<ArrayBuffer>
+}
+
 const audioTestManifest = {
   music: {
     '0': {
@@ -33,7 +41,7 @@ export function createAudioTestHarness() {
     createBufferSource: () => {
       const node = { ...source, onended: null as (() => void) | null }
       sources.push(
-        node as AudioBufferSourceNode & {
+        node as unknown as AudioBufferSourceNode & {
           onended: (() => void) | null
         },
       )
@@ -71,7 +79,7 @@ export function createAudioTestHarness() {
       this.listeners[event] = list
     }
   }
-  const fetcher = vi.fn((url: string) => {
+  const fetcher = vi.fn((url: string): Promise<FixtureResponse> => {
     if (url.includes('manifest')) {
       return Promise.resolve({
         ok: true,

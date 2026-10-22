@@ -2,7 +2,6 @@ import { ANIMAL_DESIGNS } from '../game/animals'
 import { TEAM_SWAP_DURATION, type Game } from '../game/engine'
 import { clamp } from '../game/engine/math'
 import type { Assets2D } from './assets2d'
-import { pick } from '../utils/pick'
 import {
   drawRomHudBananas,
   drawRomHudKong,
@@ -175,7 +174,7 @@ export function drawPlushCast(
     plushRenderer.draw(ctx, actPx.px - camX, actPx.py - camY, {
       pink: player.active === 0,
       facing: player.facing,
-      walking: pick(mount, 0, Math.abs(player.vx)),
+      walking: mount ? 0 : Math.abs(player.vx),
       grounded: player.grounded,
       roll: player.roll > 0,
       rollAngle: player.rollAngle,

@@ -1,18 +1,15 @@
+import { mountAction } from '../../config/gameplay.json'
 import { useLayoutEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Group, type Object3D } from 'three'
 import { animateAnimalGroups } from './animateAnimalGroups'
-import { AnimalChargeWindup } from './animalChargeWindup'
+import { AnimalChargeWindup } from './animalPart'
 import { AnimalKindMesh } from './animalKindMesh'
-import { pick } from '../../utils/pick'
 import {
-  rootAnimationLabel,
-  rootOffsetX,
-  rootOffsetY,
+  applyAnimalRootMotion,
   type AnimalMotionInput,
 } from './animalMotionState'
-import type { AnimalKind } from './types'
-
+import { type AnimalKind } from './types'
 export function AnimalModel({
   kind,
   moving = false,
@@ -61,38 +58,21 @@ export function AnimalModel({
 
     const glide = state?.gliding ?? false
 
-    const charge = Math.min(1, (state?.charging ?? 0) / 0.65)
+    const charge = Math.min(
+      1,
+      (state?.charging ?? 0) / mountAction.readyChargeSeconds,
+    )
 
     const ready = charge >= 1
 
     const ctx = { kind, tick, move, attack, glide, charge, ready }
 
-    if (root.current) {
-      root.current.position.x = rootOffsetX(charge, ready, tick)
-      root.current.position.y = rootOffsetY(kind, glide, charge, tick)
-      if (kind === 'enguarde') {
-        root.current.rotation.z = charge * 0.08
-      } else {
-        root.current.rotation.z = 0
-      }
-      root.current.scale.set(
-        1 + pick(attack, 0.08, charge * 0.03),
-        1 - charge * 0.06,
-        1,
-      )
-      root.current.userData.animation = rootAnimationLabel(
-        glide,
-        charge,
-        ready,
-        attack,
-        move,
-      )
-    }
+    applyAnimalRootMotion(root.current, ctx)
 
     if (windup.current) {
       windup.current.visible = charge > 0.04
       windup.current.scale.setScalar(
-        0.65 + charge * 0.35 + Math.sin(tick * pick(ready, 22, 12)) * 0.04,
+        0.65 + charge * 0.35 + Math.sin(tick * (ready ? 22 : 12)) * 0.04,
       )
       windup.current.rotation.z = tick * 2
     }

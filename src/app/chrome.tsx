@@ -1,6 +1,5 @@
 import { Component, type ReactNode } from 'react'
 import i18n from '../i18n'
-import { pick } from '../utils/pick'
 
 export function Icon({
   name,
@@ -42,7 +41,7 @@ export function Portrait({
 }) {
   return (
     <span
-      className={`portrait ${pick(pink, 'pink', 'violet')} ${pick(small, 'small', '')}`}
+      className={`portrait ${pink ? 'pink' : 'violet'} ${small ? 'small' : ''}`}
       aria-hidden="true"
     >
       <i />

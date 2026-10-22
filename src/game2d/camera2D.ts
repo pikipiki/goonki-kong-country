@@ -1,18 +1,21 @@
-import { pick } from '../utils/pick'
+import { camera2D } from '../config/presentation.json'
+
 /** Camera changes affect rendering only, never plush sizes or collision bodies. */
 export function jungleViewport2D(width: number, height: number) {
   const aspect = width / Math.max(1, height),
-    portrait = aspect < 0.95
+    portrait = aspect < camera2D.jungle.portraitAspect
 
   let viewHeight
   if (portrait) {
-    viewHeight = Math.round(192 / aspect)
+    viewHeight = Math.round(camera2D.jungle.portraitWidthPixels / aspect)
   } else {
-    viewHeight = 180
+    viewHeight = camera2D.jungle.landscapeHeightPixels
   }
 
   return {
-    width: pick(portrait, 192, Math.round(viewHeight * aspect)),
+    width: portrait
+      ? camera2D.jungle.portraitWidthPixels
+      : Math.round(viewHeight * aspect),
     height: viewHeight,
     portrait,
   }
@@ -20,19 +23,23 @@ export function jungleViewport2D(width: number, height: number) {
 
 export function bossViewport2D(width: number, height: number) {
   const aspect = width / Math.max(1, height),
-    portrait = aspect < 1.14
+    portrait = aspect < camera2D.boss.portraitAspect
 
   let viewHeight
   if (portrait) {
-    viewHeight = Math.round(240 / aspect)
+    viewHeight = Math.round(camera2D.boss.portraitWidthPixels / aspect)
   } else {
-    viewHeight = 192
+    viewHeight = camera2D.boss.landscapeHeightPixels
   }
 
   return {
-    width: pick(portrait, 240, Math.round(viewHeight * aspect)),
+    width: portrait
+      ? camera2D.boss.portraitWidthPixels
+      : Math.round(viewHeight * aspect),
     height: viewHeight,
-    worldWidth: pick(portrait, 9, 18),
+    worldWidth: portrait
+      ? camera2D.boss.portraitWorldWidth
+      : camera2D.boss.landscapeWorldWidth,
     portrait,
   }
 }
@@ -44,6 +51,9 @@ export function bossCameraLeft(
 ) {
   return Math.max(
     -1,
-    Math.min(arenaWidth + 1 - worldWidth, playerX - worldWidth * 0.42),
+    Math.min(
+      arenaWidth + 1 - worldWidth,
+      playerX - worldWidth * camera2D.boss.playerAnchorRatio,
+    ),
   )
 }

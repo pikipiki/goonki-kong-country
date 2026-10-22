@@ -1,7 +1,7 @@
+import { camera3D as settings } from '../config/presentation.json'
 import type { OrthographicCamera } from 'three'
 import type { Game } from '../game/engine'
 import { cameraLayout } from '../game/camera'
-import { pick } from '../utils/pick'
 
 export function titleCameraZoom(portrait: boolean): number {
   if (portrait) {
@@ -35,21 +35,28 @@ export function applyDirectorCamera({
   }
   if (
     lastLevel.current !== engine.levelId ||
-    Math.abs(focus.current - desired) > 18
+    Math.abs(focus.current - desired) > settings.snapDistance
   ) {
     focus.current = desired
     lastLevel.current = engine.levelId
   }
-  focus.current += (desired - focus.current) * (1 - Math.exp(-delta * 5))
+  focus.current +=
+    (desired - focus.current) * (1 - Math.exp(-delta * settings.followRate))
   const bossArena = !title && engine.level.biome === 'ship'
   const wideBossArena = bossArena && !layout.portrait
-  if (wideBossArena) {
-    camera.zoom = Math.min(layout.zoom, size.width / 24, size.height / 9)
-  } else {
-    camera.zoom = layout.zoom
+  const zoom = wideBossArena
+    ? Math.min(
+        layout.zoom,
+        size.width / settings.bossMinWorldWidth,
+        size.height / settings.bossMinWorldHeight,
+      )
+    : layout.zoom
+  if (camera.zoom !== zoom) {
+    camera.zoom = zoom
+    camera.updateProjectionMatrix()
   }
   if (wideBossArena) {
-    focus.current = 11
+    focus.current = settings.bossCenterX
   } else if (bossArena) {
     focus.current = Math.max(
       layout.worldWidth / 2 - 1,
@@ -67,18 +74,11 @@ export function applyDirectorCamera({
   engine.cameraBounds = {
     x: focus.current,
     y: lookY,
-    halfX: pick(
-      wideBossArena,
-      size.width / camera.zoom / 2,
-      layout.worldWidth / 2,
-    ),
-    halfY: pick(
-      wideBossArena,
-      size.height / camera.zoom / 2,
-      layout.worldHeight / 2 + 0.5,
-    ),
+    halfX: wideBossArena ? size.width / camera.zoom / 2 : layout.worldWidth / 2,
+    halfY: wideBossArena
+      ? size.height / camera.zoom / 2
+      : layout.worldHeight / 2 + 0.5,
   }
   camera.position.set(focus.current, cameraY, 22)
   camera.lookAt(focus.current, lookY, 0)
-  camera.updateProjectionMatrix()
 }

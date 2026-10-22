@@ -1,7 +1,6 @@
 /** Rev2 marine addressing is row-major (128-byte rows), with its own 197
  * attribute pairs and marine profile table. See coral-terrain-v2.json. */
 import data from '../../reference/coral-terrain-v2.json'
-import { pick } from '../utils/pick'
 import type { TerrainOrigin } from './originalTerrain'
 import { CORAL_PIXELS_PER_WORLD_UNIT } from './marineScale'
 import {
@@ -116,11 +115,8 @@ export function coralTerrainCellSNES(px: number, row: number) {
 
   const { romBottom, romTop } = coralCellRomSpan(base, ceiling, height)
 
-  const flipMask = pick(
-    !!(tileWord & SNES_METATILE_MAP_HFLIP_BIT),
-    SNES_COLLISION_ATTR_VFLIP_BIT,
-    0,
-  )
+  const flipMask =
+    tileWord & SNES_METATILE_MAP_HFLIP_BIT ? SNES_COLLISION_ATTR_VFLIP_BIT : 0
 
   return {
     floorY: base + height,
@@ -154,11 +150,27 @@ function coralCellRomSpan(
   return { romBottom: base, romTop: base + height }
 }
 
-export function coralSolidSpansWorld(x: number) {
+type CoralSpan = Readonly<{ bottom: number; top: number }>
+const EMPTY_CORAL_SPANS: readonly CoralSpan[] = Object.freeze([])
+const coralSpanColumns = new Array<readonly CoralSpan[] | undefined>(
+  data.widthPixels,
+)
+
+export function coralSolidSpansWorld(x: number): readonly CoralSpan[] {
+  const pixelX = Math.floor(x * CORAL_PIXELS_PER_WORLD_UNIT)
+  if (!Number.isFinite(pixelX) || pixelX < 0 || pixelX >= data.widthPixels)
+    return EMPTY_CORAL_SPANS
+  const cached = coralSpanColumns[pixelX]
+  if (cached) return cached
+  const spans = buildCoralSolidSpansAtPixel(pixelX)
+  coralSpanColumns[pixelX] = spans
+  return spans
+}
+function buildCoralSolidSpansAtPixel(pixelX: number) {
   const spans: { bottom: number; top: number }[] = []
 
   for (let row = ORIGINAL_CORAL_TERRAIN.rows - 1; row >= 0; row--) {
-    const cell = coralTerrainCellSNES(x * CORAL_PIXELS_PER_WORLD_UNIT, row)
+    const cell = coralTerrainCellSNES(pixelX, row)
 
     if (!cell) {
       continue
@@ -178,7 +190,7 @@ export function coralSolidSpansWorld(x: number) {
     }
   }
 
-  return spans
+  return Object.freeze(spans.map((span) => Object.freeze(span)))
 }
 
 export function queryCoral(x: number, y: number, origin: TerrainOrigin) {

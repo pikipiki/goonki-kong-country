@@ -4,7 +4,6 @@ import { useFrame } from '@react-three/fiber'
 const plush = themeColors.plush
 
 import { useRef } from 'react'
-import { pick } from '../../utils/pick'
 import type { Group } from 'three'
 
 export function FlatEye({
@@ -35,7 +34,7 @@ export function FlatEye({
   return (
     <group
       position={[side * 0.105, 0.575, 0.232]}
-      scale={pick(scared, 1.18, 1)}
+      scale={scared ? 1.18 : 1}
       rotation={[0.12, side * 0.28, -side * 0.12]}
     >
       <group ref={eye}>
@@ -49,11 +48,11 @@ export function FlatEye({
         </mesh>
         <mesh
           position={[-side * 0.011, -0.015, 0.012]}
-          scale={pick(
-            scared,
-            [0.02, 0.027, 0.007] as const,
-            [0.029, 0.038, 0.007] as const,
-          )}
+          scale={
+            scared
+              ? ([0.02, 0.027, 0.007] as const)
+              : ([0.029, 0.038, 0.007] as const)
+          }
         >
           <sphereGeometry args={[1, 24, 16]} />
           <meshPhysicalMaterial

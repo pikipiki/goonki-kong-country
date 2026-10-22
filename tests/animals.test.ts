@@ -1,3 +1,4 @@
+import { assertDefined } from './helpers/assertDefined'
 import { describe, expect, it } from 'vitest'
 import { Game, emptyInput, type Key } from '../src/game/engine'
 import { ANIMAL_DESIGNS, BUDDY_PHYSICS } from '../src/game/animals'
@@ -82,7 +83,9 @@ describe('mounted animal combat and movement', () => {
     const game = mountedGame(0)
     const original = new Game()
     original.start()
-    const template = original.enemies.find((entry) => entry.kind === 'croc')
+    const template = assertDefined(
+      original.enemies.find((entry) => entry.kind === 'croc'),
+    )
     expect(template).toBeDefined()
     const enemy = {
       ...template,
@@ -178,7 +181,9 @@ describe('roll/cartwheel momentum and edge jump', () => {
     game.start()
     game.animals = []
     Object.assign(game.player, { x: 40, active: 1, grounded: true })
-    const armor = game.enemies.find((entry) => entry.kind === 'armored')
+    const armor = assertDefined(
+      game.enemies.find((entry) => entry.kind === 'armored'),
+    )
     expect(armor).toBeDefined()
     Object.assign(armor, { x: 40.7, y: 0, min: 0, max: 100, vx: 0 })
     game.enemies = [armor]

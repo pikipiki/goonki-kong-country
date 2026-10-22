@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { Game, emptyInput } from '../src/game/engine'
-import type { Animal, Enemy } from '../src/game/engine/types'
+import type { Enemy } from '../src/game/engine/types'
+import type { Platform } from '../src/game/levels'
 import { snapEnemyToSupport } from '../src/game/engine/gameGroundEnemy'
 import { advanceLooseAnimal } from '../src/game/engine/gameMountAnimals'
 import {
@@ -14,7 +15,6 @@ import { runWorldInteract } from '../src/game/engine/playingFrame/stepWorldInter
 import { fireJumpAfterDelay } from '../src/game/engine/fireJumpAfterDelay'
 import { groundedJumpImpulse } from '../src/game/engine/groundedJumpImpulse'
 import { STEP } from '../src/game/engine/romPhysics'
-
 describe('engine branch gaps — fireJump and jump impulse', () => {
   it('covers fireJumpAfterDelay branches', () => {
     expect(fireJumpAfterDelay(1, 0, false)).toBe(false)
@@ -72,7 +72,7 @@ describe('engine branch gaps — snap and mounts', () => {
     const game = new Game()
     game.start(3, true)
     Reflect.set(game.level, 'originalTerrain', 'jungle')
-    const animal = game.animals[0] as Animal
+    const animal = game.animals[0]
     animal.state = 'fleeing'
     animal.vx = 0.4
     animal.timer = 0.2
@@ -83,7 +83,13 @@ describe('engine branch gaps — snap and mounts', () => {
   it('covers moving platform surface with default travel', () => {
     const game = new Game()
     game.start(0)
-    const plat = { x: 12, y: 4, w: 2, h: 0.5, kind: 'moving' as const }
+    const plat: Platform = {
+      x: 12,
+      y: 4,
+      w: 2,
+      h: 0.5,
+      kind: 'moving' as const,
+    }
     Reflect.deleteProperty(plat, 'travel')
     const yDefault = game.surface(plat)
     plat.travel = 2.25

@@ -11,7 +11,6 @@ import { cannonMomentumDuration } from '../src/game/routeSafety'
 import { Game, emptyInput } from '../src/game/engine'
 import playerSource from '../reference/player-states.json'
 import { assertDefined } from './helpers/assertDefined'
-import { pick } from '../src/utils/pick'
 
 it('places all canyon land enemies above an exposed floor with body headroom', () => {
   let placed = 0
@@ -257,6 +256,6 @@ it('allows stomping a Necky bird while keeping real Zingers dangerous', () => {
     })
     game6.update(emptyInput())
     expect(bird.alive).toBe(pattern !== 'necky')
-    expect(game6.player.hp).toBe(pick(pattern === 'necky', 2, 1))
+    expect(game6.player.hp).toBe(pattern === 'necky' ? 2 : 1)
   }
 })

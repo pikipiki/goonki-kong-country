@@ -2,7 +2,6 @@ import { cannonWorldPosition } from '../cannonMotion'
 import type { Level } from '../levels'
 import { cannonLaunchVelocity } from './cannonLaunch'
 import type { Game } from './gameSession'
-import { pick } from '../../utils/pick'
 
 function barrelAt(level: Level, index: number) {
   if (index < 0 || index >= level.barrels.length) {
@@ -46,11 +45,9 @@ export function cannonAimAngle(
 
   const aim =
     (barrel.angle ?? 0.75) +
-    pick(
-      barrel.rotationSpeed,
-      Math.sin(game.time * barrel.rotationSpeed) * 0.65,
-      0,
-    )
+    (barrel.rotationSpeed
+      ? Math.sin(game.time * barrel.rotationSpeed) * 0.65
+      : 0)
 
   const velocity = cannonLaunchVelocity(aim)
 

@@ -6,9 +6,13 @@ import { Animals } from './game3d/Animals'
 import { Actors } from './game3d/Actors'
 import { World } from './game3d/World'
 import { STEP, type Game, type Input } from './game/engine'
+import {
+  simulation,
+  camera3D,
+  render as renderSettings,
+} from './config/presentation.json'
 import { tr } from './i18n'
 import { applyDirectorCamera } from './scene/directorCamera'
-import { pick } from './utils/pick'
 
 function Director({
   game,
@@ -32,7 +36,7 @@ function Director({
 
   useFrame(({ camera }, delta) => {
     const engine = engineRef.current
-    accumulator.current += Math.min(delta, 0.1)
+    accumulator.current += Math.min(delta, simulation.maxFrameDeltaSeconds)
     while (accumulator.current >= STEP) {
       engine.update(input)
       accumulator.current -= STEP
@@ -46,7 +50,7 @@ function Director({
       lastLevel,
     })
     nextUI.current += delta
-    if (nextUI.current > 0.09) {
+    if (nextUI.current > simulation.hudRefreshSeconds) {
       nextUI.current = 0
       onTick()
     }
@@ -77,7 +81,7 @@ function TitleCast({ game }: { game: Game }) {
       return
     }
     root.current.visible = game.phase === 'title'
-    const portrait = size.width / size.height < 0.9
+    const portrait = size.width / size.height < camera3D.portraitAspect
     if (portrait) {
       root.current.children[0].position.x = 9.15
     } else {
@@ -88,8 +92,8 @@ function TitleCast({ game }: { game: Game }) {
     } else {
       root.current.children[1].position.x = 14.5
     }
-    root.current.children[0].scale.setScalar(pick(portrait, 1.6, 1.85))
-    root.current.children[1].scale.setScalar(pick(portrait, 1.48, 1.65))
+    root.current.children[0].scale.setScalar(portrait ? 1.6 : 1.85)
+    root.current.children[1].scale.setScalar(portrait ? 1.48 : 1.65)
   })
   return (
     <group ref={root}>
@@ -130,12 +134,12 @@ function RenderBudget({ game }: { game: Game }) {
   useFrame((_, delta) => {
     const frame = samples.current
     frame.count++
-    frame.seconds += Math.min(delta, 0.2)
+    frame.seconds += Math.min(delta, renderSettings.maxSampleDeltaSeconds)
     frame.window += delta
-    if (frame.window > 2.5) {
+    if (frame.window > renderSettings.sampleWindowSeconds) {
       const fps = frame.count / frame.seconds
-      if (fps < 43 && gl.getPixelRatio() > 1) {
-        setDpr(1)
+      if (fps < renderSettings.minimumFps && gl.getPixelRatio() > 1) {
+        setDpr(renderSettings.fallbackDevicePixelRatio)
       }
       Object.defineProperty(window, 'goonkDiagnostics', {
         configurable: true,
@@ -165,7 +169,7 @@ export function Scene({
   input: Input
   onTick: () => void
 }) {
-  let sceneFrameloop
+  let sceneFrameloop: 'always' | 'demand'
   if (game.phase === 'playing' || game.phase === 'title') {
     sceneFrameloop = 'always'
   } else {
@@ -183,7 +187,10 @@ export function Scene({
       orthographic
       frameloop={sceneFrameloop}
       camera={{ position: [8, 5, 22], zoom: 60, near: 0.1, far: 100 }}
-      dpr={[1, 1.35]}
+      dpr={[
+        renderSettings.fallbackDevicePixelRatio,
+        renderSettings.maxDevicePixelRatio,
+      ]}
       gl={{
         antialias: true,
         alpha: false,

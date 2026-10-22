@@ -1,6 +1,5 @@
 import { stageRingColor } from './stageRingColor'
 import { stageColors } from './mapData'
-import { pick } from '../utils/pick'
 
 export function IslandStageNode({
   index,
@@ -34,11 +33,11 @@ export function IslandStageNode({
       {(index === 2 || index === 4 || index === 5) && (
         <mesh
           position={[0, 0.85, -0.7]}
-          scale={[1.1, pick(index === 4, 2.2, 1.5), 1.1]}
+          scale={[1.1, index === 4 ? 2.2 : 1.5, 1.1]}
         >
           <coneGeometry args={[1, 1.6, 7]} />
           <meshStandardMaterial
-            color={pick(index === 4, '#e1e5d8', '#79705a')}
+            color={index === 4 ? '#e1e5d8' : '#79705a'}
             flatShading
           />
         </mesh>

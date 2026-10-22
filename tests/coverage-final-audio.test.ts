@@ -150,7 +150,7 @@ describe('audio remaining branches', () => {
     audio.boot()
     audio.play('jungle')
     await flush()
-    const track = audio.music as LoopTrackInstance
+    const track = audio.music as unknown as LoopTrackInstance
     track.currentTime = 1.2
     fireTimeupdateHandlers(track)
     audio.stop()

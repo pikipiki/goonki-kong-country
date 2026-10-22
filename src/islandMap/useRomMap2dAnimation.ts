@@ -1,5 +1,5 @@
 import { useEffect, type RefObject } from 'react'
-import { PlushSpriteRenderer } from '../game2d/plushSprite'
+import { PlushSpriteRenderer, loadPlushAtlas } from '../game2d/plushSprite'
 import { createRomTravelState } from './romMap2dMotion'
 import { initialRomFollow, tickRomMap2dFrame } from './romMap2dTick'
 
@@ -38,6 +38,9 @@ export function useRomMap2dAnimation(
     let active = true
     let raf = 0
     const plushRenderer = new PlushSpriteRenderer()
+    void loadPlushAtlas().then((atlas) => {
+      if (active) plushRenderer.setAtlas(atlas)
+    })
     let mapImg: HTMLImageElement | null = null
     const img = new Image()
     img.onload = () => {

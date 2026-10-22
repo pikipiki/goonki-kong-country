@@ -7,7 +7,7 @@ import { ORIGINAL_MINE_CART_TERRAIN } from '../game/originalMineCartTerrain'
 import { GROUND_CHUNK_COLUMN_PIXELS } from './original/groundChunkVisibility'
 import { createMineCartGroundGeometry } from './original/mineCartGroundGeometry'
 import { mineCartGroundChunkVisible } from './original/mineCartGroundVisibility'
-import { createMineCartSoilTexture } from './original/mineCartSoilTexture'
+import { createSoilTexture } from './original/soilTexture'
 const CHUNK_COLUMNS = 16
 const COLUMN_COUNT = Math.ceil(
   ORIGINAL_MINE_CART_TERRAIN.widthPixels / GROUND_CHUNK_COLUMN_PIXELS,
@@ -61,7 +61,7 @@ export const OriginalMineCartGround = memo(function OriginalMineCartGround({
 }: {
   game: Game
 }) {
-  const map = useMemo(() => createMineCartSoilTexture(), [])
+  const map = useMemo(() => createSoilTexture('mineCart'), [])
   useEffect(
     () => () => {
       map.dispose()

@@ -1,3 +1,42 @@
+<!-- architecture-review-2026-10-22:start -->
+# Reprise prioritaire — architecture, 22 octobre 2026
+
+Dépôt canonique : `/Users/sevenone./Documents/git/goonk-country`.
+Les modifications actuelles sont locales, non commitées. Le point de départ
+était `8f9d97e` et l’arbre était propre. Les anciens chemins des sections
+historiques ci-dessous peuvent avoir été regroupés.
+
+Lire `docs/architecture.md`, `docs/architecture-review.md`, `CONTRIBUTING.md`
+et `SECURITY.md` pour l’organisation actuelle et les preuves de validation.
+
+- `src/` passe de 397 à 340 fichiers ; modules regroupés par responsabilité.
+- Configuration sous `src/config/`, terrain numérique sous `src/game/data/`.
+- Catalogue partagé `src/game/stageCatalog.ts` ; API moteur publique conservée.
+- `npm run check:architecture` : aucun orphelin, aucun cycle runtime.
+- Chargement différé 2D/3D ; silhouette 2D générée depuis le même profil 3D.
+- Cache marin borné/immuable : 100 000 requêtes, 484 → 14 ms, même résultat.
+- Sauvegardes et paramètres URL validés, CSP et CI sécurisées ; audit npm : 0.
+- 465 tests et 3 E2E passent ; les 11 fonctionnels passent, canyon/corail
+  terminés sans mort avec dégâts actifs. Production mobile racine/Pages validée.
+- Correction des indices d’atlas des objets du boss 2D et de l’échelle explicite.
+- Les captures/journaux sont maintenant dans `artifacts/` (ignoré par Git).
+
+Validation finale terminée : chaîne demandée, 465 tests / 85 fichiers,
+3 E2E, build, architecture, 11 fonctionnels et 12 cas mobiles de production
+(racine + préfixe GitHub Pages). Canyon et corail : zéro mort, dégâts actifs.
+Les contrôles supplémentaires du boss, décor, parcours 2D et hot reload passent.
+Le test HMR modifie temporairement le vrai module de classe
+`src/game/engine/gameSession.ts` ; son contenu a été restauré et contrôlé.
+
+Preuves : `artifacts/review/summary.json`, journaux voisins et
+`artifacts/browser/` ; ces sorties sont ignorées par Git. Lire le rapport de
+revue pour les réglages, corrections et limites de validation. Aucun problème
+identifié ne reste à corriger dans le périmètre vérifié.
+Aucun déploiement ni push n’a été effectué.
+<!-- architecture-review-2026-10-22:end -->
+
+---
+
 # Reprise Gemini — Goonk Country — 22 octobre 2026
 
 ## Dernière passe — tests fonctionnels réparés (22 octobre 2026)

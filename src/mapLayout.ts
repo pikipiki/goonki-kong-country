@@ -1,4 +1,3 @@
-import { pick } from './utils/pick'
 /** Fullscreen 2D map framing. Keep the original island and seven ROM nodes
  * intact, with readable callouts outside its crowded paths on narrow screens. */
 function verticalMargins(fullscreen: boolean, portrait: boolean) {
@@ -20,10 +19,10 @@ export function romMapLayout(
   const portrait = height > width
   const { top, bottom } = verticalMargins(fullscreen, portrait)
   const area = Math.max(160, height - top - bottom)
-  const contentHeight = Math.min(area, pick(portrait, width * 1.5, area))
+  const contentHeight = Math.min(area, portrait ? width * 1.5 : area)
   const contentTop = top + (area - contentHeight) / 2
   const scale = Math.min(
-    (width - pick(portrait || !fullscreen, 16, 300)) / 256,
+    (width - (portrait || !fullscreen ? 16 : 300)) / 256,
     contentHeight / 194,
   )
   const safeScale = Math.max(0.5, scale)

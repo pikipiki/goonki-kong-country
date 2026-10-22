@@ -128,7 +128,7 @@ describe('refactor coverage — mounts and walls', () => {
 
     const tokenGame = new Game()
     tokenGame.start(0, true)
-    tokenGame.collectedTokens = undefined
+    Reflect.deleteProperty(tokenGame, 'collectedTokens')
     const tokenDecor = tokenGame.level.decors?.find(
       (entry) => entry.kind === 'token',
     )
@@ -200,6 +200,8 @@ describe('refactor coverage — expresso mount', () => {
       hurt: 0,
       timer: 0,
       pattern: 'patrol' as const,
+      vulnerable: false,
+      shootCooldown: 0,
     }
     expresso.enemies = [beetle]
     Object.assign(expresso.player, {
@@ -232,6 +234,8 @@ describe('refactor coverage — winky mount', () => {
       hurt: 0,
       timer: 0,
       pattern: 'patrol' as const,
+      vulnerable: false,
+      shootCooldown: 0,
     }
     winky.enemies = [stompTarget]
     winky.animals = [

@@ -2,7 +2,6 @@ import {
   ISLAND_TRAIL_DOT_ACTIVE,
   ISLAND_TRAIL_DOT_LOCKED,
 } from './romMapPalette'
-import { pick } from '../utils/pick'
 
 export function IslandTrailDots({
   nodes,
@@ -29,11 +28,11 @@ export function IslandTrailDots({
             >
               <circleGeometry args={[0.085, 8]} />
               <meshBasicMaterial
-                color={pick(
-                  segment < unlocked,
-                  ISLAND_TRAIL_DOT_ACTIVE,
-                  ISLAND_TRAIL_DOT_LOCKED,
-                )}
+                color={
+                  segment < unlocked
+                    ? ISLAND_TRAIL_DOT_ACTIVE
+                    : ISLAND_TRAIL_DOT_LOCKED
+                }
               />
             </mesh>
           )

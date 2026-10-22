@@ -42,9 +42,9 @@ describe('Barrel Cannon Canyon grouped spawns', () => {
     }
     expect(childCount).toBe(18)
     expect(
-      ORIGINAL_REVERB_PROVENANCE.omitted.some(
-        (row4) => row4.spawnCommand === 5,
-      ),
+      new Set<number>(
+        ORIGINAL_REVERB_PROVENANCE.omitted.map((row) => row.spawnCommand),
+      ).has(5),
     ).toBe(false)
   })
   it('reaches the previously missing receiver at x260 from direct cannon31', () => {

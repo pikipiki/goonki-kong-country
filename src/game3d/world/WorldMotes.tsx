@@ -4,7 +4,6 @@ import { InstancedMesh, Object3D } from 'three'
 import type { Game } from '../../game/engine'
 import { worldRandom } from './worldPalettes'
 import { worldSphere } from './worldSharedGeometries'
-import { pick } from '../../utils/pick'
 
 export function WorldMotes({ game }: { game: Game }) {
   const ref = useRef<InstancedMesh>(null)
@@ -28,16 +27,14 @@ export function WorldMotes({ game }: { game: Game }) {
     for (let moteIdx = 0; moteIdx < moteCount; moteIdx++) {
       dummy.position.set(
         game.player.x - 18 + worldRandom(moteIdx) * 36,
-        pick(
-          game.level.biome === 'snow',
-          9 - ((worldRandom(moteIdx + 1) * 14 + clock.elapsedTime * 0.8) % 14),
-          worldRandom(moteIdx + 1) * 11 +
-            Math.sin(clock.elapsedTime + moteIdx) * 0.2 -
-            2,
-        ),
+        game.level.biome === 'snow'
+          ? 9 - ((worldRandom(moteIdx + 1) * 14 + clock.elapsedTime * 0.8) % 14)
+          : worldRandom(moteIdx + 1) * 11 +
+              Math.sin(clock.elapsedTime + moteIdx) * 0.2 -
+              2,
         worldRandom(moteIdx + 2) * 12 - 7,
       )
-      dummy.scale.setScalar(pick(game.level.biome === 'snow', 0.025, 0.012))
+      dummy.scale.setScalar(game.level.biome === 'snow' ? 0.025 : 0.012)
       dummy.updateMatrix()
       mesh.setMatrixAt(moteIdx, dummy.matrix)
     }
@@ -48,7 +45,7 @@ export function WorldMotes({ game }: { game: Game }) {
   return (
     <instancedMesh ref={ref} args={[worldSphere, undefined, moteCount]}>
       <meshBasicMaterial
-        color={pick(game.level.biome === 'snow', '#fff6dd', '#d8da85')}
+        color={game.level.biome === 'snow' ? '#fff6dd' : '#d8da85'}
         transparent
         opacity={0.55}
       />

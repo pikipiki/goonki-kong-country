@@ -1,5 +1,4 @@
 import { rawSpeed } from './romPhysics'
-import { pick } from '../../utils/pick'
 
 export const clamp = (value: number, min: number, max: number) =>
   Math.max(min, Math.min(max, value))
@@ -16,7 +15,7 @@ export const approachFootVelocity = (value: number, target: number) => {
 
   const step = Math.abs(error) >> 3
 
-  return rawSpeed(raw + pick(step === 0, error, Math.sign(error) * step))
+  return rawSpeed(raw + (step === 0 ? error : Math.sign(error) * step))
 }
 
 /** Narrow hooks for Vitest branch coverage (ROM foot velocity quantization). */

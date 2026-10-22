@@ -1,7 +1,6 @@
-import { BODY_PROFILE } from '../game3d/plushGoonk/profile'
+import contour from './plush-contour.json'
 import { themeColors } from '../game3d/theme'
 import type { PlushPoseState } from './plushSprite'
-import { pick } from '../utils/pick'
 
 const plush = themeColors.plush
 
@@ -31,9 +30,9 @@ export function drawPlushFallbackBody(
     swing = 0
   }
 
-  const bodyCol = pick(pink, plush.fabricPink, plush.fabricPurple)
-  const sheenCol = pick(pink, plush.sheenPink, plush.sheenPurple)
-  const stitchCol = pick(pink, plush.stitchPink, plush.stitchPurple)
+  const bodyCol = pink ? plush.fabricPink : plush.fabricPurple
+  const sheenCol = pink ? plush.sheenPink : plush.sheenPurple
+  const stitchCol = pink ? plush.stitchPink : plush.stitchPurple
 
   ctx.fillStyle = stitchCol
   ctx.beginPath()
@@ -43,12 +42,10 @@ export function drawPlushFallbackBody(
   ctx.fillStyle = bodyCol
   ctx.beginPath()
 
-  for (let seg = 0; seg <= 20; seg++) {
-    const point = BODY_PROFILE.getPoint(seg / 20)
-
-    const pointX = point.x * scale
-
-    const pointY = (0.42 - point.y) * scale
+  for (let seg = 0; seg < contour.length; seg++) {
+    const [radius, height] = contour[seg]
+    const pointX = radius * scale
+    const pointY = (0.42 - height) * scale
 
     if (seg === 0) {
       ctx.moveTo(pointX, pointY)
@@ -57,10 +54,9 @@ export function drawPlushFallbackBody(
     }
   }
 
-  for (let seg = 20; seg >= 0; seg--) {
-    const point = BODY_PROFILE.getPoint(seg / 20)
-
-    ctx.lineTo(-point.x * scale, (0.42 - point.y) * scale)
+  for (let seg = contour.length - 1; seg >= 0; seg--) {
+    const [radius, height] = contour[seg]
+    ctx.lineTo(-radius * scale, (0.42 - height) * scale)
   }
 
   ctx.closePath()
@@ -76,7 +72,7 @@ export function drawPlushFallbackBody(
   ctx.ellipse(
     scale * 0.26,
     -scale * 0.02,
-    scale * pick(pink, 0.18, 0.15),
+    scale * (pink ? 0.18 : 0.15),
     scale * 0.08,
     0.32,
     0,
@@ -99,7 +95,7 @@ export function drawPlushFallbackBody(
   drawPlushFallbackEye(ctx, scale)
 
   ctx.fillStyle = bodyCol
-  const armY = pick(state.carrying, -scale * 0.28, 2 + swing * 0.5)
+  const armY = state.carrying ? -scale * 0.28 : 2 + swing * 0.5
 
   ctx.beginPath()
   ctx.ellipse(-1 + swing * 0.5, armY, 3.2, 6.5, -0.25, 0, Math.PI * 2)

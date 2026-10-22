@@ -1,5 +1,4 @@
 import type { BarrelSpec } from './levels'
-import { pick } from '../utils/pick'
 /** Source-driven bounded motion, including moving cannons activated on entry. */
 export function cannonWorldPosition(barrel: BarrelSpec, elapsed: number) {
   const motion = barrel.motion
@@ -34,7 +33,7 @@ export function cannonWorldPosition(barrel: BarrelSpec, elapsed: number) {
   }
 
   return {
-    x: barrel.x + pick(motion.axis === 'x' || motion.diagonal, offset, 0),
+    x: barrel.x + (motion.axis === 'x' || motion.diagonal ? offset : 0),
     y: barrel.y + yDelta,
   }
 }
