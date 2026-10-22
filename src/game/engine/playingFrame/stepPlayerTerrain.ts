@@ -29,13 +29,8 @@ function resolveOriginalLandTerrain(
   wasGrounded: boolean,
   oldX: number,
   oldY: number,
+  terrain: 'jungle' | 'cave' | 'mineCart',
 ): void {
-  const terrain = game.level.originalTerrain
-
-  if (!terrain || terrain === 'coral') {
-    return
-  }
-
   const contact = resolveLandMotion(
     terrain,
     oldX,
@@ -102,8 +97,9 @@ export function resolvePlayerTerrain(
   oldX: number,
   oldY: number,
 ): boolean {
-  if (game.level.originalTerrain && game.level.originalTerrain !== 'coral') {
-    resolveOriginalLandTerrain(game, player, wasGrounded, oldX, oldY)
+  const terrain = game.level.originalTerrain
+  if (terrain && terrain !== 'coral') {
+    resolveOriginalLandTerrain(game, player, wasGrounded, oldX, oldY, terrain)
     return player.grounded
   }
 

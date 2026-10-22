@@ -15,9 +15,11 @@ et `SECURITY.md` pour l’organisation actuelle et les preuves de validation.
 - Chargement différé 2D/3D ; silhouette 2D générée depuis le même profil 3D.
 - Cache marin borné/immuable : 100 000 requêtes, 484 → 14 ms, même résultat.
 - Sauvegardes et paramètres URL validés, CSP et CI sécurisées ; audit npm : 0.
-- **461 tests** (`npm test`, 83 fichiers) et 3 E2E passent ; les 11 fonctionnels
-  passent, canyon/corail terminés sans mort avec dégâts actifs. Production mobile
-  racine/Pages validée.
+- **469 tests** (`npm test`, 85 fichiers) ; couverture moteur **100 %** sur
+  `src/game/**` (`npm run test:coverage`, seuils `vite.config.ts`). **3 E2E**
+  Playwright (`/?demo=2d`, manette tactile PointerEvent, routes `?play=*`) ;
+  les 11 fonctionnels passent, canyon/corail terminés sans mort avec dégâts actifs.
+  Production mobile racine/Pages validée.
 - Correction des indices d’atlas des objets du boss 2D et de l’échelle explicite.
 - Les captures/journaux sont maintenant dans `artifacts/` (ignoré par Git).
 - Couche React : `src/containers/`, `src/hooks/`, `src/lib/` (plus de `src/app/`) ;
@@ -27,7 +29,8 @@ et `SECURITY.md` pour l’organisation actuelle et les preuves de validation.
   alias dans `tsconfig.app.json`).
 - Carte île 3D : zoom caméra via `useMapIslandProjection` (plus de `@react-three/drei`
   sur la scène map). Installs : `.npmrc` + `NPM_FLAGS=--legacy-peer-deps` (Netlify).
-- **ESLint** : `npx eslint . --max-warnings 0` vert ; assouplissements Sonar ciblés
+- **ESLint** : `npx eslint . --max-warnings 0` vert (e2e + tests coverage-hundred) ;
+  assouplissements Sonar ciblés
   (`function-return-type` global, règles test) ; util partagé `src/lib/viteAssetPath.ts` ;
   corrections R3F (`renderer`, `r3fClock`), save/ROM query/HUD ; 3 `eslint-disable-next-line`
   S2259 documentés (faux positifs `string`).
@@ -52,6 +55,20 @@ Déploiement Pages : via CI GitHub sur `main` si configuré.
 
 Pour la session courante, le bloc **« Reprise prioritaire — architecture »** en
 tête de ce fichier prévaut sur les sections historiques ci-dessous.
+
+## Dernière passe — couverture 100 %, E2E smoke, isolation tests (22 octobre 2026)
+
+- **Couverture** : `tests/coverage-hundred.test.ts` + `coverage-hundred-branches.test.ts`
+  ; branches audio (`boot` manifest rejeté, `toggle` mute), canon, murs Rambi, jetons
+  animaux, bonus fantôme ; `stepPlayerTerrain` passe le terrain land en paramètre
+  (garde morte retirée).
+- **E2E** : `e2e/helpers/waitForPlaying.ts` ; gameplay sur `/?demo=2d` (évite perte
+  contexte WebGL 3D) ; mobile bilingue + `pointerdown`/`pointerup` avec capture.
+- **Isolation** : `engine-branch-gaps` restaure `originalTerrain` après test coral ;
+  coverage-hundred utilise `try/finally` sur catalogues partagés (`LEVELS`, vecteurs
+  canon).
+- **Sonar local** : `npm run sonar` exige `.env` (`SONAR_TOKEN`) et `JAVA_HOME`
+  (OpenJDK Homebrew) ; serveur `localhost:9000` OK sans token dans le dépôt.
 
 ---
 

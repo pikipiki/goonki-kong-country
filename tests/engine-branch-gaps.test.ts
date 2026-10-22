@@ -71,13 +71,18 @@ describe('engine branch gaps — snap and mounts', () => {
   it('covers fleeing mount in water without coral collision', () => {
     const game = new Game()
     game.start(3, true)
-    Reflect.set(game.level, 'originalTerrain', 'jungle')
-    const animal = game.animals[0]
-    animal.state = 'fleeing'
-    animal.vx = 0.4
-    animal.timer = 0.2
-    advanceLooseAnimal(game, animal, true, STEP)
-    expect(animal.state).toBe('fleeing')
+    const terrain = game.level.originalTerrain
+    try {
+      Reflect.set(game.level, 'originalTerrain', 'jungle')
+      const animal = game.animals[0]
+      animal.state = 'fleeing'
+      animal.vx = 0.4
+      animal.timer = 0.2
+      advanceLooseAnimal(game, animal, true, STEP)
+      expect(animal.state).toBe('fleeing')
+    } finally {
+      Reflect.set(game.level, 'originalTerrain', terrain)
+    }
   })
 
   it('covers moving platform surface with default travel', () => {
