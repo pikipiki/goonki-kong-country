@@ -248,6 +248,16 @@ function Butterfly({game,worldX}:{game:Game;worldX:number}) {
   </group>;
 }
 
+function GoldenAnimalToken({game, x, y}: {game: Game; x: number; y: number}) {
+  const root = useRef<Group>(null);
+  useFrame(() => { if(root.current) {
+    root.current.visible = !game.isTokenCollected({kind:"token",x,y});
+    root.current.position.y = .72 + Math.sin(game.time * 3) * .09;
+  }});
+  return <group ref={root}><mesh geometry={cylinder} scale={[.35,.12,.35]} rotation={[Math.PI/2,0,0]}>
+    <meshStandardMaterial color="#e8c84a" metalness={.7}/>
+  </mesh></group>;
+}
 function OriginalLevelProps({ game }: { game: Game }) {
   const level = game.level;
   const sparkle = useMemo(() => textTexture("✦", "#ffe6a5"), []);
@@ -265,15 +275,7 @@ function OriginalLevelProps({ game }: { game: Game }) {
           {decor.kind === "butterfly" ? (
             <Butterfly game={game} worldX={decor.x}/>
           ) : null}
-          {decor.kind === "token" ? (
-            <mesh
-              geometry={cylinder}
-              scale={[0.35, 0.12, 0.35]}
-              rotation={[Math.PI / 2, 0, 0]}
-            >
-              <meshStandardMaterial color="#e8c84a" metalness={0.7} />
-            </mesh>
-          ) : null}
+          {decor.kind === "token" ? <GoldenAnimalToken game={game} x={decor.x} y={decor.y}/> : null}
           {decor.kind === "sign" ? (
             <>
               <mesh geometry={box} position={[0, 0.5, 0]} scale={[0.08, 1, 0.08]}>

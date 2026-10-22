@@ -70,6 +70,8 @@ export interface LevelDecor {
   x: number;
   y: number;
   kind: "butterfly" | "sign" | "token" | "sparkle";
+  /** Golden animal token; older source rows default to Expresso. */
+  animal?: "rambi" | "enguarde" | "winky" | "expresso";
   /** i18n key when kind is sign. */
   text?: string;
 }

@@ -1,6 +1,8 @@
 import { useEffect, useRef } from "react";
 import { STEP, type Game, type Input } from "../game/engine";
+import { ENEMY_DESIGNS } from "../game/enemies";
 import type { BossBattle, BossProjectile } from "../game/bossBattle";
+import { bossViewport2D, bossCameraLeft } from "./camera2D";
 import { PlushSpriteRenderer } from "./plushSprite";
 interface Frame {
     x: number;
@@ -71,6 +73,7 @@ export function BossScene2D({ game, input, onTick }: {
     useEffect(() => {
         let alive = true, raf = 0, last = performance.now(), acc = 0, ui = 0, assets: BossAssets | null = null;
         const plush = new PlushSpriteRenderer();
+        let cameraLeft: number | null = null, cameraLift = 0, revision = game.sceneRevision;
         void loadAssets().then(a => { if (alive)
             assets = a; }).catch(e => console.error("[BossScene2D]", e));
         const step = (now: number) => {
@@ -95,7 +98,7 @@ export function BossScene2D({ game, input, onTick }: {
             if (!ctx)
                 return;
             const rect = canvas.getBoundingClientRect(), aspect = rect.width / Math.max(1, rect.height);
-            const w = aspect < 1.14 ? 256 : Math.round(224 * aspect), h = aspect < 1.14 ? Math.round(256 / Math.max(.25, aspect)) : 224;
+            const viewport = bossViewport2D(rect.width, rect.height), w = viewport.width, h = viewport.height;
             if (canvas.width !== w || canvas.height !== h) {
                 canvas.width = w;
                 canvas.height = h;
@@ -106,11 +109,20 @@ export function BossScene2D({ game, input, onTick }: {
                 bossProjectiles?: BossProjectile[];
             };
             const fight = view.bossBattle, boss = game.enemies.find(e => e.kind === "boss"), p = game.player;
-            const arenaLeft = 0, arenaRight = game.level.length;
+            const targetLeft = bossCameraLeft(p.x, viewport.worldWidth, game.level.length);
+            if (cameraLeft === null || revision !== game.sceneRevision || Math.abs(targetLeft - cameraLeft) > viewport.worldWidth) {
+                cameraLeft = targetLeft; cameraLift = 0; revision = game.sceneRevision;
+            }
+            cameraLeft += (targetLeft - cameraLeft) * (1 - Math.exp(-dt * 9));
             // Landscape touch controls occupy the lower corners; keep feet and
             // projectiles above them, with the captured deck aligned to this plane.
-            const scale = (w - 32) / Math.max(1, arenaRight - arenaLeft), floor = Math.round(h * (aspect >= 1.14 ? .65 : 190 / 224));
-            const px = (x: number) => 16 + (x - arenaLeft) * scale, py = (y: number) => floor - y * scale;
+            const scale = (w - 32) / viewport.worldWidth;
+            // Track high jumps/bounces too, keeping the plush below the HUD.
+            const targetLift = Math.max(0, p.y - (viewport.portrait ? 2.2 : 1.2));
+            cameraLift += (targetLift - cameraLift) * (1 - Math.exp(-dt * 10));
+            const floor = Math.round(h * (aspect >= 1.14 ? .65 : 190 / 224) + cameraLift * scale);
+            const px = (x: number) => 16 + (x - cameraLeft!) * scale, py = (y: number) => floor - y * scale;
+            game.cameraBounds = {x: cameraLeft + viewport.worldWidth / 2, y: (floor - h / 2) / scale, halfX: viewport.worldWidth / 2 + 1, halfY: h / scale / 2 + 1};
             const sky = ctx.createLinearGradient(0, 0, 0, 160);
             sky.addColorStop(0, "#515e87");
             sky.addColorStop(.55, "#a1adc3");
@@ -195,8 +207,11 @@ export function BossScene2D({ game, input, onTick }: {
             }
             if (boss) {
                 const phase = fight?.phase ?? "intro", group = phase === "intro" ? "jump" : phase === "run" ? "run" : phase === "throw" ? "throw" : phase === "jump" ? "jump" : phase === "hurt" ? "hurt" : phase === "fakeDeath" || phase === "dead" ? "fall" : phase === "getUp" ? "getUp" : phase === "rain" ? "rain" : fight?.crowned === false ? "wait" : "idle";
-                const x = px(boss.x), y = py(boss.y), bossHeight = 1.95 * scale;
-                const baseHeight = assets?.manifest.frames[assets.manifest.groups.idle?.[0]]?.h ?? 96, bossScale = bossHeight / baseHeight;
+                const x = px(boss.x), y = py(boss.y), bossHeight = ENEMY_DESIGNS.boss.height * scale;
+                // Scale the exposed head, not the taller crown frame. Its source
+                // anchor is 65px above the feet plus the 5px ground correction.
+                const head = assets?.manifest.frames[assets.manifest.groups.wait?.[0]];
+                const headPixels = Math.abs(head?.oy ?? -65) + 5, bossScale = bossHeight / headPixels;
                 if (!draw(group, fight?.phaseTime ?? game.time, x, y - 5 * bossScale, (fight?.facing ?? -1) < 0, undefined, !["throw", "hurt", "fall", "getUp"].includes(group), bossScale)) {
                     ctx.fillStyle = "#759044";
                     ctx.fillRect(x - 12, y - 30, 24, 30);
@@ -239,8 +254,14 @@ export function BossScene2D({ game, input, onTick }: {
                 ctx.fillRect(-4, 2, 8, 1);
                 ctx.restore();
             }
+            if (boss?.alive && (px(boss.x) < 0 || px(boss.x) > w)) {
+                const right = px(boss.x) > w;
+                ctx.fillStyle = "#ffd66a"; ctx.font = "bold 14px monospace";
+                ctx.textAlign = right ? "right" : "left";
+                ctx.fillText(right ? "♛ ▶" : "◀ ♛", right ? w - 7 : 7, floor - 3 * scale);
+            }
             const pose = (pink: boolean, facing: number, companion: boolean) => ({ pink, facing, walking: Math.abs(p.vx), grounded: p.grounded, roll: !companion && p.roll > 0, rollAngle: p.rollAngle, rollFacing: p.rollFacing, cannonFlight: p.launched > 0, swapping: false, swapHop: 0, companion, riding: false, carrying: !companion && p.carry >= 0, celebrating: game.phase === "clear" || game.phase === "victory", time: game.time });
-            const plushScale = Math.max(.42, scale / 32);
+            const plushScale = scale / 32;
             if (p.hp === 2)
                 plush.draw(ctx, px(game.companion.x), py(game.companion.y), pose(p.active !== 0, game.companion.facing, true), plushScale);
             if (!(p.invincible > 0 && Math.sin(game.time * 34) < -.45))

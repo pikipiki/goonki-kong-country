@@ -99,13 +99,14 @@ describe('final battle game integration and fairness',()=>{
     game.bossProjectiles.push({...crown(5),kind:'cannonball',vx:0,warning:.55,y:.7});
     game.update(emptyInput());expect(game.player.hp).toBe(2);
   });
-  for(const active of [0,1]) it(`plush ${active} can land a held jump from the deck on the exposed head without taking damage`,()=>{
+  for(const active of [0,1]) for(const heldFrames of [1,21,90]) it(`plush ${active} can reach the enlarged head after ${heldFrames} held frames without damage`,()=>{
     const game=new Game();game.start(6);const boss=game.enemies[0];
     game.player.active=active;game.player.x=boss.x-4;game.player.invincible=0;
     Object.assign(game.bossBattle!,{phase:'catch',phaseTime:0,crowned:false});game.bossProjectiles.push(crown());
     const input=emptyInput();input.held.add('jump');input.held.add('right');input.held.add('run');input.pressed.add('jump');
     let maxHeight=0;
     for(let frame=0;frame<120&&boss.hp===BOSS_MAX_HITS;frame++){
+      if(frame>=heldFrames)input.held.delete('jump');
       if(game.player.x>=boss.x-.3)input.held.delete('right');
       game.update(input);maxHeight=Math.max(maxHeight,game.player.y);
     }

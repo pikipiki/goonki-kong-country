@@ -67,6 +67,7 @@ class SuppliedRomAtlas(unittest.TestCase):
             "gnawty_walk": 0x3C8A1C, "necky_throw": 0x3C86D4,
             "sign_exit": 0x3C8350, "sign_arrow": 0x3C8350,
             "rambi_idle": 0x3C8404, "barrel_idle": 0x3C872E,
+            "dk_barrel": 0x3C872E, "dk_letters": 0x3C86F2,
             "letter_k": 0x3C86F2, "cave_hole": 0x3C81EA,
             "platform": 0x3C88D2,
         }

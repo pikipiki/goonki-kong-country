@@ -1,5 +1,45 @@
 # État prioritaire de reprise — 0.4.0 (22 octobre 2026)
 
+## Dernière passe — portrait3D, tonneauDK, carte plein écran et grand boss (22 octobre 2026)
+
+Priorité sur les sections historiques. Dernière livraison commitée : zoom 3D portrait, tonneau DK 2D, carte cover/pan, boss agrandi + contrôles tactiles, cadrage mobile (`mobile-framing-browser.mjs`). **248 tests / 39 fichiers**.
+
+- **Zoom3D portrait** : champ8,2unités au lieu de12,8 (+56% en taille à l'écran), anticipation1,45 ; garde la peluche/compagne et une réception à5unités dans le cadre. Le boss3D portrait suit aussi la caméra rapprochée, avec suivi vertical des grands bonds. Paysage3D conserve le cadrage large du combat. Modèles des peluches inchangés.
+- **TonneauDK2D** : le corps utilisait déjà la palette bois correcte`$3C872E`. Le logoDK utilisait cette même palette, d'où ses gris, et n'était pas superposé au corps dans Scene2D. Palette du logo corrigée en`$3C86F2` + overlay animé à la même ancre que le corps. SourceDKBarrelLetters_Main confirme qu'il suit les coordonnées du tonneau, et DATA_B58ABB utilise BC86F2. Atlas301images régénéré avec`--sprites-only`, décors conservés. Tests de palettes incluent maintenant corps et lettres.
+- **Grandes commandes boss** : deux rectangles arrondis de96px de haut, largeur~75–108px selon écran, au lieu des petits disques64–72px. Modeclic/maintien/tactile et saut indépendant conservés. Les boutonsAction/Swap ont aussi été séparés en paysage pour supprimer leur ancien chevauchement2px. Styles `.boss-controls`.
+- **Carte2D** : l'image ROM elle-même couvre toute largeur/hauteur (`cover`, ratio préservé), sans les bandes d'océan autour de l'ancienne île réduite. Caméra suit les voyageurs ; glisser permet d'explorer les parties hors cadre. La sélection d'une destination remet le pan manuel à zéro et les voyageurs s'y rendent. Sept boutons nommés toujours accessibles ; un clic sur un marqueur visible utilise la projection courante. Les voyageurs ont une échelle adaptée au zoom pour ne pas masquer la carte. `romMapLayout`, `IslandMap`. Certains points source sont normalement hors cadre en modecover ; ne pas remettre le test ancien exigeant tous les points source visibles simultanément.
+- **Boss agrandi et atteignable** : tête physique2,8unités / largeur1,25. Sprite2D calibré sur l'ancre de la tête SANS couronne (65+5px), et non l'imageidle96px avec la couronne qui réduisait le corps. Modèle3D aligné sur cette hauteur. Sauts sur le bateau seulement : impulsion×1,15 et gravité de saut maintenu durant l'ascension même après appui bref. Rose monte à3,475 ; Violette3,951, donc les deux atteignent la tête après1frame comme après21/90frames d'appui. Autres stages et tailles des peluches inchangés. Caméra2D suit verticalement les sauts/rebonds pour éviter la découpe sous leHUD, surtout en paysage.
+
+**Validation :248 tests /39fichiers passent**, buildTypeScript/Vite etdiff-checkOK ;7testsPython palettes passent. Les six tests moteur de saut vérifient perte1PVboss etaucun dégât joueur sur les deux peluches ×1/21/90frames.
+
+`node scripts/mobile-framing-browser.mjs` :390×844,320×640,844×390 ; image de carte couvrant les4bords, pan tactile effectif, grandes touches dans le viewport sans chevauchement, **6stomps avec vraies touches tactiles**, deux peluches ×3formats, HP2 /5vies, couronne et dégâts actifs. Positions initiales de reproduction uniquement contrôlées ; aucun ennemi supprimé, aucune invincibilité injectée. Captures`reference/framing-{3d,dk,map,boss,jump}-*`, données`reference/mobile-framing-browser.json`.
+
+`node scripts/map-2d-browser.mjs` passe :3formats,7accès3D /2accès2D, anglaispar défaut, aucune erreurJS.
+
+**Combat complet boss agrandi revalidé** via`boss-battle-browser.mjs` : victoire10coups,77,75s de simulation,515décisions clavier,0mort, finHP1/vies6, toutes les phases traversées, aucune erreurJS. Partie jouée strictement lue, contrôleur sur copies isolées, vraies commandes. Rapport/capture/journal`reference/boss-playthrough*` actualisés. Ce parcours remplace la précédente mesure83,57s avant agrandissement.
+
+Limites conservées : Chrome avec formats téléphone, pas de validation sur appareil iOS réel ; pas de nouvelle traversée complète de la jungle/mine ; les autres5stages n'ont toujours pas de rendu2D ; timings/échelles restent adaptés au mobile, pas une émulation exacte de la ROM.
+
+
+---
+
+## Dernière correction — zoom2D, jetons et son / fin de stage (22 octobre 2026)
+
+Cette section prévaut sur les précédentes (inclus dans le même commit que la passe portrait/carte/boss ci-dessus).
+
+- **Caméra jungle2D** : viewport192px de large en portrait,180px de haut en paysage (zoom ~25% supérieur). Rapport d'aspect conservé, peluches/physique/collisions inchangées. Ancre portrait recentrée pour garder la compagne visible. Dans le bonus, la caméra suit le joueur sur les écrans étroits au lieu de centrer la pièce et couper la peluche à l'entrée. `src/game2d/camera2D.ts`, `Scene2D.tsx`.
+- **Boss2D** : caméra qui suit le joueur, champ9unités portrait /18paysage. Les peluches sont ~80% plus grandes à l'écran en portrait et~20% en paysage. Une flèche avec couronne indique le roi hors cadre. Les attaques du boss continuent hors cadre : exception explicite au culling de simulation (sinon le zoom aurait figé le premier lancer). Les alertes de boulets et les objets partagent la même projection ; pont et boutons restent séparés en paysage.
+- **Animaux dorés** : les tokens étaient uniquement des `LevelDecor` dessinés. Ils sont désormais ramassés au contact, disparaissent en2D/3D, affichent le compteur et jouent les vrais effets0x60/61/62. `Game.collectedTokens` (positions stables), `animalTokens`, `isTokenCollected`, `collectAnimalTokens`. Source ROM conservée ; ancien décor sans espèce explicite =Expresso, déjà utilisé par son sprite2D. État conservé au retour du bonus, réinitialisé sur nouvelle partie. **Pas de nouveau mini-jeu animal aux trois jetons** : cette passe corrige la collecte et son feedback uniquement.
+- **Audio** : sur Chrome avant correction, la disparition totale des SFX au retour du bonus n'a pas été reproduite. Corrections robustes vérifiées : `AudioSystem.wake()` reprend un contexte suspendu au vrai pointerdown/keydown et avant un effet ; manifeste/chargement SFX rejetés ne restent plus bloqués définitivement en cache. Musique bonus16 pendant la pièce, retour musique jungle0 à la sortie. `inspect()` expose état du contexte et voix actives. Mute respecté. App actualise aussi le prototype AudioSystem lors du Fast Refresh pour les onglets déjà ouverts.
+- **Fin de stage** : fanfare26 BeatLevel puis retour automatique sur la carte plein écran après7,2s, départ du stage terminé et marche vers le suivant avec sons de pas/arrivée. Le bouton permet de rejoindre cette carte plus tôt. Ancienne petite carte de résultats supprimée ; le joueur choisit le prochain rendu via la confirmation habituelle. Boss final garde l'écran victoire. Les préférences/langues et les7stages accessibles restent conservés.
+
+**Vérifications : 244 tests /39fichiers passent**, dont12 nouveaux tests de cadrage, jetons, boss hors cadre et audio. BuildTypeScript/Vite etdiff-check passent. `npm run test:mobile` :6tailles, rotation/multitouch/clic/pause et7transitions, aucune erreurJS,~59fps dans ce test.
+
+`node scripts/2d-regressions-browser.mjs` passe en390×844 et844×390 : vraie collecte token après positionnement de reproduction, traversée réelle du bonus, musique16→0, suspension AudioContext injectée puis reprise par vraie touche, collecte de banane avec lecture PCM non silencieuse, vraie traversée ExitDoor après positionnement de reproduction, fanfare26, retour automatique sans clic,3pas+arrivée et déplacement dessiné>25px, carte au stage suivant, accès boss2D zoomé. **Tests ciblés, pas une traversée complète de la jungle.** Aucun dommage/ennemi supprimé ni invincibilité ajoutée. Données `reference/2d-regressions-browser.json`, captures `reference/2d-{zoom-jungle,zoom-boss,token-collected,bonus,clear-fanfare,clear-map}-{portrait,landscape}.png`. Le contrôle émule des formats téléphone dans Chrome ; ce n'est pas une validation sur appareil iOS réel.
+
+
+---
+
 ## Priorité actuelle — livraison du 22 octobre 2026 : palettes, carte et boss
 
 Cette section prévaut sur les états historiques ci-dessous. Dépôt canonique : `/Users/sevenone./Documents/git/goonk-country`. Passe livrée en commit (palettes rom2d, carte 2D plein écran, boss 2D/3D partagé, accueil démo). Préserver tailles peluches (Rose 2,2 ; Violette 2,05).
@@ -39,7 +79,7 @@ ROM fournie SHA256 `628147468c3539283197f58f03b94df49758a332831857481ea9cc31645f
 
 Cette section prévaut sur l’historique ci-dessous. Dépôt : `Documents/git/goonk-country`. Handoff avant commit : `.cursor/skills/handoff-before-commit/SKILL.md`.
 
-**Dernier commit** : palettes rom2d corrigées, carte `mapLayout` + démo 2D jungle/boss, combat `bossBattle.ts` (rendu `BossBattle3D` / `BossScene2D`), preuves `reference/boss-*`. **232 tests / 37 fichiers**, build OK. Wagon intégral : `GEMINI_HANDOFF.md`.
+**Dernier commit** : zoom 3D portrait + cadrage mobile ; caméra/jetons/audio/fin de stage 2D (`camera2D`, tokens, fanfare→carte) ; carte ROM cover/pan ; boss plus grand + UI tactile ; tonneau DK palette 2D ; scripts `2d-regressions` / `mobile-framing`. **248 tests / 39 fichiers**. Boss commit `3dad4cd` : combat partagé 2D/3D.
 
 ## Reprise Gemini et rebonds du wagon — dernière passe
 

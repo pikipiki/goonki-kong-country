@@ -16,7 +16,7 @@ import { ORIGINAL_CORAL_ORIGIN } from "./originalCoral";
 import { queryCoral } from "./originalCoralTerrain";
 import { terrainSolidSpans, resolveCoralMotion, resolveLandMotion, nearestCoralOpenY } from "./terrainSolids";
 import { ENEMY_DESIGNS } from "./enemies";
-import { LEVELS, type EnemySpec, type Platform, type Level } from "./levels";
+import { LEVELS, type EnemySpec, type Platform, type Level, type LevelDecor } from "./levels";
 import evidence from "../../reference/rom-analysis.json";
 import playerEvidence from "../../reference/player-states.json";
 import neckyEvidence from "../../reference/necky-ballistics.json";
@@ -260,6 +260,8 @@ export class Game {
   levelBananas = 0;
   letters = new Set<number>();
   collected = new Set<number>();
+  collectedTokens = new Set<string>();
+  animalTokens: Record<string, number> = {};
   revealedCaches = new Set<number>();
   collectedCaches = new Set<number>();
   brokenWalls = new Set<number>();
@@ -354,6 +356,7 @@ export class Game {
     this.levelBananas = 0;
     this.letters = new Set();
     this.collected = new Set();
+    this.collectedTokens = new Set();
     this.revealedCaches = new Set();
     this.collectedCaches = new Set();
     this.brokenWalls = new Set();
@@ -453,6 +456,7 @@ export class Game {
     this.lives = 5;
     this.bananas = 0;
     this.total = 0;
+    this.animalTokens = {};
     this.load(id);
   }
   message(text: string, duration = 3) {
@@ -610,6 +614,23 @@ export class Game {
         this.onEvent(amount > 1 ? "banana-bunch" : "banana");
       }
     });
+  }
+  isTokenCollected(token: LevelDecor) {
+    return this.collectedTokens?.has(`${token.x}:${token.y}`) ?? false;
+  }
+  private collectAnimalTokens(p: Player) {
+    for (const token of this.level.decors ?? []) {
+      if (token.kind !== "token" || this.isTokenCollected(token)) continue;
+      // The ROM sprite's centre sits 23px above its source anchor (32px/unit).
+      const y = token.y + .72;
+      if (Math.abs(p.x - token.x) > .85 || p.y > y + .6 || p.y + 1.6 < y - .6) continue;
+      (this.collectedTokens ??= new Set()).add(`${token.x}:${token.y}`);
+      const animal = token.animal ?? "expresso", counts = this.animalTokens ??= {};
+      const count = counts[animal] = (counts[animal] ?? 0) + 1;
+      const label = tr("game.animalToken", {name: tx(ANIMAL_DESIGNS[animal].name), count});
+      this.pop(token.x, y + .8, label, "#ffdf80"); this.message(label, 3);
+      this.onEvent(`animal-token-${Math.min(3, count)}`);
+    }
   }
   private maybeSignHint(p: Player) {
     if (this.toastTimer > 0) return;
@@ -1052,7 +1073,7 @@ export class Game {
       if (p.jumpDelay > 0) {
         p.jumpDelay--;
         if (p.jumpDelay === 0 && (p.coyote > 0 || p.rollJump)) {
-          p.vy = design ? design.jump : rawSpeed(ROM.jump[p.active]);
+          p.vy = design ? design.jump : rawSpeed(ROM.jump[p.active]) * (this.level.biome === "ship" ? 1.15 : 1);
           p.rollJumpMomentum = p.rollJump ? p.vx : 0;
           p.rollJump = false;
           p.roll = 0;
@@ -1067,7 +1088,7 @@ export class Game {
       ) {
         p.buffer = 0;
         if (p.rollJump) {
-          p.vy = design ? design.jump : rawSpeed(ROM.jump[p.active]);
+          p.vy = design ? design.jump : rawSpeed(ROM.jump[p.active]) * (this.level.biome === "ship" ? 1.15 : 1);
           p.rollJumpMomentum = p.rollJump ? p.vx : 0;
           p.rollJump = false;
           p.roll = 0;
@@ -1079,7 +1100,7 @@ export class Game {
       if (p.cannonGravityDelay > 0) p.cannonGravityDelay--;
       else {
         const gravity =
-          cart && p.cartRebound ? ROM.held[0] : input.held.has("jump") ? buddy ? BUDDY_PHYSICS.heldGravity : ROM.held[p.active] : ROM.gravity;
+          cart && p.cartRebound ? ROM.held[0] : (input.held.has("jump") || (this.level.biome === "ship" && p.vy > 0)) ? buddy ? BUDDY_PHYSICS.heldGravity : ROM.held[p.active] : ROM.gravity;
         p.vy = Math.max(
           -rawSpeed(ROM.terminal),
           p.vy - rawAcceleration(gravity) * dt,
@@ -1177,6 +1198,7 @@ export class Game {
     }
     this.updateItemCaches(p, input);
     this.maybeSignHint(p);
+    this.collectAnimalTokens(p);
     // Bonus rewards are collected by normal pickup handling in their own scene.
     this.level.pickups.forEach((item, i) => {
       if (
@@ -1304,7 +1326,7 @@ export class Game {
     this.enemyShots = this.enemyShots.filter((s) => s.active);
     for (const enemy of this.enemies) {
       if (!enemy.alive) continue;
-      if (!enemySimulationActive(this, enemy)) continue;
+      if (enemy.kind !== "boss" && !enemySimulationActive(this, enemy)) continue;
       const previousEnemyY = enemy.y, previousEnemyX = enemy.x;
       enemy.timer += dt;
       enemy.hurt = Math.max(0, enemy.hurt - dt);

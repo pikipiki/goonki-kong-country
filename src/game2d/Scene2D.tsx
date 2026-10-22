@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { ANIMAL_DESIGNS } from "../game/animals";
 import { STEP, TEAM_SWAP_DURATION, type Game, type Input } from "../game/engine";
+import { jungleViewport2D } from "./camera2D";
 import { PlushSpriteRenderer } from "./plushSprite";
 
 interface SpriteFrame {
@@ -493,13 +494,9 @@ export function Scene2D({
       const isPortrait = aspect < 0.95;
       const isShortLandscape = !isPortrait && rawH <= 560;
 
-      if (isPortrait) {
-        screenW = 240;
-        screenH = clamp(Math.round(screenW / aspect), 224, 384);
-      } else {
-        screenH = SCREEN_H;
-        screenW = clamp(Math.round(screenH * aspect), 256, 480);
-      }
+      const viewport = jungleViewport2D(rawW, rawH);
+      screenW = viewport.width;
+      screenH = viewport.height;
       if (canvas.width !== screenW || canvas.height !== screenH) {
         canvas.width = screenW;
         canvas.height = screenH;
@@ -511,11 +508,15 @@ export function Scene2D({
 
       const pPos = toPixel(game.player.x, game.player.y);
       if (game.bonus) {
-        camX = -Math.round((screenW - 256) * 0.5);
+        // A close camera must follow the bonus entrance/exit too; centring
+        // the entire cave crops the plush at the left edge on narrow phones.
+        camX = screenW < 256
+          ? clamp(pPos.px - screenW * .5, 0, 256 - screenW)
+          : -Math.round((screenW - 256) * .5);
         camY = 32 - Math.round((screenH - SCREEN_H) * 0.5);
       } else {
         const lookAhead = game.player.facing * (isPortrait ? 22 : 28);
-        const anchorX = isPortrait ? 0.42 : 0.44;
+        const anchorX = isPortrait ? 0.5 : 0.44;
         const anchorY = isPortrait
           ? Math.round(screenH * 0.68)
           : isShortLandscape
@@ -693,7 +694,7 @@ export function Scene2D({
             const bx = px + Math.sin(game.time * 1.8 + i) * 10;
             const by = py - 8 + Math.cos(game.time * 2.7 + i) * 6;
             drawGroupAnim(ctx, "butterfly", game.time + i * 0.3, 12, bx, by);
-          } else if (decor.kind === "token") {
+          } else if (decor.kind === "token" && !game.isTokenCollected(decor)) {
             const by = py - 12 + Math.sin(game.time * 3) * 3;
             drawGroupAnim(ctx, "token_expresso", game.time, 1, px, by);
           } else if (decor.kind === "sign") {
@@ -754,6 +755,7 @@ export function Scene2D({
             const { px, py } = toPixel(b.x, b.y);
             if (b.kind === "rescue") {
               drawGroupAnim(ctx, "dk_barrel", game.time + i, 10, px, py - 12);
+              drawGroupAnim(ctx, "dk_letters", game.time + i, 10, px, py - 12);
               drawGroupAnim(ctx, "dk_letters", game.time + i, 10, px, py - 12);
             } else if (b.kind === "checkpoint") {
               drawGroupAnim(ctx, "checkpoint_barrel", game.time, 10, px, py - 12);

@@ -268,6 +268,9 @@ function RomMap2D({
   onProject: (points: { x: number; y: number }[]) => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const viewRef = useRef<ReturnType<typeof romMapLayout> | null>(null);
+  const pan = useRef({x:0, y:0});
+  const drag = useRef<{id:number; x:number; y:number; moved:boolean} | null>(null);
   const selectedRef = useRef(selected);
   const unlockedRef = useRef(unlocked);
   const onSelectRef = useRef(onSelect);
@@ -305,6 +308,8 @@ function RomMap2D({
     let elapsed = 0;
     let lastW = 0;
     let lastH = 0;
+    let follow: number[] = [...(romMapNodes[initial] ?? romMapNodes[0])];
+    let lastSelected = initial;
 
     const step = (now: number) => {
       if (!active) return;
@@ -319,8 +324,16 @@ function RomMap2D({
       const cw = Math.max(256, Math.round(rect.width || window.innerWidth));
       const ch = Math.max(224, Math.round(rect.height || window.innerHeight));
 
-      const layout = romMapLayout(cw, ch, !!canvas.closest(".phase-map"));
-      const { scale: mapScale, offsetX, offsetY } = layout;
+      if(lastSelected !== selectedRef.current) {
+        pan.current = {x:0,y:0}; lastSelected = selectedRef.current;
+      }
+      const fullscreen = !!canvas.closest(".phase-map");
+      const layout = romMapLayout(cw, ch, fullscreen, follow);
+      const mapScale = layout.scale;
+      const offsetX = fullscreen ? Math.max(cw - 256 * mapScale, Math.min(0, layout.offsetX + pan.current.x)) : layout.offsetX;
+      const offsetY = fullscreen ? Math.max(ch - 224 * mapScale, Math.min(0, layout.offsetY + pan.current.y)) : layout.offsetY;
+      pan.current = {x:offsetX-layout.offsetX,y:offsetY-layout.offsetY};
+      viewRef.current = {...layout, offsetX, offsetY};
       const drawW = 256 * mapScale;
       const drawH = 224 * mapScale;
 
@@ -376,6 +389,7 @@ function RomMap2D({
         hopY = Math.abs(Math.sin(elapsed * 10)) * 6;
       }
 
+      follow = [px, py];
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
       ctx.imageSmoothingEnabled = false;
@@ -399,6 +413,8 @@ function RomMap2D({
       ctx.strokeStyle = "#f7d78d99";
       ctx.lineWidth = 1;
       romMapNodes.forEach(([x, y], i) => {
+        const sx=offsetX+x*mapScale, sy=offsetY+y*mapScale;
+        if(sx<0||sx>cw||sy<0||sy>ch)return;
         ctx.beginPath();
         ctx.moveTo(offsetX + x * mapScale, offsetY + y * mapScale);
         ctx.lineTo(layout.labels[i].x, layout.labels[i].y);
@@ -453,7 +469,7 @@ function RomMap2D({
       });
 
       // Draw Modeled 2D Plushies (Violette companion + Rose leader) on the 2D ROM Map
-      const plushScale = Math.max(0.5, mapScale * 0.52);
+      const plushScale = Math.max(0.5, mapScale * 0.28);
       const compScreenX = offsetX + (px - facing * 11) * mapScale;
       const compScreenY = offsetY + (py - 2 - hopY * 0.85) * mapScale;
       plushRenderer.draw(
@@ -519,13 +535,30 @@ function RomMap2D({
     <canvas
       ref={canvasRef}
       className="island-map-2d-canvas"
+      onPointerDown={e => {
+        e.currentTarget.setPointerCapture(e.pointerId);
+        drag.current = {id:e.pointerId,x:e.clientX,y:e.clientY,moved:false};
+      }}
+      onPointerMove={e => {
+        const d=drag.current;if(!d||d.id!==e.pointerId)return;
+        const dx=e.clientX-d.x,dy=e.clientY-d.y;
+        if(Math.hypot(dx,dy)>4)d.moved=true;
+        if(d.moved){pan.current.x+=dx;pan.current.y+=dy;d.x=e.clientX;d.y=e.clientY;}
+      }}
+      onPointerUp={e => {
+        if(drag.current)drag.current.id=-1;
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      }}
+      onPointerCancel={() => {drag.current=null;}}
       onClick={(e) => {
         const canvas = canvasRef.current;
         if (!canvas) return;
         const rect = canvas.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
-        const { scale: mapScale, offsetX, offsetY } = romMapLayout(rect.width, rect.height, !!canvas.closest(".phase-map"));
+        if(drag.current?.moved){drag.current=null;return;}
+        drag.current=null;
+        const { scale: mapScale, offsetX, offsetY } = viewRef.current ?? romMapLayout(rect.width, rect.height);
         for (let i = 0; i < romMapNodes.length; i++) {
           if (i > unlocked) continue;
           const nx = offsetX + romMapNodes[i][0] * mapScale;
@@ -541,6 +574,7 @@ function RomMap2D({
         height: "100%",
         display: "block",
         imageRendering: "pixelated",
+        touchAction: "none",
       }}
     />
   );

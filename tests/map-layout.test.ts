@@ -14,11 +14,18 @@ describe("fullscreen ROM map framing", () => {
         expect(label.x + buttonWidth / 2).toBeLessThanOrEqual(width);
         expect(label.y - 24).toBeGreaterThan(50);
         expect(label.y + 22).toBeLessThan(height - (height > width ? 130 : 82));
+        // Cover mode deliberately pans: only the focused node must stay
+        // visible while every named destination remains selectable.
+        const focused = romMapLayout(width, height, true, nodes[i]);
         const [x,y] = nodes[i];
-        expect(map.offsetX + x * map.scale).toBeGreaterThan(0);
-        expect(map.offsetX + x * map.scale).toBeLessThan(width);
-        expect(map.offsetY + y * map.scale).toBeGreaterThan(0);
-        expect(map.offsetY + y * map.scale).toBeLessThan(height);
+        expect(focused.offsetX).toBeLessThanOrEqual(0);
+        expect(focused.offsetY).toBeLessThanOrEqual(0);
+        expect(focused.offsetX + 256*focused.scale).toBeGreaterThanOrEqual(width-.001);
+        expect(focused.offsetY + 224*focused.scale).toBeGreaterThanOrEqual(height-.001);
+        expect(focused.offsetX+x*focused.scale).toBeGreaterThan(0);
+        expect(focused.offsetX+x*focused.scale).toBeLessThan(width);
+        expect(focused.offsetY+y*focused.scale).toBeGreaterThan(60);
+        expect(focused.offsetY+y*focused.scale).toBeLessThan(height-80);
         for (const other of map.labels.slice(i + 1)) {
           expect(Math.abs(label.x-other.x) >= buttonWidth || Math.abs(label.y-other.y) >= 46).toBe(true);
         }

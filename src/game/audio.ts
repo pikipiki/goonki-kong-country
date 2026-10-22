@@ -39,6 +39,9 @@ export function resolveAudioEffectId(
     "necky-shot": 0x5c,
     "map-step": 0x33,
     "map-arrive": 0x60,
+    "animal-token-1": 0x60,
+    "animal-token-2": 0x61,
+    "animal-token-3": 0x62,
   };
   if (name === "hurt") return c.character ? 0x43 : 0x46;
   if (name === "letter") return 0x4f + Math.min(3, c.letterIndex ?? 0);
@@ -48,7 +51,7 @@ export function resolveAudioEffectId(
   if (name === "roll" && c.animal === "enguarde") return 0x57;
   return direct[name];
 }
-const MUSIC:Record<string,number> = {title:9,map:12,jungle:0,cave:1,canopy:19,mine:4,lagoon:3,snow:5,temple:6,ship:24,clear:26,gameover:15,victory:14};
+const MUSIC:Record<string,number> = {title:9,map:12,jungle:0,cave:1,canopy:19,mine:4,lagoon:3,snow:5,temple:6,ship:24,bonus:16,clear:26,gameover:15,victory:14};
 const ONCE = new Set([10,15,17,18,25,26]);
 export class AudioSystem {
   context?:AudioContext;
@@ -69,20 +72,30 @@ export class AudioSystem {
   private loadManifest() {
     this.manifestPromise ??= fetch(`${import.meta.env.BASE_URL}audio/manifest.json`)
       .then(r=>{if(!r.ok)throw new Error('Audio manifest unavailable');return r.json() as Promise<Manifest>;})
-      .then(m=>{this.manifest=m;return m;});
+      .then(m=>{this.manifest=m;return m;})
+      .catch(error=>{this.manifestPromise=undefined;throw error;});
     return this.manifestPromise;
   }
   boot() {
     try {
       this.context ??= new AudioContext();
       if(!this.master){this.master=this.context.createGain();this.master.gain.value=this.muted?0:0.6;this.master.connect(this.context.destination);}
-      void this.context.resume();
+      this.wake();
       void this.loadManifest().catch(()=>this.onError(tr(L.audio.soundsUnavailable)));
       if(this.active&&this.music&&!this.muted)void this.music.play().catch(()=>{});
     }catch{/* A browser without audio still permits playing. */}
   }
+  /** Call on real input too: mobile browsers may suspend effects independently
+   * of the streamed music after an interruption or a scene change. */
+  wake() {
+    if (this.muted) return;
+    if (this.context && this.context.state !== 'running' && this.context.state !== 'closed')
+      void this.context.resume().catch(()=>{});
+    if (this.active && this.music?.paused) void this.music.play().catch(()=>{});
+  }
   play(scene='jungle') {
     this.active=true;
+    this.wake();
     this.desiredId=MUSIC[scene]??0;
     const generation=++this.generation;
     void this.loadManifest().then(m=>{
@@ -120,6 +133,7 @@ export class AudioSystem {
   stop(){this.active=false;this.generation++;this.music?.pause();clearInterval(this.loopTimer);}
   effect(name:string,c:AudioEffectContext={}){
     if(this.muted||!this.context||!this.master)return;
+    this.wake();
     const id=resolveAudioEffectId(name,c);if(id===undefined)return;
     void this.loadManifest().then(async m=>{
       const entry=m.effects[String(id)];if(!entry||this.muted||!this.context)return;
@@ -127,7 +141,8 @@ export class AudioSystem {
       if(!buffer){
         let pending=this.loading.get(id);
         if(!pending){pending=fetch(this.assetUrl(entry.url)).then(r=>{if(!r.ok)throw new Error('Missing effect');return r.arrayBuffer();}).then(b=>this.context!.decodeAudioData(b));this.loading.set(id,pending);}
-        buffer=await pending;this.buffers.set(id,buffer);this.loading.delete(id);
+        try { buffer=await pending;this.buffers.set(id,buffer); }
+        finally { if(this.loading.get(id)===pending)this.loading.delete(id); }
       }
       if(this.muted||!this.active||!this.context||!this.master)return;
       if(this.voices.size>=12){const oldest=this.voices.values().next().value;oldest?.stop();}
@@ -140,5 +155,5 @@ export class AudioSystem {
     if(this.master&&this.context)this.master.gain.setTargetAtTime(this.muted?0:0.6,this.context.currentTime,0.03);
     if(this.music){this.music.volume=this.muted?0:0.48;if(!this.muted&&this.active){this.boot();void this.music.play().catch(()=>{});}}
   }
-  inspect(){return {trackId:this.currentId,trackName:this.manifest?.music[String(this.currentId)]?.name,currentTime:this.music?.currentTime??0,playing:!!this.music&&!this.music.paused,loadedEffects:this.buffers.size,muted:this.muted,manifestLoaded:!!this.manifest};}
+  inspect(){return {trackId:this.currentId,trackName:this.manifest?.music[String(this.currentId)]?.name,currentTime:this.music?.currentTime??0,playing:!!this.music&&!this.music.paused,loadedEffects:this.buffers.size,effectsState:this.context?.state??'uninitialized',activeVoices:this.voices.size,muted:this.muted,manifestLoaded:!!this.manifest};}
 }

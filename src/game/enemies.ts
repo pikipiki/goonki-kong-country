@@ -42,8 +42,8 @@ export const ENEMY_DESIGNS: Record<
   boss: {
     name: L.enemies.boss,
     reference: "King K. Rool",
-    height: 1.95,
-    width: 1.05,
+    height: 2.8,
+    width: 1.25,
     scale: 1.05,
   },
 };
