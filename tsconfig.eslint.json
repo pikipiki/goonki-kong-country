@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.app.json",
+  "include": [
+    "src",
+    "tests",
+    "e2e",
+    ".storybook",
+    "vite.config.ts",
+    "playwright.config.ts"
+  ],
+  "exclude": []
+}

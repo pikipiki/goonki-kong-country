@@ -44,7 +44,7 @@ Clavier : flèches ou Q/D (A/D également), Espace pour sauter/nager, Maj pour c
 
 ## Technologies
 
-Même famille que `tontie-re` : React 19, TypeScript 6, Vite 8, Three.js, React Three Fiber, MUI pour le thème de l’application, i18next / react-i18next pour les libellés. Moteur indépendant du rendu, simulation à 60 Hz, rendu WebGL 3D. Aucun émulateur Flash, aucune capture vidéo utilisée comme décor.
+Même famille que `tontie-re` : React 19, TypeScript 6, Vite 8, Three.js, React Three Fiber, MUI pour le thème de l’application, i18next / react-i18next pour les libellés. Moteur indépendant du rendu, simulation à 60 Hz, rendu WebGL 3D. Aucun émulateur Flash, aucune capture vidéo utilisée comme décor. Qualité : ESLint (strict + SonarJS), Prettier, couverture Vitest à 100 % sur `src/game`, analyse SonarQube via `npm run sonar` (voir `.env.example`).
 
 ## Projets similaires (web vs recomp)
 
@@ -60,7 +60,9 @@ Voir `reference/similar-projects.md` pour le tableau comparatif et la stratégie
 
 ```sh
 npm run analyze:rom -- '/chemin/Donkey Kong Country (USA) (Rev 2).zip'
+npm run lint
 npm test
+npm run test:coverage   # seuil 100 % sur src/game (aligné tontie-re)
 npm run build
 # Avec le serveur lancé dans un autre terminal :
 npm run test:browser
@@ -84,6 +86,27 @@ La gravité, la gravité du saut maintenu, les deux impulsions de rebond et le s
 Le dépôt `tontie-re` d’origine n’est pas modifié.
 
 Le test navigateur utilise Chrome sur macOS ; ailleurs, installer Chromium avec `npx playwright install chromium`. `BROWSER_EXECUTABLE` permet de choisir un autre exécutable, et `GAME_URL` de tester un autre serveur local.
+
+### Tests fonctionnels
+
+`npm run test:functional` exécute les 11 scénarios navigateur, y compris les
+parcours complets canyon et corail avec les dégâts actifs. Ces deux parcours
+prennent plusieurs minutes. Le lanceur réutilise le serveur sur le port 5174,
+ou démarre son propre serveur et le ferme à la fin. Il laisse un serveur déjà
+lancé ouvert. Une `GAME_URL` explicite doit être accessible.
+
+Pour relancer seulement un scénario :
+
+```sh
+npm run test:functional -- test:mechanics
+# Vérifier le démarrage autonome sans utiliser le serveur de développement :
+FUNCTIONAL_PORT=5184 npm run test:functional -- test:browser
+```
+
+Les captures et journaux sont écrits dans `reference/`. Les tests à états
+initiaux contrôlés sont distincts des parcours complets : les parcours canyon
+et corail utilisent les commandes clavier et gardent les dégâts actifs.
+
 
 ## Version mobile et direction artistique (0.2)
 

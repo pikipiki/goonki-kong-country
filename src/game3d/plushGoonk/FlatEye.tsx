@@ -1,32 +1,41 @@
-import { themeColors, WHITE } from "@game3d/theme";
-import { useFrame } from "@react-three/fiber";
+import { themeColors, WHITE } from '@game3d/theme'
+import { useFrame } from '@react-three/fiber'
 
-const plush = themeColors.plush;
-import { useRef } from "react";
-import type { Group } from "three";
+const plush = themeColors.plush
+
+import { useRef } from 'react'
+import { pick } from '../../utils/pick'
+import type { Group } from 'three'
 
 export function FlatEye({
   side,
   seed,
   scared = false,
 }: {
-  side: number;
-  seed: number;
-  scared?: boolean;
+  side: number
+  seed: number
+  scared?: boolean
 }) {
-  const eye = useRef<Group>(null);
+  const eye = useRef<Group>(null)
+
   useFrame(({ clock }) => {
-    const blinkPhase = (clock.elapsedTime + seed * 0.67) % (3.8 + seed * 0.13);
-    if (eye.current)
-      eye.current.scale.y =
-        blinkPhase < 0.13
-          ? Math.max(0.09, Math.abs(Math.cos((blinkPhase / 0.13) * Math.PI)))
-          : 1;
-  });
+    const blinkPhase = (clock.elapsedTime + seed * 0.67) % (3.8 + seed * 0.13)
+
+    if (eye.current) {
+      if (blinkPhase < 0.13) {
+        eye.current.scale.y = Math.max(
+          0.09,
+          Math.abs(Math.cos((blinkPhase / 0.13) * Math.PI)),
+        )
+      } else {
+        eye.current.scale.y = 1
+      }
+    }
+  })
   return (
     <group
       position={[side * 0.105, 0.575, 0.232]}
-      scale={scared ? 1.18 : 1}
+      scale={pick(scared, 1.18, 1)}
       rotation={[0.12, side * 0.28, -side * 0.12]}
     >
       <group ref={eye}>
@@ -40,7 +49,11 @@ export function FlatEye({
         </mesh>
         <mesh
           position={[-side * 0.011, -0.015, 0.012]}
-          scale={scared ? [0.02, 0.027, 0.007] : [0.029, 0.038, 0.007]}
+          scale={pick(
+            scared,
+            [0.02, 0.027, 0.007] as const,
+            [0.029, 0.038, 0.007] as const,
+          )}
         >
           <sphereGeometry args={[1, 24, 16]} />
           <meshPhysicalMaterial
@@ -58,5 +71,5 @@ export function FlatEye({
         </mesh>
       </group>
     </group>
-  );
+  )
 }

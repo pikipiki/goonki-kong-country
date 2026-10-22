@@ -33,7 +33,7 @@ try {
    return {id:window.goonk.levelId,biome:window.goonk.level.biome,maxZ,water:water.length,cart:carts.some(o=>o.visible),cachesHidden:hidden.every(o=>!o.visible),walls:walls.length,expectedWalls:window.goonk.level.breakableWalls?.length??0};
   });
   assert(state.maxZ < -2,JSON.stringify(state));
-  assert.equal(state.water,['ship','lagoon'].includes(state.biome)?1:0);
+  assert.equal(state.water, state.biome === 'lagoon' ? 1 : 0);
   assert.equal(state.walls,state.expectedWalls);
   assert.equal(state.cart,id===2);assert(state.cachesHidden);
   await page.screenshot({path:out+`decor-${name}-landscape.png`});

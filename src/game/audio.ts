@@ -1,162 +1,350 @@
+import { pick } from '../utils/pick'
 /** Audio captured from the user's identified Rev 2 ROM through its real SPC driver.
  * Asset provenance and imperfect loop-boundary limits live in /audio/manifest.json.
  * Music streams through HTMLAudio to avoid decoding minutes of PCM into mobile RAM.
  */
-import { tr } from "../i18n";
-import { L } from "../i18n/keys";
+import { tr } from '../i18n'
+import { localeKeys } from '../i18n/keys'
+import {
+  resolveAudioEffectId,
+  type AudioEffectContext,
+} from './audioEffectRouting'
 
-type Music = {id:number; name:string; url:string; seconds:number; loop:{startSeconds:number;endSeconds:number;samplePerfect:boolean}|null};
-type Effect = {id:number;name:string;url:string;seconds:number};
-type Manifest = {music:Record<string,Music>;effects:Record<string,Effect>;provenance:unknown};
-export type AudioEffectContext = {
-  character?: number;
-  animal?: string;
-  letterIndex?: number;
-  inWater?: boolean;
-};
-/** Pure Rev 2 SFX id routing for tests and tooling. */
-export function resolveAudioEffectId(
-  name: string,
-  c: AudioEffectContext = {},
-): number | undefined {
-  const direct: Record<string, number> = {
-    banana: 0x21,
-    "banana-bunch": 0x22,
-    life: 0x2f,
-    stomp: 0x08,
-    bounce: 0x01,
-    cannon: 0x04,
-    "enter-cannon": 0x26,
-    rescue: 0x14,
-    mount: 0x58,
-    swap: 0x65,
-    "barrel-break": 0x14,
-    throw: 0x02,
-    pickup: 0x11,
-    place: 0x11,
-    checkpoint: 0x10,
-    reveal: 0x10,
-    "necky-shot": 0x5c,
-    "map-step": 0x33,
-    "map-arrive": 0x60,
-    "boss-hurt": 0x53,
-    "boss-land": 0x15,
-    "boss-ball-impact": 0x1e,
-    "animal-token-1": 0x60,
-    "animal-token-2": 0x61,
-    "animal-token-3": 0x62,
-  };
-  if (name === "hurt") return c.character ? 0x43 : 0x46;
-  if (name === "letter") return 0x4f + Math.min(3, c.letterIndex ?? 0);
-  if (name === "jump" && c.inWater && !c.animal) return c.character ? 0x75 : 0x76;
-  if (name === "jump" && c.animal) return c.animal === "enguarde" ? 0x57 : 0x5f;
-  if (name === "roll" && c.animal === "rambi") return 0x56;
-  if (name === "roll" && c.animal === "enguarde") return 0x57;
-  return direct[name];
-}
-const MUSIC:Record<string,number> = {title:9,map:12,jungle:0,cave:1,canopy:19,mine:4,lagoon:3,snow:5,temple:6,ship:24,bonus:16,clear:26,gameover:15,victory:14};
-const ONCE = new Set([10,15,17,18,25,26]);
+export {
+  resolveAudioEffectId,
+  type AudioEffectContext,
+} from './audioEffectRouting'
+
+import {
+  AUDIO_MUSIC_IDS as MUSIC,
+  AUDIO_ONCE_EFFECT_IDS as ONCE,
+  type AudioEffect as Effect,
+  type AudioManifest as Manifest,
+  type AudioMusic as Music,
+} from './audioMusicIds'
+import { audioInspectSnapshot } from './audioInspect'
+
 export class AudioSystem {
-  context?:AudioContext;
-  muted=false;
-  master?:GainNode;
-  music?:HTMLAudioElement;
-  manifest?:Manifest;
-  private manifestPromise?:Promise<Manifest>;
-  private buffers=new Map<number,AudioBuffer>();
-  private loading=new Map<number,Promise<AudioBuffer>>();
-  private voices=new Set<AudioBufferSourceNode>();
-  private currentId=-1;
-  private desiredId=-1;
-  private generation=0;
-  private active=false;
-  private loopTimer?:ReturnType<typeof setInterval>;
-  onError:(message:string)=>void=()=>{};
+  context?: AudioContext
+  muted = false
+  master?: GainNode
+  music?: HTMLAudioElement
+  manifest?: Manifest
+  private manifestPromise?: Promise<Manifest>
+  private buffers = new Map<number, AudioBuffer>()
+  private loading = new Map<number, Promise<AudioBuffer>>()
+  private voices = new Set<AudioBufferSourceNode>()
+  private currentId = -1
+  private desiredId = -1
+  private generation = 0
+  private active = false
+  private loopTimer?: ReturnType<typeof setInterval>
+  private loopEntry?: Music
+  onError: (message: string) => void = () => {}
+  private swallowPlaybackError(): void {
+    /* ignored autoplay / policy errors */
+  }
+  private reportSoundsUnavailable(): void {
+    this.onError(tr(localeKeys.audio.soundsUnavailable))
+  }
+  private reportMusicLoadFailed(): void {
+    this.onError(tr(localeKeys.audio.musicLoadFailed))
+  }
+  private onMusicTimeUpdate = (): void => {
+    if (this.loopEntry) {
+      this.applyLoop(this.loopEntry)
+    }
+  }
+  private onMusicLoopTick = (): void => {
+    if (this.loopEntry) {
+      this.applyLoop(this.loopEntry)
+    }
+  }
+  private playElement(element?: HTMLAudioElement): void {
+    void element?.play().catch(() => {
+      this.swallowPlaybackError()
+    })
+  }
+  private resumeContextIfNeeded(): void {
+    if (
+      !this.context ||
+      this.context.state === 'running' ||
+      this.context.state === 'closed'
+    ) {
+      return
+    }
+
+    void this.context.resume().catch(() => {
+      this.swallowPlaybackError()
+    })
+  }
+  private parseManifestResponse(response: Response): Promise<Manifest> {
+    if (!response.ok) {
+      throw new Error('Audio manifest unavailable')
+    }
+
+    return response.json() as Promise<Manifest>
+  }
+  private rememberManifest(manifest: Manifest): Manifest {
+    this.manifest = manifest
+    return manifest
+  }
+  private resetManifestPromise(error: unknown): never {
+    this.manifestPromise = undefined
+    throw error
+  }
   private loadManifest() {
-    this.manifestPromise ??= fetch(`${import.meta.env.BASE_URL}audio/manifest.json`)
-      .then(r=>{if(!r.ok)throw new Error('Audio manifest unavailable');return r.json() as Promise<Manifest>;})
-      .then(m=>{this.manifest=m;return m;})
-      .catch(error=>{this.manifestPromise=undefined;throw error;});
-    return this.manifestPromise;
+    this.manifestPromise ??= fetch(
+      `${import.meta.env.BASE_URL}audio/manifest.json`,
+    )
+      .then((response) => this.parseManifestResponse(response))
+      .then((manifest) => this.rememberManifest(manifest))
+      .catch((error: unknown) => this.resetManifestPromise(error))
+    return this.manifestPromise
   }
   boot() {
     try {
-      this.context ??= new AudioContext();
-      if(!this.master){this.master=this.context.createGain();this.master.gain.value=this.muted?0:0.6;this.master.connect(this.context.destination);}
-      this.wake();
-      void this.loadManifest().catch(()=>this.onError(tr(L.audio.soundsUnavailable)));
-      if(this.active&&this.music&&!this.muted)void this.music.play().catch(()=>{});
-    }catch{/* A browser without audio still permits playing. */}
+      this.context ??= new AudioContext()
+
+      if (!this.master) {
+        this.master = this.context.createGain()
+        if (this.muted) {
+          this.master.gain.value = 0
+        } else {
+          this.master.gain.value = 0.6
+        }
+        this.master.connect(this.context.destination)
+      }
+
+      this.wake()
+      void this.loadManifest().catch(() => {
+        this.reportSoundsUnavailable()
+      })
+
+      if (this.active && this.music && !this.muted) {
+        this.playElement(this.music)
+      }
+    } catch {
+      /* A browser without audio still permits playing. */
+    }
   }
   /** Call on real input too: mobile browsers may suspend effects independently
    * of the streamed music after an interruption or a scene change. */
   wake() {
-    if (this.muted) return;
-    if (this.context && this.context.state !== 'running' && this.context.state !== 'closed')
-      void this.context.resume().catch(()=>{});
-    if (this.active && this.music?.paused) void this.music.play().catch(()=>{});
-  }
-  play(scene='jungle') {
-    this.active=true;
-    this.wake();
-    this.desiredId=MUSIC[scene]??0;
-    const generation=++this.generation;
-    void this.loadManifest().then(m=>{
-      if(generation!==this.generation||!this.active)return;
-      const entry=m.music[String(this.desiredId)];if(!entry)return;
-      if(this.currentId!==entry.id||!this.music){
-        this.music?.pause();
-        this.currentId=entry.id;
-        this.music=new Audio(this.assetUrl(entry.url));
-        this.music.preload='auto';
-        this.music.loop=!entry.loop&&!ONCE.has(entry.id);
-        this.music.addEventListener('timeupdate',()=>this.applyLoop(entry));
-      }
-      this.music.volume=this.muted?0:0.48;
-      if(!this.muted)void this.music.play().catch(()=>{});
-      clearInterval(this.loopTimer);
-      this.loopTimer=setInterval(()=>this.applyLoop(entry),30);
-    }).catch(()=>this.onError(tr(L.audio.musicLoadFailed)));
-  }
-  private assetUrl(url:string){return `${import.meta.env.BASE_URL}${url.replace(/^\//,'')}`;}
-  private applyLoop(entry:Music){
-    if(!this.music||this.currentId!==entry.id||!entry.loop||!this.active)return;
-    const {startSeconds,endSeconds}=entry.loop;
-    const t=this.music.currentTime;
-    if(t<endSeconds-0.05)return;
-    const overshoot=Math.min(Math.max(0,t-endSeconds),0.06);
-    try{
-      this.music.pause();
-      this.music.currentTime=startSeconds+overshoot;
-      if(!this.muted)void this.music.play().catch(()=>{});
-    }catch{
-      this.music.currentTime=startSeconds;
+    if (this.muted) {
+      return
+    }
+
+    this.resumeContextIfNeeded()
+
+    if (this.active && this.music?.paused) {
+      this.playElement(this.music)
     }
   }
-  stop(){this.active=false;this.generation++;this.music?.pause();clearInterval(this.loopTimer);}
-  effect(name:string,c:AudioEffectContext={}){
-    if(this.muted||!this.context||!this.master)return;
-    this.wake();
-    const id=resolveAudioEffectId(name,c);if(id===undefined)return;
-    void this.loadManifest().then(async m=>{
-      const entry=m.effects[String(id)];if(!entry||this.muted||!this.context)return;
-      let buffer=this.buffers.get(id);
-      if(!buffer){
-        let pending=this.loading.get(id);
-        if(!pending){pending=fetch(this.assetUrl(entry.url)).then(r=>{if(!r.ok)throw new Error('Missing effect');return r.arrayBuffer();}).then(b=>this.context!.decodeAudioData(b));this.loading.set(id,pending);}
-        try { buffer=await pending;this.buffers.set(id,buffer); }
-        finally { if(this.loading.get(id)===pending)this.loading.delete(id); }
+  private beginMusic(entry: Music, generation: number): void {
+    if (generation !== this.generation || !this.active) {
+      return
+    }
+
+    if (this.currentId !== entry.id || !this.music) {
+      this.music?.pause()
+      this.currentId = entry.id
+      this.music = new Audio(this.assetUrl(entry.url))
+      this.music.preload = 'auto'
+      this.music.loop = !entry.loop && !ONCE.has(entry.id)
+      this.music.addEventListener('timeupdate', this.onMusicTimeUpdate)
+    }
+
+    this.loopEntry = entry
+    if (this.muted) {
+      this.music.volume = 0
+    } else {
+      this.music.volume = 0.48
+    }
+
+    if (!this.muted) {
+      this.playElement(this.music)
+    }
+
+    clearInterval(this.loopTimer)
+    this.loopTimer = setInterval(this.onMusicLoopTick, 30)
+  }
+  play(scene = 'jungle') {
+    this.active = true
+    this.wake()
+    this.desiredId = MUSIC[scene] ?? 0
+    const generation = ++this.generation
+
+    void this.loadManifest()
+      .then((manifest) => {
+        const musicKey = String(this.desiredId)
+
+        if (!(musicKey in manifest.music)) {
+          return
+        }
+
+        this.beginMusic(manifest.music[musicKey], generation)
+      })
+      .catch(() => {
+        this.reportMusicLoadFailed()
+      })
+  }
+  private assetUrl(url: string) {
+    return `${import.meta.env.BASE_URL}${url.replace(/^\//, '')}`
+  }
+  private applyLoop(entry: Music) {
+    if (
+      !this.music ||
+      this.currentId !== entry.id ||
+      !entry.loop ||
+      !this.active
+    ) {
+      return
+    }
+
+    const { startSeconds, endSeconds } = entry.loop
+
+    const currentTime = this.music.currentTime
+
+    if (currentTime < endSeconds - 0.05) {
+      return
+    }
+
+    const overshoot = Math.min(Math.max(0, currentTime - endSeconds), 0.06)
+
+    try {
+      this.music.pause()
+      this.music.currentTime = startSeconds + overshoot
+
+      if (!this.muted) {
+        this.playElement(this.music)
       }
-      if(this.muted||!this.active||!this.context||!this.master)return;
-      if(this.voices.size>=12){const oldest=this.voices.values().next().value;oldest?.stop();}
-      const source=this.context.createBufferSource();source.buffer=buffer;source.connect(this.master);this.voices.add(source);
-      source.onended=()=>{this.voices.delete(source);source.disconnect();};source.start();
-    }).catch(()=>{});
+    } catch {
+      this.music.currentTime = startSeconds
+    }
   }
-  toggle(){
-    this.muted=!this.muted;
-    if(this.master&&this.context)this.master.gain.setTargetAtTime(this.muted?0:0.6,this.context.currentTime,0.03);
-    if(this.music){this.music.volume=this.muted?0:0.48;if(!this.muted&&this.active){this.boot();void this.music.play().catch(()=>{});}}
+  stop() {
+    this.active = false
+    this.generation++
+    this.music?.pause()
+    clearInterval(this.loopTimer)
   }
-  inspect(){return {trackId:this.currentId,trackName:this.manifest?.music[String(this.currentId)]?.name,currentTime:this.music?.currentTime??0,playing:!!this.music&&!this.music.paused,loadedEffects:this.buffers.size,effectsState:this.context?.state??'uninitialized',activeVoices:this.voices.size,muted:this.muted,manifestLoaded:!!this.manifest};}
+  private async loadEffectBuffer(
+    effectId: number,
+    entry: Effect,
+  ): Promise<AudioBuffer> {
+    let pending = this.loading.get(effectId)
+
+    if (!pending) {
+      const audioContext = this.context
+
+      if (!audioContext) {
+        throw new Error('Audio context unavailable')
+      }
+
+      pending = fetch(this.assetUrl(entry.url))
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Missing effect')
+          }
+
+          return response.arrayBuffer()
+        })
+        .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
+      this.loading.set(effectId, pending)
+    }
+
+    try {
+      const buffer = await pending
+
+      this.buffers.set(effectId, buffer)
+      return buffer
+    } finally {
+      if (this.loading.get(effectId) === pending) {
+        this.loading.delete(effectId)
+      }
+    }
+  }
+  private playEffectBuffer(buffer: AudioBuffer): void {
+    if (this.muted || !this.active || !this.context || !this.master) {
+      return
+    }
+
+    if (this.voices.size >= 12) {
+      const oldest = this.voices.values().next().value
+
+      oldest?.stop()
+    }
+
+    const source = this.context.createBufferSource()
+
+    source.buffer = buffer
+    source.connect(this.master)
+    this.voices.add(source)
+    source.onended = () => {
+      this.voices.delete(source)
+      source.disconnect()
+    }
+
+    source.start()
+  }
+  effect(name: string, context: AudioEffectContext = {}) {
+    if (this.muted || !this.context || !this.master) {
+      return
+    }
+
+    this.wake()
+    const effectId = resolveAudioEffectId(name, context)
+
+    if (effectId === undefined) {
+      return
+    }
+
+    void this.loadManifest()
+      .then(async (manifest) => {
+        const effectKey = String(effectId)
+
+        if (!(effectKey in manifest.effects) || this.muted || !this.context) {
+          return
+        }
+
+        const entry = manifest.effects[effectKey]
+
+        const buffer =
+          this.buffers.get(effectId) ??
+          (await this.loadEffectBuffer(effectId, entry))
+
+        this.playEffectBuffer(buffer)
+      })
+      .catch(() => {
+        this.swallowPlaybackError()
+      })
+  }
+  toggle() {
+    this.muted = !this.muted
+
+    if (this.master && this.context) {
+      this.master.gain.setTargetAtTime(
+        pick(this.muted, 0, 0.6),
+        this.context.currentTime,
+        0.03,
+      )
+    }
+
+    if (this.music) {
+      if (this.muted) {
+        this.music.volume = 0
+      } else {
+        this.music.volume = 0.48
+      }
+
+      if (!this.muted && this.active) {
+        this.boot()
+        this.playElement(this.music)
+      }
+    }
+  }
+  inspect() {
+    return audioInspectSnapshot(this)
+  }
 }

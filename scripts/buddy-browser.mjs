@@ -9,6 +9,8 @@ page.on('pageerror', e=>errors.push(e.message));
 page.on('console', m=>{if(m.type()==='error')errors.push(m.text());});
 try {
   await page.goto(process.env.GAME_URL || 'http://127.0.0.1:5174/');
+  await page.locator('.lang-select-input').selectOption('fr');
+  await page.waitForFunction(() => document.documentElement.lang === 'fr');
   await page.getByRole('button', {name:'Commencer l’aventure'}).click();
   for(const [level,index,kind] of [[0,0,'rambi'],[1,0,'winky'],[3,0,'enguarde'],[4,0,'expresso']]) {
     // Controlled start beside the crate; release, mounting and actions use input.

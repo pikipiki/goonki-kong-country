@@ -39,6 +39,14 @@
   },
   {
     "when": {
+      "cannon": 26
+    },
+    "keys": [
+      "jump"
+    ]
+  },
+  {
+    "when": {
       "cannon": 27
     },
     "keys": [

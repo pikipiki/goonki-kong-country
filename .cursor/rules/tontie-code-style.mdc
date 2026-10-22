@@ -1,0 +1,13 @@
+---
+description: Style tontie-re — noms parlants, fichiers courts, modules jeu découpés
+alwaysApply: true
+---
+
+# Style code (aligné tontie-re)
+
+- **ESLint** : `id-length` min 3, `max-lines` 300, `max-lines-per-function` 80 (voir `eslint.config.js`).
+- **Pas de god files** : le moteur vit sous `src/game/engine/` (types, collision, progression…) comme `tontie-re/src/game/engine/`. `src/game/engine.ts` reste une façade d’exports publics.
+- **API ouverte** : types et fonctions pures exportées ; la classe `Game` délègue aux modules. Pas de logique métier cachée dans `App.tsx` / scènes.
+- **Tests** : utiliser `tests/helpers/simulation.ts` (`tickGame`) et des noms explicites (`game`, `controls`, `frameCount`).
+
+Quand un fichier dépasse 300 lignes, le découper avant d’ajouter des exceptions ESLint.

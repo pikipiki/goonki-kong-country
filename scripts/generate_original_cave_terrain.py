@@ -12,11 +12,13 @@ header = """/** Barrel Cannon Canyon collision metadata (legacy module filename)
  */
 """
 jungle_ts = (base / "src/game/originalTerrain.ts").read_text()
+shared_imports = jungle_ts[jungle_ts.index("import {") : jungle_ts.index("const tiles")]
 body = jungle_ts[jungle_ts.index("export const ORIGINAL_TERRAIN") :].replace(
     "ORIGINAL_TERRAIN", "ORIGINAL_CAVE_TERRAIN"
 )
 out = (
     header
+    + shared_imports
     + "const tiles: readonly (readonly number[])[] = "
     + compact(r["canyonMetatiles"]["columns"])
     + ";\n"

@@ -1,5 +1,19 @@
 # État prioritaire de reprise — 0.4.0 (22 octobre 2026)
 
+## Dernière passe — lint, constantes, moteur découpé, tests (22 octobre 2026)
+
+Cette section prévaut sur l'historique.
+
+- **ESLint / Prettier** : règles alignées tontie-re (`id-length` ≥3, `max-lines` 300, `max-lines-per-function` 80) ; `npm run format` sur `src`, `tests`, `e2e`, `.storybook` et configs racine ; `npx eslint . --max-warnings 0` → **0 erreur**.
+- **Architecture** : moteur sous `src/game/engine/` (façade `src/game/engine.ts`), découpages `game2d/`, `game3d/`, `islandMap/`, `app/` ; constantes partagées (`scene2dWorldUnits.ts`, `romMapPalette.ts`, `groundChunkVisibility.ts`, `hurtFlash.ts`, `groundEnemyMotion.ts`, probes tests `tests/helpers/snesHorizontalProbe.ts`).
+- **Tests automatisés** : `npx vitest run` → **418 tests / 80 fichiers** ; `npm test` (projets game+unit) → 414 ; **Playwright e2e 3/3**. Mocks audio : `fetch`/`resume`/`play` en Promises ; imports `pick` et scénarios boss/terrain ajustés.
+- **Scripts navigateur** : `npm run test:functional` enchaîne browser→ground (OK après correctifs locale `fr`, décor lagoon, windup 3D) ; **`test:playthrough:canyon` sort en code 1** si le planner reste `stuck` (~x217) — le script exige `status: clear`.
+- **Build** : `npm run build` (`tsc -b`) **échoue encore** sur quelques fichiers de tests (ex. `marine-import.test.ts`, `playing-frame-direct.test.ts`, types mocks audio). Ne pas annoncer build release vert sans corriger ces diagnostics.
+
+**Repriorité** : faire passer `tsc -b` ; canyon playthrough (planner ou critère CI) ; poursuite ROM selon `reference/rom-deep-analysis.md` si touché.
+
+---
+
 ## Dernière correction — défilement du décor du boss 2D (22 octobre 2026)
 
 Priorité sur les historiques. **Commité** : `BossScene2D` ancre le décor boss au monde (salle ROM 12 u, même projection que la caméra/acteurs) ; script `boss-scenery-browser.mjs`, preuves `reference/boss-scenery-*`. Physique inchangée. **257 tests / 40 fichiers**.

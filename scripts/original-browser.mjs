@@ -7,6 +7,8 @@ const page=await browser.newPage({viewport:{width:844,height:390},hasTouch:true,
 const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
 try{
   await page.goto(process.env.GAME_URL||'http://127.0.0.1:5174/');
+  await page.locator('.lang-select-input').selectOption('fr');
+  await page.waitForFunction(() => document.documentElement.lang === 'fr');
   await page.getByRole('button',{name:'Commencer l’aventure'}).click();
   await page.waitForFunction(()=>window.goonk.level.originalTerrain==='jungle');
   assert.equal(await page.evaluate(()=>window.goonk.letterWord),'KONG');

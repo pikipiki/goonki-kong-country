@@ -1,5 +1,10 @@
 node_modules/
 dist/
+.env
+coverage/
+playwright-report/
+test-results/
+*.tsbuildinfo
 *.local
 .DS_Store
 reference/*.sfc

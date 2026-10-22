@@ -12,11 +12,13 @@ header = """/** Mine Cart Madness collision metadata, extracted read-only from U
  */
 """
 jungle_ts = (base / "src/game/originalTerrain.ts").read_text()
+shared_imports = jungle_ts[jungle_ts.index("import {") : jungle_ts.index("const tiles")]
 body = jungle_ts[jungle_ts.index("export const ORIGINAL_TERRAIN") :].replace(
     "ORIGINAL_TERRAIN", "ORIGINAL_MINE_CART_TERRAIN"
 )
 out = (
     header
+    + shared_imports
     + "const tiles: readonly (readonly number[])[] = "
     + compact(r["mineCartMetatiles"]["columns"])
     + ";\n"
@@ -29,17 +31,7 @@ out = (
     + body
 )
 out = out.replace("pixelsPerWorldUnit: 32,", "pixelsPerWorldUnit: 32, environmentId: 2,")
-out = out.replace(
-    "  const torsoPy = (footWorld + 1) * scale + origin.y;\n"
-    "  const aheadFeet = probeSNES(edgePx, feetPy);\n"
-    "  if (aheadFeet && aheadFeet.floorY > here.floorY + 10) return true;\n"
-    "  const aheadTorso = probeSNES(edgePx, torsoPy);\n"
-    "  if (aheadTorso && aheadTorso.floorY > feetPy + 6) return true;\n"
-    "  return false;",
-    "  const aheadFeet = probeSNES(edgePx, feetPy);\n"
-    "  if (aheadFeet && aheadFeet.floorY > here.floorY + 10) return true;\n"
-    "  return false;",
-)
+out = out.replace("{ checkTorso: true },", "{ checkTorso: false },")
 (base / "src/game/originalMineCartTerrain.ts").write_text(out)
 print(
     "Wrote originalMineCartTerrain.ts",

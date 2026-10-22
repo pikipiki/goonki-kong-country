@@ -6,13 +6,13 @@
       "tapCharge": true,
       "jumpWhileCharging": true,
       "before": {
-        "x": -0.14520041553844093,
+        "x": -0.16494424975481636,
         "head": -0.25,
         "windup": true,
         "animation": "ready"
       },
       "after": {
-        "x": -0.1813297098420954,
+        "x": -0.15056330178638608,
         "head": -0.25,
         "windup": true,
         "animation": "ready"
@@ -27,14 +27,14 @@
       "tapCharge": true,
       "jumpWhileCharging": false,
       "before": {
-        "x": -0.17733608296068962,
-        "tail": 0.5163783198692301,
+        "x": -0.1673956674020623,
+        "tail": -0.35560238911633374,
         "windup": true,
         "animation": "ready"
       },
       "after": {
-        "x": -0.1399486235139451,
-        "tail": -0.2493520119549512,
+        "x": -0.14786766300817158,
+        "tail": -0.4521125843845718,
         "windup": true,
         "animation": "ready"
       },
@@ -87,13 +87,13 @@
       "tapCharge": true,
       "jumpWhileCharging": true,
       "before": {
-        "x": -0.1847809135644615,
+        "x": -0.17739408990214373,
         "head": -0.25,
         "windup": true,
         "animation": "ready"
       },
       "after": {
-        "x": -0.1540507541326509,
+        "x": -0.1390410991902588,
         "head": -0.25,
         "windup": true,
         "animation": "ready"
@@ -108,14 +108,14 @@
       "tapCharge": true,
       "jumpWhileCharging": false,
       "before": {
-        "x": -0.13500646728845078,
-        "tail": -0.006527116689700935,
+        "x": -0.17911983885696459,
+        "tail": -0.4630030141840763,
         "windup": true,
         "animation": "ready"
       },
       "after": {
-        "x": -0.1630259506272184,
-        "tail": 0.3733937844199133,
+        "x": -0.13761533331010511,
+        "tail": -0.3330951589851066,
         "windup": true,
         "animation": "ready"
       },

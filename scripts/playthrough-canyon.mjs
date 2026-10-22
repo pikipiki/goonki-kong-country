@@ -110,6 +110,6 @@ try {
  const result={status,deaths,inputOnly:true,enemyDamageEnabled:true,cannonCount:offline(final).level.barrels.filter(b=>b.kind==='cannon').length,enemiesAlive:final.enemies.filter(e=>e.alive).length,buildSources:await page.evaluate(()=>Array.from(document.scripts).map(s=>s.src).filter(Boolean)),phase:final.phase,x:final.player.x,y:final.player.y,lives:final.lives,hp:final.player.hp,time:final.time,errors,inputs:log};
  writeFileSync(out+'canyon-playthrough.json',JSON.stringify(result,null,2));
  writeFileSync(out+'canyon-playthrough.md',`# Real-input canyon playthrough\n\nResult: **${status}**, phase ${final.phase}, X=${final.player.x.toFixed(2)}, Y=${final.player.y.toFixed(2)}, lives=${final.lives}, HP=${final.player.hp}, simulated time=${final.time.toFixed(2)}s.\n\nEntered through the map and used real Playwright keyboard input. Live window.goonk was read only. Pausing during offline planning used the real KeyP control. Candidate controls were scored in isolated offline Game copies; no player positions, enemies, invincibility, lives or simulation clock were written in the running browser game.\n\nInput log: canyon-playthrough.json. Final capture: canyon-playthrough-final.png.\n`);
- if(status!=='clear'||deaths)process.exitCode=1;
+ if(status!=='clear'||deaths||errors.length)process.exitCode=1;
  console.log(JSON.stringify({status,phase:result.phase,x:result.x,y:result.y,lives:result.lives,hp:result.hp,time:result.time,errors,steps:log.length}));
 } finally {await browser.close();await vite.close();}

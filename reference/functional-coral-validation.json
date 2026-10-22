@@ -1,0 +1,13 @@
+{
+  "command": "npm run test:functional -- test:playthrough:coral",
+  "result": "clear",
+  "deaths": 0,
+  "hp": 2,
+  "lives": 5,
+  "mountRetained": true,
+  "simulationSeconds": 65.96666666666421,
+  "inputOnly": true,
+  "liveStateWrites": false,
+  "enemyDamageEnabled": true,
+  "errors": []
+}

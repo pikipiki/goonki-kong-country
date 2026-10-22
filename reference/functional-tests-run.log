@@ -1,0 +1,266 @@
+
+> goonk-country@0.4.0 test:functional
+> node scripts/run-functional-tests.mjs
+
+7:13:30 PM [vite] (client) Re-optimizing dependencies because vite config has changed
+Started game server: http://127.0.0.1:5186/
+
+=== test:browser ===
+
+
+> goonk-country@0.4.0 test:browser
+> node scripts/browser-smoke.mjs
+
+7:13:31 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+{"jump":true,"swap":true,"touchMovement":{"before":4.875,"after":6.7611083984375},"stageRenders":6,"errors":[]}
+
+=== test:mobile ===
+
+
+> goonk-country@0.4.0 test:mobile
+> node scripts/mobile-browser.mjs
+
+7:13:44 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+{"multitouch":true,"clickOnly":true,"orientationRotation":true,"phoneSizes":6,"pause":true,"stageTransitions":7,"errors":[],"diagnostics":{"stageId":0,"sceneRevision":9,"fps":59,"drawCalls":155,"triangles":150816,"dpr":1.35}}
+
+=== test:buddies ===
+
+
+> goonk-country@0.4.0 test:buddies
+> node scripts/buddy-browser.mjs
+
+7:13:59 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+{"mounted":["rambi","winky","enguarde","expresso"],"dismounts":4,"marineVertical":true,"marineAttack":true,"errors":[]}
+
+=== test:map ===
+
+
+> goonk-country@0.4.0 test:map
+> node scripts/map-browser.mjs
+
+7:14:06 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:07 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:09 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+{"mapCanvas":true,"keyboardSelection":true,"keyboardEnter":true,"allStagesAccessible":true,"enterSelectedLevel":true,"formats":[{"name":"desktop","visibleNamedStages":7,"noOverlap":true,"touchTarget":true},{"name":"portrait","visibleNamedStages":7,"noOverlap":true,"touchTarget":true},{"name":"portrait-small","visibleNamedStages":7,"noOverlap":true,"touchTarget":true},{"name":"landscape","visibleNamedStages":7,"noOverlap":true,"touchTarget":true}],"errors":[]}
+
+=== test:original ===
+
+
+> goonk-country@0.4.0 test:original
+> node scripts/original-browser.mjs
+
+7:14:11 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+{"originalTerrain":true,"letters":"KONG","movement":true,"musicAndFX":true,"musicTransition":"AquaticAmbience","pauseResume":true,"formats":2,"errors":[]}
+
+=== test:stages ===
+
+
+> goonk-country@0.4.0 test:stages
+> node scripts/stage-regressions-browser.mjs
+
+7:14:15 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:15 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:16 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:17 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:17 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:19 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:19 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:20 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:20 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:22 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:22 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:23 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:24 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:25 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:25 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:26 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:26 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:28 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:28 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:29 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:30 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:31 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:31 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:33 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:33 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:34 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:34 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:36 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:14:36 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+{"stageChecks":[{"id":0,"orientation":"portrait","enemyModels":12,"deadHidden":true,"restart":true},{"id":1,"orientation":"portrait","enemyModels":35,"deadHidden":true,"restart":true},{"id":2,"orientation":"portrait","enemyModels":30,"deadHidden":true,"restart":true},{"id":3,"orientation":"portrait","enemyModels":21,"deadHidden":true,"restart":true},{"id":4,"orientation":"portrait","enemyModels":6,"deadHidden":true,"restart":true},{"id":5,"orientation":"portrait","enemyModels":5,"deadHidden":true,"restart":true},{"id":6,"orientation":"portrait","enemyModels":1,"deadHidden":false,"restart":true},{"id":0,"orientation":"landscape","enemyModels":12,"deadHidden":true,"restart":true},{"id":1,"orientation":"landscape","enemyModels":35,"deadHidden":true,"restart":true},{"id":2,"orientation":"landscape","enemyModels":30,"deadHidden":true,"restart":true},{"id":3,"orientation":"landscape","enemyModels":21,"deadHidden":true,"restart":true},{"id":4,"orientation":"landscape","enemyModels":6,"deadHidden":true,"restart":true},{"id":5,"orientation":"landscape","enemyModels":5,"deadHidden":true,"restart":true},{"id":6,"orientation":"landscape","enemyModels":1,"deadHidden":false,"restart":true}],"allStagesUnlocked":true,"errors":[]}
+
+=== test:decor ===
+
+
+> goonk-country@0.4.0 test:decor
+> node scripts/visual-layers-browser.mjs
+
+7:14:38 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+{"checks":[{"id":0,"biome":"jungle","maxZ":-5.773665676997263,"water":0,"cart":false,"cachesHidden":true,"walls":4,"expectedWalls":4},{"id":0,"biome":"jungle","maxZ":-5.773665676997263,"water":0,"cart":false,"cachesHidden":true,"walls":4,"expectedWalls":4},{"id":0,"biome":"jungle","maxZ":-5.773665676997263,"water":0,"cart":false,"cachesHidden":true,"walls":4,"expectedWalls":4},{"id":1,"biome":"jungle","maxZ":-5.765067363917887,"water":0,"cart":false,"cachesHidden":true,"walls":2,"expectedWalls":2},{"id":2,"biome":"mine","maxZ":-6.146382689476013,"water":0,"cart":true,"cachesHidden":true,"walls":0,"expectedWalls":0},{"id":3,"biome":"lagoon","maxZ":-6.030037718131361,"water":1,"cart":false,"cachesHidden":true,"walls":0,"expectedWalls":0},{"id":4,"biome":"snow","maxZ":-5.933717727661133,"water":0,"cart":false,"cachesHidden":true,"walls":0,"expectedWalls":0},{"id":5,"biome":"temple","maxZ":-6.146382689476013,"water":0,"cart":false,"cachesHidden":true,"walls":0,"expectedWalls":0},{"id":6,"biome":"ship","maxZ":null,"water":0,"cart":false,"cachesHidden":true,"walls":0,"expectedWalls":0}],"portrait":true,"errors":[]}
+
+=== test:mechanics ===
+
+
+> goonk-country@0.4.0 test:mechanics
+> node scripts/mechanics-browser.mjs
+
+7:14:46 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+portrait rambi
+portrait enguarde
+7:14:57 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+landscape rambi
+landscape enguarde
+{"results":[{"orientation":"portrait","kind":"rambi","tapCharge":true,"jumpWhileCharging":true,"before":{"x":-0.16494424975481636,"head":-0.25,"windup":true,"animation":"ready"},"after":{"x":-0.15056330178638608,"head":-0.25,"windup":true,"animation":"ready"},"vx":16,"charge":0,"attack":0.85},{"orientation":"portrait","kind":"enguarde","tapCharge":true,"jumpWhileCharging":false,"before":{"x":-0.1673956674020623,"tail":-0.35560238911633374,"windup":true,"animation":"ready"},"after":{"x":-0.14786766300817158,"tail":-0.4521125843845718,"windup":true,"animation":"ready"},"vx":18,"charge":0,"attack":0.85},{"orientation":"portrait","clickCharge":true},{"orientation":"portrait","enguardeRises":true},{"orientation":"portrait","expressoFlutters":true},{"orientation":"portrait","carryJumpThrow":true},{"orientation":"portrait","bonusEntered":true},{"orientation":"portrait","bonusEntranceSealed":true,"x":1.05,"inside":true},{"orientation":"portrait","bonusReturn":true},{"orientation":"portrait","bonusCannotReenter":true,"completed":true,"inside":false,"doorVisible":true,"plug":true,"openSign":false},{"orientation":"landscape","kind":"rambi","tapCharge":true,"jumpWhileCharging":true,"before":{"x":-0.17739408990214373,"head":-0.25,"windup":true,"animation":"ready"},"after":{"x":-0.1390410991902588,"head":-0.25,"windup":true,"animation":"ready"},"vx":16,"charge":0,"attack":0.85},{"orientation":"landscape","kind":"enguarde","tapCharge":true,"jumpWhileCharging":false,"before":{"x":-0.17911983885696459,"tail":-0.4630030141840763,"windup":true,"animation":"ready"},"after":{"x":-0.13761533331010511,"tail":-0.3330951589851066,"windup":true,"animation":"ready"},"vx":18,"charge":0,"attack":0.85},{"orientation":"landscape","clickCharge":true},{"orientation":"landscape","enguardeRises":true},{"orientation":"landscape","expressoFlutters":true},{"orientation":"landscape","carryJumpThrow":true},{"orientation":"landscape","bonusEntered":true},{"orientation":"landscape","bonusEntranceSealed":true,"x":1.05,"inside":true},{"orientation":"landscape","bonusReturn":true},{"orientation":"landscape","bonusCannotReenter":true,"completed":true,"inside":false,"doorVisible":true,"plug":true,"openSign":false}],"errors":[]}
+
+=== test:ground ===
+
+
+> goonk-country@0.4.0 test:ground
+> node scripts/ground-rendering-browser.mjs
+
+7:15:10 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+{"checks":[{"orientation":"landscape","id":0,"x":4,"near":[{"visible":true,"min":0,"max":16},{"visible":true,"min":16,"max":32}]},{"orientation":"landscape","id":0,"x":58,"near":[{"visible":true,"min":32,"max":48},{"visible":true,"min":48,"max":64},{"visible":true,"min":64,"max":80}]},{"orientation":"landscape","id":0,"x":106,"near":[{"visible":true,"min":80,"max":96},{"visible":true,"min":96,"max":112},{"visible":true,"min":112,"max":128}]},{"orientation":"landscape","id":0,"x":111,"near":[{"visible":true,"min":96,"max":112},{"visible":true,"min":112,"max":128}]},{"orientation":"landscape","id":1,"x":0,"near":[{"visible":true,"min":-28,"max":-12},{"visible":true,"min":-12,"max":4},{"visible":true,"min":4,"max":20}]},{"orientation":"landscape","id":1,"x":20,"near":[{"visible":true,"min":4,"max":20},{"visible":true,"min":20,"max":36}]},{"orientation":"landscape","id":1,"x":145,"near":[{"visible":true,"min":141.40625,"max":148},{"visible":true,"min":148,"max":164}]},{"orientation":"landscape","id":1,"x":320,"near":[{"visible":true,"min":310.40625,"max":324},{"visible":true,"min":324,"max":338.59375}]},{"orientation":"landscape","id":2,"x":16.400000000000016,"near":[{"visible":true,"min":-9.15625,"max":6.84375},{"visible":true,"min":6.84375,"max":22.84375},{"visible":true,"min":22.84375,"max":38.84375}]},{"orientation":"landscape","id":2,"x":32.40833333333332,"near":[{"visible":true,"min":6.84375,"max":22.84375},{"visible":true,"min":22.84375,"max":38.84375},{"visible":true,"min":38.84375,"max":54.84375}]},{"orientation":"landscape","id":2,"x":92.97499999999998,"near":[{"visible":true,"min":70.84375,"max":86.84375},{"visible":true,"min":86.84375,"max":102.84375},{"visible":true,"min":102.84375,"max":118.84375}]},{"orientation":"landscape","id":2,"x":147.40833333333356,"near":[{"visible":true,"min":134.84375,"max":150.84375},{"visible":true,"min":150.84375,"max":166.84375}]},{"orientation":"portrait","id":0,"x":4,"near":[{"visible":true,"min":0,"max":16},{"visible":true,"min":16,"max":32}]},{"orientation":"portrait","id":0,"x":58,"near":[{"visible":true,"min":32,"max":48},{"visible":true,"min":48,"max":64},{"visible":true,"min":64,"max":80}]},{"orientation":"portrait","id":0,"x":106,"near":[{"visible":true,"min":80,"max":96},{"visible":true,"min":96,"max":112},{"visible":true,"min":112,"max":128}]},{"orientation":"portrait","id":0,"x":111,"near":[{"visible":true,"min":96,"max":112},{"visible":true,"min":112,"max":128}]},{"orientation":"portrait","id":1,"x":0,"near":[{"visible":true,"min":-28,"max":-12},{"visible":true,"min":-12,"max":4},{"visible":true,"min":4,"max":20}]},{"orientation":"portrait","id":1,"x":20,"near":[{"visible":true,"min":4,"max":20},{"visible":true,"min":20,"max":36}]},{"orientation":"portrait","id":1,"x":145,"near":[{"visible":true,"min":141.40625,"max":148},{"visible":true,"min":148,"max":164}]},{"orientation":"portrait","id":1,"x":320,"near":[{"visible":true,"min":310.40625,"max":324},{"visible":true,"min":324,"max":338.59375}]},{"orientation":"portrait","id":2,"x":16.116666666666685,"near":[{"visible":true,"min":-9.15625,"max":6.84375},{"visible":true,"min":6.84375,"max":22.84375},{"visible":true,"min":22.84375,"max":38.84375}]},{"orientation":"portrait","id":2,"x":32.40833333333332,"near":[{"visible":true,"min":6.84375,"max":22.84375},{"visible":true,"min":22.84375,"max":38.84375},{"visible":true,"min":38.84375,"max":54.84375}]},{"orientation":"portrait","id":2,"x":92.40833333333332,"near":[{"visible":true,"min":70.84375,"max":86.84375},{"visible":true,"min":86.84375,"max":102.84375},{"visible":true,"min":102.84375,"max":118.84375}]},{"orientation":"portrait","id":2,"x":147.40833333333356,"near":[{"visible":true,"min":134.84375,"max":150.84375},{"visible":true,"min":150.84375,"max":166.84375}]}],"errors":[]}
+
+=== test:playthrough:canyon ===
+
+
+> goonk-country@0.4.0 test:playthrough:canyon
+> node scripts/playthrough-canyon.mjs
+
+7:15:21 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:15:22 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:15:22 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+{"step":0,"gameTime":0,"x":0,"y":1.71875,"vx":0,"vy":0,"hp":2,"lives":5,"cannon":-1,"keys":["right","run","jump"]}
+{"step":0,"gameTime":0,"x":0,"y":1.71875,"vx":0,"vy":0,"hp":2,"lives":5,"cannon":-1,"keys":["right","run","jump"]}
+{"step":23,"gameTime":2.633333333333329,"x":41.75,"y":9.03125,"vx":0,"vy":0,"hp":2,"lives":5,"cannon":5,"keys":["right","run","jump"]}
+{"step":30,"gameTime":3.4666666666666592,"x":55.09375,"y":9.03125,"vx":0,"vy":0,"hp":2,"lives":5,"cannon":6,"keys":["right","run","jump"]}
+{"step":46,"gameTime":5.149999999999987,"x":81.536865234375,"y":9.03125,"vx":16.3421630859375,"vy":0,"hp":2,"lives":5,"cannon":-1,"keys":["right","run"]}
+{"step":60,"gameTime":6.599999999999982,"x":97.99591064453125,"y":8.3525390625,"vx":8.4375,"vy":-7.6171875,"hp":2,"lives":5,"cannon":-1,"keys":["right","run"]}
+{"step":84,"gameTime":9.000000000000027,"x":120.8564453125,"y":8.6875,"vx":15.875244140625,"vy":0,"hp":2,"lives":5,"cannon":-1,"keys":["right","run"]}
+{"step":90,"gameTime":9.633333333333391,"x":130.9107666015625,"y":8.6875,"vx":15.875244140625,"vy":0,"hp":2,"lives":5,"cannon":-1,"keys":["right","run"]}
+{"step":120,"gameTime":12.650000000000208,"x":159.51908447265623,"y":6,"vx":8.4375,"vy":0,"hp":2,"lives":5,"cannon":-1,"keys":["right","run","jump"]}
+{"step":121,"gameTime":12.750000000000213,"x":160.36283447265623,"y":6.9619140625,"vx":8.4375,"vy":10.48828125,"hp":2,"lives":5,"cannon":-1,"keys":[]}
+{"step":150,"gameTime":16.01666666666704,"x":176.8102172851564,"y":7.528564453125,"vx":5.88134765625,"vy":4.1455078125,"hp":1,"lives":5,"cannon":-1,"keys":["right","run"]}
+{"step":180,"gameTime":19.51666666666684,"x":189.84660400390644,"y":5.84716796875,"vx":7.274999999999998,"vy":-2.7978515625,"hp":1,"lives":5,"cannon":-1,"keys":["right","run"]}
+{"step":194,"gameTime":21.15000000000008,"x":200.2066430664068,"y":-1,"vx":9.375,"vy":0,"hp":1,"lives":5,"cannon":-1,"keys":["right"]}
+{"step":210,"gameTime":23.049999999999972,"x":217.4375,"y":2.821044921875,"vx":0,"vy":-18.6767578125,"hp":1,"lives":5,"cannon":-1,"keys":["right","run"]}
+{"step":235,"gameTime":25.966666666666473,"x":240.85791015625,"y":3.03125,"vx":18.6767578125,"vy":0,"hp":1,"lives":5,"cannon":-1,"keys":["left"]}
+{"step":240,"gameTime":26.583333333333105,"x":249.5,"y":2.4062499999982947,"vx":0,"vy":0,"hp":1,"lives":5,"cannon":46,"keys":["right","run","jump"]}
+{"step":265,"gameTime":29.499999999999606,"x":280.6142578125,"y":2.03515625,"vx":13.18359375,"vy":-15,"hp":1,"lives":6,"cannon":-1,"keys":["right","run"]}
+{"step":270,"gameTime":30.09999999999957,"x":288,"y":6.78125,"vx":0,"vy":0,"hp":1,"lives":6,"cannon":34,"keys":["right","run","jump"]}
+{"step":290,"gameTime":32.41666666666611,"x":320.69021809895844,"y":2,"vx":11.25,"vy":0,"hp":1,"lives":6,"cannon":-1,"keys":["right","run","action"]}
+{"status":"clear","phase":"clear","x":331.05105794270844,"y":2.34375,"lives":6,"hp":1,"time":33.566666666666045,"errors":[],"steps":300}
+
+=== test:playthrough:coral ===
+
+
+> goonk-country@0.4.0 test:playthrough:coral
+> node scripts/playthrough-coral.mjs
+
+7:17:58 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+7:17:58 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+{"tick":0,"time":0,"lives":5,"hp":2,"x":19.5,"y":1.125,"mount":-1,"enemyCount":21,"keys":[]}
+7:17:58 PM [vite] (client) [console.warn] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+{"tick":10,"time":1.0666666666666678,"lives":5,"hp":2,"x":22.903055555555554,"y":4.506858333333333,"mount":-1,"enemyCount":21,"keys":["ArrowRight"]}
+{"tick":20,"time":2.2333333333333303,"lives":5,"hp":2,"x":27.272777777777776,"y":3.6371638888888835,"mount":-1,"enemyCount":21,"keys":["ArrowRight","ArrowUp"]}
+{"tick":30,"time":3.399999999999993,"lives":5,"hp":2,"x":31.647777777777776,"y":3.8831361111111065,"mount":-1,"enemyCount":21,"keys":["ArrowRight","ArrowUp"]}
+{"tick":40,"time":4.483333333333323,"lives":5,"hp":2,"x":35.710277777777776,"y":4.027641666666664,"mount":-1,"enemyCount":21,"keys":["ArrowRight","ArrowUp"]}
+{"tick":50,"time":5.483333333333319,"lives":5,"hp":2,"x":39.455,"y":4.6676694444444395,"mount":-1,"enemyCount":21,"keys":["ArrowRight"]}
+{"tick":60,"time":6.483333333333316,"lives":5,"hp":2,"x":43.205,"y":7.043058333333339,"mount":-1,"enemyCount":21,"keys":["ArrowRight","ArrowUp"]}
+{"tick":70,"time":7.499999999999979,"lives":5,"hp":2,"x":47.01222222222222,"y":7.043094444444445,"mount":-1,"enemyCount":21,"keys":["ArrowRight","ArrowUp"]}
+{"tick":80,"time":8.500000000000002,"lives":5,"hp":2,"x":49.50638888888889,"y":11.808538888888872,"mount":-1,"enemyCount":21,"keys":["ArrowUp"]}
+{"tick":90,"time":9.500000000000052,"lives":5,"hp":2,"x":49.96958333333333,"y":16.573983333333288,"mount":-1,"enemyCount":21,"keys":["ArrowUp"]}
+{"tick":100,"time":10.500000000000101,"lives":5,"hp":2,"x":52.065416666666664,"y":20.062569444444385,"mount":-1,"enemyCount":21,"keys":["ArrowRight","ArrowUp"]}
+{"tick":110,"time":11.500000000000151,"lives":5,"hp":2,"x":55.810138888888886,"y":19.646136111111016,"mount":-1,"enemyCount":21,"keys":["ArrowRight"]}
+{"tick":120,"time":12.650000000000208,"lives":5,"hp":2,"x":60.122638888888886,"y":20.08775833333323,"mount":-1,"enemyCount":21,"keys":["ArrowRight","ArrowUp"]}
+{"tick":130,"time":13.650000000000258,"lives":5,"hp":2,"x":63.872638888888886,"y":23.76901388888878,"mount":-1,"enemyCount":21,"keys":["ArrowRight"]}
+{"tick":140,"time":14.650000000000308,"lives":5,"hp":2,"x":67.61736111111111,"y":25.17160277777766,"mount":-1,"enemyCount":21,"keys":["ArrowRight"]}
+{"tick":150,"time":15.650000000000357,"lives":5,"hp":2,"x":71.36736111111111,"y":22.678491666666538,"mount":-1,"enemyCount":21,"keys":["ArrowRight","ArrowDown"]}
+{"tick":160,"time":16.766666666666996,"lives":5,"hp":2,"x":75.55486111111111,"y":19.465402777777626,"mount":-1,"enemyCount":21,"keys":["ArrowRight","ArrowDown"]}
+{"tick":170,"time":17.933333333333596,"lives":5,"hp":2,"x":79.92986111111111,"y":20.05910277777762,"mount":-1,"enemyCount":21,"keys":["ArrowRight","ArrowUp"]}
+{"tick":180,"time":19.100000000000197,"lives":5,"hp":2,"x":84.29430555555555,"y":19.08171388888869,"mount":-1,"enemyCount":21,"keys":["ArrowRight","ArrowDown"]}
+{"tick":190,"time":20.266666666666797,"lives":5,"hp":2,"x":86.09375,"y":14.18171388888867,"mount":-1,"enemyCount":21,"keys":["ArrowRight","ArrowDown"]}
+{"tick":200,"time":21.433333333333398,"lives":5,"hp":2,"x":88.63041666666666,"y":9.28171388888865,"mount":-1,"enemyCount":21,"keys":["ArrowRight","ArrowDown"]}
+{"tick":210,"time":22.599999999999998,"lives":5,"hp":2,"x":86.7745833333332,"y":11.96645833333336,"mount":0,"enemyCount":21,"keys":["ArrowRight","ArrowUp"]}
+{"tick":220,"time":23.766666666666598,"lives":5,"hp":2,"x":85.9929166666665,"y":17.78645833333336,"mount":0,"enemyCount":21,"keys":["ArrowLeft","ArrowUp"]}
+{"tick":230,"time":25.066666666666524,"lives":5,"hp":2,"x":86.21069444444423,"y":20.953124999999996,"mount":0,"enemyCount":21,"keys":["ArrowRight","ArrowUp"]}
+{"tick":240,"time":26.233333333333125,"lives":5,"hp":2,"x":87.01819444444422,"y":26.786458333333247,"mount":0,"enemyCount":21,"keys":["ArrowUp"]}
+{"tick":250,"time":27.399999999999725,"lives":5,"hp":2,"x":87.01819444444422,"y":32.61312499999986,"mount":0,"enemyCount":21,"keys":["ArrowUp"]}
+{"tick":260,"time":28.566666666666325,"lives":5,"hp":2,"x":84.75374999999971,"y":38.43979166666669,"mount":0,"enemyCount":21,"keys":["ArrowLeft","ArrowUp"]}
+{"tick":270,"time":29.733333333332926,"lives":5,"hp":2,"x":83.53069444444412,"y":44.27312500000019,"mount":0,"enemyCount":21,"keys":["ArrowLeft","ArrowUp"]}
+{"tick":280,"time":30.916666666666192,"lives":5,"hp":2,"x":76.0506944444439,"y":46.473125000000245,"mount":0,"enemyCount":21,"keys":[]}
+{"tick":290,"time":32.06666666666613,"lives":5,"hp":2,"x":71.8909722222215,"y":41.78645833333346,"mount":0,"enemyCount":21,"keys":["ArrowLeft","ArrowDown"]}
+{"tick":300,"time":33.23333333333273,"lives":5,"hp":2,"x":68.6995833333326,"y":37.45312500000002,"mount":0,"enemyCount":21,"keys":[]}
+{"tick":310,"time":34.39999999999933,"lives":5,"hp":2,"x":61.74513888888792,"y":41.663125000000115,"mount":0,"enemyCount":21,"keys":["ArrowUp"]}
+{"tick":320,"time":35.56666666666593,"lives":5,"hp":2,"x":53.1904166666657,"y":40.53312500000009,"mount":0,"enemyCount":20,"keys":["ArrowLeft","Space"]}
+{"tick":330,"time":36.86666666666586,"lives":5,"hp":2,"x":43.45624999999903,"y":40.53312500000009,"mount":0,"enemyCount":19,"keys":["ArrowLeft","Space"]}
+{"tick":340,"time":38.03333333333246,"lives":5,"hp":2,"x":35.17513888888792,"y":38.679791666666716,"mount":0,"enemyCount":19,"keys":["ArrowLeft","ArrowDown"]}
+{"tick":350,"time":39.19999999999906,"lives":5,"hp":2,"x":34.24819444444348,"y":33.503124999999926,"mount":-1,"enemyCount":19,"keys":["ArrowRight","ArrowDown"]}
+{"tick":360,"time":40.36666666666566,"lives":5,"hp":2,"x":37.14458333333237,"y":32.251736111111036,"mount":-1,"enemyCount":19,"keys":["ArrowLeft","ArrowUp"]}
+{"tick":370,"time":41.549999999998924,"lives":5,"hp":2,"x":38.65430555555459,"y":31.8382249999999,"mount":-1,"enemyCount":19,"keys":["ArrowUp"]}
+{"tick":380,"time":42.716666666665525,"lives":5,"hp":2,"x":37.10847222222127,"y":31.658041666666552,"mount":-1,"enemyCount":19,"keys":["ArrowLeft","ArrowUp"]}
+{"tick":390,"time":43.883333333332125,"lives":5,"hp":1,"x":35.83069444444342,"y":32.360508333333215,"mount":-1,"enemyCount":19,"keys":["ArrowUp"]}
+{"tick":400,"time":45.049999999998725,"lives":5,"hp":1,"x":34.977638888887846,"y":31.869652777777645,"mount":-1,"enemyCount":19,"keys":[]}
+{"tick":410,"time":46.23333333333199,"lives":5,"hp":1,"x":36.56597222222117,"y":32.494358333333196,"mount":-1,"enemyCount":19,"keys":[]}
+{"tick":420,"time":47.41666666666526,"lives":5,"hp":1,"x":38.28374999999894,"y":31.44612499999986,"mount":-1,"enemyCount":19,"keys":["ArrowRight","ArrowUp"]}
+{"tick":430,"time":48.71666666666518,"lives":5,"hp":1,"x":37.80791666666561,"y":30.81133333333318,"mount":-1,"enemyCount":19,"keys":[]}
+{"tick":440,"time":49.883333333331784,"lives":5,"hp":1,"x":37.1956944444434,"y":31.448127777777607,"mount":-1,"enemyCount":19,"keys":["ArrowLeft","ArrowUp"]}
+{"tick":450,"time":51.049999999998384,"lives":5,"hp":1,"x":35.28763888888786,"y":31.869388888888714,"mount":-1,"enemyCount":19,"keys":["ArrowLeft"]}
+{"tick":460,"time":52.216666666664985,"lives":5,"hp":1,"x":36.27819444444341,"y":31.576255555555377,"mount":-1,"enemyCount":19,"keys":["ArrowDown"]}
+{"tick":470,"time":53.383333333331585,"lives":5,"hp":1,"x":37.792916666665626,"y":31.94926666666647,"mount":-1,"enemyCount":19,"keys":["ArrowRight","ArrowUp"]}
+{"tick":480,"time":54.549999999998185,"lives":5,"hp":1,"x":39.481805555554494,"y":30.792811111110886,"mount":-1,"enemyCount":19,"keys":["ArrowLeft","ArrowDown"]}
+{"tick":490,"time":55.716666666664786,"lives":5,"hp":1,"x":37.64402777777672,"y":30.858844444444205,"mount":-1,"enemyCount":19,"keys":["ArrowDown"]}
+{"tick":500,"time":56.89999999999805,"lives":5,"hp":1,"x":35.62236111111006,"y":31.44442777777754,"mount":-1,"enemyCount":19,"keys":["ArrowUp"]}
+{"tick":510,"time":58.06666666666465,"lives":5,"hp":1,"x":35.487361111110054,"y":31.471338888888653,"mount":-1,"enemyCount":19,"keys":["ArrowRight","ArrowDown"]}
+{"tick":520,"time":59.23333333333125,"lives":5,"hp":1,"x":31.999861111110057,"y":30.02547222222198,"mount":-1,"enemyCount":19,"keys":["ArrowLeft","ArrowDown"]}
+{"tick":530,"time":60.549999999997844,"lives":5,"hp":1,"x":29.53069444444339,"y":24.495472222221956,"mount":-1,"enemyCount":19,"keys":["ArrowLeft","ArrowDown"]}
+{"tick":540,"time":61.716666666664445,"lives":5,"hp":1,"x":25.494861111110062,"y":23.409724999999725,"mount":-1,"enemyCount":19,"keys":["ArrowLeft","ArrowUp"]}
+{"tick":550,"time":62.883333333331045,"lives":5,"hp":1,"x":21.119861111110062,"y":27.772272222221936,"mount":-1,"enemyCount":19,"keys":["ArrowLeft","ArrowUp"]}
+{"tick":560,"time":64.03333333333099,"lives":5,"hp":1,"x":16.807361111110062,"y":27.703977777777485,"mount":-1,"enemyCount":19,"keys":["ArrowLeft","ArrowUp"]}
+{"tick":570,"time":65.03333333333093,"lives":5,"hp":1,"x":13.06263888888784,"y":28.285472222221916,"mount":-1,"enemyCount":19,"keys":["ArrowLeft"]}
+{"tick":580,"time":66.03333333333087,"lives":5,"hp":1,"x":9.31263888888784,"y":29.088799999999683,"mount":-1,"enemyCount":19,"keys":["ArrowLeft","ArrowUp"]}
+{"tick":590,"time":67.03333333333082,"lives":5,"hp":1,"x":7.299305555554505,"y":33.430694444444164,"mount":-1,"enemyCount":19,"keys":["ArrowUp"]}
+{"tick":600,"time":68.03333333333076,"lives":5,"hp":1,"x":9.188749999998945,"y":37.71604444444429,"mount":-1,"enemyCount":19,"keys":["ArrowRight","ArrowUp"]}
+{"tick":610,"time":69.0333333333307,"lives":5,"hp":1,"x":12.933472222221168,"y":38.05683055555538,"mount":-1,"enemyCount":19,"keys":["ArrowRight","ArrowUp"]}
+{"tick":620,"time":70.03333333333065,"lives":5,"hp":1,"x":15.052638888887842,"y":40.514491666666565,"mount":-1,"enemyCount":19,"keys":["ArrowRight","ArrowUp"]}
+{"tick":630,"time":71.03333333333059,"lives":5,"hp":1,"x":14.530555555554514,"y":45.28882500000008,"mount":-1,"enemyCount":19,"keys":["ArrowUp"]}
+{"tick":640,"time":72.03333333333053,"lives":5,"hp":1,"x":12.187499999998963,"y":46.99278611111122,"mount":-1,"enemyCount":19,"keys":["ArrowLeft","ArrowUp"]}
+{"tick":650,"time":73.1666666666638,"lives":5,"hp":1,"x":12.376666666665638,"y":47.057527777777885,"mount":-1,"enemyCount":19,"keys":["ArrowRight","ArrowUp"]}
+{"tick":660,"time":74.16666666666374,"lives":5,"hp":1,"x":14.43666666666564,"y":47.057100000000105,"mount":-1,"enemyCount":19,"keys":["ArrowRight","ArrowUp"]}
+{"tick":670,"time":75.16666666666369,"lives":5,"hp":1,"x":16.496666666665643,"y":46.74163888888898,"mount":-1,"enemyCount":19,"keys":["ArrowRight"]}
+{"tick":680,"time":76.1833333333303,"lives":5,"hp":1,"x":14.620416666665644,"y":48.32986111111125,"mount":-1,"enemyCount":19,"keys":["ArrowLeft","ArrowDown"]}
+{"tick":690,"time":77.18333333333024,"lives":5,"hp":1,"x":12.308194444443426,"y":47.059522222222355,"mount":-1,"enemyCount":19,"keys":["ArrowLeft","ArrowUp"]}
+{"tick":700,"time":78.18333333333018,"lives":5,"hp":1,"x":8.558194444443426,"y":47.67692222222235,"mount":-1,"enemyCount":19,"keys":["ArrowLeft"]}
+{"tick":710,"time":79.18333333333013,"lives":5,"hp":1,"x":7.389027777776758,"y":52.381666666666966,"mount":-1,"enemyCount":19,"keys":["ArrowLeft","ArrowUp"]}
+{"tick":720,"time":80.18333333333007,"lives":5,"hp":1,"x":7.50486111111009,"y":57.15155555555604,"mount":-1,"enemyCount":19,"keys":["ArrowUp"]}
+{"tick":730,"time":81.18333333333001,"lives":5,"hp":1,"x":7.50486111111009,"y":61.92588888888955,"mount":-1,"enemyCount":19,"keys":["ArrowUp"]}
+{"tick":740,"time":82.18333333332995,"lives":5,"hp":1,"x":7.968055555554534,"y":66.70022222222306,"mount":-1,"enemyCount":19,"keys":["ArrowUp"]}
+{"tick":750,"time":83.1833333333299,"lives":5,"hp":1,"x":10.644722222221196,"y":69.53160277777863,"mount":-1,"enemyCount":19,"keys":["ArrowRight","ArrowUp"]}
+{"tick":760,"time":84.18333333332984,"lives":5,"hp":1,"x":14.389444444443418,"y":68.95751944444537,"mount":-1,"enemyCount":19,"keys":["ArrowRight","ArrowDown"]}
+{"tick":770,"time":85.31666666666311,"lives":5,"hp":1,"x":18.63944444444342,"y":68.55826388888984,"mount":-1,"enemyCount":19,"keys":["ArrowRight"]}
+{"tick":780,"time":86.33333333332972,"lives":5,"hp":1,"x":22.446666666665642,"y":68.09416388888991,"mount":-1,"enemyCount":19,"keys":["ArrowRight","ArrowDown"]}
+{"tick":790,"time":87.34999999999633,"lives":5,"hp":1,"x":26.259166666665642,"y":67.60821944444554,"mount":-1,"enemyCount":19,"keys":["ArrowRight"]}
+{"tick":800,"time":88.34999999999627,"lives":5,"hp":1,"x":30.009166666665642,"y":69.8209055555567,"mount":-1,"enemyCount":19,"keys":["ArrowRight","ArrowUp"]}
+{"tick":810,"time":89.34999999999621,"lives":5,"hp":1,"x":33.75916666666564,"y":69.36167777777901,"mount":-1,"enemyCount":19,"keys":["ArrowRight","ArrowDown"]}
+{"tick":820,"time":90.34999999999616,"lives":5,"hp":1,"x":37.503888888887865,"y":69.0090555555568,"mount":-1,"enemyCount":19,"keys":["ArrowRight","ArrowUp"]}
+{"tick":830,"time":91.3499999999961,"lives":5,"hp":1,"x":41.24861111111009,"y":72.07982222222354,"mount":-1,"enemyCount":19,"keys":["ArrowRight","ArrowUp"]}
+{"tick":840,"time":92.36666666666271,"lives":5,"hp":1,"x":45.05583333333231,"y":71.71624722222357,"mount":-1,"enemyCount":19,"keys":["ArrowRight","ArrowUp"]}
+{"tick":850,"time":93.36666666666265,"lives":5,"hp":1,"x":48.795277777776754,"y":72.45554166666813,"mount":-1,"enemyCount":19,"keys":["ArrowRight","ArrowDown"]}
+{"tick":860,"time":94.3666666666626,"lives":5,"hp":1,"x":50.845277777776765,"y":71.90267500000144,"mount":-1,"enemyCount":19,"keys":["ArrowRight","ArrowUp"]}
+{"tick":870,"time":95.36666666666254,"lives":5,"hp":1,"x":51.632777777776774,"y":71.77333611111253,"mount":-1,"enemyCount":19,"keys":["ArrowLeft"]}
+{"tick":880,"time":96.36666666666248,"lives":5,"hp":1,"x":50.16444444444344,"y":71.53805833333479,"mount":-1,"enemyCount":19,"keys":["ArrowRight","ArrowDown"]}
+{"tick":890,"time":97.51666666666242,"lives":5,"hp":1,"x":54.39666666666566,"y":72.49443055555712,"mount":-1,"enemyCount":19,"keys":["ArrowRight"]}
+{"tick":900,"time":98.53333333332903,"lives":5,"hp":1,"x":58.20388888888788,"y":73.29563888889056,"mount":-1,"enemyCount":19,"keys":["ArrowRight"]}
+{"tick":910,"time":99.54999999999563,"lives":5,"hp":1,"x":62.01638888888788,"y":71.75178333333511,"mount":-1,"enemyCount":19,"keys":["ArrowRight","ArrowUp"]}
+{"tick":920,"time":100.54999999999558,"lives":5,"hp":1,"x":65.76638888888789,"y":72.61989444444625,"mount":-1,"enemyCount":19,"keys":["ArrowRight","ArrowUp"]}
+{"tick":930,"time":101.56666666666219,"lives":5,"hp":1,"x":69.57888888888789,"y":72.88583333333523,"mount":-1,"enemyCount":19,"keys":["ArrowRight","ArrowDown"]}
+{"tick":940,"time":102.56666666666213,"lives":5,"hp":1,"x":73.31833333333233,"y":74.05565833333522,"mount":-1,"enemyCount":19,"keys":["ArrowRight","ArrowUp"]}
+{"tick":950,"time":103.56666666666207,"lives":5,"hp":1,"x":77.06305555555456,"y":73.24596944444633,"mount":-1,"enemyCount":19,"keys":["ArrowRight","ArrowUp"]}
+{"tick":960,"time":104.58333333332868,"lives":5,"hp":1,"x":80.87555555555456,"y":72.70650555555753,"mount":-1,"enemyCount":19,"keys":["ArrowRight","ArrowUp"]}
+{"tick":970,"time":105.58333333332862,"lives":5,"hp":1,"x":84.62555555555456,"y":72.54607222222427,"mount":-1,"enemyCount":19,"keys":["ArrowRight"]}
+{"tick":980,"time":106.58333333332857,"lives":5,"hp":1,"x":88.37027777777678,"y":72.89111666666881,"mount":-1,"enemyCount":19,"keys":["ArrowRight","ArrowDown"]}
+{"tick":990,"time":107.58333333332851,"lives":5,"hp":1,"x":92.114999999999,"y":72.63181666666884,"mount":-1,"enemyCount":19,"keys":["ArrowRight","ArrowUp"]}
+{"done":true,"phase":"clear","deaths":0,"lives":5,"time":107.6833333333285,"player":{"x":92.489999999999,"y":73.02130555555773,"vx":3.75,"vy":4.774333333333333,"facing":1,"grounded":false,"active":1,"hp":1,"invincible":0,"roll":0,"rollJump":false,"rollJumpMomentum":0,"cartRebound":false,"rollSpeed":0,"rollFacing":1,"rollChain":0,"rollAngle":0,"recentRun":108.68333333332845,"mount":-1,"mountAttack":0,"mountCharge":0,"mountCharged":false,"mountCooldown":0,"carry":-1,"cannon":-1,"cannonLock":-1,"cannonTime":0,"launched":0,"cannonGravityDelay":0,"cannonControlDelay":0,"jumpDelay":0,"coyote":0,"buffer":0},"errors":[]}
+
+All selected functional browser scripts passed.
+

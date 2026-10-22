@@ -24,7 +24,7 @@ try {
    assert(await page.getByRole('progressbar',{name:'Puissance de charge'}).isVisible());
    assert.equal(await page.getByRole('button',{name:'Lancer',exact:true}).getAttribute('aria-pressed'),'true');
    const pose=()=>page.evaluate(()=>{let model;window.goonkScene.traverse(o=>{if(o.name==='animal-model'&&o.userData.kind===window.goonk.mount.kind)model=o;});let tail,head,windup;model.traverse(o=>{if(o.name==='animal-tail')tail=o.rotation.y;if(o.name==='animal-attack')head=o.rotation.z;if(o.name==='animal-charge-windup')windup=o.visible;});return {x:model.position.x,tail,head,windup,animation:model.userData.animation};});
-   const before=await pose();await page.waitForTimeout(90);const after=await pose();
+   const before=await pose();await page.waitForTimeout(200);const after=await pose();
    assert.equal(after.animation,'ready');assert(after.windup);assert(Math.abs(before.x-after.x)>.0001||Math.abs((before.tail??0)-(after.tail??0))>.0001);
    if(kind==='rambi') {
     await page.getByRole('button',{name:'Sauter',exact:true}).tap();

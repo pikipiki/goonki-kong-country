@@ -1,5 +1,13 @@
 # Reprise Gemini — Goonk Country — 22 octobre 2026
 
+## Dernière passe — tests fonctionnels réparés (22 octobre 2026)
+
+Cette section prévaut sur les validations historiques. Base `5fe2c1f`, refactorisation déjà locale conservée ; aucun changement de `src/` dans cette passe. Voir `reference/functional-tests-fix-report.md` : lanceur autonome, règle du tonneau manuel 26, pilote corail à horizon court planifié en pause, et erreurs JS qui font échouer les parcours. **Commande globale `FUNCTIONAL_PORT=5186 npm run test:functional` réussie : 11/11 scénarios**, serveur créé puis fermé automatiquement, serveur utilisateur 5174 préservé. **414 tests /79 fichiers et 3 E2E passent.** Deux traversées canyon réussies sans mort (34,33 puis 33,57s) ; deux traversées corail réussies sans mort (65,97s avec Enguarde/2PV puis 107,68s terminé à pied/1PV), dégâts actifs et aucune écriture dans la partie jouée. Captures, journaux et résumé `reference/functional-tests-run.{json,log}`. Nouvelle régression `tests/canyon-functional-driver.test.ts`.
+
+**Compilation toujours en échec**, 112 diagnostics TypeScript dans la refactorisation préexistante (`pick`, JSX, mocks, etc.) ; ne pas annoncer build réussi. La correction des tests fonctionnels n'a pas modifié ces fichiers. Log `/tmp/goonk-functional-build.log`. Modifications locales non committées.
+
+---
+
 ## Dernière correction — défilement du décor du boss 2D (22 octobre 2026)
 
 Priorité sur les historiques. Base Git `27884e0` ; cette correction est locale, non committée. `BossScene2D.tsx` dessinait le bateau et l'île en coordonnées écran fixes, alors que les acteurs suivaient `cameraLeft`. Le décor est maintenant ancré au centre du monde : salle ROM de 12 unités, échelle uniforme préservant son ratio, extensions latérales/hautes/basses et île sous la même projection que les personnages. Le plan du pont reste aligné sur le sol physique. Le décor de secours défile également. Aucun changement de physique.

@@ -1,0 +1,87 @@
+{
+  "date": "2026-10-22",
+  "runtime": "Node 24.19.0",
+  "command": "FUNCTIONAL_PORT=5186 npm run test:functional",
+  "exitCode": 0,
+  "scenarios": [
+    {
+      "name": "test:browser",
+      "status": "passed"
+    },
+    {
+      "name": "test:mobile",
+      "status": "passed"
+    },
+    {
+      "name": "test:buddies",
+      "status": "passed"
+    },
+    {
+      "name": "test:map",
+      "status": "passed"
+    },
+    {
+      "name": "test:original",
+      "status": "passed"
+    },
+    {
+      "name": "test:stages",
+      "status": "passed"
+    },
+    {
+      "name": "test:decor",
+      "status": "passed"
+    },
+    {
+      "name": "test:mechanics",
+      "status": "passed"
+    },
+    {
+      "name": "test:ground",
+      "status": "passed"
+    },
+    {
+      "name": "test:playthrough:canyon",
+      "status": "passed"
+    },
+    {
+      "name": "test:playthrough:coral",
+      "status": "passed"
+    }
+  ],
+  "server": {
+    "temporaryServerStarted": true,
+    "temporaryServerClosed": true,
+    "existingDevelopmentServerPreserved": true
+  },
+  "canyon": {
+    "status": "clear",
+    "deaths": 0,
+    "time": 33.566666666666045,
+    "lives": 6,
+    "hp": 1,
+    "errors": []
+  },
+  "coral": {
+    "phase": "clear",
+    "deaths": 0,
+    "simulationSeconds": 107.6833333333285,
+    "hp": 1,
+    "lives": 5,
+    "inputOnly": true,
+    "liveStateWrites": false,
+    "enemyDamageEnabled": true,
+    "errors": []
+  },
+  "unit": {
+    "files": 79,
+    "passed": 414
+  },
+  "e2e": {
+    "passed": 3
+  },
+  "build": {
+    "passed": false,
+    "preExistingTypeScriptDiagnostics": 112
+  }
+}

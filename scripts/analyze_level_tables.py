@@ -12,6 +12,17 @@ EXPECTED = '628147468c3539283197f58f03b94df49758a332831857481ea9cc31645f0527'
 NAMES = {0:'None',1:'DonkeyKong',2:'DiddyKong',5:'Kritter/Krash',6:'Klump',9:'Rambi',10:'Expresso',11:'Winky',12:'Enguarde',13:'Squawks',14:'NutThrowingNecky',20:'BreakableWall',21:'BananaBunch',22:'KongLetter',24:'AnimalBuddyBox',25:'Zinger',26:'Klaptrap',27:'HalfTire',29:'RollingTire',31:'FloatingTire',32:'Mincer',34:'SteelKeg',35:'Barrel',36:'RopeBarrel',37:'OilDrum',38:'DKBarrel',39:'TNTBarrel',40:'OilFire',41:'Slippa',44:'ItemCache',47:'Army',48:'VerticalRope',49:'SwingingRope',52:'LifeBalloon',56:'BarrelCannon',57:'SpritePlatform',66:'Bananas',67:'Butterfly',69:'AnimalBuddyToken',70:'BlueKrusha',74:'CheckpointBarrel',75:'MiniNecky',76:'EnemySpawnBarrel',77:'Gnawty',79:'FlyingNecky',80:'MankyKong',81:'Minecart',83:'Chomps',84:'ChompsJr',85:'Bitesize',86:'Squidge',87:'Croctopus',93:'CameraObject',97:'Clambo',104:'Rockkroc',106:'ExitDoor',107:'UnderwaterExitDoor',111:'UnknownSprite6F',113:'MillstoneGnawty',115:'Sign'}
 MUSIC = ['DKIslandSwing','CaveDwellerConcert','MistyMenance','AquaticAmbience','MineCartMadness','NorthernHemispheres','VoicesOfTheTemple','FearFactory','LifeInTheMines','TitleTheme','SplashScreenFanfare','IceCaveChant','SimianSegue','ForestFrenzy','CreditsConcerto','GameOver','BonusRoomBlitz','DeathMusic','Victory','TreetopRock','FunkysFugue','BadBossBoogie','CandysLoveSong','CrankysTheme','GangplankGalleon','Failure','BeatLevel']
 ENVIRONMENTS = ['Jungle','Cave','Walkway','Mine','Factory','Underwater','Temple','Snow','CrystalCave','MineCartCarnage','Treehouse','Forest','DKsHouse','BananaHoardCave']
+# Mirrors src/game/snesCollisionMetatile.ts (horizontal level probe).
+SNES_METATILE_ID_MASK = 0x3fff
+SNES_METATILE_MAP_HFLIP_BIT = 0x4000
+SNES_COLLISION_ATTR_VFLIP_BIT = 0x80
+SNES_COLLISION_PROFILE_ID_MASK = 0x3f
+SNES_METATILE_SIZE_PX = 32
+SNES_METATILE_LOCAL_X_MASK = 31
+SNES_METATILE_RIGHT_HALF_BIT = 16
+SNES_METATILE_LOCAL_Y_MASK = 15
+SNES_HORIZONTAL_METATILE_ROW_COUNT = 16
+SNES_HORIZONTAL_LAST_ROW_FROM_TOP = SNES_HORIZONTAL_METATILE_ROW_COUNT - 1
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
@@ -162,18 +173,21 @@ def main():
     assert jungle_tile_max==0xea
     def env_surfaces(x, tile_base, attr_base, tile_max):
         surfaces=[]
-        for row in range(16):
-            col=x//32; p=tile_base+col*32+row*2; tile=u16(p);tile_id=tile&0x3fff
+        for row in range(SNES_HORIZONTAL_METATILE_ROW_COUNT):
+            col=x//SNES_METATILE_SIZE_PX
+            p=tile_base+col*SNES_METATILE_SIZE_PX+row*2
+            tile=u16(p)
+            tile_id=tile&SNES_METATILE_ID_MASK
             if tile_id==0 or tile_id>=tile_max:continue
-            local=x&31
-            if tile&0x4000:local^=31
-            attr=rom[attr_base+tile_id*2+(1 if local&16 else 0)]
-            if attr&0x80:local^=15
-            kind=attr&63
+            local=x&SNES_METATILE_LOCAL_X_MASK
+            if tile&SNES_METATILE_MAP_HFLIP_BIT:local^=SNES_METATILE_LOCAL_X_MASK
+            attr=rom[attr_base+tile_id*2+(1 if local&SNES_METATILE_RIGHT_HALF_BIT else 0)]
+            if attr&SNES_COLLISION_ATTR_VFLIP_BIT:local^=SNES_METATILE_LOCAL_Y_MASK
+            kind=attr&SNES_COLLISION_PROFILE_ID_MASK
             if not kind or kind>=len(shape_samples):continue
-            h=shape_samples[kind][local&15]
+            h=shape_samples[kind][local&SNES_METATILE_LOCAL_Y_MASK]
             if h<0:continue
-            surfaces.append({'y':(15-row)*32+h,'tile':tile_id,'tileWord':f'${tile:04X}',
+            surfaces.append({'y':(SNES_HORIZONTAL_LAST_ROW_FROM_TOP-row)*SNES_METATILE_SIZE_PX+h,'tile':tile_id,'tileWord':f'${tile:04X}',
                              'collisionClass':attr,'rowFromTop':row})
         return surfaces
     jungle_surfaces=lambda x: env_surfaces(x,jungle_base,collision,jungle_tile_max)

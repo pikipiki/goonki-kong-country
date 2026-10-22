@@ -1,0 +1,20 @@
+/** Shared extruded-ground mesh tuning (not ROM constants). */
+export const ORIGINAL_GROUND_CHUNK_COLUMNS = 16
+
+export const ORIGINAL_GROUND_STRIP_PIXELS = 1
+
+export const ORIGINAL_GROUND_FRONT_Z = 1.6
+
+export const ORIGINAL_GROUND_BACK_Z = -1.6
+
+export const ORIGINAL_GROUND_UV_SCALE = 0.7
+
+export const ORIGINAL_GROUND_SHADE_NOISE_MIN = 0.94
+
+export const ORIGINAL_GROUND_SHADE_NOISE_SPAN = 0.12
+
+export const ORIGINAL_GROUND_COLUMN_NOISE_STRIDE_PX = 96
+
+export const ORIGINAL_GROUND_SPAN_NOISE_SEED_STEP = 19
+
+export const ORIGINAL_GROUND_BACK_FACE_SEED_OFFSET = 17
