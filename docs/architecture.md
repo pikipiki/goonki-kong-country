@@ -28,10 +28,22 @@ flowchart TD
 | Stage reset/spawn                     | `game/engine/gameLoadLevel.ts`                                                                        |
 | Incorrect camera framing              | `game/camera.ts`, `game2d/camera2D.ts`, `scene/directorCamera.ts`                                     |
 | Incorrect 2D boss scale               | `game2d/bossScene2dSprite.ts` and boss paint modules                                                  |
-| Map navigation or mode selection      | `app/useAppMapActions.ts`, `app/MapConfirmPanel.tsx`, `islandMap/`                                    |
-| Sound or storage                      | `app/useAppGameBindings.ts`, `game/audio.ts`, `game/engine/save.ts`                                   |
+| Map navigation or mode selection      | `hooks/useAppMapActions.ts`, `components/MapConfirmPanel.tsx`, `islandMap/`                         |
+| Sound or storage                      | `hooks/useAppGameBindings.ts`, `game/audio.ts`, `game/engine/save.ts`                                 |
 
 Paths in this table are relative to `src/`.
+
+## React shell layout
+
+| Folder | Role | Import alias |
+| ------ | ---- | ------------ |
+| `containers/` | Wire hooks, session and callbacks; compose presentational components | `@containers/…` |
+| `hooks/` | `useAppShell`, input/audio bindings, map/play actions | `@hooks/…` |
+| `lib/` | Pure helpers (URL query, phase actions, session factories) with no JSX | `@lib/…` |
+| `components/` | Presentational UI (HUD, overlays, controls, chrome primitives) | `@components/…` |
+
+`App.tsx` stays thin: one shell hook, containers, and layout classes. Aliases are
+configured in `tsconfig.app.json` and `vite.config.ts` (same pattern as `@game3d`).
 
 ## Contracts and responsibilities
 

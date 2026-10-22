@@ -3,7 +3,7 @@ import { type Key } from '../game/engine'
 import { type Controls } from '../game/input'
 import { handleActionButtonClick } from './actionButtonClick'
 import { pressActionButton } from './actionButtonHandlers'
-import { useActionButtonReset } from './useActionButtonReset'
+import { useActionButtonReset } from '@hooks/useActionButtonReset'
 import { useTranslation } from 'react-i18next'
 import { cssPercent } from '../utils/cssUnits'
 type ActionButtonProps = {

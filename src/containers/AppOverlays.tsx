@@ -1,15 +1,18 @@
 import { FINAL_BOSS_STAGE_ID } from '../game/stageCatalog'
-import { HelpOverlay } from './HelpOverlay'
-import { MAP_LEVELS } from './mapLevels'
+import { ContextLostOverlay } from '@components/ContextLostOverlay'
+import { HelpOverlay } from '@components/HelpOverlay'
+import { PhasePanel } from '@components/PhasePanel'
+import { PlayingHud } from '@components/PlayingHud'
+import { TitleIntro } from '@components/TitleIntro'
+import { MAP_LEVELS } from '@lib/mapLevels'
+import { runPhasePrimaryAction } from '@lib/phasePrimaryAction'
+import { type AppShell } from '@hooks/useAppShell'
 import { lazy, Suspense } from 'react'
-import { PhasePanel } from './PhasePanel'
-import { PlayingHud } from './PlayingHud'
-import { TitleIntro } from './TitleIntro'
-import { ContextLostOverlay } from './ContextLostOverlay'
-import { runPhasePrimaryAction } from './phasePrimaryAction'
-import { type AppShell } from './useAppShell'
-const MapOverlay = lazy(() =>
-  import('./MapOverlay').then((module) => ({ default: module.MapOverlay })),
+
+const MapOverlayLazy = lazy(() =>
+  import('@components/MapOverlay').then((module) => ({
+    default: module.MapOverlay,
+  })),
 )
 
 function TitleLayer({ shell }: { shell: AppShell }) {
@@ -32,12 +35,13 @@ function TitleLayer({ shell }: { shell: AppShell }) {
     />
   )
 }
+
 function MapLayer({ shell }: { shell: AppShell }) {
   if (shell.phase !== 'map') {
     return null
   }
   return (
-    <MapOverlay
+    <MapOverlayLazy
       mapLevel={shell.mapLevel}
       gameLevelId={shell.game.levelId}
       demo2D={shell.demo2D}

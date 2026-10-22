@@ -6,7 +6,7 @@ import {
   createAudioSystem,
   createControls,
   loadInitialGame,
-} from './gameSession'
+} from '@lib/gameSession'
 export function useGameSession(): {
   game: Game
   audio: AudioSystem

@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next'
-import { LanguageSelect } from '../components/LanguageSelect'
+import { LanguageSelect } from '@components/LanguageSelect'
+import { Icon } from '@components/chrome'
 import { resolveI18nKey } from '../i18n/resolveText'
-import { type AppShell } from './useAppShell'
-import { type Controls } from '../game/input'
-import { Icon } from './chrome'
 import { type AudioSystem } from '../game/audio'
+import { type Controls } from '../game/input'
+import { type AppShell } from '@hooks/useAppShell'
 export function AppTopBar({
   shell,
   onBrandHome,

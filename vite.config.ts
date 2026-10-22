@@ -7,6 +7,7 @@ import { playwright } from '@vitest/browser-playwright'
 import { defineConfig, type Plugin, type HtmlTagDescriptor } from 'vite'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
+const srcDir = path.join(dirname, 'src')
 const githubPagesBase = '/goonki-kong-country/'
 
 // GitHub Pages cannot set response headers. Scope the meta policy to the app build;
@@ -47,7 +48,11 @@ export default defineConfig({
   plugins: [react(), productionContentSecurityPolicy()],
   resolve: {
     alias: {
-      '@game3d': fileURLToPath(new URL('./src/game3d', import.meta.url)),
+      '@game3d': path.join(srcDir, 'game3d'),
+      '@containers': path.join(srcDir, 'containers'),
+      '@hooks': path.join(srcDir, 'hooks'),
+      '@lib': path.join(srcDir, 'lib'),
+      '@components': path.join(srcDir, 'components'),
     },
   },
   server: { port: 5174, strictPort: true },

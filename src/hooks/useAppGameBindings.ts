@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AudioSystem } from '../game/audio'
 import type { Game } from '../game/engine'
-import { SAVE_STORAGE_KEY } from './gameSession'
+import { SAVE_STORAGE_KEY } from '@lib/gameSession'
 
 export function useAppGameBindings(game: Game, audio: AudioSystem) {
   const { t } = useTranslation()

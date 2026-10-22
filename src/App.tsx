@@ -1,11 +1,11 @@
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AppOverlays } from './app/AppOverlays'
-import { AppSceneContent } from './app/AppSceneView'
-import { AppTopBar } from './app/AppTopBar'
-import { SceneBoundary } from './app/chrome'
-import { sceneAriaLabel } from './app/sceneAriaLabel'
-import { useAppShell } from './app/useAppShell'
+import { AppOverlays } from '@containers/AppOverlays'
+import { AppSceneContent } from '@containers/AppSceneView'
+import { AppTopBar } from '@containers/AppTopBar'
+import { useAppShell } from '@hooks/useAppShell'
+import { sceneAriaLabel } from '@lib/sceneAriaLabel'
+import { SceneBoundary } from '@components/chrome'
 export function App() {
   const { t } = useTranslation()
   const root = useRef<HTMLDivElement>(null)

@@ -20,6 +20,9 @@ et `SECURITY.md` pour l’organisation actuelle et les preuves de validation.
   terminés sans mort avec dégâts actifs. Production mobile racine/Pages validée.
 - Correction des indices d’atlas des objets du boss 2D et de l’échelle explicite.
 - Les captures/journaux sont maintenant dans `artifacts/` (ignoré par Git).
+- Couche React : `src/containers/`, `src/hooks/`, `src/lib/` (plus de `src/app/`) ;
+  UI présentationnelle dans `src/components/` ; imports `@containers`, `@hooks`,
+  `@lib`, `@components` (voir `docs/architecture.md`).
 
 Validation finale terminée : chaîne demandée, 465 tests / 85 fichiers,
 3 E2E, build, architecture, 11 fonctionnels et 12 cas mobiles de production
@@ -40,9 +43,7 @@ Aucun déploiement ni push n’a été effectué.
 # État prioritaire de reprise — 0.4.0 (22 octobre 2026)
 
 Pour la session courante, le bloc **« Reprise prioritaire — architecture »** en
-tête de ce fichier prévaut sur les sections historiques ci-dessous (commit
-`8f9d97e` = lint/moteur découpé ; commit suivant = restructuration
-`src/config`, `src/game/data`, `stageCatalog`, CI `check:architecture`).
+tête de ce fichier prévaut sur les sections historiques ci-dessous.
 
 ---
 

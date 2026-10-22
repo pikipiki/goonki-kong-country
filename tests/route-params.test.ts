@@ -5,8 +5,8 @@ import {
   applyDemoPlayQuery,
   applyRomPlayQuery,
   romRouteLevel,
-} from '../src/app/romPlayQuery'
-import { MAP_LEVELS } from '../src/app/mapLevels'
+} from '@lib/romPlayQuery'
+import { MAP_LEVELS } from '@lib/mapLevels'
 import { ORIGINAL_LEVELS } from '../src/game/stageCatalog'
 
 describe('stage catalog and route input', () => {

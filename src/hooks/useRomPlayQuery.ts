@@ -6,7 +6,7 @@ import {
   applyRomPlayQuery,
   isDemo2DQuery,
   romRouteLevel,
-} from './romPlayQuery'
+} from '@lib/romPlayQuery'
 
 export function useRomPlayQuery(
   game: Game,

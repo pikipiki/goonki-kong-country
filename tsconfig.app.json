@@ -12,7 +12,11 @@
     "baseUrl": ".",
     "paths": {
       "@game3d": ["src/game3d"],
-      "@game3d/*": ["src/game3d/*"]
+      "@game3d/*": ["src/game3d/*"],
+      "@containers/*": ["src/containers/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@lib/*": ["src/lib/*"],
+      "@components/*": ["src/components/*"]
     },
     "moduleResolution": "bundler",
     "noEmit": true,

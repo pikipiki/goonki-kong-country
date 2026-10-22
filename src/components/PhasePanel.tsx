@@ -7,7 +7,7 @@ import {
   panelFlowerGlyph,
   panelPrimaryKey,
   panelTitleKey,
-} from './phasePanelCopy'
+} from '@lib/phasePanelCopy'
 
 export function PhasePanel({
   phase,

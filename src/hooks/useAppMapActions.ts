@@ -1,7 +1,7 @@
 import { isDemo2DStage } from '../game/stageCatalog'
 import { useCallback, useRef } from 'react'
 import type { Game, Phase } from '../game/engine'
-import { MAP_LEVELS } from './mapLevels'
+import { MAP_LEVELS } from '@lib/mapLevels'
 
 export function useAppMapActions(
   game: Game,

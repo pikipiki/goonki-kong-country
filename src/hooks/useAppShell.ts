@@ -1,4 +1,4 @@
-import { isDemo2DQuery } from './romPlayQuery'
+import { isDemo2DQuery } from '@lib/romPlayQuery'
 import { useCallback, useState } from 'react'
 import { type Game, type Phase } from '../game/engine'
 import { type Controls } from '../game/input'

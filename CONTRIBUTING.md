@@ -12,7 +12,7 @@ and tooling changes in separate commits when possible.
 | Stage placements and route safety | `src/game/`, `src/game/data/`                   | Route/collision tests; relevant playthrough   |
 | 3D models and scenery             | `src/game3d/`                                   | Mobile, ground and visual browser checks      |
 | 2D sprites, camera and effects    | `src/game2d/`                                   | Rendering regressions; production check       |
-| Map, menus and input              | `src/app/`, `src/islandMap/`, `src/components/` | E2E; both phone orientations                  |
+| Map, menus and input              | `src/containers/`, `src/hooks/`, `src/components/`, `src/islandMap/` | E2E; both phone orientations           |
 | Reproduction tools                | `scripts/`                                      | Run the changed generator or browser scenario |
 
 These are responsibility boundaries, not assignments to particular people.
