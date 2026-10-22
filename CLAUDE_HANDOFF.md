@@ -24,6 +24,8 @@ et `SECURITY.md` pour l’organisation actuelle et les preuves de validation.
   `@lib`, `@components` (voir `docs/architecture.md`).
 - **TypeScript `~5.9.3`** (stable, dans la plage `typescript-eslint` ; `baseUrl` +
   alias dans `tsconfig.app.json`).
+- Carte île 3D : zoom caméra via `useMapIslandProjection` (plus de `@react-three/drei`
+  sur la scène map). Installs : `.npmrc` + `NPM_FLAGS=--legacy-peer-deps` (Netlify).
 
 Validation finale terminée : chaîne demandée, 465 tests / 85 fichiers,
 3 E2E, build, architecture, 11 fonctionnels et 12 cas mobiles de production

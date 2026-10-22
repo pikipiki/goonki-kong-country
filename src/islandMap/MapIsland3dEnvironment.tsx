@@ -1,4 +1,3 @@
-import { OrthographicCamera } from '@react-three/drei'
 import {
   ISLAND_MAP_HEMI_GROUND,
   ISLAND_MAP_HEMI_SKY,
@@ -9,15 +8,12 @@ import {
 } from './romMapPalette'
 
 export function MapIsland3dEnvironment({
-  zoom,
   portrait,
 }: {
-  zoom: number
   portrait: boolean
 }) {
   return (
     <>
-      <OrthographicCamera makeDefault position={[0, 26, 13]} zoom={zoom} />
       <color attach="background" args={[ISLAND_MAP_SKY]} />
       <hemisphereLight
         args={[ISLAND_MAP_HEMI_SKY, ISLAND_MAP_HEMI_GROUND, 2.2]}

@@ -67,7 +67,6 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/material": "^10.0.0-alpha.0",
-    "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^10.0.0-canary.58acabc",
     "i18next": "^26.5.5",
     "react": "^19.3.1",

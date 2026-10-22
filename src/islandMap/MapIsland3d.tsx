@@ -32,6 +32,7 @@ export function MapIsland3d({
   useMapIslandProjection(
     camera,
     lookTarget,
+    zoom,
     nodes,
     onProject,
     size.width,
@@ -40,7 +41,7 @@ export function MapIsland3d({
 
   return (
     <>
-      <MapIsland3dEnvironment zoom={zoom} portrait={portrait} />
+      <MapIsland3dEnvironment portrait={portrait} />
       {nodes.map(([nodeX, nodeZ], index) => (
         <IslandStageNode
           key={index}

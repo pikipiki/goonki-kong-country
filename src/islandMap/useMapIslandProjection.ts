@@ -4,12 +4,16 @@ import { Vector3, type PerspectiveCamera, type OrthographicCamera } from 'three'
 export function useMapIslandProjection(
   camera: PerspectiveCamera | OrthographicCamera,
   lookTarget: number,
+  zoom: number,
   nodes: [number, number][],
   onProject: (points: { x: number; y: number }[]) => void,
   width: number,
   height: number,
 ) {
   useLayoutEffect(() => {
+    if ('zoom' in camera) {
+      camera.zoom = zoom
+    }
     camera.lookAt(0, 0, lookTarget)
     camera.updateProjectionMatrix()
     camera.updateMatrixWorld()
@@ -22,5 +26,5 @@ export function useMapIslandProjection(
         }
       }),
     )
-  }, [camera, lookTarget, nodes, onProject, width, height])
+  }, [camera, lookTarget, zoom, nodes, onProject, width, height])
 }
