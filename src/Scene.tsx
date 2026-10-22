@@ -77,7 +77,7 @@ function TitleCast({ game }: { game: Game }) {
   const root = useRef<Group>(null)
   const { size } = useThree()
   useFrame(() => {
-    if (!root.current) {
+    if (!root.current || root.current.children.length < 2) {
       return
     }
     root.current.visible = game.phase === 'title'
