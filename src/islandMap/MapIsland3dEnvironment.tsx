@@ -7,11 +7,7 @@ import {
   ISLAND_MAP_SUN,
 } from './romMapPalette'
 
-export function MapIsland3dEnvironment({
-  portrait,
-}: {
-  portrait: boolean
-}) {
+export function MapIsland3dEnvironment({ portrait }: { portrait: boolean }) {
   return (
     <>
       <color attach="background" args={[ISLAND_MAP_SKY]} />

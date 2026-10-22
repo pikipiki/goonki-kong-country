@@ -41,4 +41,3 @@ export function r3fClock(state: RootState | unknown): R3fClock {
     getElapsedTime: () => elapsed,
   }
 }
-
