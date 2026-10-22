@@ -1,5 +1,25 @@
 # Reprise Gemini — Goonk Country — 22 octobre 2026
 
+## Priorité de reprise — objets du boss, limites visibles, douleur et boulets (22 octobre 2026)
+
+Cette section prévaut sur les historiques ci-dessous. Base Git : `7d63ea2 Improve 2D camera, tokens, audio, and mobile framing.` Corrections locales non committées dans `/Users/sevenone./Documents/git/goonk-country` ; serveur utilisateur `5174` conservé.
+
+- **Objets du boss 2D** : les anciens carrés fixes de 8 pixels sont remplacés par les sprites ROM des tonneaux normal, DK et checkpoint, avec lettres DK superposées. Échelle commune de 1,1 unité au sol, porté et lancé, adaptée à la caméra portrait/paysage. Ancre portée partagée avec le point de lancement ; un tonneau roulant repose à hauteur cohérente avec son dessin. Les tonneaux lancés infligent bien un dégât au boss, y compris dans le navigateur avec les vraies commandes tactiles.
+- **Limites du bateau** : `bossArena.ts` fournit les mêmes extrémités aux deux rendus et au moteur. Mâts visibles à x=0/22 ; centre des peluches limité à 0,75/21,25, vitesse annulée au contact. Le pont entier se traverse sans obstacle intérieur, y compris en portant un tonneau (test moteur isolant la géométrie). Les objets lancés se brisent au bord. Suppression des bananes/5 lettres procédurales auparavant invisibles et superposées au centre de ce niveau ; les 3 tonneaux authored restent présents.
+- **Douleur du boss 2D/3D** : événement partagé `boss-hurt`, SFX ROM `0x53` (83, intitulé KillKrusha dans le manifest), une seule fois par coup réussi après 6 images de simulation. Le dernier coup joue aussi le son ; une tête couronnée qui ne perd aucun PV ne grogne pas. SFX atterrissage boss `0x15`, impact boulet `0x1E`.
+- **Boulets 3D et moteur partagé** : chute accélérée par poses tenues 2 ticks, impact marqué de 100 ms, écrasement visuel, rebond puis disparition au second contact. Rendu et collisions lisent les mêmes positions. **La cadence 30 Hz, l'écrasement et les vitesses sont une adaptation mobile ; ne pas les présenter comme des timings SNES vérifiés.** Le script ROM confirme l'impact et l'impulsion de rebond `$0600`.
+- **Preuve ROM** : identité du ZIP vérifiée via REA, puis lecture des octets Rev2 exacts et navigation dans le désassemblage local (65816 natif non pris en charge par REA, session fermée). SHA ROM `628147468c3539283197f58f03b94df49758a332831857481ea9cc31645f0527`. Animation douleur `$1A8`, pointeur PC `$3E88C2` → `$EBDA`, script PC `$3EEBDA` : `02 44 16 02 48 16 02 4C 16 8F 53 10 50 16`. Trois poses ×2 images puis commande sonore `8F53`. Voir `reference/boss-feedback-rom-evidence.json`.
+
+**Validation : 257 tests / 40 fichiers, build TypeScript/Vite et diff-check passent.** `tests/boss-feedback.test.ts` ajoute 9 tests : traversée des limites avec/sans tonneau, pickup/lancer/sol/bord, dégât par tonneau, absence de ramassables invisibles, premier/dernier cri, couronne protégée, cadence/impact/rebond.
+
+`node scripts/boss-feedback-browser.mjs` : Chrome tactile indépendant, 390×844 et 844×390, **8 sauts réels réussis** (2 peluches ×2 orientations ×2 rendus), chaque fois boss 9PV, joueur 2PV/5vies. Lecture effective du buffer83 avec PCM non nul et AudioContext running. En 2D : même facteur d'échelle des sprites au sol/en main/lancés, saut avec tonneau conservé, lancer infligeant 1PV, vraies touches vers les deux limites visibles. En 3D : poses tenues, impact écrasé et rebond mesurés dans les groupes Three. Aucune erreur JS. Ces reproductions contrôlent seulement les positions initiales et la phase de démonstration des boulets ; elles ne constituent pas un parcours complet. Données/captures `reference/boss-feedback-browser.json`, `boss-feedback-*`, `boss-barrel-*`, `boss-arena-*`, `boss-ball-impact-*`.
+
+**Combat complet rejoué après les changements**, via `boss-battle-browser.mjs` : victoire 10 coups, **87,9 s**, **583 décisions clavier**, **0 mort**, fin 1PV/5vies ; aucune erreur JS. Partie réelle strictement lue, dégâts actifs, aucune écriture de position/PV/horloge/invincibilité. Le contrôleur planifie sur copies isolées pendant une pause commandée par P. Toutes les familles d'attaques et la fausse défaite sont traversées. Ce résultat remplace les anciennes mesures 77,75 s/515 décisions. Rendu du parcours complet : 2D, moteur partagé ; la 3D a reçu les vérifications ciblées ci-dessus.
+
+Limites : pas d'appareil iOS physique, pas de nouvelle traversée complète jungle/mine, pas d'émulation exacte des timings SNES. Rapport détaillé : `reference/boss-objects-feedback-report.md`. Ne pas réintroduire les ramassables procéduraux sur le pont pour satisfaire l'ancien test GOONK : ce test exige toujours les lettres dans les 6 stages ordinaires, et aucun ramassable dans l'arène du boss.
+
+---
+
 ## Dernière passe — portrait3D, tonneauDK, carte plein écran et grand boss (22 octobre 2026)
 
 Priorité sur les sections historiques. BaseGit toujours`3dad4cd` ; cette passe et la précédente sont locales, non committées. Dépôt canonique/serveur5174 conservés.

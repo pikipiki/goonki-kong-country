@@ -1,3 +1,4 @@
+import { bossArenaBounds, BOSS_CARRY, BOSS_BARREL_HEIGHT } from "./bossArena";
 import { createBossBattle, updateBossBattle, registerBossHit, bossAcceptsHit, BOSS_MAX_HITS, type BossBattle, type BossProjectile, type BossPhase } from "./bossBattle";
 import { cannonWorldPosition } from './cannonMotion';
 import { BUDDY_PHYSICS, ANIMAL_DESIGNS, ENGUARDE_SWIM_BODY, type Animal } from "./animals";
@@ -953,8 +954,8 @@ export class Game {
           this.onEvent("place");
         } else {
           this.thrown.push({
-            x: p.x + p.facing * 0.7,
-            y: p.y + 1,
+            x: p.x + p.facing * (this.bossBattle ? BOSS_CARRY.x : .7),
+            y: p.y + (this.bossBattle ? BOSS_CARRY.y : 1),
             vx: p.facing * rawSpeed(THROW.horizontalInitialMagnitudeRaw),
             vy: rawSpeed(THROW.verticalRaw),
             active: true,
@@ -1288,10 +1289,15 @@ export class Game {
         if(contact.blockedY) b.vy=0;
         if(contact.blockedX) b.active=false;
       } else {
-        const floor=this.supportAt(b.x,oldBarrelY-.5,.2);
-        if(floor!==null && b.vy<0 && b.y<=floor+.5 && oldBarrelY>=floor+.3) {
-          b.y=floor+.5;b.vy=0;
+        const radius=this.bossBattle?BOSS_BARREL_HEIGHT/2:.5;
+        const floor=this.supportAt(b.x,oldBarrelY-radius,.2);
+        if(floor!==null && b.vy<0 && b.y<=floor+radius && oldBarrelY>=floor+radius-.2) {
+          b.y=floor+radius;b.vy=0;
         }
+      }
+      if(this.bossBattle) {
+        const bounds=bossArenaBounds(this.level.length);
+        if(b.x<bounds.left||b.x>bounds.right){b.active=false;this.onEvent("barrel-break");}
       }
       if (b.y < -6 || Math.abs(b.x - p.x) > 30) b.active = false;
     });
@@ -1448,7 +1454,8 @@ export class Game {
       }
     }
     if(this.bossBattle){
-      p.x=clamp(p.x,1,this.level.length-1);
+      const bounds=bossArenaBounds(this.level.length), limited=clamp(p.x,bounds.playerMin,bounds.playerMax);
+      if(limited!==p.x){p.x=limited;p.vx=0;p.rollJumpMomentum=0;}
       for(const shot of this.bossProjectiles){
         if(shot.active&&shot.warning<=0&&Math.abs(p.x-shot.x)<shot.width+.3&&p.y<shot.y+shot.height/2&&p.y+1.35>shot.y-shot.height/2){this.damage();}
       }

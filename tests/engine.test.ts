@@ -283,10 +283,11 @@ describe("team, barrels, collectibles, progression", () => {
       {},
     );
   });
-  it("contains seven complete routes with reachable letters", () => {
+  it("contains seven complete routes and letters outside the boss arena", () => {
     expect(LEVELS).toHaveLength(7);
     for (const level of LEVELS) {
-      expect(
+      if (level.biome === "ship") expect(level.pickups).toEqual([]);
+      else expect(
         level.pickups
           .filter((p) => p.kind === "letter")
           .map((p) => p.letter)
