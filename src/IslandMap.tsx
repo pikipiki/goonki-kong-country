@@ -6,6 +6,7 @@ import { PlushSpriteRenderer } from "./game2d/plushSprite";
 import { useTranslation } from "react-i18next";
 import { tr } from "./i18n";
 import { tx } from "./i18n/resolveText";
+import { romMapLayout } from "./mapLayout";
 
 // Seven adapted destinations. Alternate rows leave room for readable labels;
 // portrait follows a winding vertical trail instead of shrinking the island.
@@ -318,31 +319,17 @@ function RomMap2D({
       const cw = Math.max(256, Math.round(rect.width || window.innerWidth));
       const ch = Math.max(224, Math.round(rect.height || window.innerHeight));
 
-      // Compute map viewport placement inside canvas.
-      // On tall mobile portrait viewports, crop horizontal ocean margins slightly
-      // so the Kongo Jungle island and walking plushies fill the view clearly.
-      const isPortraitCanvas = cw < ch * 0.88;
-      const effectiveMapW = isPortraitCanvas ? 204 : 256;
-      const effectiveMapH = isPortraitCanvas ? 184 : 224;
-      const mapScale = Math.min(cw / effectiveMapW, ch / effectiveMapH);
-      const drawW = Math.round(256 * mapScale);
-      const drawH = Math.round(224 * mapScale);
-      const centerRomX = isPortraitCanvas ? 134 : 128;
-      const centerRomY = isPortraitCanvas ? 130 : 112;
-      const offsetX = Math.round(cw * 0.5 - centerRomX * mapScale);
-      const offsetY = Math.round(ch * 0.5 - centerRomY * mapScale);
+      const layout = romMapLayout(cw, ch, !!canvas.closest(".phase-map"));
+      const { scale: mapScale, offsetX, offsetY } = layout;
+      const drawW = 256 * mapScale;
+      const drawH = 224 * mapScale;
 
       if (cw !== lastW || ch !== lastH) {
         lastW = cw;
         lastH = ch;
         canvas.width = cw;
         canvas.height = ch;
-        onProjectRef.current(
-          romMapNodes.map(([nx, ny]) => ({
-            x: offsetX + nx * mapScale,
-            y: offsetY + (ny + 14) * mapScale,
-          })),
-        );
+        onProjectRef.current(layout.labels);
       }
 
       const target = selectedRef.current;
@@ -394,12 +381,29 @@ function RomMap2D({
       ctx.imageSmoothingEnabled = false;
 
       // Backdrop
-      ctx.fillStyle = "#0e1d10";
+      ctx.fillStyle = "#0c3943";
       ctx.fillRect(0, 0, cw, ch);
+      // Ocean continues to the viewport edges; the complete ROM island stays
+      // visible rather than being cropped by the phone's aspect ratio.
+      for (let y = 0; y < ch; y += 28) {
+        ctx.fillStyle = y % 56 ? "#164851" : "#12434d";
+        ctx.fillRect(0, y, cw, 2);
+      }
 
       if (mapImg) {
         ctx.drawImage(mapImg, 0, 0, 256, 224, offsetX, offsetY, drawW, drawH);
       }
+
+      // Named touch targets sit beside crowded ROM markers. Fine leaders
+      // preserve the link to each real destination without overlapping labels.
+      ctx.strokeStyle = "#f7d78d99";
+      ctx.lineWidth = 1;
+      romMapNodes.forEach(([x, y], i) => {
+        ctx.beginPath();
+        ctx.moveTo(offsetX + x * mapScale, offsetY + y * mapScale);
+        ctx.lineTo(layout.labels[i].x, layout.labels[i].y);
+        ctx.stroke();
+      });
 
       // Draw ROM map trail dots
       for (let i = 0; i < romMapNodes.length - 1; i++) {
@@ -521,19 +525,12 @@ function RomMap2D({
         const rect = canvas.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
-        const isPortraitCanvas = rect.width < rect.height * 0.88;
-        const effectiveMapW = isPortraitCanvas ? 204 : 256;
-        const effectiveMapH = isPortraitCanvas ? 184 : 224;
-        const mapScale = Math.min(rect.width / effectiveMapW, rect.height / effectiveMapH);
-        const centerRomX = isPortraitCanvas ? 134 : 128;
-        const centerRomY = isPortraitCanvas ? 130 : 112;
-        const offsetX = rect.width * 0.5 - centerRomX * mapScale;
-        const offsetY = rect.height * 0.5 - centerRomY * mapScale;
+        const { scale: mapScale, offsetX, offsetY } = romMapLayout(rect.width, rect.height, !!canvas.closest(".phase-map"));
         for (let i = 0; i < romMapNodes.length; i++) {
           if (i > unlocked) continue;
           const nx = offsetX + romMapNodes[i][0] * mapScale;
           const ny = offsetY + romMapNodes[i][1] * mapScale;
-          if (Math.hypot(x - nx, y - ny) < 22 * mapScale) {
+          if (Math.hypot(x - nx, y - ny) < Math.max(22, 12 * mapScale)) {
             onSelect(i);
             break;
           }

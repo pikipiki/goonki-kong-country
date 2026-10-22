@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """
-Extracts 100% authentic 2D graphics, backgrounds, palettes, HUD tiles,
+Extracts ROM graphics, backgrounds, palettes, HUD tiles,
 and sprite animations for Stage 1 (Jungle Hijinxs) directly from the
 Donkey Kong Country (USA) (Rev 2) SNES ROM into public/rom2d/.
 """
+import argparse
+import hashlib
 import json
 import os
 import re
@@ -107,12 +109,16 @@ def decode_2bpp_tile(data: bytes, tile_idx: int):
 
 def read_palette(rom: bytes, snes_addr: int, night: bool = False):
     off = snes_to_pc(snes_addr)
-    cols = []
-    for i in range(16):
+    # Sprite palette records contain ONLY colors 1..15 (30 bytes). The ROM
+    # CODE_80A2CD (Rev 2 PC $00A2DB) uploads $001E bytes to CGRAM starting at the nonzero slot.
+    # Color zero is implicit transparent, unlike the 16-word background records.
+    # Reading 16 words here shifts every visible color and borrows the next record.
+    cols = [(0, 0, 0, 0)]
+    for i in range(15):
         c = struct.unpack_from("<H", rom, off + i * 2)[0]
         if night:
             c = night_bgr555(c)
-        cols.append(bgr555_to_rgba(c, i == 0))
+        cols.append(bgr555_to_rgba(c))
     return cols
 
 
@@ -254,6 +260,9 @@ def decode_dynamic_sprite(rom: bytes, snes_addr: int, pal: list):
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--sprites-only", action="store_true", help="Update sprite colors without regenerating existing background/map assets")
+    args = parser.parse_args()
     os.makedirs(OUT_DIR, exist_ok=True)
     with zipfile.ZipFile(ROM_ZIP) as zf:
         rom = zf.read(zf.namelist()[0])
@@ -278,179 +287,185 @@ def main():
             found = rom.find(hdr_bytes)
             sprite_Addrs[name] = found if found != -1 else pc
 
-    # 1. Layer 1 & Layer 2 (Day & Night)
-    jungle_gfx = decompress_dkc(rom, 0x158FC0)
-    pal_off = 0x39A1DC
-    day_pals = []
-    night_pals = []
-    for p in range(8):
-        dp = []
-        np = []
-        for c in range(16):
-            val = struct.unpack_from("<H", rom, pal_off + (p * 16 + c) * 2)[0]
-            dp.append(bgr555_to_rgba(val, c == 0))
-            np.append(bgr555_to_rgba(night_bgr555(val), c == 0))
-        day_pals.append(dp)
-        night_pals.append(np)
-
-    print("Rendering Layer 1 (Back & Front chunks <= 2048px for iOS/Android)...")
-    l1_back = render_metatile_layer(
-        rom, jungle_gfx, day_pals, 0x190000, 0x19A3C0, 0, 169, 0, 16,
-        priority_filter=0, skip_wrapped_canopy=True
-    )
-    l1_front = render_metatile_layer(
-        rom, jungle_gfx, day_pals, 0x190000, 0x19A3C0, 0, 169, 0, 16,
-        priority_filter=1, skip_wrapped_canopy=True
-    )
-    chunk_w = 2048
-    for idx, x0 in enumerate(range(0, l1_back.width, chunk_w)):
-        x1 = min(l1_back.width, x0 + chunk_w)
-        l1_back.crop((x0, 0, x1, 512)).save(
-            os.path.join(OUT_DIR, f"layer1-back-{idx}.png"), optimize=True
-        )
-        l1_front.crop((x0, 0, x1, 512)).save(
-            os.path.join(OUT_DIR, f"layer1-front-{idx}.png"), optimize=True
-        )
-
-    print("Rendering Layer 2...")
-    l2_day = render_metatile_layer(
-        rom, jungle_gfx, day_pals, 0x190000, 0x19A3C0, 168, 16, 0, 8
-    )
-    l2_day.save(os.path.join(OUT_DIR, "layer2.png"), optimize=True)
-
-    # 2. Layer 3 distant canopy silhouette & Sky HDMA tables
-    print("Rendering Layer 3 & Sky HDMA...")
-    sky_day_hdma = []
-    pos = 0x3996E6
-    while pos < 0x3998E7:
-        cnt = rom[pos]
-        if cnt == 0:
-            break
-        c = struct.unpack_from("<H", rom, pos + 3)[0]
-        r, g, b, _ = bgr555_to_rgba(c)
-        for _ in range(cnt):
-            sky_day_hdma.append([r, g, b])
-        pos += 5
-    # Only keep scanlines 0..74 (dawn gradient); scanlines >= 75 in ROM are grey filler behind BG2/BG3
-    sky_day_hdma = sky_day_hdma[:75]
-
-    sky_night_hdma = []
-    for i in range(71):
-        c = struct.unpack_from("<H", rom, 0x399658 + i * 2)[0]
-        r, g, b, _ = bgr555_to_rgba(c)
-        for _ in range(4):
-            sky_night_hdma.append([r, g, b])
-    sky_night_hdma = sky_night_hdma[:224]
-
-    l3_hdma_day = []
-    l3_hdma_night = []
-    pos = 0x3998EA
-    while pos < 0x399980:
-        cnt = rom[pos]
-        if cnt == 0:
-            break
-        c = struct.unpack_from("<H", rom, pos + 3)[0]
-        nc = night_bgr555(c)
-        for _ in range(cnt):
-            l3_hdma_day.append(bgr555_to_rgba(c))
-            l3_hdma_night.append(bgr555_to_rgba(nc))
-        pos += 5
-
-    l3_gfx = rom[0x0DF4B7 : 0x0DF4B7 + 0x0450]
-    l3_tiles = [decode_2bpp_tile(l3_gfx, i) for i in range(len(l3_gfx) // 16)]
-    l3_day_img = Image.new("RGBA", (256, 48), (0, 0, 0, 0))
-    l3_night_img = Image.new("RGBA", (256, 48), (0, 0, 0, 0))
-    l3_dpix = l3_day_img.load()
-    l3_npix = l3_night_img.load()
-
-    for ty in range(6):
-        for tx in range(32):
-            tw = struct.unpack_from("<H", rom, 0x0DF337 + (ty * 32 + tx) * 2)[0]
-            t_idx = tw & 0x03FF
-            hflip = (tw & 0x4000) != 0
-            vflip = (tw & 0x8000) != 0
-            if t_idx >= len(l3_tiles):
-                continue
-            tile = l3_tiles[t_idx]
-            for py in range(8):
-                sy = (7 - py) if vflip else py
-                screen_y = 64 + ty * 8 + py
-                dcol = l3_hdma_day[min(screen_y, len(l3_hdma_day) - 1)]
-                ncol = l3_hdma_night[min(screen_y, len(l3_hdma_night) - 1)]
-                sday = sky_day_hdma[min(screen_y, len(sky_day_hdma) - 1)]
-                for px in range(8):
-                    sx = (7 - px) if hflip else px
-                    c_idx = tile[sy][sx]
-                    if c_idx != 0:
-                        l3_dpix[tx * 8 + px, ty * 8 + py] = dcol
-                        l3_npix[tx * 8 + px, ty * 8 + py] = ncol
-                    elif (ty * 8 + py) >= 7:
-                        l3_dpix[tx * 8 + px, ty * 8 + py] = (sday[0], sday[1], sday[2], 255)
-
-    l3_day_img.save(os.path.join(OUT_DIR, "layer3.png"), optimize=True)
-
-    # 2b. World Map & Kongo Jungle Map 2D backgrounds from ROM
-    print("Rendering 2D Overworld Maps from ROM...")
-    def render_raw_tilemap(tm_off: int, gfx_off: int, gfx_end: int, pal_off: int) -> Image.Image:
-        mpals = []
+    if args.sprites_only:
+        with open(os.path.join(OUT_DIR, "manifest.json")) as f:
+            existing = json.load(f)
+        sky_day_hdma = existing["skyDay"]
+        sky_night_hdma = existing["skyNight"]
+    else:
+        # 1. Layer 1 & Layer 2 (Day & Night)
+        jungle_gfx = decompress_dkc(rom, 0x158FC0)
+        pal_off = 0x39A1DC
+        day_pals = []
+        night_pals = []
         for p in range(8):
-            mpals.append(
-                [
-                    bgr555_to_rgba(
-                        struct.unpack_from("<H", rom, pal_off + (p * 16 + c) * 2)[0],
-                        False,
-                    )
-                    for c in range(16)
-                ]
+            dp = []
+            np = []
+            for c in range(16):
+                val = struct.unpack_from("<H", rom, pal_off + (p * 16 + c) * 2)[0]
+                dp.append(bgr555_to_rgba(val, c == 0))
+                np.append(bgr555_to_rgba(night_bgr555(val), c == 0))
+            day_pals.append(dp)
+            night_pals.append(np)
+
+        print("Rendering Layer 1 (Back & Front chunks <= 2048px for iOS/Android)...")
+        l1_back = render_metatile_layer(
+            rom, jungle_gfx, day_pals, 0x190000, 0x19A3C0, 0, 169, 0, 16,
+            priority_filter=0, skip_wrapped_canopy=True
+        )
+        l1_front = render_metatile_layer(
+            rom, jungle_gfx, day_pals, 0x190000, 0x19A3C0, 0, 169, 0, 16,
+            priority_filter=1, skip_wrapped_canopy=True
+        )
+        chunk_w = 2048
+        for idx, x0 in enumerate(range(0, l1_back.width, chunk_w)):
+            x1 = min(l1_back.width, x0 + chunk_w)
+            l1_back.crop((x0, 0, x1, 512)).save(
+                os.path.join(OUT_DIR, f"layer1-back-{idx}.png"), optimize=True
             )
-        mgfx = rom[gfx_off:gfx_end]
-        mtiles = [decode_4bpp_tile(mgfx, i) for i in range(len(mgfx) // 32)]
-        mim = Image.new("RGBA", (256, 224), (0, 0, 0, 255))
-        mpix = mim.load()
-        for ty in range(28):
+            l1_front.crop((x0, 0, x1, 512)).save(
+                os.path.join(OUT_DIR, f"layer1-front-{idx}.png"), optimize=True
+            )
+
+        print("Rendering Layer 2...")
+        l2_day = render_metatile_layer(
+            rom, jungle_gfx, day_pals, 0x190000, 0x19A3C0, 168, 16, 0, 8
+        )
+        l2_day.save(os.path.join(OUT_DIR, "layer2.png"), optimize=True)
+
+        # 2. Layer 3 distant canopy silhouette & Sky HDMA tables
+        print("Rendering Layer 3 & Sky HDMA...")
+        sky_day_hdma = []
+        pos = 0x3996E6
+        while pos < 0x3998E7:
+            cnt = rom[pos]
+            if cnt == 0:
+                break
+            c = struct.unpack_from("<H", rom, pos + 3)[0]
+            r, g, b, _ = bgr555_to_rgba(c)
+            for _ in range(cnt):
+                sky_day_hdma.append([r, g, b])
+            pos += 5
+        # Only keep scanlines 0..74 (dawn gradient); scanlines >= 75 in ROM are grey filler behind BG2/BG3
+        sky_day_hdma = sky_day_hdma[:75]
+
+        sky_night_hdma = []
+        for i in range(71):
+            c = struct.unpack_from("<H", rom, 0x399658 + i * 2)[0]
+            r, g, b, _ = bgr555_to_rgba(c)
+            for _ in range(4):
+                sky_night_hdma.append([r, g, b])
+        sky_night_hdma = sky_night_hdma[:224]
+
+        l3_hdma_day = []
+        l3_hdma_night = []
+        pos = 0x3998EA
+        while pos < 0x399980:
+            cnt = rom[pos]
+            if cnt == 0:
+                break
+            c = struct.unpack_from("<H", rom, pos + 3)[0]
+            nc = night_bgr555(c)
+            for _ in range(cnt):
+                l3_hdma_day.append(bgr555_to_rgba(c))
+                l3_hdma_night.append(bgr555_to_rgba(nc))
+            pos += 5
+
+        l3_gfx = rom[0x0DF4B7 : 0x0DF4B7 + 0x0450]
+        l3_tiles = [decode_2bpp_tile(l3_gfx, i) for i in range(len(l3_gfx) // 16)]
+        l3_day_img = Image.new("RGBA", (256, 48), (0, 0, 0, 0))
+        l3_night_img = Image.new("RGBA", (256, 48), (0, 0, 0, 0))
+        l3_dpix = l3_day_img.load()
+        l3_npix = l3_night_img.load()
+
+        for ty in range(6):
             for tx in range(32):
-                tw = struct.unpack_from("<H", rom, tm_off + (ty * 32 + tx) * 2)[0]
-                t_idx = tw & 0x3FF
-                pal_idx = (tw >> 10) & 7
-                hf = (tw & 0x4000) != 0
-                vf = (tw & 0x8000) != 0
-                if t_idx >= len(mtiles):
+                tw = struct.unpack_from("<H", rom, 0x0DF337 + (ty * 32 + tx) * 2)[0]
+                t_idx = tw & 0x03FF
+                hflip = (tw & 0x4000) != 0
+                vflip = (tw & 0x8000) != 0
+                if t_idx >= len(l3_tiles):
                     continue
-                tile = mtiles[t_idx]
-                pal = mpals[pal_idx]
+                tile = l3_tiles[t_idx]
                 for py in range(8):
-                    sy = (7 - py) if vf else py
+                    sy = (7 - py) if vflip else py
+                    screen_y = 64 + ty * 8 + py
+                    dcol = l3_hdma_day[min(screen_y, len(l3_hdma_day) - 1)]
+                    ncol = l3_hdma_night[min(screen_y, len(l3_hdma_night) - 1)]
+                    sday = sky_day_hdma[min(screen_y, len(sky_day_hdma) - 1)]
                     for px in range(8):
-                        sx = (7 - px) if hf else px
-                        mpix[tx * 8 + px, ty * 8 + py] = pal[tile[sy][sx]]
-        return mim
+                        sx = (7 - px) if hflip else px
+                        c_idx = tile[sy][sx]
+                        if c_idx != 0:
+                            l3_dpix[tx * 8 + px, ty * 8 + py] = dcol
+                            l3_npix[tx * 8 + px, ty * 8 + py] = ncol
+                        elif (ty * 8 + py) >= 7:
+                            l3_dpix[tx * 8 + px, ty * 8 + py] = (sday[0], sday[1], sday[2], 255)
 
-    render_raw_tilemap(0x050912, 0x051012, 0x056FB2, 0x39C103).save(
-        os.path.join(OUT_DIR, "map-kongo.png"), optimize=True
-    )
-    render_raw_tilemap(0x010FF0, 0x0116F1, 0x016AD1, 0x39BE03).save(
-        os.path.join(OUT_DIR, "map-island.png"), optimize=True
-    )
+        l3_day_img.save(os.path.join(OUT_DIR, "layer3.png"), optimize=True)
 
-    # 3. Cave Bonus Room
-    print("Rendering Cave Bonus Room...")
-    cave_gfx = decompress_dkc(rom, 0x1C0000)
-    cave_pals = []
-    for p in range(8):
-        cp = []
-        for c in range(16):
-            val = struct.unpack_from("<H", rom, 0x39A01C + (p * 16 + c) * 2)[0]
-            cp.append(bgr555_to_rgba(val, c == 0))
-        cave_pals.append(cp)
+        # 2b. World Map & Kongo Jungle Map 2D backgrounds from ROM
+        print("Rendering 2D Overworld Maps from ROM...")
+        def render_raw_tilemap(tm_off: int, gfx_off: int, gfx_end: int, pal_off: int) -> Image.Image:
+            mpals = []
+            for p in range(8):
+                mpals.append(
+                    [
+                        bgr555_to_rgba(
+                            struct.unpack_from("<H", rom, pal_off + (p * 16 + c) * 2)[0],
+                            False,
+                        )
+                        for c in range(16)
+                    ]
+                )
+            mgfx = rom[gfx_off:gfx_end]
+            mtiles = [decode_4bpp_tile(mgfx, i) for i in range(len(mgfx) // 32)]
+            mim = Image.new("RGBA", (256, 224), (0, 0, 0, 255))
+            mpix = mim.load()
+            for ty in range(28):
+                for tx in range(32):
+                    tw = struct.unpack_from("<H", rom, tm_off + (ty * 32 + tx) * 2)[0]
+                    t_idx = tw & 0x3FF
+                    pal_idx = (tw >> 10) & 7
+                    hf = (tw & 0x4000) != 0
+                    vf = (tw & 0x8000) != 0
+                    if t_idx >= len(mtiles):
+                        continue
+                    tile = mtiles[t_idx]
+                    pal = mpals[pal_idx]
+                    for py in range(8):
+                        sy = (7 - py) if vf else py
+                        for px in range(8):
+                            sx = (7 - px) if hf else px
+                            mpix[tx * 8 + px, ty * 8 + py] = pal[tile[sy][sx]]
+            return mim
 
-    cave_back = render_metatile_layer(
-        rom, cave_gfx, cave_pals, 0x1A0000, 0x1ABF00, 864, 8, 8, 8, priority_filter=0
-    )
-    cave_front = render_metatile_layer(
-        rom, cave_gfx, cave_pals, 0x1A0000, 0x1ABF00, 864, 8, 8, 8, priority_filter=1
-    )
-    cave_back.save(os.path.join(OUT_DIR, "bonus-cave-back.png"), optimize=True)
-    cave_front.save(os.path.join(OUT_DIR, "bonus-cave-front.png"), optimize=True)
+        render_raw_tilemap(0x050912, 0x051012, 0x056FB2, 0x39C103).save(
+            os.path.join(OUT_DIR, "map-kongo.png"), optimize=True
+        )
+        render_raw_tilemap(0x010FF0, 0x0116F1, 0x016AD1, 0x39BE03).save(
+            os.path.join(OUT_DIR, "map-island.png"), optimize=True
+        )
+
+        # 3. Cave Bonus Room
+        print("Rendering Cave Bonus Room...")
+        cave_gfx = decompress_dkc(rom, 0x1C0000)
+        cave_pals = []
+        for p in range(8):
+            cp = []
+            for c in range(16):
+                val = struct.unpack_from("<H", rom, 0x39A01C + (p * 16 + c) * 2)[0]
+                cp.append(bgr555_to_rgba(val, c == 0))
+            cave_pals.append(cp)
+
+        cave_back = render_metatile_layer(
+            rom, cave_gfx, cave_pals, 0x1A0000, 0x1ABF00, 864, 8, 8, 8, priority_filter=0
+        )
+        cave_front = render_metatile_layer(
+            rom, cave_gfx, cave_pals, 0x1A0000, 0x1ABF00, 864, 8, 8, 8, priority_filter=1
+        )
+        cave_back.save(os.path.join(OUT_DIR, "bonus-cave-back.png"), optimize=True)
+        cave_front.save(os.path.join(OUT_DIR, "bonus-cave-front.png"), optimize=True)
 
     # 4. Dynamic & Static Sprites Atlas
     print("Extracting Stage 1 Sprites...")
@@ -471,10 +486,11 @@ def main():
         "tire": read_palette(rom, 0xFC881E),
         "sign": read_palette(rom, 0xFC8350),
         "cover": read_palette(rom, 0xFC8226),
+        "cave_hole": read_palette(rom, 0xFC81EA),
         "butterfly_red": read_palette(rom, 0xFC894A),
         "butterfly_blue": read_palette(rom, 0xFC892C),
         "token": read_palette(rom, 0xFC89A4),
-        "platform": day_pals[1],
+        "platform": read_palette(rom, 0xFC88D2),
     }
 
     groups = {
@@ -519,11 +535,11 @@ def main():
         "butterfly": (["Butterfly_Fly" + str(i) for i in range(1, 7)], "butterfly_red"),
         "ground_cover": (["GroundCover_JungleLevel"], "cover"),
         "breakable_wall": (["BreakableWall_RightJungleWall", "BreakableWall_LeftJungleWall"], "cover"),
-        "cave_hole": (["CaveWallHole_RightWall"], "cover"),
+        "cave_hole": (["CaveWallHole_RightWall"], "cave_hole"),
         "smoke_puff": (["SmokePuff_Pose" + str(i) for i in range(1, 9)], "global"),
         "burst_effect": (["BurstEffect_Pose" + str(i) for i in range(1, 13)], "global"),
         "sparkle": (["Sparkle_Pose" + str(i) for i in range(1, 9)], "global"),
-        "platform": (["CavePlatform_Pose"], "barrel"),
+        "platform": (["CavePlatform_Pose"], "platform"),
     }
 
     frames = []
@@ -630,6 +646,11 @@ def main():
     atlas.save(os.path.join(OUT_DIR, "sprites.png"), optimize=True)
 
     manifest = {
+        "source": {
+            "romSha256": hashlib.sha256(rom).hexdigest(),
+            "spritePaletteLayout": "transparent index 0, then 15 BGR555 words",
+            "paletteUploadRoutine": "Rev 2 $80A2DB: DMA size $001E at PC $00A2FC",
+        },
         "skyDay": sky_day_hdma,
         "skyNight": sky_night_hdma,
         "frames": [

@@ -1,0 +1,601 @@
+{
+  "romSha256": "628147468c3539283197f58f03b94df49758a332831857481ea9cc31645f0527",
+  "frames": [
+    {
+      "x": 0,
+      "y": 0,
+      "w": 94,
+      "h": 72,
+      "ox": -51,
+      "oy": -65,
+      "name": "KRool_WaitToCatchCrown1"
+    },
+    {
+      "x": 96,
+      "y": 0,
+      "w": 92,
+      "h": 72,
+      "ox": -51,
+      "oy": -65,
+      "name": "KRool_WaitToCatchCrown2"
+    },
+    {
+      "x": 190,
+      "y": 0,
+      "w": 91,
+      "h": 72,
+      "ox": -51,
+      "oy": -65,
+      "name": "KRool_WaitToCatchCrown3"
+    },
+    {
+      "x": 283,
+      "y": 0,
+      "w": 87,
+      "h": 72,
+      "ox": -49,
+      "oy": -65,
+      "name": "KRool_WaitToCatchCrown4"
+    },
+    {
+      "x": 372,
+      "y": 0,
+      "w": 83,
+      "h": 72,
+      "ox": -50,
+      "oy": -66,
+      "name": "KRool_Hurt1"
+    },
+    {
+      "x": 457,
+      "y": 0,
+      "w": 82,
+      "h": 73,
+      "ox": -51,
+      "oy": -67,
+      "name": "KRool_Hurt2"
+    },
+    {
+      "x": 541,
+      "y": 0,
+      "w": 91,
+      "h": 77,
+      "ox": -51,
+      "oy": -70,
+      "name": "KRool_Hurt3"
+    },
+    {
+      "x": 634,
+      "y": 0,
+      "w": 97,
+      "h": 84,
+      "ox": -53,
+      "oy": -78,
+      "name": "KRool_Hurt4"
+    },
+    {
+      "x": 733,
+      "y": 0,
+      "w": 96,
+      "h": 88,
+      "ox": -52,
+      "oy": -78,
+      "name": "KRool_FallOver1"
+    },
+    {
+      "x": 831,
+      "y": 0,
+      "w": 101,
+      "h": 72,
+      "ox": -48,
+      "oy": -69,
+      "name": "KRool_FallOver2"
+    },
+    {
+      "x": 0,
+      "y": 90,
+      "w": 105,
+      "h": 64,
+      "ox": -45,
+      "oy": -61,
+      "name": "KRool_FallOver3"
+    },
+    {
+      "x": 107,
+      "y": 90,
+      "w": 108,
+      "h": 64,
+      "ox": -41,
+      "oy": -61,
+      "name": "KRool_FallOver4"
+    },
+    {
+      "x": 217,
+      "y": 90,
+      "w": 107,
+      "h": 72,
+      "ox": -40,
+      "oy": -61,
+      "name": "KRool_FallOver5"
+    },
+    {
+      "x": 326,
+      "y": 90,
+      "w": 110,
+      "h": 80,
+      "ox": -40,
+      "oy": -61,
+      "name": "KRool_FallOver6"
+    },
+    {
+      "x": 438,
+      "y": 90,
+      "w": 107,
+      "h": 72,
+      "ox": -37,
+      "oy": -55,
+      "name": "KRool_FallOver7"
+    },
+    {
+      "x": 547,
+      "y": 90,
+      "w": 107,
+      "h": 64,
+      "ox": -37,
+      "oy": -50,
+      "name": "KRool_FallOver8"
+    },
+    {
+      "x": 656,
+      "y": 90,
+      "w": 106,
+      "h": 56,
+      "ox": -37,
+      "oy": -47,
+      "name": "KRool_FallOver9"
+    },
+    {
+      "x": 764,
+      "y": 90,
+      "w": 109,
+      "h": 64,
+      "ox": -36,
+      "oy": -46,
+      "name": "KRool_FallOver10"
+    },
+    {
+      "x": 875,
+      "y": 90,
+      "w": 106,
+      "h": 72,
+      "ox": -36,
+      "oy": -46,
+      "name": "KRool_FallOver11"
+    },
+    {
+      "x": 0,
+      "y": 172,
+      "w": 101,
+      "h": 72,
+      "ox": -33,
+      "oy": -42,
+      "name": "KRool_FallOver12"
+    },
+    {
+      "x": 103,
+      "y": 172,
+      "w": 37,
+      "h": 40,
+      "ox": -19,
+      "oy": -31,
+      "name": "Cannonball_Pose"
+    },
+    {
+      "x": 142,
+      "y": 172,
+      "w": 88,
+      "h": 88,
+      "ox": -45,
+      "oy": -88,
+      "name": "KRool_Run1"
+    },
+    {
+      "x": 232,
+      "y": 172,
+      "w": 101,
+      "h": 88,
+      "ox": -55,
+      "oy": -84,
+      "name": "KRool_Run2"
+    },
+    {
+      "x": 335,
+      "y": 172,
+      "w": 97,
+      "h": 88,
+      "ox": -58,
+      "oy": -84,
+      "name": "KRool_Run3"
+    },
+    {
+      "x": 434,
+      "y": 172,
+      "w": 94,
+      "h": 92,
+      "ox": -56,
+      "oy": -86,
+      "name": "KRool_Run4"
+    },
+    {
+      "x": 530,
+      "y": 172,
+      "w": 97,
+      "h": 88,
+      "ox": -60,
+      "oy": -87,
+      "name": "KRool_Run5"
+    },
+    {
+      "x": 629,
+      "y": 172,
+      "w": 94,
+      "h": 88,
+      "ox": -56,
+      "oy": -87,
+      "name": "KRool_Run6"
+    },
+    {
+      "x": 725,
+      "y": 172,
+      "w": 102,
+      "h": 88,
+      "ox": -48,
+      "oy": -87,
+      "name": "KRool_Run7"
+    },
+    {
+      "x": 829,
+      "y": 172,
+      "w": 38,
+      "h": 40,
+      "ox": -17,
+      "oy": -28,
+      "name": "DKIslandInFinalBattle_Pose"
+    },
+    {
+      "x": 869,
+      "y": 172,
+      "w": 77,
+      "h": 96,
+      "ox": -42,
+      "oy": -91,
+      "name": "KRool_Idle1"
+    },
+    {
+      "x": 948,
+      "y": 172,
+      "w": 76,
+      "h": 96,
+      "ox": -41,
+      "oy": -90,
+      "name": "KRool_Idle2"
+    },
+    {
+      "x": 0,
+      "y": 270,
+      "w": 78,
+      "h": 96,
+      "ox": -40,
+      "oy": -90,
+      "name": "KRool_Idle3"
+    },
+    {
+      "x": 80,
+      "y": 270,
+      "w": 94,
+      "h": 96,
+      "ox": -44,
+      "oy": -90,
+      "name": "KRool_Idle4"
+    },
+    {
+      "x": 176,
+      "y": 270,
+      "w": 24,
+      "h": 17,
+      "ox": -9,
+      "oy": -15,
+      "name": "KRoolCrown_Thrown1"
+    },
+    {
+      "x": 202,
+      "y": 270,
+      "w": 24,
+      "h": 24,
+      "ox": -8,
+      "oy": -17,
+      "name": "KRoolCrown_Thrown2"
+    },
+    {
+      "x": 228,
+      "y": 270,
+      "w": 19,
+      "h": 24,
+      "ox": -4,
+      "oy": -19,
+      "name": "KRoolCrown_Thrown3"
+    },
+    {
+      "x": 249,
+      "y": 270,
+      "w": 21,
+      "h": 24,
+      "ox": -6,
+      "oy": -19,
+      "name": "KRoolCrown_Thrown4"
+    },
+    {
+      "x": 272,
+      "y": 270,
+      "w": 24,
+      "h": 24,
+      "ox": -7,
+      "oy": -18,
+      "name": "KRoolCrown_Thrown5"
+    },
+    {
+      "x": 298,
+      "y": 270,
+      "w": 23,
+      "h": 25,
+      "ox": -7,
+      "oy": -21,
+      "name": "KRoolCrown_Thrown6"
+    },
+    {
+      "x": 323,
+      "y": 270,
+      "w": 24,
+      "h": 24,
+      "ox": -8,
+      "oy": -20,
+      "name": "KRoolCrown_Thrown7"
+    },
+    {
+      "x": 349,
+      "y": 270,
+      "w": 24,
+      "h": 24,
+      "ox": -8,
+      "oy": -17,
+      "name": "KRoolCrown_Thrown8"
+    },
+    {
+      "x": 375,
+      "y": 270,
+      "w": 20,
+      "h": 24,
+      "ox": -6,
+      "oy": -16,
+      "name": "KRoolCrown_Thrown9"
+    },
+    {
+      "x": 397,
+      "y": 270,
+      "w": 18,
+      "h": 24,
+      "ox": -6,
+      "oy": -18,
+      "name": "KRoolCrown_Thrown10"
+    },
+    {
+      "x": 417,
+      "y": 270,
+      "w": 24,
+      "h": 32,
+      "ox": -8,
+      "oy": -22,
+      "name": "KRoolCrown_Thrown11"
+    },
+    {
+      "x": 443,
+      "y": 270,
+      "w": 24,
+      "h": 32,
+      "ox": -8,
+      "oy": -22,
+      "name": "KRoolCrown_Thrown12"
+    },
+    {
+      "x": 469,
+      "y": 270,
+      "w": 81,
+      "h": 96,
+      "ox": -46,
+      "oy": -93,
+      "name": "KRool_Throw1"
+    },
+    {
+      "x": 552,
+      "y": 270,
+      "w": 82,
+      "h": 96,
+      "ox": -49,
+      "oy": -93,
+      "name": "KRool_Throw2"
+    },
+    {
+      "x": 636,
+      "y": 270,
+      "w": 79,
+      "h": 96,
+      "ox": -49,
+      "oy": -85,
+      "name": "KRool_Throw3"
+    },
+    {
+      "x": 717,
+      "y": 270,
+      "w": 97,
+      "h": 88,
+      "ox": -53,
+      "oy": -85,
+      "name": "KRool_Throw4"
+    },
+    {
+      "x": 816,
+      "y": 270,
+      "w": 74,
+      "h": 88,
+      "ox": -45,
+      "oy": -83,
+      "name": "KRool_Jump1"
+    },
+    {
+      "x": 892,
+      "y": 270,
+      "w": 79,
+      "h": 80,
+      "ox": -46,
+      "oy": -77,
+      "name": "KRool_Jump2"
+    },
+    {
+      "x": 0,
+      "y": 368,
+      "w": 92,
+      "h": 88,
+      "ox": -50,
+      "oy": -85,
+      "name": "KRool_Jump3"
+    },
+    {
+      "x": 94,
+      "y": 368,
+      "w": 90,
+      "h": 90,
+      "ox": -50,
+      "oy": -87,
+      "name": "KRool_Jump4"
+    },
+    {
+      "x": 186,
+      "y": 368,
+      "w": 89,
+      "h": 90,
+      "ox": -50,
+      "oy": -87,
+      "name": "KRool_Jump5"
+    },
+    {
+      "x": 277,
+      "y": 368,
+      "w": 86,
+      "h": 98,
+      "ox": -51,
+      "oy": -95,
+      "name": "KRool_Jump6"
+    }
+  ],
+  "groups": {
+    "wait": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "hurt": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "fall": [
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19
+    ],
+    "cannonball": [
+      20
+    ],
+    "run": [
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27
+    ],
+    "island": [
+      28
+    ],
+    "idle": [
+      29,
+      30,
+      31,
+      32
+    ],
+    "crown": [
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44
+    ],
+    "throw": [
+      45,
+      46,
+      47,
+      48
+    ],
+    "jump": [
+      49,
+      50,
+      51,
+      52,
+      53,
+      54
+    ],
+    "getUp": [
+      19,
+      18,
+      17,
+      16,
+      15,
+      14,
+      13,
+      12,
+      11,
+      10,
+      9,
+      8
+    ],
+    "rain": [
+      29,
+      30,
+      31,
+      32
+    ]
+  },
+  "spritePalettes": "Color0 implicit transparent;15ROM BGR555 words at source BC8314/BC829E/BC8262.",
+  "limitations": [
+    "Get-up reuses reverse fall frames; renderer timing adapts original frames to shared browser state."
+  ]
+}

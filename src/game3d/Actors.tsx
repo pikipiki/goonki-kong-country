@@ -1,3 +1,4 @@
+import { BossProjectiles3D } from "./BossBattle3D";
 import { memo, useMemo, useEffect, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import {
@@ -372,6 +373,7 @@ export const Actors = memo(function Actors({ game }: { game: Game }) {
   return (
     <>
       <ContactShadows game={game} />
+      {game.level.biome==='ship' && <BossProjectiles3D game={game}/>}
       <Pickups game={game} />
       <BonusPickups game={game} />
       {game.bonus && <group name="sealed-bonus-entrance" position={[0,0,1.72]}>
@@ -430,7 +432,7 @@ export const Actors = memo(function Actors({ game }: { game: Game }) {
         )}
       </group>
       <group ref={fx} />
-      <group position={[game.level.length - 1, 0, 0]}>
+      {level.biome !== "ship" && <group position={[game.level.length - 1, 0, 0]}>
         <mesh geometry={box} position={[0, 1.4, 0]} scale={[0.14, 2.8, 0.14]}>
           <meshStandardMaterial color="#856744" />
         </mesh>
@@ -443,7 +445,7 @@ export const Actors = memo(function Actors({ game }: { game: Game }) {
           <meshStandardMaterial color="#96734b" roughness={1} />
         </mesh>
         <Label text="SORTIE →" position={[0.3, 2.5, 0.2]} scale={0.5} />
-      </group>
+      </group>}
     </>
   );
 });

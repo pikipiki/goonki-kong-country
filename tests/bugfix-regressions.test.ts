@@ -99,8 +99,9 @@ describe('reported stage regressions', () => {
   it('bounces safely on the protected boss head and damages it when exposed', () => {
     const game=new Game();game.start(6);
     const boss=game.enemies[0], height=ENEMY_DESIGNS.boss.height;
-    for(const timer of [0.1,2.8]) {
-      boss.timer=timer;boss.y=0;boss.hurt=0;
+    for(const exposed of [false,true]) {
+      Object.assign(game.bossBattle!,{phase:exposed?'catch':'throw',phaseTime:0,crowned:!exposed});
+      boss.y=0;boss.hurt=0;
       game.player.x=boss.x;game.player.y=height+.03;game.player.vy=-7;
       game.player.hp=2;game.player.invincible=0;
       const hp=boss.hp;
@@ -108,18 +109,22 @@ describe('reported stage regressions', () => {
       expect(game.player.hp).toBe(2);
       expect(game.player.vy).toBeGreaterThan(0);
       expect(game.player.y).toBeGreaterThanOrEqual(boss.y+height);
-      expect(boss.hp).toBe(timer>2.55 ? hp-1 : hp);
+      expect(boss.hp).toBe(exposed ? hp-1 : hp);
     }
   });
   it('can defeat an exposed boss with an ordinary held jump from the deck', () => {
     const game=new Game();game.start(6);
-    const boss=game.enemies[0]; boss.timer=2.6;game.player.x=boss.x-4;
+    const boss=game.enemies[0], hp=boss.hp;
+    // Trigger the actual crown throw, then approach with ordinary jump inputs.
+    Object.assign(game.bossBattle!,{phase:'throw',phaseTime:.65});game.update(emptyInput());
+    expect(boss.vulnerable).toBe(true);expect(game.bossProjectiles.some(p=>p.kind==='crown'&&p.active)).toBe(true);
+    game.player.x=boss.x-4;
     const input=inputs('jump','right');input.held.add('run');input.pressed.add('jump');
-    for(let frame=0;frame<85 && boss.hp===5;frame++) {
+    for(let frame=0;frame<85 && boss.hp===hp;frame++) {
       if(game.player.x>=boss.x-.3) input.held.delete('right');
       game.update(input);
     }
-    expect(boss.hp).toBe(4);expect(game.player.hp).toBe(2);
+    expect(boss.hp).toBe(hp-1);expect(game.player.hp).toBe(2);
   });
   it('enters Coral in clear water and dives away without being trapped', () => {
     const game=new Game();game.start(3,true); game.enemies=[];game.animals=[];

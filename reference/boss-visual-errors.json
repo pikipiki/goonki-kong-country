@@ -1,0 +1,10 @@
+{
+  "formats": [
+    "2d portrait",
+    "2d landscape",
+    "3d portrait",
+    "3d landscape"
+  ],
+  "controlledRainVisualization": true,
+  "errors": []
+}

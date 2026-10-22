@@ -45,7 +45,9 @@ function Director({
     }
     focus.current += (desired - focus.current) * (1 - Math.exp(-delta * 5));
     const cam = camera as OrthographicCamera;
-    cam.zoom = layout.zoom;
+    const bossArena = !title && game.level.biome==='ship';
+    cam.zoom = bossArena ? Math.min(layout.zoom,size.width/24,size.height/9) : layout.zoom;
+    if(bossArena)focus.current=11;
     const depthFollow =
       Boolean(game.level.originalTerrain);
     const followY =
@@ -55,7 +57,7 @@ function Director({
     const lookY=layout.lookY+followY;
     const cameraY = lookY + 2.25;
     game.cameraBounds = { x:focus.current, y:lookY,
-      halfX:layout.worldWidth/2, halfY:layout.worldHeight/2+0.5 };
+      halfX:bossArena?size.width/cam.zoom/2:layout.worldWidth/2, halfY:bossArena?size.height/cam.zoom/2:layout.worldHeight/2+0.5 };
     cam.position.set(focus.current, cameraY, 22);
     cam.lookAt(focus.current, lookY, 0);
     cam.updateProjectionMatrix();

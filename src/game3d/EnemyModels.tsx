@@ -1,3 +1,4 @@
+import { KingBossModel } from "./BossBattle3D";
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import {
@@ -450,7 +451,7 @@ export function EnemyModel({
       root.current.visible = enemyRenderVisible(enemy, t, game, preview);
     }
     if (body.current) {
-      body.current.rotation.y = enemy.vx < 0 ? Math.PI - 0.18 : 0.18;
+      body.current.rotation.y = (enemy.kind === 'boss' ? (enemy.bossFacing ?? -1) < 0 : enemy.vx < 0) ? Math.PI - 0.18 : 0.18;
       body.current.position.y =
         enemy.kind === "bee"
           ? Math.sin(t * 10) * 0.035
@@ -466,7 +467,7 @@ export function EnemyModel({
   return (
     <group ref={root} dispose={null} name="enemy" userData={{ enemy }}>
       <group ref={body}>
-        {enemy.pattern === "necky" ? (
+        {enemy.kind === 'boss' ? <KingBossModel enemy={enemy} game={game}/> : enemy.pattern === "necky" ? (
           <Necky wings={wings}/>
         ) : enemy.kind === "bee" ? (
           <Zinger wings={wings} />
@@ -475,7 +476,7 @@ export function EnemyModel({
         ) : (
           <Crocodile
             helmet={enemy.kind === "armored"}
-            king={enemy.kind === "boss"}
+            king={false}
             gait={gait}
           />
         )}

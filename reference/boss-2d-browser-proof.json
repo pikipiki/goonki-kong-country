@@ -1,0 +1,120 @@
+[
+  {
+    "name": "portrait",
+    "errors": [],
+    "canvas": {
+      "w": 256,
+      "h": 404,
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 616,
+        "top": 0,
+        "right": 390,
+        "bottom": 616,
+        "left": 0
+      }
+    },
+    "state": {
+      "phase": "playing",
+      "level": 6,
+      "boss": {
+        "phase": "throw",
+        "phaseTime": 0.39999999999999997,
+        "hits": 0,
+        "maxHits": 10,
+        "crowned": true,
+        "facing": -1,
+        "left": 3,
+        "right": 19,
+        "passes": 0,
+        "jumps": 0,
+        "hopTime": 0,
+        "rainCount": 0,
+        "spawned": 0,
+        "ballClock": 0,
+        "afterJumps": "throw",
+        "totalTime": 2.2166666666666637
+      },
+      "enemy": {
+        "x": 17,
+        "y": 0,
+        "min": 4,
+        "max": 18,
+        "kind": "boss",
+        "originY": 0,
+        "vx": 0,
+        "alive": true,
+        "hp": 10,
+        "vy": 0,
+        "timer": 2.2166666666666637,
+        "hurt": 0,
+        "vulnerable": false,
+        "shootCooldown": 0,
+        "bossState": "throw",
+        "bossFacing": -1,
+        "bossCrowned": true
+      }
+    }
+  },
+  {
+    "name": "landscape",
+    "errors": [],
+    "canvas": {
+      "w": 485,
+      "h": 224,
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 844,
+        "height": 390,
+        "top": 0,
+        "right": 844,
+        "bottom": 390,
+        "left": 0
+      }
+    },
+    "state": {
+      "phase": "playing",
+      "level": 6,
+      "boss": {
+        "phase": "throw",
+        "phaseTime": 0.36666666666666664,
+        "hits": 0,
+        "maxHits": 10,
+        "crowned": true,
+        "facing": -1,
+        "left": 3,
+        "right": 19,
+        "passes": 0,
+        "jumps": 0,
+        "hopTime": 0,
+        "rainCount": 0,
+        "spawned": 0,
+        "ballClock": 0,
+        "afterJumps": "throw",
+        "totalTime": 2.1833333333333305
+      },
+      "enemy": {
+        "x": 17,
+        "y": 0,
+        "min": 4,
+        "max": 18,
+        "kind": "boss",
+        "originY": 0,
+        "vx": 0,
+        "alive": true,
+        "hp": 10,
+        "vy": 0,
+        "timer": 2.1833333333333305,
+        "hurt": 0,
+        "vulnerable": false,
+        "shootCooldown": 0,
+        "bossState": "throw",
+        "bossFacing": -1,
+        "bossCrowned": true
+      }
+    }
+  }
+]

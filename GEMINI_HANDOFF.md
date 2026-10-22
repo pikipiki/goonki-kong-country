@@ -1,5 +1,42 @@
 # Reprise Gemini — Goonk Country — 22 octobre 2026
 
+## Priorité actuelle — livraison du 22 octobre 2026 : palettes, carte et boss
+
+Cette section prévaut sur les états historiques ci-dessous. Dépôt canonique : `/Users/sevenone./Documents/git/goonk-country`. Base au début de cette passe : `4581612 Fix Rambi charge movement and improve mobile island map.` Changements de cette passe non committés ; aucun push. Préserver les corrections Rambi/bonus/animaux et les tailles des peluches (Rose 2,2 ; Violette 2,05). Serveur utilisateur inchangé : `http://127.0.0.1:5174/`.
+
+### Demande réalisée
+
+- Wagon : correction existante revalidée, deux oiseaux x106,28125 / x404,34375 × deux peluches × deux orientations, dégâts actifs. Les 8 essais navigateur retrouvent le rail avec HP2 / 5 vies et les 30 ennemis présents, dont 14 abeilles. `tests/mine-bird-landing.test.ts` : 6 tests / 48 configurations internes. **La traversée intégrale de la mine n'est toujours pas prouvée** ; ne pas confondre avec les passages corrigés.
+- Palettes 2D : l'extracteur lisait 16 couleurs alors que les sprites ROM stockent 15 couleurs visibles, la transparence étant implicite. Index0 ajouté avant les 15 mots, palettes décor séparées, trou/plate-forme de grotte associés à leurs vraies palettes. 301 images régénérées, arrière-plans existants conservés. Aucune correction artificielle de contraste. `scripts/extract_jungle_2d.py --sprites-only`, `scripts/test_rom2d_palette.py` (7 tests). Comparaison visuelle sur pixels/palettes extraits, pas capture émulateur jungle : `reference/rom2d-palette-comparison.png`, `rom2d-palette-report.md`.
+- Carte 2D plein viewport : île ROM entière sans déformation, océan prolongé, 7 destinations nommées et accessibles, cibles tactiles >=44px sans chevauchement. Clavier/clic/tactile et validation. Choix explicite 2D/3D ; **seules jungle0 et boss6 disposent d'un rendu2D**, les 7 stages restent accessibles en3D. Pas de fuite du mode2D en changeant de stage. `src/mapLayout.ts`, `tests/map-layout.test.ts`, `scripts/map-2d-browser.mjs`. Formats390×844,320×640,844×390 vérifiés.
+- Accueil : mention courte « 2D demo · Jungle + final boss » et deux boutons directs. Anglais par défaut sur stockage vierge ; préférence française explicite existante conservée. Le correctif tactile évite que l'anti-doubletap global annule des appuis rapprochés sur les boutons de menu.
+- Boss commun2D/3D : nouvelle machine `src/game/bossBattle.ts`, intégrée au moteur. Arène22unités visible en entier sur mobile, tailles des peluches conservées. Couronne aller/retour et tête découverte ; après les coups1/2/3, 1/2/3 traversées ; après4/5/6, 3 bonds puis9/17/25 boulets ; après7, fausse défaite/KREDITS puis réveil et2bonds ; après8/9,6/12bonds ; défaite réelle après10. Couronne/boulets dangereux, annonces de chute. Tonneaux blessent encore le boss (adaptation demandée précédemment). Saut tête protégée rebondit sans dégât automatique. HUD10segments et astuce couronne.
+- Rendu3D : `src/game3d/BossBattle3D.tsx` anime course, lancer, sauts, blessure, chute/réveil, cape et couronne. Pont doré, filets/cordages latéraux, canons, tonneaux empilés, nuages et île au loin. Suppression du double sol générique et du panneau de sortie pendant le combat. Caméra fixe adaptée aux deux orientations dans `Scene.tsx`.
+- Rendu2D : `src/game2d/BossScene2D.tsx` partage strictement les commandes/horloge/physique du moteur ; aucun combat parallèle. Atlas ROM55images/10groupes, vraie capture du décor nu via Snes9x, zones de décor prolongées selon écran sans étirer l'île ni les tonneaux. En paysage, le plan de contact est remonté à65% de la hauteur pour que les commandes ne masquent pas les acteurs. `?demo=2d&stage=boss`. Musique du boss ROM déjà disponible (ID24) conservée.
+
+### Preuves ROM et limites de fidélité
+
+ROM fournie SHA256 `628147468c3539283197f58f03b94df49758a332831857481ea9cc31645f0527`. REA a identifié le ZIP ; 65816 non décompilé nativement. Désassemblage source utilisé pour naviguer, puis signatures/valeurs vérifiées sur les octets exacts USA Rev2. Table du boss PC0x36EB7A (`DATA_B6EB45` source). **10 fenêtres de coup**, les effectifs des attaques sont sourcés. Durées, vitesses, amplitudes, arène et avertissements restent adaptés au mobile : ne pas promettre une émulation cycle par cycle. `reference/boss-rom-evidence.json`, `boss-background-capture.json`, `boss-rom-reference.png` et rapport boss. La capture du fond utilise entrée contrôlée0x68 et masqueOBJ ; ce protocole d'analyse est distinct du parcours normal. L'île est un spriteOBJ séparé, donc son ajout au rendu2D est nécessaire.
+
+### Validation de cette passe
+
+- **232 tests /37 fichiers passent**, dont19 nouveaux tests du combat et4 du placement carte. Sept tests Python de palettes passent (Python fourni par runtime Codex avec Pillow).
+- Build TypeScript/Vite passe ; `git diff --check` passe. Avertissement existant sur taille du bundle, sans erreur.
+- `npm run test:mobile` : 6 tailles, multitouch/clic, rotation/pause,7transitions, aucune erreurJS, ~59fps dans ce contrôle.
+- `scripts/map-2d-browser.mjs` : plein écran3formats,7accès3D,2accès2D, choix clavier et anglais par défaut, aucune erreurJS. `npm run test:map` passe également.
+- **Boss entièrement vaincu avec de vraies touches clavier en2D, dégâts actifs, zéro mort** : 10coups,83,57s de simulation,553décisions, finHP1/vies6. Un PV perdu, une vie supplémentaire ramassée. Toutes les phases traversées. `window.goonk` strictement lu pendant le run ; planification sur copies isolées du moteur, vraie toucheP pour pause. Aucun déplacement/HP/vie/invincibilité artificiel dans la partie jouée. Rapport `reference/boss-playthrough-report.md`, journal `boss-playthrough.json`, capture `boss-playthrough-final.png`, script `scripts/boss-battle-browser.mjs`.
+- Captures boss2D/3D portrait390×844 et paysage844×390 sans erreurJS : `reference/boss-{2d,3d}-{390,844}.png`, script reproductible `scripts/boss-visual-browser.mjs` (copies initiales dans le workspace `outputs/`). Les captures de pluie seules utilisent un état de visualisation contrôlé, **pas une preuve de traversée**. Le parcours complet ci-dessus est séparé.
+
+### Suite éventuelle
+
+1. Tester la mine entière (zone x≈360 non résolue par l'ancien pilote), sans prétendre que les seuls huit essais prouvent toute la traversée.
+2. Les autres5stages n'ont pas de renderer2D ; le menu l'indique. Ne pas lancer la jungle en2D sous un autre identifiant.
+3. La direction artistique3D reste une reconstruction géométrique ; affiner les matériaux/modèles selon retours sans réduire les peluches ni modifier les collisions validées.
+4. Aucun commit/push effectué ; les changements sont consultables dans le checkout canonique. Les anciennes sections suivantes documentent des passes antérieures.
+
+
+---
+
 ## Demande utilisateur et priorité
 
 L’utilisateur demande de corriger les bugs du jeu mobile, en gardant les peluches à leur taille actuelle. Dernier problème : dans **Mine Cart Madness**, le wagon rebondit sur un oiseau puis retombe directement sur une abeille, sans échappatoire. Il demande maintenant ce rapport pour que Gemini puisse continuer avant épuisement du crédit Codex.
