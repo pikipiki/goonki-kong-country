@@ -16,6 +16,7 @@ const scripts = [
   'test:ground',
   'test:playthrough:canyon',
   'test:playthrough:coral',
+  'test:playthrough:boss',
 ]
 
 async function prepareServer() {

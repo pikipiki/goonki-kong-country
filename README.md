@@ -30,7 +30,7 @@ npm run test:functional
 The production check owns its preview server on port 5191 and verifies the real
 build in both mobile orientations, including its Content Security Policy.
 Functional tests reuse a reachable development server or start and close their
-own. They never close an existing user server. The two complete playthroughs
+own. They never close an existing user server. The three complete playthroughs
 use real keyboard input and keep damage enabled.
 
 ```sh
@@ -87,3 +87,23 @@ npm run generate:plush-contour
 Terrain generators read verified metadata and write numeric JSON. Algorithms
 remain maintained TypeScript. ROM analysis commands require the user's own ROM;
 see the evidence documents for the corresponding inputs and provenance.
+
+### Repeatable full playthroughs
+
+```sh
+npm run test:playthrough:stable          # 3 runs each: Canyon, Coral, final boss
+npm run test:playthrough:stable -- coral # same matrix for one stage
+```
+
+The matrix checks desktop, phone portrait and landscape, with 0/25/50 ms
+controller delays. It also checks the boss in 2D and 3D. Each run owns its server
+and browser, uses real keyboard events and normal damage, and checks the live
+physics against an isolated engine copy. Failure is returned as a nonzero exit
+code; no automatic retries or disabled enemies are used. Full logs, input traces,
+state snapshots and captures are retained separately under `artifacts/browser/`.
+
+The default scenarios replay reviewed inputs from `tests/fixtures/playthrough/`.
+See [the stability report](docs/playthrough-stability.md) to inspect the fixes,
+understand browser clock control, and regenerate a scenario after an intentional
+gameplay change. `PLAYTHROUGH_REPLAN=1` explicitly enables the exploratory pilot;
+it never silently replaces a failing recorded scenario.

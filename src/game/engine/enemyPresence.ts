@@ -31,14 +31,12 @@ export function enemySimulationActive(game: Game, enemy: Enemy) {
   if (!enemy.alive) {
     return false
   }
-  const band = enemyViewportBand(),
-    bounds = game.cameraBounds
-  // Include the player too while the camera catches up after a respawn.
+  const band = enemyViewportBand()
+  // Simulation must not depend on a smoothed render camera or the viewport size.
+  // The larger, player-centred region activates enemies before they become visible.
   return (
-    enemyVisibleToCamera(game, enemy) ||
-    (Math.abs(enemy.x - game.player.x) <=
-      (bounds?.halfX ?? band.simHalfX) + 8 &&
-      Math.abs(enemy.y - game.player.y) <= (bounds?.halfY ?? band.simHalfY) + 8)
+    Math.abs(enemy.x - game.player.x) <= band.simHalfX + 8 &&
+    Math.abs(enemy.y - game.player.y) <= band.simHalfY + 8
   )
 }
 /** Damage flashing must never override death or camera visibility. */

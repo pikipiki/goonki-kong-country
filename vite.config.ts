@@ -12,6 +12,25 @@ const githubPagesBase = '/goonki-kong-country/'
 
 // GitHub Pages cannot set response headers. Scope the meta policy to the app build;
 // development and Storybook need their own script injection and are not published here.
+/** Some deps probe HMR via eval(`import.meta.hot`); strip it so CSP script-src 'self' holds. */
+function stripImportMetaHotEval(): Plugin {
+  const evalHotProbe =
+    /try\{return\(0,eval\)\(`import\.meta\.hot`\)\}catch\{return\}/g
+  return {
+    name: 'strip-import-meta-hot-eval',
+    apply: 'build',
+    enforce: 'post',
+    generateBundle(_options, bundle) {
+      for (const file of Object.values(bundle)) {
+        if (file.type !== 'chunk') continue
+        if (!evalHotProbe.test(file.code)) continue
+        file.code = file.code.replace(evalHotProbe, 'return')
+        evalHotProbe.lastIndex = 0
+      }
+    },
+  }
+}
+
 function productionContentSecurityPolicy(): Plugin {
   const policy = [
     "default-src 'self'",
@@ -45,7 +64,11 @@ function productionContentSecurityPolicy(): Plugin {
 
 export default defineConfig({
   base: process.env.GITHUB_PAGES === 'true' ? githubPagesBase : '/',
-  plugins: [react(), productionContentSecurityPolicy()],
+  plugins: [
+    react(),
+    stripImportMetaHotEval(),
+    productionContentSecurityPolicy(),
+  ],
   resolve: {
     alias: {
       '@game3d': path.join(srcDir, 'game3d'),

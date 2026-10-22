@@ -1,3 +1,26 @@
+<!-- playthrough-stability-2026-10-23:start -->
+# Reprise prioritaire — stabilité des playthroughs, 23 octobre 2026
+
+Lire `docs/playthrough-stability.md` avant de modifier les pilotes.
+
+- `npm run test:playthrough:stable` : 9/9 parcours réussis, zéro mort, traces
+  identiques entre ordinateur, portrait, paysage et délais de 0/25/50 ms.
+- Boss couvert en 2D et 3D. Scénarios versionnés dans
+  `tests/fixtures/playthrough/`, vrais événements clavier, dégâts actifs.
+- Horloge Playwright contrôlée ; état du jeu en lecture seule ; comparaison
+  physique à chaque séquence. Échec non masqué, aucun retry automatique.
+- Activation des ennemis indépendante de la caméra dans
+  `src/game/engine/enemyPresence.ts`. Garder le culling visuel séparé.
+- Pilotes exploratoires disponibles uniquement sur demande explicite
+  `PLAYTHROUGH_REPLAN=1`. Ne jamais régénérer automatiquement une fixture rouge.
+- Format, lint sans avertissement, 482 tests, 3 E2E, build et couverture moteur
+  à 100 % passent. Voir le rapport pour les preuves et les limites.
+- Modifications locales non commitées ; préserver les cinq modifications déjà
+  présentes au début de cette passe. Aucun push ou déploiement effectué.
+
+Les sections suivantes sont historiques.
+<!-- playthrough-stability-2026-10-23:end -->
+
 <!-- architecture-review-2026-10-22:start -->
 # Reprise prioritaire — architecture, 22 octobre 2026
 

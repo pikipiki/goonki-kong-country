@@ -107,6 +107,7 @@ try {
       })
       await page.getByRole('button', { name: 'Lancer', exact: true }).tap()
       await page.waitForFunction(() => window.goonk.player.mountCharged)
+      await page.waitForFunction(() => Math.abs(window.goonk.player.vx) > 12)
       const state = await page.evaluate(() => ({
         vx: window.goonk.player.vx,
         charge: window.goonk.player.mountCharge,
@@ -250,6 +251,11 @@ try {
         throw error
       })
     await page.getByRole('button', { name: 'Arrêter le déplacement' }).click()
+    await page.waitForFunction(
+      () =>
+        window.goonk.level.originalTerrain === undefined &&
+        window.goonk.player.x < 4,
+    )
     const bonus = await page.evaluate(() => ({
       name: window.goonk.level.name,
       x: window.goonk.player.x,

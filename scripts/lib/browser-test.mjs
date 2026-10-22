@@ -7,8 +7,9 @@ import { chromium } from 'playwright'
 export function launchGameBrowser() {
   const macChrome =
     '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+  const configured = process.env.BROWSER_EXECUTABLE?.trim()
   const executablePath =
-    process.env.BROWSER_EXECUTABLE ||
+    configured ||
     (process.platform === 'darwin' && existsSync(macChrome)
       ? macChrome
       : undefined)

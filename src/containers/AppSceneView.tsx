@@ -3,7 +3,13 @@ import { useTranslation } from 'react-i18next'
 import { FINAL_BOSS_STAGE_ID } from '../game/stageCatalog'
 import type { Game, Input, Phase } from '../game/engine'
 
-function lazyWithRetry<T extends ComponentType<object>>(
+type SceneRendererProps = {
+  game: Game
+  input: Input
+  onTick: () => void
+}
+
+function lazyWithRetry<T extends ComponentType<SceneRendererProps>>(
   factory: () => Promise<{ default: T }>,
 ) {
   return lazy(async () => {

@@ -1,0 +1,872 @@
+{
+  "version": 1,
+  "stageId": 6,
+  "originalRoute": true,
+  "expectedPhase": "victory",
+  "steps": [
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["action"]
+    },
+    {
+      "frames": 16,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["action"]
+    },
+    {
+      "frames": 8,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run", "jump"]
+    },
+    {
+      "frames": 8,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["action"]
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": []
+    },
+    {
+      "frames": 16,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["action"]
+    },
+    {
+      "frames": 32,
+      "keys": []
+    },
+    {
+      "frames": 40,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["action"]
+    },
+    {
+      "frames": 8,
+      "keys": ["jump"]
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run", "jump"]
+    },
+    {
+      "frames": 8,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 24,
+      "keys": []
+    },
+    {
+      "frames": 16,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 16,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 48,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["left", "run", "jump"]
+    },
+    {
+      "frames": 16,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 16,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 16,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": []
+    },
+    {
+      "frames": 16,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 40,
+      "keys": []
+    },
+    {
+      "frames": 16,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 32,
+      "keys": []
+    },
+    {
+      "frames": 16,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 48,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["action"]
+    },
+    {
+      "frames": 16,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["action"]
+    },
+    {
+      "frames": 16,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run", "jump"]
+    },
+    {
+      "frames": 16,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run", "jump"]
+    },
+    {
+      "frames": 8,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["action"]
+    },
+    {
+      "frames": 56,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["action"]
+    },
+    {
+      "frames": 40,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["action"]
+    },
+    {
+      "frames": 32,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 16,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 16,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 16,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run", "jump"]
+    },
+    {
+      "frames": 24,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 24,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 16,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 24,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["action"]
+    },
+    {
+      "frames": 16,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["action"]
+    },
+    {
+      "frames": 8,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run", "jump"]
+    },
+    {
+      "frames": 16,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run", "jump"]
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["left", "run", "jump"]
+    },
+    {
+      "frames": 8,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 32,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 16,
+      "keys": []
+    },
+    {
+      "frames": 16,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["action"]
+    },
+    {
+      "frames": 40,
+      "keys": []
+    },
+    {
+      "frames": 56,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 32,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": []
+    },
+    {
+      "frames": 16,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run", "jump"]
+    },
+    {
+      "frames": 16,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": []
+    },
+    {
+      "frames": 16,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 16,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 16,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 32,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["action"]
+    },
+    {
+      "frames": 16,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["action"]
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run", "jump"]
+    },
+    {
+      "frames": 16,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": []
+    },
+    {
+      "frames": 32,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": []
+    },
+    {
+      "frames": 24,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["action"]
+    },
+    {
+      "frames": 16,
+      "keys": []
+    },
+    {
+      "frames": 24,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["action"]
+    },
+    {
+      "frames": 8,
+      "keys": ["jump"]
+    },
+    {
+      "frames": 16,
+      "keys": []
+    },
+    {
+      "frames": 16,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 48,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["action"]
+    },
+    {
+      "frames": 16,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["action"]
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run", "jump"]
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["action"]
+    },
+    {
+      "frames": 24,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": []
+    },
+    {
+      "frames": 32,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["action"]
+    },
+    {
+      "frames": 16,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["left", "run", "jump"]
+    },
+    {
+      "frames": 8,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 32,
+      "keys": []
+    },
+    {
+      "frames": 16,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["left", "run"]
+    },
+    {
+      "frames": 32,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["action"]
+    },
+    {
+      "frames": 16,
+      "keys": []
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run", "jump"]
+    },
+    {
+      "frames": 16,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run", "jump"]
+    },
+    {
+      "frames": 8,
+      "keys": ["right", "run"]
+    },
+    {
+      "frames": 56,
+      "keys": []
+    },
+    {
+      "frames": 40,
+      "keys": []
+    }
+  ]
+}

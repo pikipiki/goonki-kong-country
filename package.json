@@ -61,7 +61,10 @@
     "test:playthrough:coral": "node scripts/playthrough-coral.mjs",
     "test:production": "npm run build && node scripts/verify-production.mjs",
     "generate:plush-contour": "node scripts/generate-plush-contour.mjs",
-    "check:architecture": "node scripts/check-architecture.mjs"
+    "check:architecture": "node scripts/check-architecture.mjs",
+    "test:playthrough:boss": "node scripts/boss-battle-browser.mjs",
+    "test:playthrough:stable": "node scripts/run-playthroughs.mjs",
+    "test:playthrough:record": "node scripts/record-playthrough.mjs"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
