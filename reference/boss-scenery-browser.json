@@ -1,0 +1,93 @@
+{
+  "report": [
+    {
+      "format": "portrait",
+      "before": {
+        "x": 149.5822296142578,
+        "y": 115.16666412353516,
+        "scaleX": 1.0833333730697632,
+        "scaleY": 1.0833333730697632,
+        "cameraX": 3.72,
+        "worldWidth": 9,
+        "canvasWidth": 240,
+        "playerX": 3,
+        "floorY": 321.00000500679016,
+        "hp": 2,
+        "lives": 5
+      },
+      "right": {
+        "x": -21.104854583740234,
+        "y": 115.16666412353516,
+        "scaleX": 1.0833333730697632,
+        "scaleY": 1.0833333730697632,
+        "cameraX": 11.10549851780621,
+        "worldWidth": 9,
+        "canvasWidth": 240,
+        "playerX": 10.5938720703125,
+        "floorY": 321.00000500679016,
+        "hp": 2,
+        "lives": 5
+      },
+      "back": {
+        "x": 152.7489013671875,
+        "y": 115.16666412353516,
+        "scaleX": 1.0833333730697632,
+        "scaleY": 1.0833333730697632,
+        "cameraX": 3.582980411386135,
+        "worldWidth": 9,
+        "canvasWidth": 240,
+        "playerX": 2.59619140625,
+        "floorY": 321.00000500679016,
+        "hp": 2,
+        "lives": 5
+      },
+      "sharedCamera": true
+    },
+    {
+      "format": "landscape",
+      "before": {
+        "x": 144,
+        "y": -65,
+        "scaleX": 1,
+        "scaleY": 1,
+        "cameraX": 8,
+        "worldWidth": 18,
+        "canvasWidth": 416,
+        "playerX": 3,
+        "floorY": 125,
+        "hp": 2,
+        "lives": 5
+      },
+      "right": {
+        "x": 62.386863708496094,
+        "y": -65,
+        "scaleX": 1,
+        "scaleY": 1,
+        "cameraX": 11.825615786010463,
+        "worldWidth": 18,
+        "canvasWidth": 416,
+        "playerX": 10.5938720703125,
+        "floorY": 125,
+        "hp": 2,
+        "lives": 5
+      },
+      "back": {
+        "x": 143.99618530273438,
+        "y": -65,
+        "scaleX": 1,
+        "scaleY": 1,
+        "cameraX": 8.000178695237546,
+        "worldWidth": 18,
+        "canvasWidth": 416,
+        "playerX": 2.59619140625,
+        "floorY": 125,
+        "hp": 2,
+        "lives": 5
+      },
+      "sharedCamera": true
+    }
+  ],
+  "errors": [],
+  "inputOnly": true,
+  "liveStateWrites": false
+}
