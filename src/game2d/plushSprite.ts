@@ -1,3 +1,4 @@
+import { resolveViteAssetPath } from '../lib/viteAssetPath'
 import { plushAnimationGroup } from './plushAtlasPose'
 import { drawPlushFallback2D } from './plushFallbackDraw'
 
@@ -40,17 +41,6 @@ export interface LoadedPlushAtlas {
 
 let cachedPlushAtlasPromise: Promise<LoadedPlushAtlas | null> | null = null
 
-function assetUrl(path: string): string {
-  let base
-  if (typeof import.meta !== 'undefined' && import.meta.env.BASE_URL) {
-    base = import.meta.env.BASE_URL
-  } else {
-    base = '/'
-  }
-
-  return `${base.replace(/\/?$/, '/')}${path.replace(/^\//, '')}`
-}
-
 export function loadPlushAtlas(): Promise<LoadedPlushAtlas | null> {
   if (typeof window === 'undefined' || typeof Image === 'undefined') {
     return Promise.resolve(null)
@@ -58,7 +48,7 @@ export function loadPlushAtlas(): Promise<LoadedPlushAtlas | null> {
 
   if (!cachedPlushAtlasPromise) {
     cachedPlushAtlasPromise = Promise.all([
-      fetch(assetUrl('rom2d/plush.json')).then((response) => {
+      fetch(resolveViteAssetPath('rom2d/plush.json')).then((response) => {
         if (!response.ok) {
           throw new Error('Missing plush.json')
         }
@@ -73,7 +63,7 @@ export function loadPlushAtlas(): Promise<LoadedPlushAtlas | null> {
         }
 
         img.onerror = reject
-        img.src = assetUrl('rom2d/plush.png')
+        img.src = resolveViteAssetPath('rom2d/plush.png')
       }),
     ])
       .then(([manifest, image]) => ({ manifest, image }))

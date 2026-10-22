@@ -56,6 +56,7 @@ export default tseslint.config(
     },
     rules: {
       ...sonarjs.configs.recommended.rules,
+      'sonarjs/function-return-type': 'off',
       'sonarjs/prefer-read-only-props': 'off',
       ...reactHooks.configs.recommended.rules,
       'react-refresh/only-export-components': [
@@ -107,6 +108,9 @@ export default tseslint.config(
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
+      'sonarjs/null-dereference': 'off',
+      'sonarjs/argument-type': 'off',
+      'sonarjs/function-return-type': 'off',
     },
   },
   {

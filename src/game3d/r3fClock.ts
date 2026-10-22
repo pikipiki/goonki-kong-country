@@ -7,35 +7,40 @@ import type { RootState } from '@react-three/fiber'
  */
 export type R3fClock = { elapsedTime: number; getElapsedTime(): number }
 
-export function r3fClock(state: RootState | unknown): R3fClock {
-  const s = state as
-    | {
-        clock?: { elapsedTime: number; getElapsedTime?(): number }
-        elapsed?: number
-        time?: number
-      }
-    | null
-    | undefined
+type R3fTimingState = RootState & {
+  clock?: { elapsedTime: number; getElapsedTime?(): number }
+  elapsed?: number
+  time?: number
+}
 
-  if (s?.clock && typeof s.clock.elapsedTime === 'number') {
+function elapsedFromState(state: R3fTimingState): number {
+  if (typeof state.elapsed === 'number') {
+    return state.elapsed
+  }
+  if (typeof state.time === 'number') {
+    return state.time / 1000
+  }
+  if (typeof performance !== 'undefined') {
+    return performance.now() / 1000
+  }
+  return 0
+}
+
+export function r3fClock(state: RootState): R3fClock {
+  const timing = state as R3fTimingState
+  const legacy = timing.clock
+  if (legacy && typeof legacy.elapsedTime === 'number') {
+    const elapsedTime = legacy.elapsedTime
     return {
-      elapsedTime: s.clock.elapsedTime,
+      elapsedTime,
       getElapsedTime: () =>
-        typeof s.clock?.getElapsedTime === 'function'
-          ? s.clock.getElapsedTime()
-          : s.clock!.elapsedTime,
+        typeof legacy.getElapsedTime === 'function'
+          ? legacy.getElapsedTime()
+          : elapsedTime,
     }
   }
 
-  const elapsed =
-    typeof s?.elapsed === 'number'
-      ? s.elapsed
-      : typeof s?.time === 'number'
-        ? s.time / 1000
-        : typeof performance !== 'undefined'
-          ? performance.now() / 1000
-          : 0
-
+  const elapsed = elapsedFromState(timing)
   return {
     elapsedTime: elapsed,
     getElapsedTime: () => elapsed,

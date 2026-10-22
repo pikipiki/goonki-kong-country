@@ -1,3 +1,5 @@
+import { resolveViteAssetPath } from '../lib/viteAssetPath'
+
 export interface SpriteFrame {
   x: number
   y: number
@@ -26,17 +28,6 @@ export interface Assets2D {
   caveFront: HTMLImageElement
 }
 
-function assetUrl(path: string): string {
-  let base
-  if (typeof import.meta !== 'undefined' && import.meta.env.BASE_URL) {
-    base = import.meta.env.BASE_URL
-  } else {
-    base = '/'
-  }
-
-  return `${base.replace(/\/?$/, '/')}${path.replace(/^\//, '')}`
-}
-
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image()
@@ -49,7 +40,7 @@ function loadImage(src: string): Promise<HTMLImageElement> {
       reject(new Error(`Failed to load ${src}`))
     }
 
-    img.src = assetUrl(src)
+    img.src = resolveViteAssetPath(src)
   })
 }
 
@@ -58,7 +49,7 @@ let cachedAssetsPromise: Promise<Assets2D> | null = null
 export function loadAssets2D(): Promise<Assets2D> {
   if (!cachedAssetsPromise) {
     cachedAssetsPromise = Promise.all([
-      fetch(assetUrl('rom2d/manifest.json')).then((response) => {
+      fetch(resolveViteAssetPath('rom2d/manifest.json')).then((response) => {
         if (!response.ok) {
           throw new Error('Failed to load rom2d/manifest.json')
         }

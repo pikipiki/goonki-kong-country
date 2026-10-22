@@ -28,7 +28,7 @@ export function stageAt(levelId: number, original: boolean): Level {
 }
 
 export function isDemo2DStage(levelId: number): boolean {
-  return demo2DStageIds.includes(levelId)
+  return (demo2DStageIds as readonly number[]).includes(levelId)
 }
 export function isOriginalStage(levelId: number): boolean {
   return ORIGINAL_LEVELS[levelId] !== LEVELS[levelId]

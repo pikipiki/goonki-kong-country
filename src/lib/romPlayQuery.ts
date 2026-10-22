@@ -25,9 +25,9 @@ function coordinateParam(
   minimum: number,
   maximum: number,
 ): number {
-  const raw = params.get(key)
-  if (raw === null || raw.trim() === '') return fallback
-  const value = Number(raw)
+  const trimmed = (params.get(key) ?? '').trim()
+  if (trimmed === '') return fallback
+  const value = Number(trimmed)
   return Number.isFinite(value) ? clamp(value, minimum, maximum) : fallback
 }
 function applyCoordinates(

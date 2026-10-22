@@ -29,12 +29,12 @@ export function BossProjectiles3D({ game }: { game: Game }) {
       } else {
         groupNode.rotation.z = 0
       }
+      if (groupNode.children.length < 3) {
+        return
+      }
       const crownChild = groupNode.children[0]
       const ballChild = groupNode.children[1]
       const warningChild = groupNode.children[2]
-      if (!crownChild || !ballChild || !warningChild) {
-        return
-      }
 
       crownChild.visible = projectile.kind === 'crown'
       ballChild.visible =

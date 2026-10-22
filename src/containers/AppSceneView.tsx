@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { FINAL_BOSS_STAGE_ID } from '../game/stageCatalog'
 import type { Game, Input, Phase } from '../game/engine'
 
-function lazyWithRetry<T extends ComponentType<any>>(
+function lazyWithRetry<T extends ComponentType<object>>(
   factory: () => Promise<{ default: T }>,
 ) {
   return lazy(async () => {

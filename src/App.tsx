@@ -13,10 +13,10 @@ export function App() {
 
   const fullscreen = () => {
     if (document.fullscreenElement) {
-      void document.exitFullscreen()
+      document.exitFullscreen().catch(() => undefined)
       return
     }
-    void root.current?.requestFullscreen().catch(() => {
+    root.current?.requestFullscreen().catch(() => {
       shell.game.message(t('fullscreenHint'))
     })
   }

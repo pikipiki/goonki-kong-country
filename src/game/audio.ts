@@ -22,6 +22,7 @@ import {
   type AudioMusic as Music,
 } from './audioMusicIds'
 import { audioInspectSnapshot } from './audioInspect'
+import { resolveViteAssetPath } from '../lib/viteAssetPath'
 
 export class AudioSystem {
   context?: AudioContext
@@ -60,7 +61,7 @@ export class AudioSystem {
     }
   }
   private playElement(element?: HTMLAudioElement): void {
-    void element?.play().catch(() => {
+    element?.play().catch(() => {
       this.swallowPlaybackError()
     })
   }
@@ -144,7 +145,7 @@ export class AudioSystem {
     if (this.currentId !== entry.id || !this.music) {
       this.music?.pause()
       this.currentId = entry.id
-      this.music = new Audio(this.assetUrl(entry.url))
+      this.music = new Audio(resolveViteAssetPath(entry.url))
       this.music.preload = 'auto'
       this.music.loop = !entry.loop && !ONCE.has(entry.id)
       this.music.addEventListener('timeupdate', this.onMusicTimeUpdate)
@@ -179,9 +180,6 @@ export class AudioSystem {
       .catch(() => {
         this.reportMusicLoadFailed()
       })
-  }
-  private assetUrl(url: string) {
-    return `${import.meta.env.BASE_URL}${url.replace(/^\//, '')}`
   }
   private applyLoop(entry: Music) {
     if (
@@ -233,7 +231,7 @@ export class AudioSystem {
         throw new Error('Audio context unavailable')
       }
 
-      pending = fetch(this.assetUrl(entry.url))
+      pending = fetch(resolveViteAssetPath(entry.url))
         .then((response) => {
           if (!response.ok) {
             throw new Error('Missing effect')

@@ -36,10 +36,9 @@ function readStageBest(
   // Copy known fields only: no prototype keys or extra nested objects survive.
   return { bananas, letters, time }
 }
-export function readSave(text: string | null): Save {
-  if (text && text.length > MAX_SAVE_CHARACTERS) return defaultSave()
+function readSavePayload(payload: string): Save {
   try {
-    const raw: unknown = JSON.parse(text ?? '{}')
+    const raw: unknown = JSON.parse(payload)
     if (
       !isRecord(raw) ||
       !Number.isInteger(raw.unlocked) ||
@@ -62,4 +61,18 @@ export function readSave(text: string | null): Save {
   } catch {
     return defaultSave()
   }
+}
+function readSaveFromStoredText(stored: string): Save {
+  // S2259 treats a typed string parameter as possibly null.
+  // eslint-disable-next-line sonarjs/null-dereference
+  if (stored.length > MAX_SAVE_CHARACTERS) {
+    return defaultSave()
+  }
+  return readSavePayload(stored)
+}
+export function readSave(text: string | null): Save {
+  if (text === null) {
+    return readSavePayload('{}')
+  }
+  return readSaveFromStoredText(text)
 }

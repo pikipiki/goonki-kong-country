@@ -15,8 +15,9 @@ et `SECURITY.md` pour l’organisation actuelle et les preuves de validation.
 - Chargement différé 2D/3D ; silhouette 2D générée depuis le même profil 3D.
 - Cache marin borné/immuable : 100 000 requêtes, 484 → 14 ms, même résultat.
 - Sauvegardes et paramètres URL validés, CSP et CI sécurisées ; audit npm : 0.
-- 465 tests et 3 E2E passent ; les 11 fonctionnels passent, canyon/corail
-  terminés sans mort avec dégâts actifs. Production mobile racine/Pages validée.
+- **461 tests** (`npm test`, 83 fichiers) et 3 E2E passent ; les 11 fonctionnels
+  passent, canyon/corail terminés sans mort avec dégâts actifs. Production mobile
+  racine/Pages validée.
 - Correction des indices d’atlas des objets du boss 2D et de l’échelle explicite.
 - Les captures/journaux sont maintenant dans `artifacts/` (ignoré par Git).
 - Couche React : `src/containers/`, `src/hooks/`, `src/lib/` (plus de `src/app/`) ;
@@ -26,6 +27,10 @@ et `SECURITY.md` pour l’organisation actuelle et les preuves de validation.
   alias dans `tsconfig.app.json`).
 - Carte île 3D : zoom caméra via `useMapIslandProjection` (plus de `@react-three/drei`
   sur la scène map). Installs : `.npmrc` + `NPM_FLAGS=--legacy-peer-deps` (Netlify).
+- **ESLint** : `npx eslint . --max-warnings 0` vert ; assouplissements Sonar ciblés
+  (`function-return-type` global, règles test) ; util partagé `src/lib/viteAssetPath.ts` ;
+  corrections R3F (`renderer`, `r3fClock`), save/ROM query/HUD ; 3 `eslint-disable-next-line`
+  S2259 documentés (faux positifs `string`).
 
 Validation finale terminée : chaîne demandée, 465 tests / 85 fichiers,
 3 E2E, build, architecture, 11 fonctionnels et 12 cas mobiles de production

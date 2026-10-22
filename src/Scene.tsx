@@ -108,18 +108,18 @@ function TitleCast({ game }: { game: Game }) {
 }
 
 function ContextNotice() {
-  const { gl } = useThree()
+  const { renderer } = useThree()
   const [lost, setLost] = useState(false)
   useEffect(() => {
     const handler = (event: Event) => {
       event.preventDefault()
       setLost(true)
     }
-    gl.domElement.addEventListener('webglcontextlost', handler)
+    renderer.domElement.addEventListener('webglcontextlost', handler)
     return () => {
-      gl.domElement.removeEventListener('webglcontextlost', handler)
+      renderer.domElement.removeEventListener('webglcontextlost', handler)
     }
-  }, [gl])
+  }, [renderer])
   useEffect(() => {
     if (lost) {
       window.dispatchEvent(new Event('goonk-context-lost'))
@@ -129,7 +129,7 @@ function ContextNotice() {
 }
 
 function RenderBudget({ game }: { game: Game }) {
-  const { gl, setDpr } = useThree()
+  const { renderer, setDpr } = useThree()
   const samples = useRef({ count: 0, seconds: 0, window: 0 })
   useFrame((_, delta) => {
     const frame = samples.current
@@ -138,7 +138,7 @@ function RenderBudget({ game }: { game: Game }) {
     frame.window += delta
     if (frame.window > renderSettings.sampleWindowSeconds) {
       const fps = frame.count / frame.seconds
-      if (fps < renderSettings.minimumFps && gl.getPixelRatio() > 1) {
+      if (fps < renderSettings.minimumFps && renderer.getPixelRatio() > 1) {
         setDpr(renderSettings.fallbackDevicePixelRatio)
       }
       Object.defineProperty(window, 'goonkDiagnostics', {
@@ -147,9 +147,9 @@ function RenderBudget({ game }: { game: Game }) {
           stageId: game.levelId,
           sceneRevision: game.sceneRevision,
           fps: Math.round(fps),
-          drawCalls: gl.info.render.calls,
-          triangles: gl.info.render.triangles,
-          dpr: gl.getPixelRatio(),
+          drawCalls: renderer.info.render.calls,
+          triangles: renderer.info.render.triangles,
+          dpr: renderer.getPixelRatio(),
         },
       })
       frame.count = 0
