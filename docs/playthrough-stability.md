@@ -134,8 +134,8 @@ npx vitest run && npm run test:e2e` : **482 tests / 89 fichiers**, puis **3 E2E*
 - Tests dédiés : activation identique selon le cadrage, évolution identique
   avec des fréquences de rafraîchissement caméra différentes, exactitude des
   transitions de touches, copies indépendantes et détection d’une divergence.
-- La CI GitHub (`quality.yml`) n’exécute pas Playwright ni les playthroughs ;
-  lancer `npm run test:playthrough:stable` (ou `npm run test:all`) en local.
+- La CI exécute e2e et production (cache Playwright), pas la matrice
+  `test:playthrough:stable` — la lancer en local avec `npm run test:all`.
 
 - Suite fonctionnelle navigateur complète : **12 scripts réussis**, dont les
   trois traversées complètes.

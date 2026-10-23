@@ -38,10 +38,11 @@ use real keyboard input and keep damage enabled.
 FUNCTIONAL_PORT=5184 npm run test:functional -- test:mobile test:mechanics
 ```
 
-GitHub Actions runs architecture, format, ESLint, vitest and `npm audit` only
-(see `.github/workflows/quality.yml`). For e2e, production CSP, functional and
-playthrough scripts locally, install browsers with
-`npx playwright install --with-deps chromium`. Functional scripts use Chrome on
+GitHub Actions runs architecture, format, ESLint, vitest, e2e, production CSP and
+`npm audit` (Playwright browsers cached under `~/.cache/ms-playwright`; see
+`.github/workflows/quality.yml`). Functional and playthrough scripts are local;
+install browsers with `npx playwright install --with-deps chromium` when needed.
+Functional scripts use Chrome on
 macOS when installed, otherwise Playwright's Chromium. `BROWSER_EXECUTABLE`
 selects another executable; `GAME_URL` targets an existing server. Browser
 captures and logs go to `artifacts/browser/` (override with

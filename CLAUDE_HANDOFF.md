@@ -17,8 +17,9 @@ Lire `docs/playthrough-stability.md` avant de modifier les pilotes.
 - Build prod : plugin Vite `stripImportMetaHotEval` (CSP sans `eval` 3D).
   `AppSceneView` : `SceneRendererProps` pour le lazy des scènes.
 - Règle canyon x≈154–166 dans `reference/canyon-playthrough-rules.json`.
-- CI GitHub (`quality.yml`) : architecture, format, ESLint, vitest, audit — pas de
-  Playwright ni playthrough (réservés à `npm run test:all` en local).
+- CI GitHub (`quality.yml`) : architecture, format, ESLint, vitest, e2e, production
+  (CSP), audit ; cache `~/.cache/ms-playwright`. Playthroughs : local
+  (`npm run test:playthrough:stable` / `test:all`).
 
 Les sections suivantes sont historiques.
 <!-- playthrough-stability-2026-10-23:end -->

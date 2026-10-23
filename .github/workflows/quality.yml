@@ -15,7 +15,7 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -25,9 +25,16 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      # Browser tests (e2e, production CSP, playthroughs) run locally via npm run test:all.
+      - uses: actions/cache@6849a648bb0269f4514899a85abe4781721d49d7 # v4.1.2
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
       - run: npm run check:architecture
       - run: npm run format:check
       - run: npx eslint . --max-warnings 0
       - run: npx vitest run
+      - run: npm run test:e2e
+      - run: npm run test:production
       - run: npm audit --audit-level=moderate

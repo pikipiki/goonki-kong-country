@@ -13,8 +13,8 @@ Lire `docs/playthrough-stability.md` avant de modifier les pilotes.
   `src/game/engine/enemyPresence.ts`. Garder le culling visuel séparé.
 - Pilotes exploratoires disponibles uniquement sur demande explicite
   `PLAYTHROUGH_REPLAN=1`. Ne jamais régénérer automatiquement une fixture rouge.
-- CI : architecture, format, ESLint, vitest, audit (pas Playwright/playthrough).
-  Parcours navigateur : `npm run test:all` en local.
+- CI : architecture, format, ESLint, vitest, e2e, production (cache Playwright).
+  Playthroughs stables : local (`test:playthrough:stable`).
 - Modifications locales non commitées ; préserver les cinq modifications déjà
   présentes au début de cette passe. Aucun push ou déploiement effectué.
 
